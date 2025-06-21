@@ -18,9 +18,8 @@
     }
   ];
   # Bootloader.
-  boot.loader.limine.enable = false;
-  boot.loader.limine.biosSupport = false;
-  boot.loader.limine.efiSupport = false;
+  boot.loader.grub.enable = false;
+  boot.loader.grub.efiSupport = false;
   boot.initrd.services.lvm.enable = true;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -72,8 +71,8 @@
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = false;
-
+  services.displayManager.ly.enable = false;
+  services.desktopManager.cosmic.enable = false;
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -81,7 +80,7 @@
   };
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  services.printing.enable = false;
 
   # Enable Bluetooth
   hardware.bluetooth.enable = true;
@@ -118,8 +117,6 @@
     description = "weegs";
     extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [
-      kdePackages.kate
-      #  thunderbird
     ];
   };
 
@@ -130,7 +127,6 @@
   services.xserver.displayManager.autoLogin.user = "weegs";
   services.xserver.displayManager.defaultSession = "hyprland";
   # List programs that you want to enable:
-  programs.yazi.enable = false;
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
   programs.gamescope.enable = true;
@@ -141,7 +137,6 @@
     enable = true;
     gamescopeSession.enable = true;
   };
-  programs.thunderbird.enable = true;
   programs.tmux.enable = true;
   programs.waybar.enable = true;
   programs.hyprland = {
@@ -186,8 +181,6 @@
     pkgs.blueman
     pkgs.bluetui
     pkgs.bluez
-    pkgs.bottles
-    pkgs.boxbuddy
     pkgs.brave
     pkgs.btop-rocm
     pkgs.cliphist
@@ -214,7 +207,6 @@
     pkgs.libportal
     pkgs.lm_sensors
     pkgs.lutris
-    pkgs.mangohud
     pkgs.micro-full
     pkgs.mpv
     pkgs.networkmanager
