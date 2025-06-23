@@ -59,6 +59,10 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  xdg.terminal-exec.enable = true;
+  xdg.terminal-exec.settings = {default = ["kitty.desktop"];};
+
+  # Env Variables
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
   environment.sessionVariables.TERMINAL = "kitty";
   environment.sessionVariables.XDG_TERMINAL_EDITOR = "kitty";
@@ -72,7 +76,7 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.displayManager.ly.enable = false;
-  services.desktopManager.cosmic.enable = false;
+  services.desktopManager.cosmic.enable = true;
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -86,8 +90,8 @@
   hardware.bluetooth.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
-  hardware.opengl.driSupport32Bit = true;
+  services.pulseaudio.enable = false;
+  hardware.graphics.enable32Bit = true;
   hardware = {
     graphics.enable = true;
     nvidia.modesetting.enable = true;
@@ -123,22 +127,20 @@
   fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [];
 
   # Enable automatic login for the user.
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "weegs";
-  services.xserver.displayManager.defaultSession = "hyprland";
+  services.displayManager.autoLogin.enable = true;
+  services.displayManager.autoLogin.user = "weegs";
+  services.displayManager.defaultSession = "cosmic";
   # List programs that you want to enable:
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
   programs.gamescope.enable = true;
   programs.git.enable = true;
-  programs.hyprlock.enable = true;
   programs.starship.enable = true;
   programs.steam = {
     enable = true;
     gamescopeSession.enable = true;
   };
   programs.tmux.enable = true;
-  programs.waybar.enable = true;
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -146,15 +148,12 @@
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [
     pkgs.xdg-desktop-portal-gtk
-    pkgs.xdg-desktop-portal-hyprland
   ];
 
   # List services that you want to enable:
   services.atuin.enable = true;
-  services.blueman.enable = true;
   services.upower.enable = true;
   services.flatpak.enable = true;
-  services.hypridle.enable = true;
   services.ollama.acceleration = "rocm";
   services.ollama.enable = true;
   services.openssh.enable = true;
@@ -178,28 +177,17 @@
     pkgs.adwaita-icon-theme
     pkgs.alejandra
     pkgs.anki-bin
-    pkgs.blueman
-    pkgs.bluetui
-    pkgs.bluez
     pkgs.brave
     pkgs.btop-rocm
     pkgs.cliphist
     pkgs.dbus
     pkgs.dbus-broker
     pkgs.discord
-    pkgs.distrobox
     pkgs.dunst
     pkgs.fastfetch
     pkgs.git
     pkgs.grim
     pkgs.hyprcursor
-    pkgs.hyprland-protocols
-    pkgs.hyprlang
-    pkgs.hyprls
-    pkgs.hyprpicker
-    pkgs.hyprpolkitagent
-    pkgs.hyprutils
-    pkgs.hyprwayland-scanner
     pkgs.jq
     pkgs.kdePackages.kwallet-pam
     pkgs.kitty
@@ -207,20 +195,14 @@
     pkgs.libportal
     pkgs.lm_sensors
     pkgs.lutris
-    pkgs.micro-full
     pkgs.mpv
-    pkgs.networkmanager
-    pkgs.networkmanagerapplet
     pkgs.nixd
     pkgs.nixfmt-rfc-style
     pkgs.pamixer
     pkgs.pavucontrol
     pkgs.protonup-qt
-    pkgs.rofi-power-menu
-    pkgs.rofi-wayland
     pkgs.slurp
     pkgs.swappy
-    pkgs.swww
     pkgs.tdf
     pkgs.tldr
     pkgs.transmission_4-gtk
@@ -231,9 +213,7 @@
     pkgs.wl-clip-persist
     pkgs.wlogout
     pkgs.wlsunset
-    pkgs.wpaperd
     pkgs.xdg-dbus-proxy
-    pkgs.xdg-desktop-portal-hyprland
     pkgs.yazi
     pkgs.zenity
   ];
