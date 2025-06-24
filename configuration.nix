@@ -185,11 +185,13 @@
     pkgs.discord
     pkgs.dunst
     pkgs.fastfetch
+    pkgs.feh
     pkgs.git
     pkgs.grim
     pkgs.hyprcursor
     pkgs.jq
     pkgs.kdePackages.kwallet-pam
+    pkgs.kdePackages.gwenview
     pkgs.kitty
     pkgs.libnotify
     pkgs.libportal
