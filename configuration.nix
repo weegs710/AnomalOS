@@ -155,7 +155,7 @@
   services.upower.enable = true;
   services.flatpak.enable = true;
   services.ollama.acceleration = "rocm";
-  services.ollama.enable = true;
+  services.ollama.enable = false;
   services.openssh.enable = true;
   services.pipewire.wireplumber.enable = config.services.pipewire.enable;
 
@@ -185,13 +185,11 @@
     pkgs.discord
     pkgs.dunst
     pkgs.fastfetch
-    pkgs.feh
     pkgs.git
     pkgs.grim
     pkgs.hyprcursor
     pkgs.jq
     pkgs.kdePackages.kwallet-pam
-    pkgs.kdePackages.gwenview
     pkgs.kitty
     pkgs.libnotify
     pkgs.libportal
@@ -203,6 +201,7 @@
     pkgs.pamixer
     pkgs.pavucontrol
     pkgs.protonup-qt
+    pkgs.qview
     pkgs.slurp
     pkgs.swappy
     pkgs.tdf
