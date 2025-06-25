@@ -22,8 +22,9 @@
   boot.loader.grub.efiSupport = false;
   boot.initrd.services.lvm.enable = true;
   boot.loader.systemd-boot.enable = true;
+  systemd.services.nscd.enable = false;
   boot.loader.efi.canTouchEfiVariables = true;
-
+  nix.settings.warn-dirty = false;
   networking.hostName = "HX99G"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
