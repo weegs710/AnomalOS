@@ -44,21 +44,6 @@
   # Set your time zone.
   time.timeZone = "America/New_York";
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-  };
-
   xdg.terminal-exec.enable = true;
   xdg.terminal-exec.settings = {default = ["kitty.desktop"];};
 
@@ -153,9 +138,26 @@
   # List services that you want to enable:
   services.atuin.enable = true;
   services.upower.enable = true;
+
+  # Nix Flatpak stuff (aka my first flake application)
   services.flatpak.enable = true;
+  services.flatpak.remotes = [
+    {
+      name = "flathub-beta";
+      location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
+    }
+  ];
+  services.flatpak.packages = [
+    {
+      appId = "com.brave.Browser";
+      origin = "flathub";
+    }
+    "com.discordapp.Discord"
+    "com.valvesoftware.Steam"
+  ];
   services.ollama.acceleration = "rocm";
   services.ollama.enable = false;
+
   services.openssh.enable = true;
   services.pipewire.wireplumber.enable = config.services.pipewire.enable;
 
@@ -167,9 +169,6 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  #podman
-  virtualisation.podman.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
