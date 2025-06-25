@@ -122,15 +122,7 @@
   programs.gamescope.enable = true;
   programs.git.enable = true;
   programs.starship.enable = true;
-  programs.steam = {
-    enable = true;
-    gamescopeSession.enable = true;
-  };
   programs.tmux.enable = true;
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [
     pkgs.xdg-desktop-portal-gtk
@@ -157,16 +149,10 @@
     "com.valvesoftware.Steam"
   ];
   services.ollama.acceleration = "rocm";
-  services.ollama.enable = false;
+  services.ollama.enable = true;
 
   services.openssh.enable = true;
   services.pipewire.wireplumber.enable = config.services.pipewire.enable;
-
-  #  chromium.override = {
-  #  commandLineArgs = [
-  #    "--enable-features=--ozone-platform=wayland --enable-features=UseOzonePlatform"
-  #  ];
-  #};
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -182,12 +168,10 @@
     pkgs.cliphist
     pkgs.dbus
     pkgs.dbus-broker
-    pkgs.discord
     pkgs.dunst
     pkgs.fastfetch
     pkgs.git
     pkgs.grim
-    pkgs.hyprcursor
     pkgs.jq
     pkgs.kdePackages.kwallet-pam
     pkgs.kitty
@@ -203,7 +187,6 @@
     pkgs.protonup-qt
     pkgs.qview
     pkgs.slurp
-    pkgs.swappy
     pkgs.tdf
     pkgs.tldr
     pkgs.transmission_4-gtk
