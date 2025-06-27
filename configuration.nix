@@ -130,7 +130,6 @@
   ];
 
   # List services that you want to enable:
-  services.atuin.enable = true;
   services.upower.enable = true;
 
   # Nix Flatpak stuff (aka my first flake application)
