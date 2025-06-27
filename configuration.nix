@@ -148,7 +148,6 @@
     "com.discordapp.Discord"
     "com.github.tchx84.Flatseal"
     "io.github.lunarequest.NightPDF"
-    "com.valvesoftware.Steam"
   ];
   services.ollama.acceleration = "rocm";
   services.ollama.enable = true;
