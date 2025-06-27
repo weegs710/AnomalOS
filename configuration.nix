@@ -111,6 +111,7 @@
   };
 
   fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [];
+  services.ratbagd.enable = true;
 
   # Enable automatic login for the user.
   services.displayManager.autoLogin.enable = true;
@@ -146,6 +147,8 @@
       origin = "flathub";
     }
     "com.discordapp.Discord"
+    "com.github.tchx84.Flatseal"
+    "io.github.lunarequest.NightPDF"
     "com.valvesoftware.Steam"
   ];
   services.ollama.acceleration = "rocm";
@@ -170,6 +173,7 @@
     pkgs.dbus-broker
     pkgs.dunst
     pkgs.fastfetch
+    pkgs.gimp3-with-plugins
     pkgs.git
     pkgs.grim
     pkgs.jq
@@ -177,13 +181,16 @@
     pkgs.kitty
     pkgs.libnotify
     pkgs.libportal
+    pkgs.libreoffice-fresh
     pkgs.lm_sensors
     pkgs.lutris
     pkgs.mpv
     pkgs.nixd
     pkgs.nixfmt-rfc-style
+    pkgs.obs-studio
     pkgs.pamixer
     pkgs.pavucontrol
+    pkgs.piper
     pkgs.protonup-qt
     pkgs.qview
     pkgs.slurp
