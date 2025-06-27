@@ -121,7 +121,6 @@
   # List programs that you want to enable:
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
-  programs.gamescope.enable = true;
   programs.git.enable = true;
   programs.starship.enable = true;
   programs.tmux.enable = true;
