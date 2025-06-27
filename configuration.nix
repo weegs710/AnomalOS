@@ -161,6 +161,14 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # Enable Steam
+  hardware.steam-hardware.enable = true;
+  programs.steam.enable = true;
+  programs.gamescope.enable = true;
+  programs.steam.protontricks.enable = true;
+  programs.steam.gamescopeSession.enable = true;
+  programs.steam.extest.enable = true;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
