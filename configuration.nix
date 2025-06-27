@@ -60,9 +60,10 @@
   services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.displayManager.ly.enable = false;
+  services.displayManager.sddm.enable = false;
+  services.displayManager.cosmic-greeter.enable = true;
   services.desktopManager.cosmic.enable = true;
+  services.desktopManager.cosmic.xwayland.enable = true;
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
