@@ -221,6 +221,7 @@
     cgem = "ollama run codegemma";
     stfu = "pkill ollama";
     tdeath = "pkill tmux";
+    pkcp = "pkill cosmic-panel";
   };
 
   # Some programs need SUID wrappers, can be configured further or are
