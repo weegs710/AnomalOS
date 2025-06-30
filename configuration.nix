@@ -25,11 +25,9 @@
       efi.canTouchEfiVariables = true;
     };
   };
-  # boot.loader.systemd-boot.enable = true;
-  # boot.loader.efi.canTouchEfiVariables = true;
-  # boot.initrd.services.lvm.enable = true;
+
   systemd.services.nscd.enable = false;
-  nix.settings.warn-dirty = false;
+  # nix.settings.warn-dirty = false;
   networking.hostName = "HX99G"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -37,12 +35,17 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  # Nix Settings
+  nix.settings = {
+    auto-optimise-store = true;
+    warn-dirty = false;
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
 
-  nix.settings.auto-optimise-store = true;
+  # nix.settings.auto-optimise-store = true;
 
   # Enable networking
   networking.networkmanager.enable = true;
