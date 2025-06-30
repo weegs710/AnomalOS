@@ -27,13 +27,6 @@
   };
 
   systemd.services.nscd.enable = false;
-  # nix.settings.warn-dirty = false;
-  networking.hostName = "HX99G"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Nix Settings
   nix.settings = {
@@ -45,10 +38,23 @@
     ];
   };
 
-  # nix.settings.auto-optimise-store = true;
+  # Networking
 
-  # Enable networking
-  networking.networkmanager.enable = true;
+  # networking.networkmanager.enable = true;
+  # networking.hostName = "HX99G"; # Define your hostname.
+  # networking.firewall.enable = false;
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking = {
+    hostName = "HX99G";
+    networkmanager.enable = true;
+    firewall = {
+      enable = false;
+      allowedTCPPorts = [];
+      allowedUDPPorts = [];
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -121,6 +127,8 @@
     packages = with pkgs; [
     ];
   };
+  # Set Fish as global default shell
+  users.defaultUserShell = pkgs.fish;
 
   fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [];
 
@@ -216,9 +224,6 @@
     pkgs.zenity
   ];
 
-  # Set Fish as global default shell
-  users.defaultUserShell = pkgs.fish;
-
   environment.shellAliases = {
     nrs = "sudo nixos-rebuild switch";
     claude = "ollama run GandalfBaum/llama3.1-claude3.7";
@@ -235,14 +240,6 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-
-  # List services that you want to enable:
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
