@@ -166,6 +166,9 @@
   programs.steam.gamescopeSession.enable = true;
   programs.steam.extest.enable = true;
 
+  # Enable Fish
+  programs.fish.enable = true;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
