@@ -147,6 +147,7 @@
     "com.discordapp.Discord"
     "com.github.tchx84.Flatseal"
     "io.github.lunarequest.NightPDF"
+    "dev.edfloreshz.CosmicTweaks"
   ];
   services.ollama.acceleration = "rocm";
   services.ollama.enable = true;
