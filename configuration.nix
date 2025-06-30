@@ -61,7 +61,6 @@
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
-  services.displayManager.cosmic-greeter.enable = false;
   services.desktopManager.cosmic.enable = true;
   services.desktopManager.cosmic.xwayland.enable = true;
   # Configure keymap in X11
@@ -117,7 +116,7 @@
   # Enable automatic login for the user.
   services.displayManager.autoLogin.enable = true;
   services.displayManager.autoLogin.user = "weegs";
-  services.displayManager.defaultSession = "cosmic";
+  services.displayManager.defaultSession = "";
   # List programs that you want to enable:
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
@@ -238,7 +237,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  networking.firewall.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
