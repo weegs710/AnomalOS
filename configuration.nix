@@ -72,17 +72,27 @@
   # Enable CUPS to print documents.
   services.printing.enable = false;
 
+  # Hardware Options
+  hardware = {
+    bluetooth.enable = true;
+    graphics.enable = true;
+    graphics.enable32Bit = true;
+    amdgpu.opencl.enable = true;
+    nvidia.modesetting.enable = true;
+    steam-hardware.enable = true;
+  };
+
   # Enable Bluetooth
-  hardware.bluetooth.enable = true;
+  # hardware.bluetooth.enable = true;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
-  hardware.graphics.enable32Bit = true;
-  hardware = {
-    graphics.enable = true;
-    nvidia.modesetting.enable = true;
-  };
-  hardware.amdgpu.opencl.enable = true;
+  # hardware.graphics.enable32Bit = true;
+  # hardware = {
+  #  graphics.enable = true;
+  #  nvidia.modesetting.enable = true;
+  # };
+  # hardware.amdgpu.opencl.enable = true;
   security.polkit.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -159,7 +169,7 @@
   nixpkgs.config.allowUnfree = true;
 
   # Enable Steam
-  hardware.steam-hardware.enable = true;
+  # hardware.steam-hardware.enable = true;
   programs.steam.enable = true;
   programs.gamescope.enable = true;
   programs.steam.protontricks.enable = true;
