@@ -116,7 +116,7 @@
   # Enable automatic login for the user.
   services.displayManager.autoLogin.enable = true;
   services.displayManager.autoLogin.user = "weegs";
-  services.displayManager.defaultSession = "";
+  services.displayManager.defaultSession = "cosmic";
   # List programs that you want to enable:
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
