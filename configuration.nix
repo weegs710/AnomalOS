@@ -218,6 +218,9 @@
     pkgs.zenity
   ];
 
+  # Set Fish as global default shell
+  users.defaultUserShell = pkgs.fish;
+
   environment.shellAliases = {
     nrs = "sudo nixos-rebuild switch";
     claude = "ollama run GandalfBaum/llama3.1-claude3.7";
