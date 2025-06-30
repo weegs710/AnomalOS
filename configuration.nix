@@ -49,20 +49,20 @@
   xdg.terminal-exec.settings = {default = ["kitty.desktop"];};
 
   # Env Variables
+  environment.sessionVariables.EDITOR = "codium";
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
   environment.sessionVariables.TERMINAL = "kitty";
-  environment.sessionVariables.XDG_TERMINAL_EDITOR = "kitty";
-  environment.sessionVariables.EDITOR = "codium";
   environment.sessionVariables.VISUAL = "codium";
+  environment.sessionVariables.XDG_TERMINAL_EDITOR = "kitty";
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
+  # services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.cosmic.enable = true;
-  services.desktopManager.cosmic.xwayland.enable = true;
+  # services.displayManager.sddm.enable = true;
+  # services.desktopManager.cosmic.enable = true;
+  # services.desktopManager.cosmic.xwayland.enable = true;
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -70,43 +70,65 @@
   };
 
   # Enable CUPS to print documents.
-  services.printing.enable = false;
+  # services.printing.enable = false;
 
   # Hardware Options
   hardware = {
+    amdgpu.opencl.enable = true;
     bluetooth.enable = true;
     graphics.enable = true;
     graphics.enable32Bit = true;
-    amdgpu.opencl.enable = true;
     nvidia.modesetting.enable = true;
     steam-hardware.enable = true;
   };
 
-  # Enable Bluetooth
-  # hardware.bluetooth.enable = true;
+  # Services
+  services = {
+    pulseaudio.enable = false;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+      wireplumber.enable = config.services.pipewire.enable;
+    };
+    ratbagd.enable = true;
+    desktopManager = {
+      cosmic.enable = true;
+      cosmic.xwayland.enable = true;
+    };
+    displayManager = {
+      autoLogin.enable = true;
+      autoLogin.user = "weegs";
+      defaultSession = "cosmic";
+      sddm.enable = true;
+    };
+    upower.enable = true;
+    ollama = {
+      acceleration = "rocm";
+      enable = true;
+    };
+    openssh.enable = true;
+    xserver.enable = true;
+  };
 
   # Enable sound with pipewire.
-  services.pulseaudio.enable = false;
-  # hardware.graphics.enable32Bit = true;
-  # hardware = {
-  #  graphics.enable = true;
-  #  nvidia.modesetting.enable = true;
-  # };
-  # hardware.amdgpu.opencl.enable = true;
+  # services.pulseaudio.enable = false;
   security.polkit.enable = true;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    jack.enable = true;
+  # services.pipewire = {
+  # enable = true;
+  # alsa.enable = true;
+  # alsa.support32Bit = true;
+  # pulse.enable = true;
+  # If you want to use JACK applications, uncomment this
+  # jack.enable = true;
 
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
+  # use the example session manager (no others are packaged yet so this is enabled by default,
+  # no need to redefine it in your config for now)
+  #media-session.enable = true;
+  # };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -121,12 +143,12 @@
   };
 
   fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [];
-  services.ratbagd.enable = true;
+  # services.ratbagd.enable = true;
 
   # Enable automatic login for the user.
-  services.displayManager.autoLogin.enable = true;
-  services.displayManager.autoLogin.user = "weegs";
-  services.displayManager.defaultSession = "cosmic";
+  # services.displayManager.autoLogin.enable = true;
+  # services.displayManager.autoLogin.user = "weegs";
+  # services.displayManager.defaultSession = "cosmic";
   # List programs that you want to enable:
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;
@@ -139,7 +161,7 @@
   ];
 
   # List services that you want to enable:
-  services.upower.enable = true;
+  # services.upower.enable = true;
 
   # Nix Flatpak stuff (aka my first flake application)
   services.flatpak.enable = true;
@@ -159,17 +181,16 @@
     "io.github.lunarequest.NightPDF"
     "dev.edfloreshz.CosmicTweaks"
   ];
-  services.ollama.acceleration = "rocm";
-  services.ollama.enable = true;
+  # services.ollama.acceleration = "rocm";
+  # services.ollama.enable = true;
 
-  services.openssh.enable = true;
-  services.pipewire.wireplumber.enable = config.services.pipewire.enable;
+  # services.openssh.enable = true;
+  # services.pipewire.wireplumber.enable = config.services.pipewire.enable;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # Enable Steam
-  # hardware.steam-hardware.enable = true;
   programs.steam.enable = true;
   programs.gamescope.enable = true;
   programs.steam.protontricks.enable = true;
