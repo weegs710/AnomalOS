@@ -1,6 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   lib,
   config,
@@ -11,13 +8,26 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
+
+  # Hardware Options.
+  hardware = {
+    amdgpu.opencl.enable = true;
+    bluetooth.enable = true;
+    graphics.enable = true;
+    graphics.enable32Bit = true;
+    nvidia.modesetting.enable = true;
+    steam-hardware.enable = true;
+  };
+
+  # Swap Size Options.
   swapDevices = [
     {
       device = "/var/lib/swapfile";
       size = 32 * 1024;
     }
   ];
-  # Bootloader.
+
+  # Bootloader Options.
   boot = {
     initrd.services.lvm.enable = true;
     loader = {
@@ -26,9 +36,11 @@
     };
   };
 
-  systemd.services.nscd.enable = false;
+  # Security Options.
+  security.polkit.enable = true;
+  security.rtkit.enable = true;
 
-  # Nix Settings
+  # Nix Settings.
   nix.settings = {
     auto-optimise-store = true;
     warn-dirty = false;
@@ -38,14 +50,7 @@
     ];
   };
 
-  # Networking
-
-  # networking.networkmanager.enable = true;
-  # networking.hostName = "HX99G"; # Define your hostname.
-  # networking.firewall.enable = false;
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # Networking Options.
   networking = {
     hostName = "HX99G";
     networkmanager.enable = true;
@@ -56,36 +61,16 @@
     };
   };
 
-  # Set your time zone.
+  # Timezone Options.
   time.timeZone = "America/New_York";
 
-  xdg.terminal-exec.enable = true;
-  xdg.terminal-exec.settings = {default = ["kitty.desktop"];};
-
-  # Env Variables
-  environment.sessionVariables.EDITOR = "codium";
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-  environment.sessionVariables.TERMINAL = "kitty";
-  environment.sessionVariables.VISUAL = "codium";
-  environment.sessionVariables.XDG_TERMINAL_EDITOR = "kitty";
-
-  # Configure keymap in X11
+  # Configure keymap in X11.
   services.xserver.xkb = {
     layout = "us";
     variant = "";
   };
 
-  # Hardware Options
-  hardware = {
-    amdgpu.opencl.enable = true;
-    bluetooth.enable = true;
-    graphics.enable = true;
-    graphics.enable32Bit = true;
-    nvidia.modesetting.enable = true;
-    steam-hardware.enable = true;
-  };
-
-  # Services
+  # Services.
   services = {
     pulseaudio.enable = false;
     pipewire = {
@@ -116,8 +101,7 @@
     xserver.enable = true;
   };
 
-  security.polkit.enable = true;
-  security.rtkit.enable = true;
+  systemd.services.nscd.enable = false;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.weegs = {
@@ -127,17 +111,32 @@
     packages = with pkgs; [
     ];
   };
-  # Set Fish as global default shell
+
+  # Set Fish as global default shell.
   users.defaultUserShell = pkgs.fish;
 
+  # Declare ALL Nerd Fonts.
   fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [];
 
-  # List programs that you want to enable:
-  programs.appimage.enable = true;
-  programs.appimage.binfmt = true;
-  programs.git.enable = true;
-  programs.starship.enable = true;
-  programs.tmux.enable = true;
+  # Program Options:
+  programs = {
+    appimage = {
+      enable = true;
+      binfmt = true;
+    };
+    fish.enable = true;
+    gamescope.enable = true;
+    git.enable = true;
+    starship.enable = true;
+    steam = {
+      enable = true;
+      protontricks.enable = true;
+      gamescopeSession.enable = true;
+      extest.enable = true;
+    };
+    tmux.enable = true;
+  };
+
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [
     pkgs.xdg-desktop-portal-gtk
@@ -162,21 +161,29 @@
     "dev.edfloreshz.CosmicTweaks"
   ];
 
-  # Allow unfree packages
+  # Allow unfree packages.
   nixpkgs.config.allowUnfree = true;
 
-  # Enable Steam
-  programs.steam.enable = true;
-  programs.gamescope.enable = true;
-  programs.steam.protontricks.enable = true;
-  programs.steam.gamescopeSession.enable = true;
-  programs.steam.extest.enable = true;
+  # Environment Variables.
+  environment.sessionVariables = {
+    EDITOR = "codium";
+    NIXOS_OZONE_WL = "1";
+    TERMINAL = "kitty";
+    VISUAL = "codium";
+    XDG_TERMINAL_EDITOR = "kitty";
+  };
 
-  # Enable Fish
-  programs.fish.enable = true;
+  # Aliases.
+  environment.shellAliases = {
+    nrs = "sudo nixos-rebuild switch";
+    claude = "ollama run GandalfBaum/llama3.1-claude3.7";
+    cgem = "ollama run codegemma";
+    stfu = "pkill ollama";
+    tdeath = "pkill tmux";
+    pkcp = "pkill cosmic-panel";
+  };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # System Packages.
   environment.systemPackages = with pkgs; [
     pkgs.adwaita-icon-theme
     pkgs.alejandra
@@ -223,15 +230,6 @@
     pkgs.yazi
     pkgs.zenity
   ];
-
-  environment.shellAliases = {
-    nrs = "sudo nixos-rebuild switch";
-    claude = "ollama run GandalfBaum/llama3.1-claude3.7";
-    cgem = "ollama run codegemma";
-    stfu = "pkill ollama";
-    tdeath = "pkill tmux";
-    pkcp = "pkill cosmic-panel";
-  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
