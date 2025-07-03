@@ -142,6 +142,7 @@
       extest.enable = true;
     };
     tmux.enable = true;
+    waybar.enable = true;
   };
 
   xdg.portal.enable = true;
