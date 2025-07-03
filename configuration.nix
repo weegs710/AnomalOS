@@ -103,6 +103,7 @@
     };
     openssh.enable = true;
     xserver.enable = true;
+    hypridle.enable = true;
   };
 
   systemd.services.nscd.enable = false;
@@ -133,7 +134,6 @@
     git.enable = true;
     hyprland.enable = true;
     hyprlock.enable = true;
-    hypridle.enable = true;
     starship.enable = true;
     steam = {
       enable = true;
