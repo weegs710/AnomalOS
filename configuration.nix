@@ -93,7 +93,7 @@
     displayManager = {
       autoLogin.enable = true;
       autoLogin.user = "weegs";
-      defaultSession = "cosmic";
+      defaultSession = "hyprland";
       sddm.enable = true;
     };
     upower.enable = true;
@@ -131,6 +131,9 @@
     fish.enable = true;
     gamescope.enable = true;
     git.enable = true;
+    hyprland.enable = true;
+    hyprlock.enable = true;
+    hypridle.enable = true;
     starship.enable = true;
     steam = {
       enable = true;
@@ -189,50 +192,52 @@
 
   # System Packages.
   environment.systemPackages = with pkgs; [
-    pkgs.adwaita-icon-theme
-    pkgs.alejandra
-    pkgs.anki-bin
-    pkgs.brave
-    pkgs.btop-rocm
-    pkgs.cliphist
-    pkgs.dbus
-    pkgs.dbus-broker
-    pkgs.dunst
-    pkgs.fastfetch
-    pkgs.gimp3-with-plugins
-    pkgs.git
-    pkgs.grim
-    pkgs.jq
-    pkgs.kdePackages.kwallet-pam
-    pkgs.kitty
-    pkgs.libnotify
-    pkgs.libportal
-    pkgs.libreoffice-fresh
-    pkgs.lm_sensors
-    pkgs.lutris
-    pkgs.mpv
-    pkgs.nixd
-    pkgs.nixfmt-rfc-style
-    pkgs.obs-studio
-    pkgs.pamixer
-    pkgs.pavucontrol
-    pkgs.piper
-    pkgs.protonup-qt
-    pkgs.qview
-    pkgs.slurp
-    pkgs.tdf
-    pkgs.tldr
-    pkgs.transmission_4-gtk
-    pkgs.vscodium
-    pkgs.wget
-    pkgs.wireplumber
-    pkgs.wl-clipboard
-    pkgs.wl-clip-persist
-    pkgs.wlogout
-    pkgs.wlsunset
-    pkgs.xdg-dbus-proxy
-    pkgs.yazi
-    pkgs.zenity
+    adwaita-icon-theme
+    alejandra
+    anki-bin
+    bluetui
+    brave
+    btop-rocm
+    cliphist
+    dbus
+    dbus-broker
+    dunst
+    fastfetch
+    gimp3-with-plugins
+    git
+    grim
+    jq
+    kdePackages.kwallet-pam
+    kitty
+    libnotify
+    libportal
+    libreoffice-fresh
+    lm_sensors
+    lutris
+    mpv
+    nixd
+    nixfmt-rfc-style
+    obs-studio
+    pamixer
+    pavucontrol
+    piper
+    protonup-qt
+    qview
+    slurp
+    swww
+    tdf
+    tldr
+    transmission_4-gtk
+    vscodium
+    wget
+    wireplumber
+    wl-clipboard
+    wl-clip-persist
+    wlogout
+    wlsunset
+    xdg-dbus-proxy
+    yazi
+    zenity
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
