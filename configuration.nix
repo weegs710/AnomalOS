@@ -70,6 +70,10 @@
     variant = "";
   };
 
+  # Stylix Options.
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/purpledream.yaml";
+  stylix.image = /home/.config/hypr/monster.jpg;
+
   # Services.
   services = {
     pulseaudio.enable = false;
