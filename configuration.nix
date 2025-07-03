@@ -224,6 +224,7 @@
     piper
     protonup-qt
     qview
+    rofi
     slurp
     swww
     tdf
