@@ -88,8 +88,8 @@
     };
     ratbagd.enable = true;
     desktopManager = {
-      cosmic.enable = true;
-      cosmic.xwayland.enable = true;
+      cosmic.enable = false;
+      cosmic.xwayland.enable = false;
     };
     displayManager = {
       autoLogin.enable = true;
