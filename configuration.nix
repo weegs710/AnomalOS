@@ -206,6 +206,7 @@
     brave
     btop-rocm
     cliphist
+    cosmic-files
     dbus
     dbus-broker
     dunst
