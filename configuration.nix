@@ -103,7 +103,11 @@
       enable = true;
     };
     openssh.enable = true;
-    xserver.enable = true;
+    xserver = {
+      enable = true;
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
+    };
     hypridle.enable = true;
   };
 
