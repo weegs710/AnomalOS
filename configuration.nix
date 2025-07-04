@@ -72,8 +72,9 @@
 
   # Stylix Options.
   stylix.enable = true;
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/purpledream.yaml";
+  # stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
   stylix.image = ./monster.jpg;
+  stylix.polarity = "dark";
 
   # Services.
   services = {
