@@ -71,9 +71,9 @@
   };
 
   # Stylix Options.
-  stylix.enable = true;
+  # stylix.enable = true;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/purpledream.yaml";
-  stylix.image = /home/.config/hypr/monster.jpg;
+  stylix.image = ./monster.jpg;
 
   # Services.
   services = {
@@ -105,8 +105,8 @@
     openssh.enable = true;
     xserver = {
       enable = true;
-      displayManager.gdm.enable = true;
-      desktopManager.gnome.enable = true;
+      displayManager.gdm.enable = false;
+      desktopManager.gnome.enable = false;
     };
     hypridle.enable = true;
   };
