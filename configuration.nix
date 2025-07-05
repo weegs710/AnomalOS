@@ -224,8 +224,6 @@
     brave
     btop-rocm
     cliphist
-    cosmic-files
-    cosmic-screenshot
     dbus
     dbus-broker
     dunst
@@ -265,7 +263,6 @@
     wlogout
     wlsunset
     xdg-dbus-proxy
-    yazi
     zenity
   ];
 
