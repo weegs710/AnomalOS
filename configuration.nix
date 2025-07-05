@@ -207,6 +207,7 @@
     btop-rocm
     cliphist
     cosmic-files
+    cosmic-screenshot
     dbus
     dbus-broker
     dunst
