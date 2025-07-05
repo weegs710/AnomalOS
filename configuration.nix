@@ -234,6 +234,7 @@
     qview
     rofi
     slurp
+    superfile
     swww
     tdf
     tldr
