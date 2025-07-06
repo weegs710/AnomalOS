@@ -262,6 +262,7 @@
     wlogout
     wlsunset
     xdg-dbus-proxy
+    ytfzf
     zenity
   ];
 
