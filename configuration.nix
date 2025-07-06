@@ -265,6 +265,7 @@
     wlogout
     wlsunset
     xdg-dbus-proxy
+    youtube-tui
     yt-dlp
     ytfzf
     zenity
