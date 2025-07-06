@@ -187,9 +187,7 @@
       appId = "com.brave.Browser";
       origin = "flathub";
     }
-    "com.discordapp.Discord"
     "io.github.lunarequest.NightPDF"
-    "dev.edfloreshz.CosmicTweaks"
   ];
 
   # Allow unfree packages.
