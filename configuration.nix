@@ -222,10 +222,12 @@
     brave
     btop-rocm
     cliphist
+    curl
     dbus
     dbus-broker
     dunst
     fastfetch
+    fzf
     gimp3-with-plugins
     git
     grim
@@ -252,6 +254,7 @@
     swww
     tdf
     tldr
+    ueberzugpp
     transmission_4-gtk
     vesktop
     vscodium
@@ -262,6 +265,7 @@
     wlogout
     wlsunset
     xdg-dbus-proxy
+    yt-dlp
     ytfzf
     zenity
   ];
