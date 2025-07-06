@@ -188,7 +188,6 @@
       origin = "flathub";
     }
     "com.discordapp.Discord"
-    "com.github.tchx84.Flatseal"
     "io.github.lunarequest.NightPDF"
     "dev.edfloreshz.CosmicTweaks"
   ];
@@ -255,6 +254,7 @@
     tdf
     tldr
     transmission_4-gtk
+    vesktop
     vscodium
     wget
     wireplumber
