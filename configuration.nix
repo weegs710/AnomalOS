@@ -188,6 +188,7 @@
       origin = "flathub";
     }
     "io.github.lunarequest.NightPDF"
+    "com.tutanota.Tutanota"
   ];
 
   # Allow unfree packages.
