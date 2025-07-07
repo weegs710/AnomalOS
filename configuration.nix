@@ -190,7 +190,6 @@
       origin = "flathub";
     }
     "io.github.lunarequest.NightPDF"
-    "com.tutanota.Tutanota"
   ];
 
   # Allow unfree packages.
@@ -257,6 +256,7 @@
     tldr
     ueberzugpp
     transmission_4-gtk
+    tutanota-desktop
     vesktop
     wget
     wireplumber
