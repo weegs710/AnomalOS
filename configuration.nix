@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -56,8 +57,8 @@
     networkmanager.enable = true;
     firewall = {
       enable = false;
-      allowedTCPPorts = [];
-      allowedUDPPorts = [];
+      allowedTCPPorts = [ ];
+      allowedUDPPorts = [ ];
     };
   };
 
@@ -136,7 +137,10 @@
   users.users.weegs = {
     isNormalUser = true;
     description = "weegs";
-    extraGroups = ["networkmanager" "wheel"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     packages = with pkgs; [
     ];
   };
@@ -145,7 +149,7 @@
   users.defaultUserShell = pkgs.fish;
 
   # Declare ALL Nerd Fonts.
-  fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [];
+  fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [ ];
 
   # Program Options:
   programs = {
@@ -240,6 +244,7 @@
     lm_sensors
     lutris
     mpv
+    nil
     nixd
     nixfmt-rfc-style
     obs-studio
