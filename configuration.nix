@@ -208,11 +208,9 @@
   # Aliases.
   environment.shellAliases = {
     nrs = "sudo nixos-rebuild switch";
-    claude = "ollama run GandalfBaum/llama3.1-claude3.7";
     cgem = "ollama run codegemma";
     stfu = "pkill ollama";
     tdeath = "pkill tmux";
-    pkcp = "pkill cosmic-panel";
   };
 
   # System Packages.
