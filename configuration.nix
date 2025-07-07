@@ -233,6 +233,7 @@
     gimp3-with-plugins
     git
     grim
+    hyprls
     jq
     kdePackages.kwallet-pam
     kitty
