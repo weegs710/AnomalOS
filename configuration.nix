@@ -65,12 +65,6 @@
   # Timezone Options.
   time.timeZone = "America/New_York";
 
-  # Configure keymap in X11.
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
   # Stylix Options.
   stylix.enable = true;
   # stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/google-dark.yaml";
@@ -127,6 +121,10 @@
       enable = true;
       displayManager.gdm.enable = false;
       desktopManager.gnome.enable = false;
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
     };
     hypridle.enable = true;
   };
