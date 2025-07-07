@@ -200,10 +200,10 @@
 
   # Environment Variables.
   environment.sessionVariables = {
-    EDITOR = "codium";
+    EDITOR = "zed-editor";
     NIXOS_OZONE_WL = "1";
     TERMINAL = "kitty";
-    VISUAL = "codium";
+    VISUAL = "zed-editor";
     XDG_TERMINAL_EDITOR = "kitty";
   };
 
@@ -245,7 +245,6 @@
     lutris
     mpv
     nil
-    nixd
     nixfmt-rfc-style
     obs-studio
     pamixer
@@ -262,7 +261,6 @@
     ueberzugpp
     transmission_4-gtk
     vesktop
-    vscodium
     wget
     wireplumber
     wl-clipboard
