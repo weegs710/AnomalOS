@@ -245,7 +245,7 @@
     lutris
     mpv
     nil
-    nixfmt-rfc-style
+    nixd
     obs-studio
     pamixer
     pavucontrol
