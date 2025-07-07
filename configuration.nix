@@ -268,6 +268,7 @@
     youtube-tui
     yt-dlp
     ytfzf
+    zed-editor
     zenity
   ];
 
