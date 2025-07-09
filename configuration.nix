@@ -210,6 +210,7 @@
     cgem = "ollama run codegemma";
     stfu = "pkill ollama";
     tdeath = "pkill tmux";
+    ns = "nix run github:michael-c-buckley/nixos#ns";
   };
 
   # System Packages.
