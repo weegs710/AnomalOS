@@ -234,6 +234,7 @@
     hyprls
     jq
     kdePackages.kwallet-pam
+    keyd
     kitty
     libnotify
     libportal
