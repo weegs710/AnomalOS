@@ -104,12 +104,14 @@
     desktopManager = {
       cosmic.enable = false;
       cosmic.xwayland.enable = false;
+      gnome.enable = false;
     };
     displayManager = {
       autoLogin.enable = true;
       autoLogin.user = "weegs";
       defaultSession = "hyprland";
       sddm.enable = true;
+      gdm.enable = false;
     };
     upower.enable = true;
     ollama = {
@@ -119,8 +121,6 @@
     openssh.enable = true;
     xserver = {
       enable = true;
-      displayManager.gdm.enable = false;
-      desktopManager.gnome.enable = false;
       xkb = {
         layout = "us";
         variant = "";
