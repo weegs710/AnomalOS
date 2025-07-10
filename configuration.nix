@@ -1,5 +1,6 @@
 {
   lib,
+  inputs,
   config,
   pkgs,
   ...
@@ -49,6 +50,14 @@
       "nix-command"
       "flakes"
     ];
+  };
+
+  # Home Manager Settings.
+  home-manager = {
+    extraSpecialArgs = { inherit inputs; };
+    users = {
+      "weegs" = import ./home.nix;
+    };
   };
 
   # Networking Options.
