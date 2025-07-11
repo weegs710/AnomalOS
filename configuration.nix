@@ -54,6 +54,7 @@
 
   # Home Manager Settings.
   home-manager = {
+    backupFileExtension = "backup";
     extraSpecialArgs = { inherit inputs; };
     users = {
       "weegs" = import ./home.nix;
