@@ -101,6 +101,22 @@
 
   # Services.
   services = {
+    flatpak = {
+      enable = true;
+      packages = [
+        {
+          appId = "com.brave.Browser";
+          origin = "flathub";
+        }
+        "io.github.lunarequest.NightPDF"
+      ];
+      remotes = [
+        {
+          name = "flathub-beta";
+          location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
+        }
+      ];
+    };
     pulseaudio.enable = false;
     pipewire = {
       enable = true;
@@ -184,26 +200,13 @@
     waybar.enable = true;
   };
 
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [
-    pkgs.xdg-desktop-portal-gtk
-  ];
-
-  # Nix Flatpak stuff (aka my first flake application)
-  services.flatpak.enable = true;
-  services.flatpak.remotes = [
-    {
-      name = "flathub-beta";
-      location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
-    }
-  ];
-  services.flatpak.packages = [
-    {
-      appId = "com.brave.Browser";
-      origin = "flathub";
-    }
-    "io.github.lunarequest.NightPDF"
-  ];
+  # XDG Options.
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+    ];
+  };
 
   # Allow unfree packages.
   nixpkgs.config.allowUnfree = true;
