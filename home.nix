@@ -99,7 +99,6 @@
       exec-once = [
         "swww-daemon &"
         "swww img ~/Pictures/monster.jpg"
-        "waybar &"
         "dunst &"
       ];
       general = {
