@@ -82,7 +82,6 @@
   # Hyprland config.
   wayland.windowManager.hyprland = {
     enable = true;
-
     settings = {
       "$terminal" = "kitty";
       "$fileManager" = "kitty -e superfile";
