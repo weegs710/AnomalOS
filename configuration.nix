@@ -195,10 +195,10 @@
 
   # Environment Variables.
   environment.sessionVariables = {
-    EDITOR = "zed-editor";
+    EDITOR = "zeditor";
     NIXOS_OZONE_WL = "1";
     TERMINAL = "kitty";
-    VISUAL = "zed-editor";
+    VISUAL = "zeditor";
     XDG_TERMINAL_EDITOR = "kitty";
   };
 
@@ -263,6 +263,7 @@
     wlogout
     wlsunset
     xdg-dbus-proxy
+    xfce.thunar-volman
     zed-editor
   ];
 
