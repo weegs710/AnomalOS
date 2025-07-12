@@ -250,7 +250,6 @@
     kitty
     libnotify
     libportal
-    libreoffice-fresh
     lm_sensors
     lutris
     mpv
@@ -266,7 +265,6 @@
     slurp
     superfile
     swww
-    tdf
     tldr
     ueberzugpp
     transmission_4-gtk
@@ -279,11 +277,7 @@
     wlogout
     wlsunset
     xdg-dbus-proxy
-    youtube-tui
-    yt-dlp
-    ytfzf
     zed-editor
-    zenity
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
