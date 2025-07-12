@@ -179,6 +179,7 @@
       gamescopeSession.enable = true;
       extest.enable = true;
     };
+    thunar.enable = true;
     tmux.enable = true;
     waybar.enable = true;
   };
