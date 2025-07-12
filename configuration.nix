@@ -80,24 +80,6 @@
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/shades-of-purple.yaml";
   stylix.image = ./monster.jpg;
   stylix.polarity = "dark";
-  # stylix.base16Scheme = {
-  #   base00 = "171642";
-  #   base01 = "354672";
-  #   base02 = "965c4c";
-  #   base03 = "49aea6";
-  #   base04 = "56cbb8";
-  #   base05 = "8af1f6";
-  #   base06 = "f0f4dd";
-  #   base07 = "eef3dd";
-  #   base08 = "3da08b";
-  #   base09 = "469cbd";
-  #   base0A = "429b9f";
-  #   base0B = "9a8aaf";
-  #   base0C = "c577b3";
-  #   base0D = "5996cc";
-  #   base0E = "939669";
-  #   base0F = "c87e56";
-  # };
 
   # Services.
   services = {
