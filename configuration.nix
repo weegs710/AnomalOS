@@ -150,6 +150,7 @@
       "wheel"
     ];
     packages = with pkgs; [
+      hello
     ];
   };
 
@@ -169,6 +170,7 @@
     gamescope.enable = true;
     git.enable = true;
     hyprland.enable = true;
+    hyprland.package = inputs.hyprland.packages."${pkgs.system}".hyprland;
     hyprlock.enable = true;
     starship.enable = true;
     steam = {
