@@ -83,6 +83,7 @@
 
   # Services.
   services = {
+    devmon.enable = true;
     flatpak = {
       enable = true;
       packages = [
@@ -179,6 +180,7 @@
     };
     thunar.enable = true;
     tmux.enable = true;
+    udevil.enable = true;
     waybar.enable = true;
   };
 
