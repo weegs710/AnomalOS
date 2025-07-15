@@ -124,7 +124,7 @@
       };
       decoration = {
         rounding = 5;
-        active_opacity = 0.90;
+        active_opacity = 1;
         inactive_opacity = 0.90;
         shadow = {
           enabled = true;
