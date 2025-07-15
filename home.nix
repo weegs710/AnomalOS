@@ -90,7 +90,7 @@
       "$mainMod" = "SUPER";
       env = [
         "XCURSOR_SIZE,24"
-        "HYPRCURSOR_THEME,material-dark"
+        "HYPRCURSOR_THEME,Nordzy-hyprcursors"
         "HYPRCURSOR_SIZE,30"
         "TERMINAL,kitty"
         "XDG_TERMINAL_EDITOR,kitty"
