@@ -179,6 +179,7 @@
         "$mainMod, G, togglefloating"
         "$mainMod, P, pseudo, "
         "$mainMod, O, togglesplit, "
+        "$mainMod, Z, exec, zeditor"
         ",PAUSE, exec, tmux new -d -s roku_app 'appimage-run ~/AppImages/roku.AppImage'"
         ", PRINT, exec, hyprshot -m region --clipboard-only"
         "SHIFT,PRINT, exec, hyprshot -m region -o ~/Pictures"
