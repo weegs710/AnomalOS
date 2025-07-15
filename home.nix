@@ -73,7 +73,11 @@
   #  /etc/profiles/per-user/weegs/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    EDITOR = "zeditor";
+    NIXOS_OZONE_WL = "1";
+    TERMINAL = "kitty";
+    VISUAL = "zeditor";
+    XDG_TERMINAL_EDITOR = "kitty";
   };
 
   # Let Home Manager install and manage itself.
