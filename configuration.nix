@@ -5,6 +5,20 @@
   pkgs,
   ...
 }:
+let
+
+  ns = pkgs.writeShellApplication {
+    name = "ns";
+    runtimeInputs = with pkgs; [
+      fzf
+      nix-search-tv
+    ];
+    # ignore checks since i didn't write this
+    checkPhase = "";
+    text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
+  };
+
+in
 {
   imports = [
     # Include the results of the hardware scan.
@@ -239,7 +253,7 @@
     cgem = "ollama run codegemma";
     stfu = "pkill ollama";
     tdeath = "pkill tmux";
-    ns = "nix run github:michael-c-buckley/nixos#ns";
+    # ns = "nix run github:michael-c-buckley/nixos#ns";
   };
 
   # System Packages.
@@ -273,6 +287,7 @@
     mpv
     nil
     nixd
+    ns
     obs-studio
     pamixer
     pavucontrol
