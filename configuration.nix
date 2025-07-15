@@ -249,6 +249,7 @@
     git
     grim
     hyprls
+    hyprshot
     jq
     kdePackages.kwallet-pam
     keyd
