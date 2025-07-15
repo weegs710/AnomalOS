@@ -51,6 +51,9 @@
   nix.settings = {
     auto-optimise-store = true;
     warn-dirty = false;
+    trusted-users = [
+      "weegs"
+    ];
     experimental-features = [
       "nix-command"
       "flakes"
@@ -181,6 +184,15 @@
     appimage = {
       enable = true;
       binfmt = true;
+    };
+    direnv = {
+      enable = true;
+      silent = true;
+      nix-direnv.enable = true;
+      direnvrcExtra = ''
+        warn_timeout=0
+        hide_env_diff=true
+      '';
     };
     fish.enable = true;
     gamescope.enable = true;
