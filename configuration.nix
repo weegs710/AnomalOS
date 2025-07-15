@@ -43,6 +43,11 @@
   security.rtkit.enable = true;
 
   # Nix Settings.
+  nix.gc = {
+    automatic = true;
+    dates = "daily";
+    options = "--delete-older-than 7d";
+  };
   nix.settings = {
     auto-optimise-store = true;
     warn-dirty = false;
@@ -138,6 +143,18 @@
     hypridle.enable = true;
   };
 
+  # Daemonized Auto-Upgrade
+  system.autoUpgrade = {
+    enable = true;
+    flake = inputs.self.outPath;
+    flags = [
+      "--update-input"
+      "nixpkgs"
+      "-L"
+    ];
+    dates = "02:00";
+    randomizedDelaySec = "30min";
+  };
   systemd.services.nscd.enable = false;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
