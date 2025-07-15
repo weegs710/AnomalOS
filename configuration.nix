@@ -240,11 +240,6 @@ in
 
   # Environment Variables.
   environment.sessionVariables = {
-    EDITOR = "zeditor";
-    NIXOS_OZONE_WL = "1";
-    TERMINAL = "kitty";
-    VISUAL = "zeditor";
-    XDG_TERMINAL_EDITOR = "kitty";
   };
 
   # Aliases.
@@ -253,7 +248,6 @@ in
     cgem = "ollama run codegemma";
     stfu = "pkill ollama";
     tdeath = "pkill tmux";
-    # ns = "nix run github:michael-c-buckley/nixos#ns";
   };
 
   # System Packages.
@@ -287,7 +281,7 @@ in
     mpv
     nil
     nixd
-    ns
+    ns # Thanks @Jet for helping me get this going properly ^^
     obs-studio
     pamixer
     pavucontrol
