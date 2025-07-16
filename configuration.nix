@@ -102,6 +102,7 @@ in
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/shades-of-purple.yaml";
   stylix.image = ./monster.jpg;
   stylix.polarity = "dark";
+  stylix.targets.gtk.enable = true;
 
   # Services.
   services = {
