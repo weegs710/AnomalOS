@@ -176,20 +176,20 @@ in
   systemd.services.nscd.enable = false;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.weegs = {
-    isNormalUser = true;
-    description = "weegs";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
-    packages = with pkgs; [
-      hello
-    ];
+  users = {
+    defaultUserShell = pkgs.fish;
+    users.weegs = {
+      isNormalUser = true;
+      description = "weegs";
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
+      packages = with pkgs; [
+        hello
+      ];
+    };
   };
-
-  # Set Fish as global default shell.
-  users.defaultUserShell = pkgs.fish;
 
   # Declare ALL Nerd Fonts.
   fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [ ];
