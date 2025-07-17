@@ -161,18 +161,6 @@ in
     hypridle.enable = true;
   };
 
-  # Daemonized Auto-Upgrade
-  system.autoUpgrade = {
-    enable = true;
-    flake = inputs.self.outPath;
-    flags = [
-      "--update-input"
-      "nixpkgs"
-      "-L"
-    ];
-    dates = "02:00";
-    randomizedDelaySec = "30min";
-  };
   systemd.services.nscd.enable = false;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
