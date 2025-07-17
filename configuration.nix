@@ -237,6 +237,7 @@ in
     cgem = "ollama run codegemma";
     stfu = "pkill ollama";
     tdeath = "pkill tmux";
+    update-all = "cd /etc/nixos/ && sudo nix flake update && nrs";
   };
 
   # System Packages.
