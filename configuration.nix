@@ -249,7 +249,6 @@ in
     brave
     btop-rocm
     cliphist
-    cosmic-ext-calculator
     curl
     dbus
     dbus-broker
@@ -278,6 +277,7 @@ in
     pavucontrol
     piper
     protonup-qt
+    qalculate-gtk
     qview
     rofi
     slurp
