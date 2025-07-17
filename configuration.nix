@@ -249,6 +249,7 @@ in
     brave
     btop-rocm
     cliphist
+    cosmic-ext-calculator
     curl
     dbus
     dbus-broker
