@@ -232,7 +232,9 @@
         "$mainMod SHIFT, down, movewindow, d"
       ];
       bindr = [
-        "control&alt,delete, exec, wlogout"
+        "control&alt, B, exec, kitty -e bluetui"
+        "control&alt, N, exec, kitty -e nmtui"
+        "control&alt, delete, exec, wlogout"
       ];
       bindm = [
         "$mainMod, mouse:272, movewindow"
