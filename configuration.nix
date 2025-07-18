@@ -242,6 +242,7 @@ in
 
   # System Packages.
   environment.systemPackages = with pkgs; [
+    inputs.drugtracker2.packages.${pkgs.system}.drug
     adwaita-icon-theme
     alejandra
     anki-bin
