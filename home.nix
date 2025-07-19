@@ -88,7 +88,7 @@
     enable = true;
     settings = {
       "$terminal" = "kitty";
-      "$fileManager" = "kitty -e superfile";
+      "$fileManager" = "thunar";
       "$menu" = "rofi -show drun -show-icons";
       "$webBrowser" = "brave";
       "$mainMod" = "SUPER";
