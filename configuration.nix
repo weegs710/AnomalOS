@@ -272,6 +272,7 @@ in
     mpv
     nil
     nixd
+    nh
     ns # Thanks @Jet for helping me get this going properly ^^
     obs-studio
     pamixer
