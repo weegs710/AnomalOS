@@ -244,6 +244,7 @@ in
   environment.systemPackages = with pkgs; [
     inputs.drugtracker2.packages.${pkgs.system}.drug
     adwaita-icon-theme
+    alarm-clock-applet
     alejandra
     anki-bin
     bluetui
