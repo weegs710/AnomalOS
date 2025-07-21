@@ -232,6 +232,8 @@
         "$mainMod SHIFT, down, movewindow, d"
       ];
       bindr = [
+        "control&alt, P, exec, drug take 'Lamictal, Lexapro, Symbicort, ProAir, and Ibuprofen'"
+        "control&alt SHIFT, P, exec, drug take 'Prazosin'"
         "control&alt, B, exec, kitty -e bluetui"
         "control&alt, N, exec, kitty -e nmtui"
         "control&alt, delete, exec, wlogout"
