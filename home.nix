@@ -176,7 +176,7 @@
       bind = [
         "$mainMod, T, exec, $terminal"
         "$mainMod, B, exec, $webBrowser"
-        "$mainMod, escape, killactive"
+        "alt, XF86LaunchB, killactive"
         "$mainMod, L, exec, hyprlock"
         "$mainMod, SPACE, exec, $fileManager"
         "$mainMod, F, fullscreen"
