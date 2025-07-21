@@ -109,11 +109,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1752976275,
-        "narHash": "sha256-+G2cZIFrMZ3iB85EAoMxRHYSJRnq6wvEFXy5sNFB8jc=",
+        "lastModified": 1753110480,
+        "narHash": "sha256-BawPQlct+GLbUid7/WtZIGfUdcYGBXqMBsrMAKV4VmU=",
         "owner": "saygo-png",
         "repo": "drugTracker2",
-        "rev": "72f4d4d8a97b2a28282fdc17e8722820453e4902",
+        "rev": "8329cb25a2da99328183b1fb3848149147d4339c",
         "type": "github"
       },
       "original": {
