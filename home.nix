@@ -174,19 +174,11 @@
         ];
       };
       bind = [
-        "$mainMod, T, exec, $terminal"
-        "$mainMod, B, exec, $webBrowser"
         "$mainMod, escape, killactive"
-        "$mainMod, L, exec, hyprlock"
-        "$mainMod, SPACE, exec, $fileManager"
         "$mainMod, F, fullscreen"
         "$mainMod, G, togglefloating"
         "$mainMod, P, pseudo, "
         "$mainMod, O, togglesplit, "
-        "$mainMod, Z, exec, zeditor"
-        ",PAUSE, exec, tmux new -d -s roku_app 'appimage-run ~/AppImages/roku.AppImage'"
-        ", PRINT, exec, hyprshot -m region --clipboard-only"
-        "SHIFT,PRINT, exec, hyprshot -m region -o ~/Pictures"
         "$mainMod, 1, workspace, 1"
         "$mainMod, 2, workspace, 2"
         "$mainMod, 3, workspace, 3"
@@ -211,6 +203,9 @@
         "$mainMod SHIFT, minus, movetoworkspacesilent, special:scratchpad"
         "$mainMod, page_down, workspace, e+1"
         "$mainMod, page_up, workspace, e-1"
+        ",PAUSE, exec, tmux new -d -s roku_app 'appimage-run ~/AppImages/roku.AppImage'"
+        ", PRINT, exec, hyprshot -m region --clipboard-only"
+        "SHIFT,PRINT, exec, hyprshot -m region -o ~/Pictures"
       ];
       bindel = [
         "control ,right, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
@@ -232,11 +227,17 @@
         "$mainMod SHIFT, down, movewindow, d"
       ];
       bindr = [
+        "control&alt, T, exec, $terminal"
+        "control&alt, B, exec, $webBrowser"
+        "control&alt, F, exec, $fileManager"
+        "control&alt, Z, exec, zeditor"
+        "control&alt, M, exec, tutanota-desktop"
+        "control&alt $mainMod, L, exec, hyprlock"
+        "control&alt $mainMod, delete, exec, wlogout"
+        "control&alt $mainMod, B, exec, kitty -e bluetui"
+        "control&alt $mainMod, N, exec, kitty -e nmtui"
         "control&alt, P, exec, drug take 'Lamictal, Lexapro, Symbicort, ProAir, and Ibuprofen'"
         "control&alt SHIFT, P, exec, drug take 'Prazosin'"
-        "control&alt, B, exec, kitty -e bluetui"
-        "control&alt, N, exec, kitty -e nmtui"
-        "control&alt, delete, exec, wlogout"
       ];
       bindm = [
         "$mainMod, mouse:272, movewindow"
