@@ -103,6 +103,7 @@ in
   stylix.image = ./monster.jpg;
   stylix.polarity = "dark";
   stylix.targets.gtk.enable = true;
+  stylix.targets.qt.enable = true;
 
   # Services.
   services = {
@@ -289,7 +290,6 @@ in
     tldr
     ueberzugpp
     transmission_4-gtk
-    tutanota-desktop
     vesktop
     wget
     wireplumber
