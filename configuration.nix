@@ -86,11 +86,18 @@ in
   # Networking Options.
   networking = {
     hostName = "HX99G";
-    networkmanager.enable = true;
-    firewall = {
+    networkmanager = {
       enable = true;
-      allowedTCPPorts = [ ];
-      allowedUDPPorts = [ ];
+      dns = "systemd-resolved";
+    };
+    nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+    ];
+    firewall = {
+      enable = false;
+      allowedTCPPorts = [ 53 ];
+      allowedUDPPorts = [ 53 ];
     };
   };
 
@@ -126,6 +133,7 @@ in
 
   # Services.
   services = {
+    resolved.enable = true;
     devmon.enable = true;
     flatpak = {
       enable = true;
