@@ -88,7 +88,7 @@ in
     hostName = "HX99G";
     networkmanager.enable = true;
     firewall = {
-      enable = false;
+      enable = true;
       allowedTCPPorts = [ ];
       allowedUDPPorts = [ ];
     };
@@ -229,6 +229,9 @@ in
       protontricks.enable = true;
       gamescopeSession.enable = true;
       extest.enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = true;
+      localNetworkGameTransfers.openFirewall = true;
     };
     thunar.enable = true;
     tmux.enable = true;
