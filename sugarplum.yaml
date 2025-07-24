@@ -1,0 +1,28 @@
+# Sugarplum Base16 Theme
+# Converted from superfile theme by lemonlime0x3C33
+# For use with Stylix
+
+scheme: "Sugarplum"
+author: "lemonlime0x3C33 (converted)"
+
+# Dark backgrounds
+base00: "111147" # Default Background (full_screen_bg)
+base01: "1a1a5c" # Lighter Background (derived, slightly lighter than base00)
+base02: "565f89" # Selection Background (sidebar_divider)
+base03: "6b7394" # Comments, Invisibles, Line Highlighting (derived)
+
+# Light foregrounds
+base04: "a8b5d1" # Dark Foreground (derived between base03 and base05)
+base05: "d0beee" # Default Foreground (sidebar_fg)
+base06: "dbc8f0" # Light Foreground (derived, lighter than base05)
+base07: "e6d4f5" # Light Background (derived, lightest)
+
+# Accent colors
+base08: "b53dff" # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted (cancel)
+base09: "2082a6" # Integers, Boolean, Constants, XML Attributes, Markup Link Url (error)
+base0A: "7dcfff" # Classes, Markup Bold, Search Text Background (help_menu_hotkey)
+base0B: "53b397" # Strings, Inherited Class, Markup Code, Diff Inserted (cursor)
+base0C: "249a84" # Support, Regular Expressions, Escape Characters, Markup Quotes (file_panel_top_directory_icon)
+base0D: "5ca8dc" # Functions, Methods, Attribute IDs, Headings (footer_fg)
+base0E: "a175d4" # Keywords, Storage, Selector, Markup Italic, Diff Changed (file_panel_border)
+base0F: "db7ddd" # Deprecated, Opening/Closing Embedded Language Tags (full_screen_fg)
