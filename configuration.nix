@@ -88,16 +88,21 @@ in
     hostName = "HX99G";
     networkmanager = {
       enable = true;
-      dns = "systemd-resolved";
     };
-    nameservers = [
-      "1.1.1.1"
-      "8.8.8.8"
-    ];
+    nftables.enable = true;
     firewall = {
-      enable = false;
-      allowedTCPPorts = [ 53 ];
-      allowedUDPPorts = [ 53 ];
+      enable = true;
+      allowPing = true;
+      allowedTCPPorts = [
+        80
+        443
+        53
+      ]; # HTTP, HTTPS, DNS
+      allowedUDPPorts = [
+        53
+        67
+        68
+      ]; # DNS, DHCP
     };
   };
 
@@ -133,7 +138,6 @@ in
 
   # Services.
   services = {
-    resolved.enable = true;
     devmon.enable = true;
     flatpak = {
       enable = true;
@@ -188,8 +192,6 @@ in
     };
     hypridle.enable = true;
   };
-
-  systemd.services.nscd.enable = false;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users = {
