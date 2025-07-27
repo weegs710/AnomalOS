@@ -204,7 +204,22 @@ in
         "wheel"
       ];
       packages = with pkgs; [
-        hello
+        anki-bin
+        bluetui
+        brave
+        gimp3-with-plugins
+        lutris
+        mpv
+        obs-studio
+        pavucontrol
+        piper
+        protonup-qt
+        qalculate-gtk
+        qview
+        transmission_4-gtk
+        vesktop
+        yazi
+        zed-editor
       ];
     };
   };
@@ -280,61 +295,31 @@ in
     inputs.drugtracker2.packages.${pkgs.system}.drug
     adwaita-icon-theme
     alarm-clock-applet
-    alejandra
-    anki-bin
-    bluetui
-    brave
-    btop-rocm
-    cliphist
     curl
     dbus
     dbus-broker
-    dunst
-    fastfetch
-    fzf
-    gimp3-with-plugins
     git
     grim
     hyprls
-    hyprshot
-    jq
     kdePackages.kwallet-pam
     keyd
     kitty
     libnotify
     libportal
     lm_sensors
-    lutris
-    mpv
     nil
     nixd
     nh
     ns # Thanks @Jet for helping me get this going properly ^^
-    obs-studio
     pamixer
-    pavucontrol
-    piper
-    protonup-qt
-    qalculate-gtk
-    qview
-    rofi
     slurp
-    superfile
-    swww
-    tldr
     ueberzugpp
-    transmission_4-gtk
-    vesktop
     wget
     wireplumber
     wl-clipboard
     wl-clip-persist
-    wlogout
-    wlsunset
     xdg-dbus-proxy
     xfce.thunar-volman
-    yazi
-    zed-editor
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
