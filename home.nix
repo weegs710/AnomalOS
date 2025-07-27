@@ -231,13 +231,12 @@
         "control&alt, B, exec, $webBrowser"
         "control&alt, F, exec, $fileManager"
         "control&alt, Z, exec, zeditor"
-        "control&alt, M, exec, tutanota-desktop"
+        "control&alt, D, exec, vesktop"
+        "control&alt, S, exec, steam"
         "control&alt $mainMod, L, exec, hyprlock"
         "control&alt $mainMod, delete, exec, wlogout"
         "control&alt $mainMod, B, exec, kitty -e bluetui"
         "control&alt $mainMod, N, exec, kitty -e nmtui"
-        "control&alt, P, exec, drug take 'Lamictal, Lexapro, Symbicort, ProAir, and Ibuprofen'"
-        "control&alt SHIFT, P, exec, drug take 'Prazosin'"
       ];
       bindm = [
         "$mainMod, mouse:272, movewindow"
