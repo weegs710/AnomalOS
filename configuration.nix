@@ -333,6 +333,7 @@ in
     wlsunset
     xdg-dbus-proxy
     xfce.thunar-volman
+    yazi
     zed-editor
   ];
 
