@@ -93,16 +93,8 @@ in
     firewall = {
       enable = true;
       allowPing = true;
-      allowedTCPPorts = [
-        80
-        443
-        53
-      ]; # HTTP, HTTPS, DNS
-      allowedUDPPorts = [
-        53
-        67
-        68
-      ]; # DNS, DHCP
+      allowedTCPPorts = [ ];
+      allowedUDPPorts = [ ];
     };
   };
 
@@ -156,6 +148,7 @@ in
       ];
     };
     pulseaudio.enable = false;
+    locate.enable = true;
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -248,6 +241,7 @@ in
     hyprland.enable = true;
     hyprland.package = inputs.hyprland.packages."${pkgs.system}".hyprland;
     hyprlock.enable = true;
+    nix-index.enable = true;
     starship.enable = true;
     steam = {
       enable = true;
