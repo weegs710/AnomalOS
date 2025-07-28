@@ -102,7 +102,7 @@
       "$terminal" = "kitty";
       "$fileManager" = "thunar";
       "$menu" = "rofi -show drun -show-icons";
-      "$webBrowser" = "brave";
+      "$webBrowser" = "librewolf";
       "$mainMod" = "SUPER";
       env = [
         "XCURSOR_SIZE,24"
