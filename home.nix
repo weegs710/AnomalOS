@@ -215,7 +215,6 @@
         "$mainMod SHIFT, minus, movetoworkspacesilent, special:scratchpad"
         "$mainMod, page_down, workspace, e+1"
         "$mainMod, page_up, workspace, e-1"
-        ",PAUSE, exec, tmux new -d -s roku_app 'appimage-run ~/AppImages/roku.AppImage'"
         ", PRINT, exec, hyprshot -m region --clipboard-only"
         "SHIFT,PRINT, exec, hyprshot -m region -o ~/Pictures"
       ];
@@ -245,6 +244,7 @@
         "control&alt, Z, exec, zeditor"
         "control&alt, D, exec, vesktop"
         "control&alt, S, exec, steam"
+        "control&alt, R, exec, tmux new -d -s roku_app 'appimage-run ~/AppImages/roku.AppImage'"
         "control&alt $mainMod, L, exec, hyprlock"
         "control&alt $mainMod, delete, exec, wlogout"
         "control&alt $mainMod, B, exec, kitty -e bluetui"
