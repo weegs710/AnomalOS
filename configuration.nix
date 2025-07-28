@@ -207,8 +207,8 @@ in
       packages = with pkgs; [
         anki-bin
         bluetui
-        brave
         gimp3-with-plugins
+        librewolf
         lutris
         mpv
         obs-studio
