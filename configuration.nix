@@ -207,6 +207,7 @@ in
       packages = with pkgs; [
         anki-bin
         bluetui
+        freetube
         gimp3-with-plugins
         librewolf
         lutris
