@@ -238,17 +238,18 @@
         "$mainMod SHIFT, down, movewindow, d"
       ];
       bindr = [
-        "control&alt, T, exec, $terminal"
         "control&alt, B, exec, $webBrowser"
-        "control&alt, F, exec, $fileManager"
-        "control&alt, Z, exec, zeditor"
         "control&alt, D, exec, vesktop"
-        "control&alt, S, exec, steam"
+        "control&alt, F, exec, $fileManager"
         "control&alt, R, exec, tmux new -d -s roku_app 'appimage-run ~/AppImages/roku.AppImage'"
-        "control&alt $mainMod, L, exec, hyprlock"
-        "control&alt $mainMod, delete, exec, wlogout"
+        "control&alt, S, exec, steam"
+        "control&alt, T, exec, $terminal"
+        "control&alt, Y, exec, freetube"
+        "control&alt, Z, exec, zeditor"
         "control&alt $mainMod, B, exec, kitty -e bluetui"
+        "control&alt $mainMod, L, exec, hyprlock"
         "control&alt $mainMod, N, exec, kitty -e nmtui"
+        "control&alt $mainMod, delete, exec, wlogout"
       ];
       bindm = [
         "$mainMod, mouse:272, movewindow"
