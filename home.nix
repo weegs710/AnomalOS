@@ -121,7 +121,7 @@
         gaps_in = 5;
         gaps_out = 10;
         border_size = 2;
-        "col.active_border" = lib.mkForce "rgb(4FEB9F)";
+        "col.active_border" = lib.mkForce "rgb(b53dff)";
         "col.inactive_border" = lib.mkForce "rgba(00000000)";
         resize_on_border = false;
         allow_tearing = false;
@@ -140,8 +140,8 @@
       };
       decoration = {
         rounding = 5;
-        active_opacity = 0.97;
-        inactive_opacity = 0.97;
+        active_opacity = 1;
+        inactive_opacity = 0.85;
         shadow = {
           enabled = true;
           range = 8;
