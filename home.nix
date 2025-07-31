@@ -118,8 +118,8 @@
       ];
       general = {
         no_border_on_floating = true;
-        gaps_in = 5;
-        gaps_out = 10;
+        gaps_in = 1;
+        gaps_out = 2.5;
         border_size = 2;
         "col.active_border" = lib.mkForce "rgb(b53dff)";
         "col.inactive_border" = lib.mkForce "rgba(00000000)";
@@ -139,9 +139,9 @@
         disable_hyprland_logo = lib.mkForce false;
       };
       decoration = {
-        rounding = 5;
+        rounding = 0;
         active_opacity = 1;
-        inactive_opacity = 0.85;
+        inactive_opacity = 0.90;
         shadow = {
           enabled = true;
           range = 8;
