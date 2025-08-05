@@ -99,7 +99,7 @@ in
     };
     nftables.enable = true;
     firewall = {
-      enable = true;
+      enable = false;
       allowPing = true;
       allowedTCPPorts = [ ];
       allowedUDPPorts = [ ];
@@ -284,6 +284,7 @@ in
 
   # Aliases.
   environment.shellAliases = {
+    nfa = "nix flake archive";
     nrs = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#HX99G";
     nrt = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#HX99G";
     update-all = "cd ~/dotfiles/ && sudo nix flake update && nrs";
@@ -313,7 +314,7 @@ in
     nil
     nixd
     nh
-    ns # Thanks @Jet for helping me get this going properly ^^
+    ns
     pamixer
     slurp
     ueberzugpp
