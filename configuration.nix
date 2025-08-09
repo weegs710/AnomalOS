@@ -284,6 +284,7 @@ in
 
   # Aliases.
   environment.shellAliases = {
+    recycle = "sudo nix-collect-garbage --delete-older-than 7d";
     nfa = "cd ~/dotfiles/ && nix flake archive";
     nrs = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#HX99G";
     nrt = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#HX99G";
