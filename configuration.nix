@@ -99,7 +99,7 @@ in
     };
     nftables.enable = true;
     firewall = {
-      enable = false;
+      enable = true;
       allowPing = true;
       allowedTCPPorts = [ ];
       allowedUDPPorts = [ ];
@@ -248,7 +248,6 @@ in
     gamescope.enable = true;
     git.enable = true;
     hyprland.enable = true;
-    # hyprland.package = inputs.hyprland.packages."${pkgs.system}".hyprland;
     hyprlock.enable = true;
     nix-index.enable = true;
     starship.enable = true;
