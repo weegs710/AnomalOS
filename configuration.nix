@@ -155,7 +155,6 @@ in
         }
       ];
     };
-    pulseaudio.enable = false;
     locate.enable = true;
     pipewire = {
       enable = true;
@@ -167,16 +166,12 @@ in
     };
     ratbagd.enable = true;
     desktopManager = {
-      cosmic.enable = false;
-      cosmic.xwayland.enable = false;
-      gnome.enable = false;
     };
     displayManager = {
       autoLogin.enable = true;
       autoLogin.user = "weegs";
       defaultSession = "hyprland";
       sddm.enable = true;
-      gdm.enable = false;
     };
     upower.enable = true;
     ollama = {
