@@ -1,9 +1,9 @@
 {
   inputs = {
-    drugtracker2 = {
-      url = "github:saygo-png/drugTracker2";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # drugtracker2 = {
+    #   url = "github:saygo-png/drugTracker2";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     stylix.url = "github:danth/stylix/";
