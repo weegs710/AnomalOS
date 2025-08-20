@@ -146,7 +146,6 @@ in
           appId = "com.brave.Browser";
           origin = "flathub";
         }
-        "io.github.lunarequest.NightPDF"
       ];
       remotes = [
         {
