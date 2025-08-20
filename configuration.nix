@@ -216,6 +216,7 @@ in
         transmission_4-gtk
         vesktop
         yazi
+        zathura
         zed-editor
       ];
     };
