@@ -132,7 +132,7 @@
         preserve_split = true;
       };
       master = {
-        new_status = "master";
+        new_status = "slave";
       };
       misc = {
         force_default_wallpaper = lib.mkForce "-1";
