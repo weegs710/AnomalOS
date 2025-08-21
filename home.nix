@@ -125,7 +125,7 @@
         "col.inactive_border" = lib.mkForce "rgba(00000000)";
         resize_on_border = false;
         allow_tearing = false;
-        layout = "dwindle";
+        layout = "master";
       };
       dwindle = {
         pseudotile = true;
