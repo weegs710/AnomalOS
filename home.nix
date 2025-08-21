@@ -132,6 +132,7 @@
         preserve_split = true;
       };
       master = {
+        always_keep_position = false;
         new_status = "slave";
         mfact = 0.60;
       };
