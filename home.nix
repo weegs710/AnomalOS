@@ -133,6 +133,7 @@
       };
       master = {
         new_status = "slave";
+        mfact = 0.60;
       };
       misc = {
         force_default_wallpaper = lib.mkForce "-1";
