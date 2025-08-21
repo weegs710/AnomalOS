@@ -178,6 +178,7 @@ in
       enable = true;
     };
     openssh.enable = true;
+    pcscd.enable = true;
     xserver = {
       enable = true;
       xkb = {
@@ -319,6 +320,7 @@ in
     wl-clip-persist
     xdg-dbus-proxy
     xfce.thunar-volman
+    yubikey-manager
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
