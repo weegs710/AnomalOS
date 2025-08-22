@@ -312,6 +312,7 @@ in
     nh
     ns
     pamixer
+    pam_u2f
     slurp
     ueberzugpp
     wget
@@ -320,6 +321,7 @@ in
     wl-clip-persist
     xdg-dbus-proxy
     xfce.thunar-volman
+    yubico-pam
     yubikey-manager
   ];
 
