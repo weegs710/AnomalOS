@@ -202,6 +202,7 @@ in
       packages = with pkgs; [
         anki-bin
         bluetui
+        desmume
         freetube
         gimp3-with-plugins
         librewolf
@@ -214,6 +215,7 @@ in
         qalculate-gtk
         qview
         transmission_4-gtk
+        unzipNLS
         vesktop
         yazi
         zathura
