@@ -115,6 +115,7 @@
         "swww-daemon &"
         "swww img ~/Pictures/monster.jpg"
         "dunst &"
+        "nfa &"
       ];
       general = {
         no_border_on_floating = true;
