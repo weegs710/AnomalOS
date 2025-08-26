@@ -196,7 +196,11 @@ in
       autoLogin.enable = true;
       autoLogin.user = "weegs";
       defaultSession = "hyprland";
-      sddm.enable = true;
+      sddm = {
+        autoLogin.relogin = true;
+        enable = true;
+        wayland.enable = true;
+      };
     };
     upower.enable = true;
     ollama = {
@@ -206,7 +210,7 @@ in
     openssh.enable = true;
     pcscd.enable = true;
     xserver = {
-      enable = true;
+      enable = false;
       xkb = {
         layout = "us";
         variant = "";
@@ -241,6 +245,7 @@ in
         protonup-qt
         qalculate-gtk
         qview
+        ryubing
         transmission_4-gtk
         unzipNLS
         vesktop
