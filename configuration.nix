@@ -211,10 +211,10 @@ in
     pcscd.enable = true;
     xserver = {
       enable = false;
-      xkb = {
-        layout = "us";
-        variant = "";
-      };
+      # xkb = {
+      #   layout = "us";
+      #   variant = "";
+      # };
     };
     hypridle.enable = true;
   };
@@ -277,7 +277,10 @@ in
     fish.enable = true;
     gamescope.enable = true;
     git.enable = true;
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      xwayland.enable = true;
+    };
     hyprlock.enable = true;
     nix-index.enable = true;
     starship.enable = true;
@@ -313,6 +316,7 @@ in
 
   # Aliases.
   environment.shellAliases = {
+    gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
     recycle = "sudo nix-collect-garbage --delete-older-than 7d";
     nfa = "cd ~/dotfiles/ && nix flake archive";
     nrs = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#HX99G";
