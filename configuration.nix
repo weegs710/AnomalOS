@@ -333,6 +333,7 @@ in
     dbus
     dbus-broker
     git
+    gparted
     grim
     hyprls
     kdePackages.kwallet-pam
