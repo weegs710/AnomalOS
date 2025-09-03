@@ -134,7 +134,7 @@
       };
       master = {
         always_keep_position = false;
-        new_status = "slave";
+        new_status = "master";
         mfact = 0.60;
       };
       misc = {
