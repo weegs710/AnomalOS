@@ -35,6 +35,17 @@ in
     steam-hardware.enable = true;
   };
 
+  fileSystems."/mnt/kingston-1tb" = {
+    device = "/dev/disk/by-uuid/f8c64aa9-c33b-4fa5-a6a2-88e581102144";
+    fsType = "ext4";
+    options = [
+      "defaults"
+      "user"
+      "rw"
+      "exec"
+    ];
+  };
+
   # Swap Size Options.
   swapDevices = [
     {
