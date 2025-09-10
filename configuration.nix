@@ -195,10 +195,9 @@ in
       };
     };
     upower.enable = true;
-    ollama = {
-      acceleration = "rocm";
-      enable = true;
-    };
+    # ollama = {
+    #   enable = true;
+    # };
     openssh.enable = true;
     pcscd.enable = true;
     xserver = {
@@ -225,6 +224,7 @@ in
       packages = with pkgs; [
         anki-bin
         bluetui
+        claude-code
         desmume
         freetube
         gimp3-with-plugins
