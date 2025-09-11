@@ -13,7 +13,6 @@ let
       fzf
       nix-search-tv
     ];
-    # ignore checks since i didn't write this
     checkPhase = "";
     text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
   };
@@ -21,29 +20,22 @@ let
 in
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
-  # Hardware Options.
   hardware = {
     amdgpu.opencl.enable = true;
     bluetooth.enable = true;
     graphics.enable = true;
     graphics.enable32Bit = true;
-    nvidia.modesetting.enable = true;
     steam-hardware.enable = true;
   };
 
-  # Bootloader Options.
   boot = {
     initrd.services.lvm.enable = true;
     plymouth.enable = true;
     kernelParams = [ 
       "quiet" 
-      "kernel.dmesg_restrict=1"
-      "kernel.kptr_restrict=2"
-      "kernel.yama.ptrace_scope=1"
     ];
     consoleLogLevel = 0;
     initrd.verbose = false;
@@ -51,9 +43,7 @@ in
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    # Kernel security hardening
     kernel.sysctl = {
-      # Network security
       "net.ipv4.conf.all.forwarding" = false;
       "net.ipv4.conf.all.rp_filter" = 1;
       "net.ipv4.conf.default.rp_filter" = 1;
@@ -68,23 +58,16 @@ in
       "net.ipv6.conf.all.forwarding" = false;
       "net.ipv4.tcp_syncookies" = true;
       "net.ipv4.tcp_rfc1337" = 1;
-      
-      # Memory protection
       "kernel.core_uses_pid" = true;
       "kernel.core_pattern" = "|/bin/false";
       "fs.suid_dumpable" = 0;
-      
-      # Process restrictions
       "kernel.dmesg_restrict" = true;
       "kernel.kptr_restrict" = 2;
       "kernel.yama.ptrace_scope" = 1;
-      
-      # Memory layout randomization
       "kernel.randomize_va_space" = 2;
     };
   };
 
-  # Security Options.
   security = {
     polkit.enable = true;
     rtkit.enable = true;
@@ -103,15 +86,15 @@ in
       polkit-1.u2fAuth = true;
     };
   };
-  # Nix Settings.
   nix.gc = {
     automatic = true;
     dates = "daily";
-    options = "--delete-older-than 7d";
+    options = "--delete-generations +10";
   };
   nix.settings = {
     auto-optimise-store = true;
     warn-dirty = false;
+    download-buffer-size = 268435456; # 256MB
     trusted-users = [
       "weegs"
     ];
@@ -129,7 +112,6 @@ in
     ];
   };
 
-  # Home Manager Settings.
   home-manager = {
     backupFileExtension = "backup";
     extraSpecialArgs = { inherit inputs; };
@@ -138,7 +120,6 @@ in
     };
   };
 
-  # Networking Options.
   networking = {
     hostName = "HX99G";
     networkmanager = {
@@ -147,16 +128,14 @@ in
     nftables.enable = true;
     firewall = {
       enable = true;
-      allowPing = false; # Disable ICMP ping responses
-      allowedTCPPorts = [ 2222 ]; # SSH on custom port
+      allowPing = false;
+      allowedTCPPorts = [ 2222 ];
       allowedUDPPorts = [ ];
     };
   };
 
-  # Timezone Options.
   time.timeZone = "America/New_York";
 
-  # Stylix Options.
   stylix.enable = true;
   stylix.base16Scheme = {
     base00 = "111147";
@@ -183,9 +162,33 @@ in
   stylix.targets.gtk.enable = true;
   stylix.targets.qt.enable = true;
 
-  # Services.
   services = {
     devmon.enable = true;
+    restic.backups = {
+      localbackup = {
+        initialize = true;
+        repository = "/backup/restic-repo";
+        passwordFile = "/etc/nixos/restic-password";
+        paths = [
+          "/home/weegs"
+          "/etc/nixos"
+        ];
+        exclude = [
+          "/home/weegs/.cache"
+          "/home/weegs/.local/share/Steam"
+          "/home/weegs/Downloads"
+        ];
+        timerConfig = {
+          OnCalendar = "daily";
+          Persistent = true;
+        };
+        pruneOpts = [
+          "--keep-daily 7"
+          "--keep-weekly 5"
+          "--keep-monthly 12"
+        ];
+      };
+    };
     udev = {
       packages = [
         pkgs.yubikey-personalization
@@ -201,21 +204,6 @@ in
         SUBSYSTEM=="usb", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0113|0114|0115|0116|0120|0200|0402|0403|0406|0407|0410", ACTION=="remove", TAG+="systemd", ENV{SYSTEMD_WANTS}="yubikey-autologin-disable.service"
       '';
     };
-    flatpak = {
-      enable = true;
-      packages = [
-        {
-          appId = "com.brave.Browser";
-          origin = "flathub";
-        }
-      ];
-      remotes = [
-        {
-          name = "flathub-beta";
-          location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
-        }
-      ];
-    };
     locate.enable = true;
     pipewire = {
       enable = true;
@@ -229,7 +217,7 @@ in
     desktopManager = {
     };
     displayManager = {
-      autoLogin.enable = false; # Controlled by yubikey-autologin service
+      autoLogin.enable = false;
       defaultSession = "hyprland";
       sddm = {
         enable = true;
@@ -237,12 +225,9 @@ in
       };
     };
     upower.enable = true;
-    # ollama = {
-    #   enable = true;
-    # };
     openssh = {
       enable = true;
-      ports = [ 2222 ]; # Custom port (not 22)
+      ports = [ 2222 ];
       settings = {
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
@@ -255,7 +240,6 @@ in
         X11Forwarding = false;
         PrintMotd = false;
         PermitEmptyPasswords = false;
-        # Modern crypto algorithms (2025 best practices)
         KexAlgorithms = [
           "curve25519-sha256@libssh.org"
           "curve25519-sha256"
@@ -272,22 +256,16 @@ in
           "hmac-sha2-256-etm@openssh.com"
         ];
       };
-      openFirewall = false; # We'll handle this in firewall config
+      openFirewall = false;
     };
     pcscd.enable = true;
     xserver = {
       enable = false;
-      # xkb = {
-      #   layout = "us";
-      #   variant = "";
-      # };
     };
     hypridle.enable = true;
-    # Network security monitoring
     suricata = {
       enable = true;
       settings = {
-        # Interface configuration
         af-packet = [
           {
             interface = "wlp6s0";
@@ -296,7 +274,6 @@ in
             defrag = true;
           }
         ];
-        # Simple logging configuration
         outputs = [
           {
             fast = {
@@ -320,16 +297,13 @@ in
             };
           }
         ];
-        # Use default rules with modbus disabled
         default-rule-path = "/var/lib/suricata/rules";
         rule-files = [ "suricata.rules" ];
-        # Disable problematic protocols
         app-layer.protocols.modbus.enabled = "no";
       };
     };
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users = {
     defaultUserShell = pkgs.fish;
     users.weegs = {
@@ -367,7 +341,6 @@ in
     };
   };
 
-  # Declare specific Nerd Fonts.
   fonts.packages = with pkgs.nerd-fonts; [
     dejavu-sans-mono
     zed-mono
@@ -376,7 +349,6 @@ in
     terminess-ttf
   ];
 
-  # Program Options:
   programs = {
     appimage = {
       enable = true;
@@ -416,7 +388,6 @@ in
     waybar.enable = true;
   };
 
-  # XDG Options.
   xdg.portal = {
     enable = true;
     extraPortals = [
@@ -424,14 +395,11 @@ in
     ];
   };
 
-  # Allow unfree packages.
   nixpkgs.config.allowUnfree = true;
 
-  # Environment Variables.
   environment.sessionVariables = {
   };
 
-  # Aliases.
   environment.shellAliases = {
     gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
     recycle = "sudo nix-collect-garbage --delete-older-than 7d";
@@ -445,49 +413,26 @@ in
     tdie = "pkill tmux";
   };
 
-  # System Packages.
   environment.systemPackages = with pkgs; [
-    # inputs.drugtracker2.packages.${pkgs.system}.drug
     adwaita-icon-theme
-    alarm-clock-applet
     curl
     dbus
     dbus-broker
     git
-    gparted
-    grim
-    hyprls
     kdePackages.kwallet-pam
     keyd
-    kitty
     libnotify
     libportal
     lm_sensors
-    nil
-    nh
     ns
-    pamixer
     pam_u2f
-    slurp
-    ueberzugpp
     wget
     wireplumber
-    wl-clipboard
-    wl-clip-persist
     xdg-dbus-proxy
     xfce.thunar-volman
     yubikey-manager
   ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # YubiKey-based conditional auto-login system
 
   systemd.services.yubikey-autologin-enable = {
     description = "Enable auto-login when registered YubiKey is present";
@@ -582,7 +527,7 @@ in
     serviceConfig = {
       Type = "oneshot";
       ExecStart = pkgs.writeShellScript "init-autologin" ''
-                #!usr/bin/env bash
+                #!/usr/bin/env bash
 
                 U2F_KEYS="/home/weegs/.config/Yubico/u2f_keys"
                 SDDM_CONF_DIR="/etc/sddm.conf.d"
@@ -651,11 +596,5 @@ in
     };
   };
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It's perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "24.11";
 }
