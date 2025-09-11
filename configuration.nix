@@ -38,6 +38,10 @@ in
   # Bootloader Options.
   boot = {
     initrd.services.lvm.enable = true;
+    plymouth.enable = true;
+    kernelParams = [ "quiet" ];
+    consoleLogLevel = 0;
+    initrd.verbose = false;
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
