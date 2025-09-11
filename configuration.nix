@@ -349,7 +349,6 @@ in
     libportal
     lm_sensors
     nil
-    nixd
     nh
     ns
     pamixer
