@@ -39,12 +39,48 @@ in
   boot = {
     initrd.services.lvm.enable = true;
     plymouth.enable = true;
-    kernelParams = [ "quiet" ];
+    kernelParams = [ 
+      "quiet" 
+      "kernel.dmesg_restrict=1"
+      "kernel.kptr_restrict=2"
+      "kernel.yama.ptrace_scope=1"
+    ];
     consoleLogLevel = 0;
     initrd.verbose = false;
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
+    };
+    # Kernel security hardening
+    kernel.sysctl = {
+      # Network security
+      "net.ipv4.conf.all.forwarding" = false;
+      "net.ipv4.conf.all.rp_filter" = 1;
+      "net.ipv4.conf.default.rp_filter" = 1;
+      "net.ipv4.conf.all.accept_redirects" = false;
+      "net.ipv4.conf.default.accept_redirects" = false;
+      "net.ipv4.conf.all.secure_redirects" = false;
+      "net.ipv4.conf.default.secure_redirects" = false;
+      "net.ipv6.conf.all.accept_redirects" = false;
+      "net.ipv6.conf.default.accept_redirects" = false;
+      "net.ipv4.conf.all.send_redirects" = false;
+      "net.ipv4.ip_forward" = false;
+      "net.ipv6.conf.all.forwarding" = false;
+      "net.ipv4.tcp_syncookies" = true;
+      "net.ipv4.tcp_rfc1337" = 1;
+      
+      # Memory protection
+      "kernel.core_uses_pid" = true;
+      "kernel.core_pattern" = "|/bin/false";
+      "fs.suid_dumpable" = 0;
+      
+      # Process restrictions
+      "kernel.dmesg_restrict" = true;
+      "kernel.kptr_restrict" = 2;
+      "kernel.yama.ptrace_scope" = 1;
+      
+      # Memory layout randomization
+      "kernel.randomize_va_space" = 2;
     };
   };
 
@@ -111,8 +147,8 @@ in
     nftables.enable = true;
     firewall = {
       enable = true;
-      allowPing = true;
-      allowedTCPPorts = [ ];
+      allowPing = false; # Disable ICMP ping responses
+      allowedTCPPorts = [ 2222 ]; # SSH on custom port
       allowedUDPPorts = [ ];
     };
   };
@@ -204,7 +240,40 @@ in
     # ollama = {
     #   enable = true;
     # };
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      ports = [ 2222 ]; # Custom port (not 22)
+      settings = {
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+        PermitRootLogin = "no";
+        PubkeyAuthentication = true;
+        MaxAuthTries = 3;
+        ClientAliveInterval = 300;
+        ClientAliveCountMax = 2;
+        AllowUsers = [ "weegs" ];
+        X11Forwarding = false;
+        PrintMotd = false;
+        PermitEmptyPasswords = false;
+        # Modern crypto algorithms (2025 best practices)
+        KexAlgorithms = [
+          "curve25519-sha256@libssh.org"
+          "curve25519-sha256"
+        ];
+        Ciphers = [
+          "chacha20-poly1305@openssh.com"
+          "aes256-gcm@openssh.com"
+          "aes128-gcm@openssh.com"
+          "aes256-ctr"
+          "aes128-ctr"
+        ];
+        Macs = [
+          "hmac-sha2-512-etm@openssh.com"
+          "hmac-sha2-256-etm@openssh.com"
+        ];
+      };
+      openFirewall = false; # We'll handle this in firewall config
+    };
     pcscd.enable = true;
     xserver = {
       enable = false;
@@ -214,6 +283,50 @@ in
       # };
     };
     hypridle.enable = true;
+    # Network security monitoring
+    suricata = {
+      enable = true;
+      settings = {
+        # Interface configuration
+        af-packet = [
+          {
+            interface = "wlp6s0";
+            cluster-id = 99;
+            cluster-type = "cluster_flow";
+            defrag = true;
+          }
+        ];
+        # Simple logging configuration
+        outputs = [
+          {
+            fast = {
+              enabled = true;
+              filename = "/var/log/suricata/fast.log";
+            };
+          }
+          {
+            eve-log = {
+              enabled = true;
+              filetype = "regular";
+              filename = "/var/log/suricata/eve.json";
+              types = [
+                { alert = { }; }
+                { http = { }; }
+                { dns = { }; }
+                { tls = { }; }
+                { ssh = { }; }
+                { stats = { }; }
+              ];
+            };
+          }
+        ];
+        # Use default rules with modbus disabled
+        default-rule-path = "/var/lib/suricata/rules";
+        rule-files = [ "suricata.rules" ];
+        # Disable problematic protocols
+        app-layer.protocols.modbus.enabled = "no";
+      };
+    };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
