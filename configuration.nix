@@ -252,8 +252,14 @@ in
     };
   };
 
-  # Declare ALL Nerd Fonts.
-  fonts.packages = (lib.filter lib.isDerivation (lib.attrValues pkgs.nerd-fonts)) ++ [ ];
+  # Declare specific Nerd Fonts.
+  fonts.packages = with pkgs.nerd-fonts; [
+    dejavu-sans-mono
+    zed-mono
+    jetbrains-mono
+    fira-code
+    terminess-ttf
+  ];
 
   # Program Options:
   programs = {
