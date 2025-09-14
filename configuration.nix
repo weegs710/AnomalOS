@@ -34,8 +34,8 @@ in
   boot = {
     initrd.services.lvm.enable = true;
     plymouth.enable = true;
-    kernelParams = [ 
-      "quiet" 
+    kernelParams = [
+      "quiet"
     ];
     consoleLogLevel = 0;
     initrd.verbose = false;
@@ -432,7 +432,6 @@ in
     xfce.thunar-volman
     yubikey-manager
   ];
-
 
   systemd.services.yubikey-autologin-enable = {
     description = "Enable auto-login when registered YubiKey is present";
