@@ -25,7 +25,7 @@ This configuration targets the **HX99G** desktop system, providing:
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url> ~/dotfiles
+   git clone https://github.com/weegs710/nix-install ~/dotfiles
    cd ~/dotfiles
    ```
 
@@ -197,7 +197,7 @@ The system uses **Stylix** for consistent theming with the **Sugarplum** color s
 
 ### YubiKey Integration
 - **Login**: U2F authentication for user sessions
-- **Sudo**: Two-factor authentication for privilege escalation  
+- **Sudo**: Two-factor authentication for privilege escalation
 - **SDDM**: Hardware key requirement for display manager
 - **Polkit**: Secure authentication for system actions
 
