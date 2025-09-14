@@ -385,7 +385,7 @@ in
     thunar.enable = true;
     tmux.enable = true;
     udevil.enable = true;
-    waybar.enable = true;
+    waybar.enable = false;
   };
 
   xdg.portal = {
