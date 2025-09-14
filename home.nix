@@ -42,7 +42,9 @@
     wlsunset
   ];
 
-  home.file = { };
+  home.file = {
+    "claude-projects/.keep".text = "";
+  };
 
   home.sessionVariables = {
     EDITOR = "zeditor";
