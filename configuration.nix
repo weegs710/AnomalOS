@@ -408,8 +408,6 @@ in
     nrt = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#HX99G";
     update-all = "cd ~/dotfiles/ && sudo nix flake update && nrs";
     update-all-test = "cd ~/dotfiles/ && sudo nix flake update && nrt";
-    gemma = "ollama run gemma3";
-    stfu = "pkill ollama";
     tdie = "pkill tmux";
     cc = "cd ~/claude-projects/ && claude";
   };
