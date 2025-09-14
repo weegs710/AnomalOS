@@ -52,10 +52,18 @@ This configuration targets the **HX99G** desktop system, providing:
 |---------|-------------|
 | `nrs` | Rebuild and switch to new NixOS configuration |
 | `nrt` | Test new configuration without switching |
+| `ns` | Search nixpkgs packages interactively with fzf |
 | `update-all` | Update flake inputs and rebuild system |
 | `update-all-test` | Update and test rebuild |
 | `recycle` | Clean up old system generations (7+ days) |
 | `nfa` | Archive flake |
+
+### AI Development Assistant
+| Command | Description |
+|---------|-------------|
+| `cc` | Launch Claude Code AI development assistant |
+
+**First run:** Follow setup prompts, then run init command to initialize context.
 
 ### Development Workflow
 1. Make configuration changes
@@ -100,6 +108,7 @@ This configuration targets the **HX99G** desktop system, providing:
 
 #### 🛠️ Development Tools
 - **Zed**: Primary code editor with extensive language support
+- **Claude Code**: AI-powered development assistant with system integration
 - **Kitty**: GPU-accelerated terminal emulator
 - **Fish Shell**: Modern shell with intelligent autocompletions
 - **Git**: Version control with custom aliases
