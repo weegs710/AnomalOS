@@ -411,6 +411,7 @@ in
     gemma = "ollama run gemma3";
     stfu = "pkill ollama";
     tdie = "pkill tmux";
+    cc = "cd ~/claude-projects/ && claude";
   };
 
   environment.systemPackages = with pkgs; [
