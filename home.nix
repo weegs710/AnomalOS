@@ -63,7 +63,6 @@
       "$webBrowser" = "librewolf";
       "$mainMod" = "SUPER";
       env = [
-        "XCURSOR_SIZE,24"
         "HYPRCURSOR_THEME,Nordzy-hyprcursors"
         "HYPRCURSOR_SIZE,30"
         "TERMINAL,kitty"
