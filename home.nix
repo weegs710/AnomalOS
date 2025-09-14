@@ -56,8 +56,8 @@
 
   programs.waybar = {
     enable = true;
-    settings = {
-      mainBar = {
+    settings = [
+      {
         layer = "bottom";
         position = "top";
         height = 36;
@@ -118,6 +118,7 @@
           format-alt = "<span color='#7dcfff'> 󰤨  </span>{signalStrength}% ";
           interval = 1;
           on-click-right = "kitty -e nmtui";
+          tooltip = true;
         };
         pulseaudio = {
           format = "<span color='#53b397'>{icon}</span>{volume}% ";
@@ -175,9 +176,10 @@
           tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
           tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
           on-click-right = "kitty -e bluetui";
+          tooltip = true;
         };
-      };
-    };
+      }
+    ];
     style = lib.mkAfter ''
       * {
           font-family: "Terminess Nerd Font";
@@ -313,6 +315,7 @@
         "swww img ${config.home.homeDirectory}/Pictures/monster.jpg"
         "dunst &"
         "nfa &"
+        "tmux new -d waybar &"
       ];
       general = {
         no_border_on_floating = true;
