@@ -4,10 +4,13 @@
   config,
   ...
 }:
-
+let
+  username = "weegs"; # Change this to your desired username  
+  homeDirectory = "/home/${username}";
+in
 {
-  home.username = "weegs";
-  home.homeDirectory = "/home/weegs";
+  home.username = username;
+  home.homeDirectory = homeDirectory;
 
   home.stateVersion = "25.05";
 
