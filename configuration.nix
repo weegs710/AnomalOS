@@ -6,6 +6,8 @@
   ...
 }:
 let
+  username = "weegs"; # Change this to your desired username
+  homeDirectory = "/home/${username}";
 
   ns = pkgs.writeShellApplication {
     name = "ns";
@@ -129,8 +131,11 @@ in
     firewall = {
       enable = true;
       allowPing = false;
-      allowedTCPPorts = [ 2222 ];
-      allowedUDPPorts = [ ];
+      allowedTCPPorts = [ 2222 ] ++ (lib.range 23243 23262);
+      allowedUDPPorts = [
+        23253
+        23243
+      ];
     };
   };
 
@@ -170,13 +175,13 @@ in
         repository = "/backup/restic-repo";
         passwordFile = "/etc/nixos/restic-password";
         paths = [
-          "/home/weegs"
+          "${homeDirectory}"
           "/etc/nixos"
         ];
         exclude = [
-          "/home/weegs/.cache"
-          "/home/weegs/.local/share/Steam"
-          "/home/weegs/Downloads"
+          "${homeDirectory}/.cache"
+          "${homeDirectory}/.local/share/Steam"
+          "${homeDirectory}/Downloads"
         ];
         timerConfig = {
           OnCalendar = "daily";
@@ -440,7 +445,7 @@ in
                 #!/usr/bin/env bash
 
                 # Path to registered YubiKeys
-                U2F_KEYS="/home/weegs/.config/Yubico/u2f_keys"
+                U2F_KEYS="${homeDirectory}/.config/Yubico/u2f_keys"
                 SDDM_CONF_DIR="/etc/sddm.conf.d"
                 AUTOLOGIN_CONF="$SDDM_CONF_DIR/autologin.conf"
                 LOG_FILE="/var/log/yubikey-autologin.log"
@@ -527,7 +532,7 @@ in
       ExecStart = pkgs.writeShellScript "init-autologin" ''
                 #!/usr/bin/env bash
 
-                U2F_KEYS="/home/weegs/.config/Yubico/u2f_keys"
+                U2F_KEYS="${homeDirectory}/.config/Yubico/u2f_keys"
                 SDDM_CONF_DIR="/etc/sddm.conf.d"
                 AUTOLOGIN_CONF="$SDDM_CONF_DIR/autologin.conf"
                 LOG_FILE="/var/log/yubikey-autologin.log"
