@@ -415,6 +415,7 @@ in
     update-all-test = "cd ~/dotfiles/ && sudo nix flake update && nrt";
     tdie = "pkill tmux";
     cc = "cd ~/claude-projects/ && claude";
+    ff = "fastfetch --logo ~/Pictures/nixos-pics/nixos.png --logo-height 20 --logo-width 40";
   };
 
   environment.systemPackages = with pkgs; [
