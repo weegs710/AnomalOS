@@ -6,7 +6,7 @@ A comprehensive NixOS configuration using Nix flakes for a modern desktop system
 
 This configuration targets the **HX99G** desktop system, providing:
 
-- **OS**: NixOS (unstable channel)
+- **OS**: NixOS (unstable channel) with CachyOS kernel
 - **Window Manager**: Hyprland with custom animations and keybindings
 - **Display Manager**: SDDM with YubiKey U2F authentication
 - **Shell**: Fish with Starship prompt
@@ -25,7 +25,7 @@ This configuration targets the **HX99G** desktop system, providing:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/weegs710/nix-install ~/dotfiles
+   git clone https://github.com/weegs710/nix-install.git ~/dotfiles
    cd ~/dotfiles
    ```
 
@@ -62,6 +62,7 @@ This configuration targets the **HX99G** desktop system, providing:
 | Command | Description |
 |---------|-------------|
 | `cc` | Launch Claude Code AI development assistant |
+| `ff` | Display system info with custom NixOS logo |
 
 **First run:** Follow setup prompts, then run init command to initialize context.
 
@@ -82,12 +83,23 @@ This configuration targets the **HX99G** desktop system, providing:
 | `home.nix` | User-level Home Manager configuration |
 | `hardware-configuration.nix` | Hardware-specific settings |
 | `sugarplum.yaml` | Custom Stylix theme configuration |
+| `flake.lock` | Pinned versions of flake inputs |
+| `monster.jpg` | Wallpaper image for theme generation |
 
 ### System Features
 
 #### 🔒 Security & Authentication
 - **YubiKey U2F**: Integrated for login, sudo, SDDM, and polkit
-- **Firewall**: nftables with minimal open ports
+  - Automatic login when registered YubiKey is present
+  - Systemd services for dynamic login control
+- **Suricata IDS**: Network intrusion detection and prevention
+  - Real-time traffic monitoring
+  - Alert logging to `/var/log/suricata/`
+- **Firewall**: nftables with restrictive policies
+  - Custom gaming ports (23243-23262) for Divinity Original Sin 2
+  - SSH on non-standard port 2222
+- **Kernel Hardening**: Extensive sysctl security parameters
+- **SSH Hardening**: Modern ciphers and restricted access
 - **PAM Configuration**: Hardened authentication stack
 - **Polkit**: Secure privilege escalation
 
@@ -96,6 +108,10 @@ This configuration targets the **HX99G** desktop system, providing:
   - Master layout with custom animations
   - No window borders for clean aesthetics
   - Custom keybindings and workspace management
+- **Waybar**: Custom status bar with system monitoring
+  - Temperature, network, audio, and workspace indicators
+  - Power controls and application shortcuts
+  - Themed with Sugarplum colors
 - **SDDM**: Display manager with theme integration
 - **Stylix**: Consistent theming across all applications
 - **Sugarplum Theme**: Dark color scheme with carefully chosen palette
@@ -103,14 +119,21 @@ This configuration targets the **HX99G** desktop system, providing:
 #### 🔊 Media & Hardware
 - **Pipewire**: Modern audio system with low-latency support
 - **AMD/Nvidia**: Hybrid GPU support with proper drivers
-- **Bluetooth**: Full Bluetooth stack
-- **Steam**: Gaming support with hardware compatibility
+- **Bluetooth**: Full Bluetooth stack with bluetui interface
+- **Steam**: Gaming support with Proton, Gamescope, and hardware compatibility
+- **Gaming**: Lutris, PPSSPP, DeSmuME emulators
+- **Media**: MPV player, OBS Studio for streaming
+- **Productivity**: GIMP, LibreWolf browser, Anki flashcards
+- **Communication**: Vesktop (Discord)
 
 #### 🛠️ Development Tools
 - **Zed**: Primary code editor with extensive language support
 - **Claude Code**: AI-powered development assistant with system integration
 - **Kitty**: GPU-accelerated terminal emulator
 - **Fish Shell**: Modern shell with intelligent autocompletions
+- **Development Languages**: Node.js, Python3, Rust, Nix
+- **Language Servers**: nil (Nix), hyprls (Hyprland)
+- **Code Formatting**: alejandra (Nix formatter)
 - **Git**: Version control with custom aliases
 - **Nerd Fonts**: Complete font collection for development
 
@@ -118,7 +141,11 @@ This configuration targets the **HX99G** desktop system, providing:
 - **Nix Flakes**: Reproducible system configuration
 - **Home Manager**: User-space package and configuration management
 - **Flatpak**: Sandboxed application support
-- **Cachix**: Binary cache for faster builds
+- **Cachix**: Binary cache for faster builds (nix-community, hyprland)
+- **Restic Backups**: Automated daily backups with retention policies
+  - Backs up home directory and system configuration
+  - 7-day, 5-week, 12-month retention
+  - Excludes cache and temporary files
 
 ## 🔧 Customization
 
@@ -200,6 +227,10 @@ The system uses **Stylix** for consistent theming with the **Sugarplum** color s
 - **Sudo**: Two-factor authentication for privilege escalation
 - **SDDM**: Hardware key requirement for display manager
 - **Polkit**: Secure authentication for system actions
+- **Auto-Login**: Automatic login when registered YubiKey is detected
+  - Systemd services monitor YubiKey insertion/removal
+  - Validates registered keys against U2F configuration
+  - Enables/disables SDDM auto-login dynamically
 
 ### Network Security
 - **Firewall**: nftables with restrictive default policies
@@ -214,12 +245,14 @@ The system uses **Stylix** for consistent theming with the **Sugarplum** color s
 - Bluetooth 5.0+
 - Audio: Pipewire-compatible
 - Storage: NVMe SSD recommended
+- **Kernel**: CachyOS optimized for gaming performance
 
 **Minimum Requirements:**
 - 8GB RAM (16GB+ recommended)
-- 20GB storage (50GB+ recommended for development)
+- 50GB storage (100GB+ recommended for development and backups)
 - UEFI boot support
 - Internet connection for initial build
+- Additional storage for Restic backups (recommended)
 
 ## 🚨 Troubleshooting
 
