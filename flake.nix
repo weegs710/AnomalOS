@@ -6,11 +6,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    cachyos.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
   };
 
   outputs =
     {
       nixpkgs,
+      cachyos,
       ...
     }@inputs:
     {
@@ -18,6 +20,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.stylix.nixosModules.stylix
+          inputs.cachyos.nixosModules.default
           ./configuration.nix
           inputs.home-manager.nixosModules.default
         ];

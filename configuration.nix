@@ -36,6 +36,7 @@ in
   boot = {
     initrd.services.lvm.enable = true;
     plymouth.enable = true;
+    kernelPackages = pkgs.linuxPackages_cachyos;
     kernelParams = [
       "quiet"
     ];
