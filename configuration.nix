@@ -332,6 +332,7 @@ in
         obs-studio
         pavucontrol
         piper
+        ppsspp
         protonup-qt
         qalculate-gtk
         qview
@@ -369,6 +370,7 @@ in
       '';
     };
     fish.enable = true;
+    file-roller.enable = true;
     gamescope.enable = true;
     git.enable = true;
     hyprland = {
