@@ -337,6 +337,7 @@ in
         protonup-qt
         qalculate-gtk
         qview
+        retroarch-full
         ryubing
         transmission_4-gtk
         unzipNLS
