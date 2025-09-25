@@ -5,7 +5,7 @@
   ...
 }:
 let
-  username = "weegs"; # Change this to your desired username  
+  username = "weegs"; # Change this to your desired username
   homeDirectory = "/home/${username}";
 in
 {
@@ -103,13 +103,13 @@ in
           tooltip-format = "Lock";
         };
         "custom/reboot" = {
-          format = "<span color='#7dcfff'>  </span>";
+          format = "<span color='#7dcfff'> </span>";
           on-click = "systemctl reboot";
           tooltip = true;
           tooltip-format = "Reboot";
         };
         "custom/power" = {
-          format = "<span color='#b53dff'> ⏻ </span>";
+          format = "<span color='#b53dff'>⏻ </span>";
           on-click = "systemctl poweroff";
           tooltip = true;
           tooltip-format = "Power Off";
