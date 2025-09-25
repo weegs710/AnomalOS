@@ -428,8 +428,10 @@ in
     dbus
     dbus-broker
     git
+    jdk21
     kdePackages.kwallet-pam
     keyd
+    libGL
     libnotify
     libportal
     lm_sensors
@@ -439,6 +441,13 @@ in
     wireplumber
     xdg-dbus-proxy
     xfce.thunar-volman
+    xorg.libX11
+    xorg.libXrandr
+    xorg.libXi
+    xorg.libXcursor
+    xorg.libXinerama
+    xorg.libXxf86vm
+    mesa
     yubikey-manager
   ];
 
