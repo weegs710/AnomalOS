@@ -89,11 +89,8 @@ in
           all-outputs = true;
           format = "{icon}";
           on-click = "activate";
-          persistent-workspaces = {
-            "*" = [ 1 ];
-          };
           format-icons = {
-            "1" = " ";
+            "active" = " ";
           };
         };
         "custom/lock" = {
@@ -321,6 +318,7 @@ in
         "dunst &"
         "nfa &"
         "tmux new -d waybar &"
+        "hyprctl keyword master:orientation top"
       ];
       general = {
         no_border_on_floating = true;
@@ -339,8 +337,10 @@ in
       };
       master = {
         always_keep_position = false;
-        new_status = "slave";
+        new_status = "master";
+        orientation = "top";
         mfact = 0.60;
+        new_on_top = true;
       };
       misc = {
         force_default_wallpaper = lib.mkForce "-1";
@@ -393,13 +393,6 @@ in
           "overshot,0.13,0.99,0.29,1.1"
         ];
       };
-      workspace = [
-        "1, persistent:true"
-        "2, persistent:true"
-        "3, persistent:true"
-        "4, persistent:true"
-        "5, persistent:true"
-      ];
       bind = [
         "$mainMod, escape, killactive"
         "$mainMod, F, fullscreen"
@@ -409,32 +402,22 @@ in
         "$mainMod, 1, workspace, 1"
         "$mainMod, 2, workspace, 2"
         "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod, 7, workspace, 7"
-        "$mainMod, 8, workspace, 8"
-        "$mainMod, 9, workspace, 9"
-        "$mainMod, 0, workspace, 10"
         "$mainMod SHIFT, 1, movetoworkspace, 1"
         "$mainMod SHIFT, 2, movetoworkspace, 2"
         "$mainMod SHIFT, 3, movetoworkspace, 3"
-        "$mainMod SHIFT, 4, movetoworkspace, 4"
-        "$mainMod SHIFT, 5, movetoworkspace, 5"
-        "$mainMod SHIFT, 6, movetoworkspace, 6"
-        "$mainMod SHIFT, 7, movetoworkspace, 7"
-        "$mainMod SHIFT, 8, movetoworkspace, 8"
-        "$mainMod SHIFT, 9, movetoworkspace, 9"
-        "$mainMod SHIFT, 0, movetoworkspace, 10"
+        "$mainMod SHIFT, page_down, movetoworkspace, +1"
+        "$mainMod SHIFT, page_up, movetoworkspace, -1"
         "$mainMod, page_down, workspace, e+1"
         "$mainMod, page_up, workspace, e-1"
+        "$mainMod, grave, togglespecialworkspace, scratchpad"
+        "$mainMod SHIFT, grave, movetoworkspacesilent, special:scratchpad"
+        "$mainMod, pause, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         ", PRINT, exec, hyprshot -m region --clipboard-only"
         "SHIFT,PRINT, exec, hyprshot -m region -o ~/Pictures"
       ];
       bindel = [
-        "control ,right, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-        "control ,left , exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-        "control ,down, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        "$mainMod, home, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+        "$mainMod, end, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ];
       bindl = [
         "SUPER,Super_L, exec, $menu"
@@ -451,14 +434,38 @@ in
         "$mainMod SHIFT, down, movewindow, d"
       ];
       bindr = [
-        "control&alt $mainMod, down, togglespecialworkspace, scratchpad"
-        "control&alt $mainMod SHIFT, down, movetoworkspacesilent, special:scratchpad"
         "control&alt $mainMod, L, exec, hyprlock"
         "control&alt $mainMod, delete, exec, wlogout"
       ];
       bindm = [
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
+      ];
+      windowrulev2 = [
+        # Float common dialog windows (let them position naturally)
+        "float, title:^(Open)(.*)$"
+        "float, title:^(Save)(.*)$"
+        "float, title:^(Save As)(.*)$"
+        "float, title:^(Choose)(.*)$"
+        "float, title:^(Select)(.*)$"
+
+        # Common dialog patterns
+        "float, title:^(Preferences)(.*)$"
+        "float, title:^(Settings)(.*)$"
+        "float, title:^(Properties)(.*)$"
+
+        # File manager dialogs
+        "float, title:^(Create Folder)(.*)$"
+        "float, title:^(Rename)(.*)$"
+        "float, title:^(Delete)(.*)$"
+
+        # Browser popups
+        "float, title:^(Picture-in-Picture)(.*)$"
+        "pin, title:^(Picture-in-Picture)(.*)$"
+
+        # Generic popup patterns (catch-all)
+        "float, title:^(.*[Dd]ialog.*)$"
+        "float, title:^(.*[Pp]opup.*)$"
       ];
     };
   };
