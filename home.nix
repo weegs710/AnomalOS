@@ -426,8 +426,6 @@ in
         "$mainMod SHIFT, 8, movetoworkspace, 8"
         "$mainMod SHIFT, 9, movetoworkspace, 9"
         "$mainMod SHIFT, 0, movetoworkspace, 10"
-        "$mainMod, minus, togglespecialworkspace, scratchpad"
-        "$mainMod SHIFT, minus, movetoworkspacesilent, special:scratchpad"
         "$mainMod, page_down, workspace, e+1"
         "$mainMod, page_up, workspace, e-1"
         ", PRINT, exec, hyprshot -m region --clipboard-only"
@@ -453,17 +451,9 @@ in
         "$mainMod SHIFT, down, movewindow, d"
       ];
       bindr = [
-        "control&alt, B, exec, $webBrowser"
-        "control&alt, D, exec, vesktop"
-        "control&alt, F, exec, $fileManager"
-        "control&alt, R, exec, tmux new -d -s roku_app 'appimage-run ~/AppImages/roku.AppImage'"
-        "control&alt, S, exec, steam"
-        "control&alt, T, exec, $terminal"
-        "control&alt, Y, exec, freetube"
-        "control&alt, Z, exec, zeditor"
-        "control&alt $mainMod, B, exec, kitty -e bluetui"
+        "control&alt $mainMod, down, togglespecialworkspace, scratchpad"
+        "control&alt $mainMod SHIFT, down, movetoworkspacesilent, special:scratchpad"
         "control&alt $mainMod, L, exec, hyprlock"
-        "control&alt $mainMod, N, exec, kitty -e nmtui"
         "control&alt $mainMod, delete, exec, wlogout"
       ];
       bindm = [
