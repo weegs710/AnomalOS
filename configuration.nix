@@ -410,16 +410,16 @@ in
   };
 
   environment.shellAliases = {
+    cc = "cd ~/claude-projects/ && claude";
+    ff = "fastfetch --logo ~/Pictures/nixos-pics/nixos.png --logo-height 20 --logo-width 40";
     gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
-    recycle = "sudo nix-collect-garbage --delete-older-than 7d";
     nfa = "cd ~/dotfiles/ && nix flake archive";
     nrs = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#HX99G";
     nrt = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#HX99G";
+    recycle = "sudo nix-collect-garbage --delete-older-than 7d";
+    tdie = "pkill tmux";
     update-all = "cd ~/dotfiles/ && sudo nix flake update && nrs";
     update-all-test = "cd ~/dotfiles/ && sudo nix flake update && nrt";
-    tdie = "pkill tmux";
-    cc = "cd ~/claude-projects/ && claude";
-    ff = "fastfetch --logo ~/Pictures/nixos-pics/nixos.png --logo-height 20 --logo-width 40";
   };
 
   environment.systemPackages = with pkgs; [
