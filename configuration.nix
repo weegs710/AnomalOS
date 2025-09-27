@@ -410,7 +410,7 @@ in
   };
 
   environment.shellAliases = {
-    cc = "cd ~/claude-projects/ && claude";
+    cc = "~/bin/claude-launcher";
     ff = "fastfetch --logo ~/Pictures/nixos-pics/nixos.png --logo-height 20 --logo-width 40";
     gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
     nfa = "cd ~/dotfiles/ && nix flake archive";

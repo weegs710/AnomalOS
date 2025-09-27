@@ -9,6 +9,9 @@ let
   homeDirectory = "/home/${username}";
 in
 {
+  imports = [
+    ./modules/claude-code-enhanced
+  ];
   home.username = username;
   home.homeDirectory = homeDirectory;
 
@@ -22,6 +25,7 @@ in
     dunst
     fastfetch
     fzf
+    gh
     gparted
     grim
     hyprls
@@ -39,6 +43,7 @@ in
     swww
     tldr
     ueberzugpp
+    uv
     wl-clipboard
     wl-clip-persist
     wlogout
@@ -58,6 +63,14 @@ in
   };
 
   programs.home-manager.enable = true;
+
+  # Enhanced Claude Code development environment
+  programs.claude-code-enhanced = {
+    enable = true;
+    enableGlobalOptimizations = true;
+    enableMcpServers = true;
+    enableParallelDevelopment = true;
+  };
 
   programs.waybar = {
     enable = true;
