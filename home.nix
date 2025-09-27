@@ -339,7 +339,7 @@ in
         always_keep_position = false;
         new_status = "master";
         orientation = "top";
-        mfact = 0.60;
+        mfact = 0.65;
         new_on_top = true;
       };
       misc = {
