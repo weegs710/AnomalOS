@@ -61,16 +61,48 @@ This configuration targets the **HX99G** desktop system, providing:
 ### AI Development Assistant
 | Command | Description |
 |---------|-------------|
-| `cc` | Launch Claude Code AI development assistant |
+| `cc` | Enhanced Claude Code project launcher with interactive navigation |
+| `cc [project]` | Open specific project directly with global optimizations |
+| `cc list` | List all available projects |
+| `cc new [name]` | Create new project with optimization templates |
+| `cc status` | Show Claude Code system status and available features |
+| `cc help` | Show complete usage information |
 | `ff` | Display system info with custom NixOS logo |
 
-**First run:** Follow setup prompts, then run init command to initialize context.
+**Enhanced Claude Code Features:**
+- **Global Optimization**: Masterclass patterns and autonomous operation across all projects
+- **12 Slash Commands**: Including `/primer`, `/analyze`, `/generate`, `/execute`
+- **4 Specialized Subagents**: Validation, documentation, NixOS configuration, security
+- **Parallel Development**: Multi-approach development with `/prep-parallel`
+- **MCP Integration**: Ready for Serena and other Model Context Protocol servers
+- **Project Templates**: Rapid setup for new development projects
 
 ### Development Workflow
+
+#### System Configuration
 1. Make configuration changes
 2. Test: `nrt`
 3. Apply: `nrs` (if tests pass)
 4. For updates: `update-all-test` → `update-all`
+
+#### Claude Code Projects
+1. **Navigate**: `cc` to see project menu or `cc [project]` for direct access
+2. **Create**: `cc new [name]` for new projects with optimization templates
+3. **Develop**: All projects inherit global optimizations and advanced features
+4. **Advanced**: Use `/prep-parallel` for complex multi-approach development
+
+**Project Structure:**
+```
+~/claude-projects/
+├── .claude/                    # Global optimization configuration
+├── projects/                   # All individual development projects
+│   ├── hx99g/                 # NixOS configuration project
+│   ├── my-app/                # Example application project
+│   └── [other-projects]/      # Additional projects
+├── templates/                  # Project templates for rapid setup
+├── shared/                     # Shared resources and patterns
+└── claude-launcher.sh          # Enhanced cc command script
+```
 
 ## 🏗️ Architecture
 
@@ -128,13 +160,20 @@ This configuration targets the **HX99G** desktop system, providing:
 
 #### 🛠️ Development Tools
 - **Zed**: Primary code editor with extensive language support
-- **Claude Code**: AI-powered development assistant with system integration
+- **Claude Code**: Enhanced AI development assistant with:
+  - **Global Project Management**: Intelligent navigation across all development projects
+  - **Masterclass Optimizations**: Advanced autonomous operation with pre-approved permissions
+  - **Specialized Subagents**: Validation gates, documentation, NixOS config, security audit
+  - **Parallel Development**: Multi-approach implementation with comparison analysis
+  - **Context Engineering**: PRP (Product Requirements Prompt) framework
+  - **MCP Integration**: Model Context Protocol server support (Serena ready)
+  - **Development Hooks**: Automated quality gates and lifecycle management
 - **Kitty**: GPU-accelerated terminal emulator
 - **Fish Shell**: Modern shell with intelligent autocompletions
 - **Development Languages**: Node.js, Python3, Rust, Nix
 - **Language Servers**: nil (Nix), hyprls (Hyprland)
 - **Code Formatting**: alejandra (Nix formatter)
-- **Git**: Version control with custom aliases
+- **Git**: Version control with custom aliases and automated workflows
 - **Nerd Fonts**: Complete font collection for development
 
 #### 📦 Package Management
