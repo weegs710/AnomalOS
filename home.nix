@@ -6,6 +6,12 @@ let
 in
 
 {
+  imports = [
+    ./modules/claude-code-enhanced
+  ];
+
+  # Enable Claude Code enhanced features
+  programs.claude-code-enhanced.enable = true;
 
   home.username = username;
   home.homeDirectory = homeDirectory;
