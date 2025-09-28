@@ -1,22 +1,17 @@
-{
-  lib,
-  pkgs,
-  config,
-  ...
-}:
+{ lib, pkgs, config, osConfig, ... }:
+
 let
-  username = "weegs"; # Change this to your desired username
+  username = osConfig.mySystem.user.name;
   homeDirectory = "/home/${username}";
 in
+
 {
-  imports = [
-    ./modules/claude-code-enhanced
-  ];
+
   home.username = username;
   home.homeDirectory = homeDirectory;
-
   home.stateVersion = "25.05";
 
+  # Basic home packages (always included)
   home.packages = with pkgs; [
     alejandra
     alarm-clock-applet
@@ -50,10 +45,6 @@ in
     wlsunset
   ];
 
-  home.file = {
-    "claude-projects/.keep".text = "";
-  };
-
   home.sessionVariables = {
     EDITOR = "zeditor";
     NIXOS_OZONE_WL = "1";
@@ -64,15 +55,13 @@ in
 
   programs.home-manager.enable = true;
 
-  # Enhanced Claude Code development environment
-  programs.claude-code-enhanced = {
-    enable = true;
-    enableGlobalOptimizations = true;
-    enableMcpServers = true;
-    enableParallelDevelopment = true;
+  # Claude Code project directory (conditional)
+  home.file."claude-projects/.keep" = lib.mkIf osConfig.mySystem.features.claudeCode {
+    text = "";
   };
 
-  programs.waybar = {
+  # Desktop environment configuration (conditional)
+  programs.waybar = lib.mkIf osConfig.mySystem.features.desktop {
     enable = true;
     settings = [
       {
@@ -103,17 +92,17 @@ in
           format = "{icon}";
           on-click = "activate";
           format-icons = {
-            "active" = " ";
+            "active" = " ";
           };
         };
         "custom/lock" = {
-          format = "<span color='#7dcfff'>  </span>";
+          format = "<span color='#7dcfff'>  </span>";
           on-click = "hyprlock";
           tooltip = true;
           tooltip-format = "Lock";
         };
         "custom/reboot" = {
-          format = "<span color='#7dcfff'> </span>";
+          format = "<span color='#7dcfff'> </span>";
           on-click = "systemctl reboot";
           tooltip = true;
           tooltip-format = "Reboot";
@@ -137,18 +126,18 @@ in
         };
         pulseaudio = {
           format = "<span color='#53b397'>{icon}</span>{volume}% ";
-          format-muted = "<span color='#b53dff'>  </span>0% ";
+          format-muted = "<span color='#b53dff'>  </span>0% ";
           format-icons = {
-            headphone = "<span color='#a175d4'>  </span>";
-            hands-free = "<span color='#a175d4'>  </span>";
-            headset = "<span color='#a175d4'>  </span>";
-            phone = "<span color='#7dcfff'>  </span>";
-            portable = "<span color='#7dcfff'>  </span>";
-            car = "<span color='#2082a6'>  </span>";
+            headphone = "<span color='#a175d4'>  </span>";
+            hands-free = "<span color='#a175d4'>  </span>";
+            headset = "<span color='#a175d4'>  </span>";
+            phone = "<span color='#7dcfff'>  </span>";
+            portable = "<span color='#7dcfff'>  </span>";
+            car = "<span color='#2082a6'>  </span>";
             default = [
-              "<span color='#6b7394'>  </span>"
-              "<span color='#7dcfff'>  </span>"
-              "<span color='#53b397'>  </span>"
+              "<span color='#6b7394'>  </span>"
+              "<span color='#7dcfff'>  </span>"
+              "<span color='#53b397'>  </span>"
             ];
           };
           on-click-right = "pavucontrol -t 3";
@@ -158,10 +147,10 @@ in
         };
         "custom/temperature" = {
           exec = "/run/current-system/sw/bin/sensors | /run/current-system/sw/bin/awk '/edge:/ {gsub(/[+°C]/, \"\", $2); print int($2); exit}'";
-          format = "<span color='#2082a6'>  </span>{}°C ";
+          format = "<span color='#2082a6'>  </span>{}°C ";
           interval = 5;
           tooltip = true;
-          tooltip-format = "Current CPU Temperature:  {}°C";
+          tooltip-format = "Current CPU Temperature:  {}°C";
         };
         memory = {
           format = "<span color='#a175d4'>   </span>{used:0.1f}GB ";
@@ -183,7 +172,7 @@ in
           spacing = 6;
         };
         bluetooth = {
-          format = "<span color='#5ca8dc'>  </span>{status} ";
+          format = "<span color='#5ca8dc'>  </span>{status} ";
           format-connected = "<span color='#5ca8dc'>ᛒ</span>{device_alias} ";
           format-connected-battery = "<span color='#5ca8dc'>ᛒ</span>{device_alias} {device_battery_percentage}% ";
           tooltip-format = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
@@ -311,7 +300,7 @@ in
     '';
   };
 
-  wayland.windowManager.hyprland = {
+  wayland.windowManager.hyprland = lib.mkIf osConfig.mySystem.features.desktop {
     enable = true;
     settings = {
       "$terminal" = "kitty";
