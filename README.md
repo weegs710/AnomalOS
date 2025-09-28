@@ -1,4 +1,4 @@
-# NixOS Desktop Configuration
+# AnomalOS Desktop Configuration
 
 A comprehensive **modular** NixOS configuration using Nix flakes for a modern desktop system with Hyprland window manager, featuring automated security hardening, theming, and development tools with **optional YubiKey and Claude Code support**.
 
@@ -49,7 +49,7 @@ git --version
 #### Step 2: Clone and Setup the Configuration
 ```bash
 # Clone this repository
-git clone https://github.com/weegs710/nix-install.git ~/dotfiles
+git clone https://github.com/weegs710/AnomalOS.git ~/dotfiles
 cd ~/dotfiles
 
 # Verify you're in the right directory
