@@ -1,127 +1,205 @@
 # NixOS Desktop Configuration
 
-A comprehensive NixOS configuration using Nix flakes for a modern desktop system with Hyprland window manager, featuring automated security hardening, theming, and development tools.
+A comprehensive **modular** NixOS configuration using Nix flakes for a modern desktop system with Hyprland window manager, featuring automated security hardening, theming, and development tools with **optional YubiKey and Claude Code support**.
 
 ## 🖥️ System Overview
 
-This configuration targets the **HX99G** desktop system, providing:
+This configuration targets **x86_64 desktop systems**, providing:
 
 - **OS**: NixOS (unstable channel) with CachyOS kernel
-- **Window Manager**: Hyprland with custom animations and keybindings
-- **Display Manager**: SDDM with YubiKey U2F authentication
+- **Window Manager**: Hyprland (basic configuration, customizable)
+- **Display Manager**: SDDM with optional YubiKey U2F authentication
 - **Shell**: Fish with Starship prompt
 - **Editor**: Zed (primary), with full development toolchain
 - **Theme**: Sugarplum dark theme with consistent styling via Stylix
-- **Security**: Hardened with YubiKey U2F for login, sudo, and polkit
+- **Security**: Hardened with optional YubiKey U2F for login, sudo, and polkit
+
+## 🎯 Four Simple Configurations
+
+This flake provides **exactly 4 configurations** to cover all common use cases:
+
+| Configuration | YubiKey | Claude Code | Gaming | Desktop | Use Case |
+|---------------|---------|-------------|--------|---------|----------|
+| `HX99G` | ✅ | ✅ | ✅ | ✅ | **Full system** - Everything enabled |
+| `HX99G-no-yubikey` | ❌ | ✅ | ✅ | ✅ | **No YubiKey hardware** |
+| `HX99G-no-claude` | ✅ | ❌ | ✅ | ✅ | **Prefer other dev tools** |
+| `HX99G-minimal` | ❌ | ❌ | ✅ | ✅ | **Basic desktop system** |
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- NixOS system
-- Git
-- YubiKey (optional, for enhanced security features)
+- **Fresh NixOS installation** (any x86_64 machine with internet connection)
+- **Root or sudo access**
+- **YubiKey** (optional, only needed for configurations with YubiKey support)
 
-### Installation
+### Step-by-Step Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/weegs710/nix-install.git ~/dotfiles
-   cd ~/dotfiles
-   ```
+#### Step 1: Prepare Your System
+```bash
+# Ensure you're in a clean directory
+cd ~
 
-2. **Update hardware configuration:**
-   ```bash
-   # Generate hardware config for your system
-   sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
-   ```
+# Install git if not already available
+nix-shell -p git
 
-3. **Test the configuration:**
-   ```bash
-   nrt  # Test rebuild without switching
-   ```
+# Verify git is working
+git --version
+```
 
-4. **Apply the configuration:**
-   ```bash
-   nrs  # Rebuild and switch to new configuration
-   ```
+#### Step 2: Clone and Setup the Configuration
+```bash
+# Clone this repository (replace with actual repo URL when published)
+git clone [YOUR-REPO-URL] ~/dotfiles
+cd ~/dotfiles
+
+# Verify you're in the right directory
+ls -la
+# You should see: flake.nix, configuration.nix, home.nix, modules/, etc.
+```
+
+#### Step 3: Generate Hardware Configuration
+```bash
+# IMPORTANT: This overwrites any existing hardware-configuration.nix
+# Generate hardware config for your specific system
+sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
+
+# Verify the file was created
+ls -la hardware-configuration.nix
+# File should exist and be larger than 0 bytes
+```
+
+#### Step 4: Choose Your Configuration
+**Choose ONE configuration based on your needs:**
+
+| Configuration | Choose If You... |
+|---------------|------------------|
+| `HX99G` | Have a YubiKey and want Claude Code |
+| `HX99G-no-yubikey` | Want Claude Code but no YubiKey |
+| `HX99G-no-claude` | Have YubiKey but prefer other dev tools |
+| `HX99G-minimal` | Want basic system (no YubiKey or Claude Code) |
+
+#### Step 5: Test Your Configuration (IMPORTANT!)
+**Always test before switching to avoid breaking your system:**
+
+```bash
+# Replace HX99G with your chosen configuration
+sudo nixos-rebuild test --flake .#HX99G
+```
+
+**What to expect during test:**
+- Download and build process (can take 10-30 minutes on first run)
+- No errors in the final output
+- System should remain functional
+
+**If test fails:**
+- Check error messages carefully
+- Ensure hardware-configuration.nix was generated correctly
+- Try different configuration (e.g., HX99G-minimal)
+
+#### Step 6: Apply Configuration (Only After Successful Test)
+```bash
+# Only run this if the test in Step 5 completed successfully
+sudo nixos-rebuild switch --flake .#HX99G
+```
+
+#### Step 7: Reboot and Verify
+```bash
+# Reboot to ensure everything loads correctly
+sudo reboot
+```
+
+**After reboot, verify:**
+- System boots successfully
+- Desktop environment loads (Hyprland + Waybar)
+- If using YubiKey config: Login requires YubiKey
+- If using Claude Code config: `cc` command is available
+
+### What Happens During Installation
+
+1. **Downloads**: NixOS will download all required packages (several GB)
+2. **Builds**: System will compile any necessary components
+3. **Configuration**: Applies all module settings and creates user environment
+4. **Services**: Starts all configured services (Hyprland, audio, etc.)
+
+### Configuration-Specific Setup
+
+#### If You Chose YubiKey Configuration:
+After successful installation and reboot:
+```bash
+# Register your YubiKey (do this on first login)
+mkdir -p ~/.config/Yubico
+pamu2fcfg > ~/.config/Yubico/u2f_keys
+
+# Test YubiKey authentication
+sudo echo "Testing YubiKey"  # Should require YubiKey touch
+```
+
+#### If You Chose Claude Code Configuration:
+After successful installation and reboot:
+```bash
+# Test Claude Code is available
+claude --version
+
+# Launch Claude Code
+claude
+```
 
 ## 📋 Essential Commands
 
 ### System Management
 | Command | Description |
 |---------|-------------|
-| `nrs` | Rebuild and switch to new NixOS configuration |
-| `nrt` | Test new configuration without switching |
-| `ns` | Search nixpkgs packages interactively with fzf |
-| `update-all` | Update flake inputs and rebuild system |
-| `update-all-test` | Update and test rebuild |
-| `recycle` | Clean up old system generations (7+ days) |
-| `nfa` | Archive flake |
+| `sudo nixos-rebuild switch --flake .#[config]` | Rebuild and switch to configuration |
+| `sudo nixos-rebuild test --flake .#[config]` | Test configuration without switching |
+| `nix search nixpkgs [package]` | Search for packages |
+| `nix flake update` | Update flake inputs |
+| `sudo nix-collect-garbage -d` | Clean up old system generations |
+| `nix flake check` | Validate flake syntax |
 
-### AI Development Assistant
+**Note**: Replace `[config]` with your chosen configuration (HX99G, HX99G-minimal, etc.)
+
+### AI Development Assistant (Claude Code configurations only)
 | Command | Description |
 |---------|-------------|
-| `cc` | Enhanced Claude Code project launcher with interactive navigation |
-| `cc [project]` | Open specific project directly with global optimizations |
-| `cc list` | List all available projects |
-| `cc new [name]` | Create new project with optimization templates |
-| `cc status` | Show Claude Code system status and available features |
-| `cc help` | Show complete usage information |
-| `ff` | Display system info with custom NixOS logo |
+| `claude` | Launch Claude Code AI assistant |
+| `fastfetch` | Display system info with custom NixOS logo |
 
-**Enhanced Claude Code Features:**
-- **Global Optimization**: Masterclass patterns and autonomous operation across all projects
-- **12 Slash Commands**: Including `/primer`, `/analyze`, `/generate`, `/execute`
-- **4 Specialized Subagents**: Validation, documentation, NixOS configuration, security
-- **Parallel Development**: Multi-approach development with `/prep-parallel`
-- **MCP Integration**: Ready for Serena and other Model Context Protocol servers
-- **Project Templates**: Rapid setup for new development projects
+**Note**: Claude Code features depend on having Claude Code installed and configured. The modular setup provides the basic integration - full features may require additional setup.
 
 ### Development Workflow
 
 #### System Configuration
-1. Make configuration changes
-2. Test: `nrt`
-3. Apply: `nrs` (if tests pass)
-4. For updates: `update-all-test` → `update-all`
+1. Make configuration changes to files in `~/dotfiles`
+2. Test: `sudo nixos-rebuild test --flake .#[your-config]`
+3. Apply: `sudo nixos-rebuild switch --flake .#[your-config]` (if tests pass)
+4. For updates: `nix flake update` then test and apply
 
-#### Claude Code Projects
-1. **Navigate**: `cc` to see project menu or `cc [project]` for direct access
-2. **Create**: `cc new [name]` for new projects with optimization templates
-3. **Develop**: All projects inherit global optimizations and advanced features
-4. **Advanced**: Use `/prep-parallel` for complex multi-approach development
+#### Claude Code Development (if enabled)
+1. **Launch**: `claude` to start Claude Code
+2. **Create projects**: Use standard development workflow
+3. **Development**: Use editors like Zed for coding
 
-**Project Structure:**
-```
-~/claude-projects/
-├── .claude/                    # Global optimization configuration
-├── projects/                   # All individual development projects
-│   ├── hx99g/                 # NixOS configuration project
-│   ├── my-app/                # Example application project
-│   └── [other-projects]/      # Additional projects
-├── templates/                  # Project templates for rapid setup
-├── shared/                     # Shared resources and patterns
-└── claude-launcher.sh          # Enhanced cc command script
-```
-
-## 🏗️ Architecture
+## 🏗️ Modular Architecture
 
 ### Core Files
 
 | File | Purpose |
 |------|---------|
-| `flake.nix` | Main flake definition with inputs and system configuration |
-| `configuration.nix` | System-level NixOS configuration |
+| `flake.nix` | Main flake definition with 4 system configurations |
+| `configuration.nix` | Feature toggles and basic system options |
 | `home.nix` | User-level Home Manager configuration |
 | `hardware-configuration.nix` | Hardware-specific settings |
-| `sugarplum.yaml` | Custom Stylix theme configuration |
-| `flake.lock` | Pinned versions of flake inputs |
-| `monster.jpg` | Wallpaper image for theme generation |
+| `modules/options.nix` | Global configuration schema and feature toggles |
+| `modules/core/` | Essential system components (always enabled) |
+| `modules/security/` | Security features and YubiKey integration |
+| `modules/desktop/` | Desktop environment and applications |
+| `modules/development/` | Development tools and Claude Code |
+| `modules/gaming/` | Gaming support and emulators |
 
-### System Features
+### What's Included
 
-#### 🔒 Security & Authentication
-- **YubiKey U2F**: Integrated for login, sudo, SDDM, and polkit
+#### 🔒 **Security Features** (All configurations)
+- **YubiKey U2F**: Integrated for login, sudo, SDDM, and polkit (optional)
   - Automatic login when registered YubiKey is present
   - Systemd services for dynamic login control
 - **Suricata IDS**: Network intrusion detection and prevention
@@ -135,15 +213,13 @@ This configuration targets the **HX99G** desktop system, providing:
 - **PAM Configuration**: Hardened authentication stack
 - **Polkit**: Secure privilege escalation
 
-#### 🎨 Desktop Environment
-- **Hyprland**: Wayland compositor with custom configuration
-  - Master layout with custom animations
-  - No window borders for clean aesthetics
-  - Custom keybindings and workspace management
-- **Waybar**: Custom status bar with system monitoring
-  - Temperature, network, audio, and workspace indicators
-  - Power controls and application shortcuts
-  - Themed with Sugarplum colors
+#### 🎨 **Desktop Environment** (All configurations)
+- **Hyprland**: Wayland compositor (basic configuration)
+  - Default Hyprland settings (customizable via home.nix)
+  - Hyprland utilities included (grim, slurp, wl-clipboard, etc.)
+- **Waybar**: Status bar (configured via home-manager)
+  - System monitoring capabilities
+  - Themed integration
 - **SDDM**: Display manager with theme integration
 - **Stylix**: Consistent theming across all applications
 - **Sugarplum Theme**: Dark color scheme with carefully chosen palette
@@ -158,9 +234,9 @@ This configuration targets the **HX99G** desktop system, providing:
 - **Productivity**: GIMP, LibreWolf browser, Anki flashcards
 - **Communication**: Vesktop (Discord)
 
-#### 🛠️ Development Tools
+#### 🛠️ **Development Tools** (All configurations)
 - **Zed**: Primary code editor with extensive language support
-- **Claude Code**: Enhanced AI development assistant with:
+- **Claude Code**: Enhanced AI development assistant with (optional):
   - **Global Project Management**: Intelligent navigation across all development projects
   - **Masterclass Optimizations**: Advanced autonomous operation with pre-approved permissions
   - **Specialized Subagents**: Validation gates, documentation, NixOS config, security audit
@@ -188,6 +264,43 @@ This configuration targets the **HX99G** desktop system, providing:
 
 ## 🔧 Customization
 
+### Personalizing Your System
+
+Edit `configuration.nix` to customize basic settings:
+
+```nix
+mySystem = {
+  hostName = "your-hostname";        # Change system hostname
+  user = {
+    name = "your-username";          # Change your username
+    description = "Your Name";       # Change user description
+  };
+
+  # Hardware features (adjust for your system)
+  hardware = {
+    amd = true;                      # Set to false for Intel/NVIDIA only
+    nvidia = false;                  # Set to true if you have NVIDIA GPU
+    bluetooth = true;                # Set to false if no Bluetooth needed
+    steam = true;                    # Set to false if not gaming
+  };
+};
+```
+
+### Advanced Customization
+
+Want to create your own feature combination? Copy one of the configurations in `flake.nix` and modify the features:
+
+```nix
+mySystem.features = {
+  desktop = true;                    # Keep desktop environment
+  security = true;                   # Keep security features
+  development = true;                # Keep development tools
+  gaming = false;                    # Disable gaming if not needed
+  yubikey = false;                   # Your choice
+  claudeCode = true;                 # Your choice
+};
+```
+
 ### Adding Applications
 
 **System-wide packages:**
@@ -208,12 +321,12 @@ home.packages = with pkgs; [
 
 ### Modifying Hyprland
 
-All Hyprland configuration is in `home.nix` under `wayland.windowManager.hyprland.settings`:
+Hyprland is enabled in the system configuration at `modules/desktop/hyprland.nix`, but detailed Hyprland settings (keybindings, animations, etc.) would need to be added to `home.nix`:
 
-- **Keybindings**: `bind`, `bindm`, `bindle` sections
-- **Window rules**: `windowrulev2` array
-- **Startup apps**: `exec-once` array
-- **Animations**: `animation` and `bezier` sections
+- **System-level**: `modules/desktop/hyprland.nix` enables Hyprland and installs utilities
+- **User-level**: Add `wayland.windowManager.hyprland.settings` to `home.nix` for custom configuration
+- **Window rules**: Configure in `home.nix` under `windowrulev2` array
+- **Keybindings**: Configure in `home.nix` under `bind`, `bindm`, `bindle` sections
 
 ### Adding Services
 
@@ -255,31 +368,58 @@ The system uses **Stylix** for consistent theming with the **Sugarplum** color s
 
 ### Customizing the Theme
 
-1. **Change color scheme**: Modify `sugarplum.yaml` or replace with another base16 theme
-2. **Update wallpaper**: Replace `monster.jpg` and update reference in `configuration.nix`
+1. **Change color scheme**: Modify `modules/desktop/stylix.nix` or replace with another base16 theme
+2. **Update wallpaper**: Replace `modules/desktop/monster.jpg` and update reference in stylix configuration
 3. **Font changes**: Modify font selections in the Stylix configuration
 
-## 🔐 Security Features
+## 🔐 YubiKey Setup (If Enabled)
 
-### YubiKey Integration
-- **Login**: U2F authentication for user sessions
-- **Sudo**: Two-factor authentication for privilege escalation
-- **SDDM**: Hardware key requirement for display manager
-- **Polkit**: Secure authentication for system actions
-- **Auto-Login**: Automatic login when registered YubiKey is detected
-  - Systemd services monitor YubiKey insertion/removal
-  - Validates registered keys against U2F configuration
-  - Enables/disables SDDM auto-login dynamically
+If you chose `HX99G` or `HX99G-no-claude` configuration:
+
+1. **Register your YubiKey:**
+   ```bash
+   mkdir -p ~/.config/Yubico
+   pamu2fcfg > ~/.config/Yubico/u2f_keys
+   ```
+
+2. **Test authentication:**
+   ```bash
+   sudo echo "YubiKey working!"  # Should prompt for YubiKey touch
+   ```
+
+3. **Auto-login behavior:**
+   - System automatically logs you in when your registered YubiKey is present
+   - Removes auto-login when YubiKey is unplugged
+   - Check logs: `sudo journalctl -u yubikey-autologin-init`
 
 ### Network Security
 - **Firewall**: nftables with restrictive default policies
 - **SSH**: Hardened SSH configuration
 - **NetworkManager**: Secure network management
 
+## 🤖 Claude Code Features (If Enabled)
+
+If you chose `HX99G` or `HX99G-no-yubikey` configuration:
+
+### Available Commands
+```bash
+cc                     # Interactive project menu
+cc [project]           # Open specific project directly
+cc list                # List all available projects
+cc new [name]          # Create new project with templates
+cc status              # Show Claude Code system status
+```
+
+### Enhanced Development Features
+- **Global Project Management**: Intelligent navigation across development projects
+- **AI Development Assistant**: Advanced workflows and automation
+- **Specialized Subagents**: Validation, documentation, NixOS configuration assistance
+- **MCP Integration**: Model Context Protocol server support
+
 ## 📊 System Specifications
 
-**Target Hardware (HX99G):**
-- AMD CPU with integrated graphics
+**Target Hardware:**
+- AMD/Intel CPU with integrated graphics
 - Nvidia GPU (optional/hybrid)
 - Bluetooth 5.0+
 - Audio: Pipewire-compatible
@@ -302,7 +442,7 @@ The system uses **Stylix** for consistent theming with the **Sugarplum** color s
 # Clean and retry
 recycle
 nix flake update
-nrt
+sudo nixos-rebuild test --flake .#HX99G  # or your chosen config
 ```
 
 **Audio not working:**
@@ -334,10 +474,13 @@ If the system becomes unbootable:
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Test changes with `nrt`
-4. Submit a pull request
+This configuration is designed to be easily forkable and customizable:
+
+1. **Fork the repository**
+2. **Customize** `configuration.nix` for your needs
+3. **Add/modify modules** in the `modules/` directory
+4. **Test thoroughly** with `sudo nixos-rebuild test`
+5. **Share your improvements** via pull requests
 
 ## 📄 License
 
@@ -345,4 +488,4 @@ This configuration is provided as-is for educational and personal use. Adapt fre
 
 ---
 
-**Note**: This configuration includes security hardening and YubiKey integration. Ensure you have proper backup authentication methods before enabling U2F requirements.
+**Perfect for both new and experienced NixOS users!** Choose your configuration based on your hardware and preferences, then enjoy a fully-configured modern desktop system with optional advanced features. 🚀
