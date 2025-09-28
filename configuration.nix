@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, inputs, ... }:
 
 {
   imports = [
@@ -18,15 +18,18 @@
     user = {
       name = "weegs";
       description = "weegs";
-      extraGroups = [ "networkmanager" "wheel" ];
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
     };
 
     # Feature toggles - customize as needed
     features = {
       desktop = true;
       security = true;
-      yubikey = true;           # Set to false to disable YubiKey features
-      claudeCode = true;        # Set to false to disable Claude Code
+      yubikey = true; # Set to false to disable YubiKey features
+      claudeCode = true; # Set to false to disable Claude Code
       development = true;
       gaming = true;
     };
