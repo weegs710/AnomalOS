@@ -1,11 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   nix = {
     gc = {
       automatic = true;
       dates = "daily";
-      options = "--delete-generations +10";
+      options = "--delete-older-than 90d";
     };
 
     settings = {
