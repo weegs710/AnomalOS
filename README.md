@@ -48,8 +48,8 @@ git --version
 
 #### Step 2: Clone and Setup the Configuration
 ```bash
-# Clone this repository (replace with actual repo URL when published)
-git clone [YOUR-REPO-URL] ~/dotfiles
+# Clone this repository
+git clone https://github.com/weegs710/nix-install.git ~/dotfiles
 cd ~/dotfiles
 
 # Verify you're in the right directory
@@ -440,7 +440,7 @@ cc status              # Show Claude Code system status
 **Build failures:**
 ```bash
 # Clean and retry
-recycle
+sudo nix-collect-garbage -d
 nix flake update
 sudo nixos-rebuild test --flake .#HX99G  # or your chosen config
 ```
