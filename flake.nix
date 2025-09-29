@@ -15,7 +15,7 @@
     # Four essential configurations covering all use cases
     nixosConfigurations = {
       # Full system with all features (YubiKey + Claude Code + Gaming + Desktop)
-      HX99G = nixpkgs.lib.nixosSystem {
+      Rig = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
@@ -26,7 +26,7 @@
       };
 
       # No YubiKey (Claude Code + Gaming + Desktop)
-      HX99G-no-yubikey = nixpkgs.lib.nixosSystem {
+      Hack = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
@@ -40,7 +40,7 @@
       };
 
       # No Claude Code (YubiKey + Gaming + Desktop)
-      HX99G-no-claude = nixpkgs.lib.nixosSystem {
+      Guard = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
@@ -54,7 +54,7 @@
       };
 
       # Minimal system (Gaming + Desktop only, no YubiKey or Claude Code)
-      HX99G-minimal = nixpkgs.lib.nixosSystem {
+      Stub = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [

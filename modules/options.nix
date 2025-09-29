@@ -8,13 +8,13 @@ with lib;
     user = {
       name = mkOption {
         type = types.str;
-        default = "weegs";
+        default = "anomalos";
         description = "Primary username for the system";
       };
 
       description = mkOption {
         type = types.str;
-        default = "weegs";
+        default = "AnomalOS User";
         description = "User description";
       };
 
@@ -28,7 +28,7 @@ with lib;
     # System configuration
     hostName = mkOption {
       type = types.str;
-      default = "nixos";
+      default = "anomalos";
       description = "System hostname";
     };
 
