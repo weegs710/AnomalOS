@@ -18,12 +18,12 @@ This configuration targets **x86_64 desktop systems**, providing:
 
 This flake provides **exactly 4 configurations** to cover all common use cases:
 
-| Configuration | YubiKey | Claude Code | Gaming | Desktop | Use Case |
-|---------------|---------|-------------|--------|---------|----------|
-| `HX99G` | ✅ | ✅ | ✅ | ✅ | **Full system** - Everything enabled |
-| `HX99G-no-yubikey` | ❌ | ✅ | ✅ | ✅ | **No YubiKey hardware** |
-| `HX99G-no-claude` | ✅ | ❌ | ✅ | ✅ | **Prefer other dev tools** |
-| `HX99G-minimal` | ❌ | ❌ | ✅ | ✅ | **Basic desktop system** |
+| Configuration | YubiKey (Security) | Claude Code (AI/Dev) | Final Mapping |
+|---------------|-------------------|---------------------|---------------|
+| `Rig` | ✅ | ✅ | Full system (The complete, optimized machine) |
+| `Guard` | ✅ | ❌ | Security Focus (Direct defense via YubiKey) |
+| `Hack` | ❌ | ✅ | Dev Focus (Raw, untethered programming) |
+| `Stub` | ❌ | ❌ | Minimal system (A basic, essential connection) |
 
 ## 🚀 Quick Start
 
@@ -73,17 +73,17 @@ ls -la hardware-configuration.nix
 
 | Configuration | Choose If You... |
 |---------------|------------------|
-| `HX99G` | Have a YubiKey and want Claude Code |
-| `HX99G-no-yubikey` | Want Claude Code but no YubiKey |
-| `HX99G-no-claude` | Have YubiKey but prefer other dev tools |
-| `HX99G-minimal` | Want basic system (no YubiKey or Claude Code) |
+| `Rig` | Have a YubiKey and want Claude Code |
+| `Hack` | Want Claude Code but no YubiKey |
+| `Guard` | Have YubiKey but prefer other dev tools |
+| `Stub` | Want basic system (no YubiKey or Claude Code) |
 
 #### Step 5: Test Your Configuration (IMPORTANT!)
 **Always test before switching to avoid breaking your system:**
 
 ```bash
-# Replace HX99G with your chosen configuration
-sudo nixos-rebuild test --flake .#HX99G
+# Replace Rig with your chosen configuration
+sudo nixos-rebuild test --flake .#Rig
 ```
 
 **What to expect during test:**
@@ -94,12 +94,12 @@ sudo nixos-rebuild test --flake .#HX99G
 **If test fails:**
 - Check error messages carefully
 - Ensure hardware-configuration.nix was generated correctly
-- Try different configuration (e.g., HX99G-minimal)
+- Try different configuration (e.g., Stub)
 
 #### Step 6: Apply Configuration (Only After Successful Test)
 ```bash
 # Only run this if the test in Step 5 completed successfully
-sudo nixos-rebuild switch --flake .#HX99G
+sudo nixos-rebuild switch --flake .#Rig
 ```
 
 #### Step 7: Reboot and Verify
@@ -120,6 +120,50 @@ sudo reboot
 2. **Builds**: System will compile any necessary components
 3. **Configuration**: Applies all module settings and creates user environment
 4. **Services**: Starts all configured services (Hyprland, audio, etc.)
+
+## 🔧 System Management
+
+This configuration provides powerful aliases and functions for managing your system:
+
+### Quick Rebuild Commands
+
+**Configuration-specific aliases:**
+```bash
+# Test configurations (safe, temporary)
+nrt-rig        # Test Rig configuration
+nrt-hack       # Test Hack configuration
+nrt-guard      # Test Guard configuration
+nrt-stub       # Test Stub configuration
+
+# Switch configurations (permanent)
+nrs-rig        # Switch to Rig configuration
+nrs-hack       # Switch to Hack configuration
+nrs-guard      # Switch to Guard configuration
+nrs-stub       # Switch to Stub configuration
+```
+
+### Interactive Update Functions
+
+**Safe update-and-rebuild with prompts:**
+```bash
+rig-up         # Update flake + test Rig + prompt to switch
+hack-up        # Update flake + test Hack + prompt to switch
+guard-up       # Update flake + test Guard + prompt to switch
+stub-up        # Update flake + test Stub + prompt to switch
+```
+
+Each `*-up` function:
+1. Updates all flake inputs to latest versions
+2. Tests the new configuration safely
+3. Prompts you to switch only if test succeeds
+4. You can decline to keep the old config
+
+### Manual Operations
+```bash
+update         # Update flake inputs only
+nfa            # Archive flake for sharing
+recycle        # Clean up old system generations
+```
 
 ### Configuration-Specific Setup
 
@@ -156,7 +200,7 @@ claude
 | `sudo nix-collect-garbage -d` | Clean up old system generations |
 | `nix flake check` | Validate flake syntax |
 
-**Note**: Replace `[config]` with your chosen configuration (HX99G, HX99G-minimal, etc.)
+**Note**: Replace `[config]` with your chosen configuration (Rig, Stub, etc.)
 
 ### AI Development Assistant (Claude Code configurations only)
 | Command | Description |
@@ -374,7 +418,7 @@ The system uses **Stylix** for consistent theming with the **Sugarplum** color s
 
 ## 🔐 YubiKey Setup (If Enabled)
 
-If you chose `HX99G` or `HX99G-no-claude` configuration:
+If you chose `Rig` or `Guard` configuration:
 
 1. **Register your YubiKey:**
    ```bash
@@ -399,7 +443,7 @@ If you chose `HX99G` or `HX99G-no-claude` configuration:
 
 ## 🤖 Claude Code Features (If Enabled)
 
-If you chose `HX99G` or `HX99G-no-yubikey` configuration:
+If you chose `Rig` or `Hack` configuration:
 
 ### Available Commands
 ```bash
@@ -442,7 +486,7 @@ cc status              # Show Claude Code system status
 # Clean and retry
 sudo nix-collect-garbage -d
 nix flake update
-sudo nixos-rebuild test --flake .#HX99G  # or your chosen config
+sudo nixos-rebuild test --flake .#Rig  # or your chosen config
 ```
 
 **Audio not working:**
@@ -470,7 +514,7 @@ If the system becomes unbootable:
 
 1. Boot from NixOS installer
 2. Mount your filesystems
-3. `nixos-rebuild switch --flake /mnt/path/to/dotfiles#HX99G`
+3. `nixos-rebuild switch --flake /mnt/path/to/dotfiles#Rig`
 
 ## 🤝 Contributing
 

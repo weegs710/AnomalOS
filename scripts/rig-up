@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Update flake, test Rig configuration, and prompt to switch
+
+set -e  # Exit on any error
+
+cd ~/dotfiles/
+
+echo "Updating flake..."
+nix flake update
+
+echo "Testing Rig configuration..."
+sudo nixos-rebuild test --flake .#Rig
+
+if [ $? -eq 0 ]; then
+    echo -n "Test successful! Switch to new configuration? [y/N] "
+    read -r response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        echo "Switching to new configuration..."
+        sudo nixos-rebuild switch --flake .#Rig
+        echo "Successfully switched to Rig configuration!"
+    else
+        echo "Test configuration not applied. You can run 'nrs-rig' later to switch."
+    fi
+else
+    echo "Test failed! Configuration not applied."
+    exit 1
+fi

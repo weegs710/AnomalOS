@@ -35,20 +35,126 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  # Essential system packages
+  # Essential system packages and scripts
   environment.systemPackages = with pkgs; [
     curl
     git
     wget
+
+    # Custom *-up scripts - portable across users
+    (pkgs.writeScriptBin "rig-up" ''
+      #!/usr/bin/env bash
+      # Update flake, test Rig configuration, and prompt to switch
+      set -e
+      cd ~/dotfiles/
+      echo "Updating flake..."
+      nix flake update
+      echo "Testing Rig configuration..."
+      sudo nixos-rebuild test --flake .#Rig
+      if [ $? -eq 0 ]; then
+          echo -n "Test successful! Switch to new configuration? [y/N] "
+          read -r response
+          if [[ "$response" =~ ^[Yy]$ ]]; then
+              echo "Switching to new configuration..."
+              sudo nixos-rebuild switch --flake .#Rig
+              echo "Successfully switched to Rig configuration!"
+          else
+              echo "Test configuration not applied. You can run 'nrs-rig' later to switch."
+          fi
+      else
+          echo "Test failed! Configuration not applied."
+          exit 1
+      fi
+    '')
+    (pkgs.writeScriptBin "hack-up" ''
+      #!/usr/bin/env bash
+      # Update flake, test Hack configuration, and prompt to switch
+      set -e
+      cd ~/dotfiles/
+      echo "Updating flake..."
+      nix flake update
+      echo "Testing Hack configuration..."
+      sudo nixos-rebuild test --flake .#Hack
+      if [ $? -eq 0 ]; then
+          echo -n "Test successful! Switch to new configuration? [y/N] "
+          read -r response
+          if [[ "$response" =~ ^[Yy]$ ]]; then
+              echo "Switching to new configuration..."
+              sudo nixos-rebuild switch --flake .#Hack
+              echo "Successfully switched to Hack configuration!"
+          else
+              echo "Test configuration not applied. You can run 'nrs-hack' later to switch."
+          fi
+      else
+          echo "Test failed! Configuration not applied."
+          exit 1
+      fi
+    '')
+    (pkgs.writeScriptBin "guard-up" ''
+      #!/usr/bin/env bash
+      # Update flake, test Guard configuration, and prompt to switch
+      set -e
+      cd ~/dotfiles/
+      echo "Updating flake..."
+      nix flake update
+      echo "Testing Guard configuration..."
+      sudo nixos-rebuild test --flake .#Guard
+      if [ $? -eq 0 ]; then
+          echo -n "Test successful! Switch to new configuration? [y/N] "
+          read -r response
+          if [[ "$response" =~ ^[Yy]$ ]]; then
+              echo "Switching to new configuration..."
+              sudo nixos-rebuild switch --flake .#Guard
+              echo "Successfully switched to Guard configuration!"
+          else
+              echo "Test configuration not applied. You can run 'nrs-guard' later to switch."
+          fi
+      else
+          echo "Test failed! Configuration not applied."
+          exit 1
+      fi
+    '')
+    (pkgs.writeScriptBin "stub-up" ''
+      #!/usr/bin/env bash
+      # Update flake, test Stub configuration, and prompt to switch
+      set -e
+      cd ~/dotfiles/
+      echo "Updating flake..."
+      nix flake update
+      echo "Testing Stub configuration..."
+      sudo nixos-rebuild test --flake .#Stub
+      if [ $? -eq 0 ]; then
+          echo -n "Test successful! Switch to new configuration? [y/N] "
+          read -r response
+          if [[ "$response" =~ ^[Yy]$ ]]; then
+              echo "Switching to new configuration..."
+              sudo nixos-rebuild switch --flake .#Stub
+              echo "Successfully switched to Stub configuration!"
+          else
+              echo "Test configuration not applied. You can run 'nrs-stub' later to switch."
+          fi
+      else
+          echo "Test failed! Configuration not applied."
+          exit 1
+      fi
+    '')
   ];
 
   # Basic shell aliases
   environment.shellAliases = {
     nfa = "cd ~/dotfiles/ && nix flake archive";
-    nrs = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#${config.networking.hostName}";
-    nrt = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#${config.networking.hostName}";
     recycle = "sudo nix-collect-garbage --delete-older-than 7d";
-    update-all = "cd ~/dotfiles/ && sudo nix flake update && nrs";
-    update-all-test = "cd ~/dotfiles/ && sudo nix flake update && nrt";
+    update = "cd ~/dotfiles/ && nix flake update";
+
+    # Configuration-specific rebuild aliases
+    nrs-rig = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Rig";
+    nrt-rig = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Rig";
+    nrs-hack = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Hack";
+    nrt-hack = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Hack";
+    nrs-guard = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Guard";
+    nrt-guard = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Guard";
+    nrs-stub = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Stub";
+    nrt-stub = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Stub";
   };
+
 }
