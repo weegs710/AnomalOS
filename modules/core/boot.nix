@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   boot = {
@@ -10,7 +15,8 @@
     ];
     consoleLogLevel = 0;
     initrd.verbose = false;
-
+    supportedFilesystems.ntfs = true;
+    supportedFilesystems.exfat = true;
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
