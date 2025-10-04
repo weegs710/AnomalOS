@@ -20,7 +20,10 @@ with lib;
 
       extraGroups = mkOption {
         type = types.listOf types.str;
-        default = [ "networkmanager" "wheel" ];
+        default = [
+          "networkmanager"
+          "wheel"
+        ];
         description = "Additional groups for the user";
       };
     };
