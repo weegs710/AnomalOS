@@ -4,14 +4,12 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   config = mkIf config.mySystem.features.development {
     # Add development editors to user packages
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      zed-editor
+      # zed-editor
+      vscodium
     ];
 
     # Development programs
