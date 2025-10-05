@@ -1,0 +1,28 @@
+# Purple-Colony Base16 Theme
+# Converted to base16 by weegs710 from VSCodium theme Purple Colony by ArmoredColony
+# For use with Stylix
+
+scheme: "purple-colony"
+author: "weegs710"
+
+# Dark backgrounds
+base00: "1b002b" # Default Background (full_screen_bg)
+base01: "1c0c25" # Lighter Background (derived, slightly lighter than base00)
+base02: "261033" # Selection Background (sidebar_divider)
+base03: "2f143f" # Comments, Invisibles, Line Highlighting (derived)
+
+# Light foregrounds
+base04: "16081f" # Dark Foreground (derived between base03 and base05)
+base05: "b392f0" # Default Foreground (sidebar_fg)
+base06: "c7aaff" # Light Foreground (derived, lighter than base05)
+base07: "ffffff" # Light Background (derived, lightest)
+
+# Accent Colors (Placeholder/Standard for high contrast)
+base08: "ff6666" # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted (cancel)
+base09: "ffaa55" # Integers, Boolean, Constants, XML Attributes, Markup Link Url (error)
+base0A: "ffff66" # Classes, Markup Bold, Search Text Background (help_menu_hotkey)
+base0B: "aaffaa" # Strings, Inherited Class, Markup Code, Diff Inserted (cursor)
+base0C: "66ccff" # Support, Regular Expressions, Escape Characters, Markup Quotes (file_panel_top_directory_icon)
+base0D: "9999ff" # Functions, Methods, Attribute IDs, Headings (footer_fg)
+base0E: "cc66cc" # Keywords, Storage, Selector, Markup Italic, Diff Changed (file_panel_border)
+base0F: "a565f0" # Deprecated, Opening/Closing Embedded Language Tags (full_screen_fg)

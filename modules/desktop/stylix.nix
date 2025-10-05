@@ -4,33 +4,30 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   config = mkIf config.mySystem.features.desktop {
     # Stylix theming
     stylix = {
       enable = true;
       base16Scheme = {
-        base00 = "111147";
-        base01 = "1a1a5c";
-        base02 = "565f89";
-        base03 = "6b7394";
-        base04 = "a8b5d1";
-        base05 = "d0beee";
-        base06 = "dbc8f0";
-        base07 = "e6d4f5";
-        base08 = "b53dff";
-        base09 = "2082a6";
-        base0A = "7dcfff";
-        base0B = "53b397";
-        base0C = "249a84";
-        base0D = "5ca8dc";
-        base0E = "a175d4";
-        base0F = "db7ddd";
-        scheme = "Sugarplum";
-        author = "lemonlime0x3C33 (converted)";
+        base00 = "1b002b";
+        base01 = "1c0c25";
+        base02 = "261033";
+        base03 = "2f143f";
+        base04 = "16081f";
+        base05 = "b392f0";
+        base06 = "c7aaff";
+        base07 = "ffffff";
+        base08 = "ff6666";
+        base09 = "ffaa55";
+        base0A = "ffff66";
+        base0B = "aaffaa";
+        base0C = "66ccff";
+        base0D = "9999ff";
+        base0E = "cc66cc";
+        base0F = "a565f0";
+        scheme = "Purple Colony";
+        author = "weegs710";
       };
       image = ./monster.jpg;
       polarity = "dark";

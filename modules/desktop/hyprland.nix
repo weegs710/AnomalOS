@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   config = mkIf config.mySystem.features.desktop {
     # Hyprland and related programs
     programs = {
