@@ -19,6 +19,17 @@ in
   # Enable Claude Code enhanced features
   programs.claude-code-enhanced.enable = true;
 
+  # Override Fish shell colors for better visibility
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      # Fix parameter color (was 16081f - too dark)
+      set -g fish_color_param b392f0  # base05 light purple
+      # Optional: improve autosuggestion visibility
+      set -g fish_color_autosuggestion 2f143f  # base03 medium purple
+    '';
+  };
+
   home.username = username;
   home.homeDirectory = homeDirectory;
   home.stateVersion = "25.05";
