@@ -29,8 +29,9 @@ with lib; {
         scheme = "Purple Colony";
         author = "weegs710";
       };
-      image = ./monster.jpg;
+      image = ./AnomalOS.png;
       polarity = "dark";
+      imageScalingMode = "stretch";
       targets = {
         gtk.enable = true;
         qt.enable = true;
