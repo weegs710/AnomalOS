@@ -208,7 +208,7 @@ in {
           font-family: "Terminess Nerd Font";
           font-weight: bold;
           font-size: 18px;
-          color: @base05;
+          color: @base07;
       }
 
       #tray menu {
@@ -306,7 +306,7 @@ in {
       #workspaces button {
           background: transparent;
           border: none;
-          color: @base03;
+          color: @base05;
           padding: 2px 8px;
           margin: 0 2px;
           font-weight: bold;
