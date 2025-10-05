@@ -10,7 +10,7 @@ This configuration targets **x86_64 desktop systems**, providing:
 - **Window Manager**: Hyprland (basic configuration, customizable)
 - **Display Manager**: SDDM with optional YubiKey U2F authentication
 - **Shell**: Fish with Starship prompt
-- **Editor**: Zed (primary), with full development toolchain
+- **Editor**: VS Codium (primary), with full development toolchain
 - **Theme**: Sugarplum dark theme with consistent styling via Stylix
 - **Security**: Hardened with optional YubiKey U2F for login, sudo, and polkit
 
