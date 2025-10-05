@@ -335,7 +335,7 @@ in {
       ];
       exec-once = [
         "swww-daemon &"
-        "swww img ${config.home.homeDirectory}/dotfiles/modules/desktop/AnomalOS.png"
+        "swww img ${config.home.homeDirectory}/dotfiles/modules/desktop/anom2wide.png"
         "dunst &"
         "nfa &"
         "tmux new -d waybar &"
