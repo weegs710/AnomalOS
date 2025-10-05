@@ -4,14 +4,10 @@
   config,
   osConfig,
   ...
-}:
-
-let
+}: let
   username = osConfig.mySystem.user.name;
   homeDirectory = "/home/${username}";
-in
-
-{
+in {
   imports = [
     ./modules/claude-code-enhanced
   ];
@@ -339,7 +335,7 @@ in
       ];
       exec-once = [
         "swww-daemon &"
-        "swww img ${config.home.homeDirectory}/Pictures/monster.jpg"
+        "swww img ${config.home.homeDirectory}/dotfiles/modules/desktop/AnomalOS.png"
         "dunst &"
         "nfa &"
         "tmux new -d waybar &"
