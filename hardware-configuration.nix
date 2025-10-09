@@ -3,9 +3,7 @@
   lib,
   modulesPath,
   ...
-}:
-
-{
+}: {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -18,9 +16,9 @@
     "uas"
     "sd_mod"
   ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
+  boot.initrd.kernelModules = [];
+  boot.kernelModules = ["kvm-amd"];
+  boot.extraModulePackages = [];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/edb70a9e-9790-4a43-b807-3f9554379c73";
@@ -47,12 +45,14 @@
     ];
   };
 
-  swapDevices = [ ];
+  swapDevices = [];
 
   # Zram configuration
   zramSwap = {
     enable = true;
     memoryPercent = 25;
+    algorithm = "zstd";
+    priority = 100;
   };
 
   networking.useDHCP = lib.mkDefault true;

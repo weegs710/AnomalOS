@@ -335,7 +335,7 @@ in {
       ];
       exec-once = [
         "swww-daemon &"
-        "swww img ${config.home.homeDirectory}/dotfiles/modules/desktop/anom3wide.png"
+        "swww img ${config.home.homeDirectory}/dotfiles/modules/desktop/anom2wide.png"
         "dunst &"
         "nfa &"
         "tmux new -d waybar &"
@@ -350,7 +350,7 @@ in {
         "col.inactive_border" = lib.mkForce "rgba(00000000)";
         resize_on_border = false;
         allow_tearing = false;
-        layout = "master";
+        layout = "dwindle";
       };
       dwindle = {
         pseudotile = true;
