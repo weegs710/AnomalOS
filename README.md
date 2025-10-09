@@ -1,5 +1,5 @@
 # AnomalOS Desktop Configuration
-
+test
 A comprehensive **modular** NixOS configuration using Nix flakes for a modern desktop system with Hyprland window manager, featuring automated security hardening, theming, and development tools with **optional YubiKey and Claude Code support**.
 
 ## 🖥️ System Overview
