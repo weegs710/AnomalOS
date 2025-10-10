@@ -55,8 +55,6 @@ with lib; {
     # Desktop applications and utilities
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       # Desktop applications
-      freetube
-      librewolf
       mpv
       pavucontrol
       qalculate-gtk
