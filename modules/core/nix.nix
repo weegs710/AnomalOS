@@ -2,10 +2,9 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
-}:
-
-{
+}: {
   nix = {
     gc = {
       automatic = true;
@@ -17,7 +16,7 @@
       auto-optimise-store = true;
       warn-dirty = false;
       download-buffer-size = 268435456; # 256MB
-      trusted-users = [ config.mySystem.user.name ];
+      trusted-users = [config.mySystem.user.name];
       experimental-features = [
         "nix-command"
         "flakes"
@@ -40,6 +39,7 @@
     curl
     git
     wget
+    inputs.helium.defaultPackage.${pkgs.system}
 
     # Custom *-up scripts - portable across users
     (pkgs.writeScriptBin "rig-up" ''
@@ -156,5 +156,4 @@
     nrs-stub = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Stub";
     nrt-stub = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Stub";
   };
-
 }
