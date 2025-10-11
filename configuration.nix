@@ -32,6 +32,7 @@
       claudeCode = true; # Set to false to disable Claude Code
       development = true;
       gaming = true;
+      aiAssistant = true; # Ollama + Open WebUI with clanker command
     };
 
     # Hardware features

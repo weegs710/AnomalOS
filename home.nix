@@ -323,7 +323,7 @@ in {
     enable = true;
     settings = {
       "$terminal" = "kitty";
-      "$fileManager" = "thunar";
+      "$fileManager" = "kitty -e yazi";
       "$menu" = "rofi -show drun -show-icons";
       "$webBrowser" = "librewolf";
       "$mainMod" = "SUPER";
@@ -368,7 +368,7 @@ in {
         disable_hyprland_logo = lib.mkForce false;
       };
       decoration = {
-        rounding = 5;
+        rounding = 10;
         active_opacity = 1;
         inactive_opacity = 1;
         shadow = {
