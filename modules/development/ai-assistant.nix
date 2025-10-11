@@ -113,10 +113,6 @@ in
         then pkgs.ollama-rocm
         else pkgs.ollama;
 
-      # Preload base models on service start
-      loadModels = [
-        "qwen3:30b"  # Base model for nix-expert (thinking model)
-      ];
 
       # ROCm environment variables
       environmentVariables = mkIf config.mySystem.hardware.amd {
@@ -129,6 +125,7 @@ in
         OLLAMA_GPU_LAYERS = "0";              # Full model in RAM, no GPU
         OLLAMA_NUM_PARALLEL = "1";            # Single user, less overhead
         OLLAMA_MAX_LOADED_MODELS = "1";       # Only keep one model in memory
+        OLLAMA_KEEP_ALIVE = "0";              # Unload immediately after exit
       };
     };
 
@@ -162,20 +159,6 @@ in
     };
 
 
-    # Systemd service to deploy models after Ollama starts
-    systemd.services.ollama-model-deployment = {
-      description = "Deploy custom Ollama models";
-      after = [ "ollama.service" ];
-      wants = [ "ollama.service" ];
-      wantedBy = [ "multi-user.target" ];
-
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${deployModels}/bin/deploy-ai-models";
-        User = "root";
-      };
-    };
 
     # System tuning for LLM performance
     boot.kernel.sysctl = {
