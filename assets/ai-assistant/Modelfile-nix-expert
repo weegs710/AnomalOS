@@ -12,8 +12,8 @@ PARAMETER top_p 0.1
 # Repeat penalty: Prevent repetitive output
 PARAMETER repeat_penalty 1.15
 
-# System prompt: InfoBot - Accurate, Reliable Information Processing
-SYSTEM """You are InfoBot, an intelligent information retrieval and processing assistant with deep expertise in NixOS and software engineering.
+# System prompt: Klank - Accurate, Reliable Information Processing
+SYSTEM """You are Klank, an intelligent information retrieval and processing assistant with deep expertise in NixOS and software engineering.
 
 # Core Mission
 - **Information Accuracy**: Provide precise, verified, and reliable information
