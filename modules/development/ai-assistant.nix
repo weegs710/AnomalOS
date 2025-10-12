@@ -9,8 +9,16 @@ with lib; let
   userHome = config.users.users.${userName}.home;
   assetsDir = "/etc/nixos/assets/ai-assistant"; # System-wide assets
 
-  # Create klank command to launch CLI assistant
+  # Create klank command to open Web UI in browser
   klank = pkgs.writeShellScriptBin "klank" ''
+    #!/usr/bin/env bash
+
+    # Open browser to Open WebUI (services auto-start on boot)
+    ${pkgs.xdg-utils}/bin/xdg-open http://localhost:8080 2>/dev/null &
+  '';
+
+  # Create klank-cli command to launch CLI assistant
+  klank-cli = pkgs.writeShellScriptBin "klank-cli" ''
     #!/usr/bin/env bash
 
     # Colors
@@ -20,18 +28,18 @@ with lib; let
     NC='\033[0m'
 
     echo -e "''${BLUE}╔══════════════════════════════════════════════════════╗''${NC}"
-    echo -e "''${BLUE}║                KLANK AI ASSISTANT                    ║''${NC}"
+    echo -e "''${BLUE}║             KLANK AI ASSISTANT - CLI                 ║''${NC}"
     echo -e "''${BLUE}╚══════════════════════════════════════════════════════╝''${NC}"
     echo ""
 
     # Check if ollama service is running
-    if ! systemctl is-active --quiet ollama.service; then
+    if ! systemctl --user is-active --quiet ollama.service; then
       echo -e "''${YELLOW}⚠️  Ollama service not running. Starting...''${NC}"
-      sudo systemctl start ollama.service
+      systemctl --user start ollama.service
       sleep 2
     fi
 
-    echo -e "''${GREEN}✓ Ollama service: ''${NC}$(systemctl is-active ollama.service)"
+    echo -e "''${GREEN}✓ Ollama service: ''${NC}$(systemctl --user is-active ollama.service)"
     echo ""
 
     # Get the base model that nix-expert uses
@@ -105,35 +113,58 @@ in {
   options.mySystem.features.aiAssistant = mkEnableOption "AI coding assistant (Ollama + Open WebUI)";
 
   config = mkIf config.mySystem.features.aiAssistant {
-    # Enable Ollama service with auto-start and GPU acceleration
-    services.ollama = {
-      enable = true;
-      acceleration =
-        if config.mySystem.hardware.nvidia
-        then "cuda"
-        else if config.mySystem.hardware.amd
-        then "rocm"
-        else null;
+    # Create user services for ollama and open-webui (no sudo required)
+    systemd.user.services.ollama = {
+      description = "Ollama LLM Service (User)";
+      after = ["network.target"];
 
-      # Use ROCm-enabled package for AMD
-      package =
-        if config.mySystem.hardware.amd
-        then pkgs.ollama-rocm
-        else pkgs.ollama;
-
-      # ROCm environment variables
-      environmentVariables = mkIf config.mySystem.hardware.amd {
-        HSA_OVERRIDE_GFX_VERSION = "10.3.0"; # For RX 6600/6600 XT (Navi 23)
-        HIP_VISIBLE_DEVICES = "0"; # Use GPU[0] (dedicated GPU)
-        ROCR_VISIBLE_DEVICES = "0"; # Ensure ROCm uses correct GPU
-        OLLAMA_DEBUG = "1";
-
-        # Performance optimization - Pure CPU/RAM inference
-        OLLAMA_GPU_LAYERS = "0"; # Full model in RAM, no GPU
-        OLLAMA_NUM_PARALLEL = "1"; # Single user, less overhead
-        OLLAMA_MAX_LOADED_MODELS = "1"; # Only keep one model in memory
-        OLLAMA_KEEP_ALIVE = "0"; # Unload immediately after exit
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${if config.mySystem.hardware.amd then pkgs.ollama-rocm else pkgs.ollama}/bin/ollama serve";
+        Restart = "on-failure";
+        RestartSec = "5s";
+        Environment = [
+          "OLLAMA_HOST=127.0.0.1:11434"
+          "OLLAMA_NUM_CTX=32000"
+        ] ++ lib.optionals config.mySystem.hardware.amd [
+          "HSA_OVERRIDE_GFX_VERSION=10.3.0"
+          "HIP_VISIBLE_DEVICES=0"
+          "ROCR_VISIBLE_DEVICES=0"
+          "OLLAMA_DEBUG=1"
+          "OLLAMA_GPU_LAYERS=0"
+          "OLLAMA_NUM_PARALLEL=1"
+          "OLLAMA_MAX_LOADED_MODELS=1"
+          "OLLAMA_KEEP_ALIVE=0"
+        ];
       };
+
+      wantedBy = ["default.target"];
+    };
+
+    systemd.user.services.open-webui = {
+      description = "Open WebUI (User)";
+      after = ["network.target"];
+
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.open-webui}/bin/open-webui serve --host 127.0.0.1 --port 8080";
+        Restart = "on-failure";
+        RestartSec = "5s";
+        Environment = [
+          "OLLAMA_BASE_URL=http://127.0.0.1:11434"
+          "WEBUI_AUTH=False"
+          "ENABLE_RAG_WEB_SEARCH=False"
+          "ENABLE_CODE_EXECUTION=True"
+          "CODE_EXECUTION_TIMEOUT=30"
+          "DATA_DIR=%h/.local/share/open-webui/data"
+          "HF_HOME=%h/.cache/huggingface"
+          "SENTENCE_TRANSFORMERS_HOME=%h/.cache/sentence-transformers"
+          "STATIC_DIR=%h/.local/share/open-webui/static"
+        ];
+      };
+
+      # Auto-start on boot
+      wantedBy = ["default.target"];
     };
 
     # Add user to ollama and render groups (render needed for GPU access)
@@ -149,8 +180,11 @@ in {
           else ollama
         )
 
-        # klank command to launch CLI assistant
+        # klank command to open Web UI in browser
         klank
+
+        # klank-cli command to launch CLI assistant
+        klank-cli
 
         # Model deployment script
         deployModels
@@ -204,8 +238,8 @@ in {
 
     # Add helpful shell aliases
     environment.shellAliases = {
-      ai = "ollama run nix-expert";
-      ai-cli = "ollama run nix-expert";
+      ai = "klank-cli";
+      ai-cli = "klank-cli";
       ai-web = "klank";
     };
   };

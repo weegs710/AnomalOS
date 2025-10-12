@@ -29,7 +29,7 @@ with lib; {
         scheme = "Purple Colony";
         author = "weegs710";
       };
-      image = ./anom2wide.png;
+      image = ./AnomalOS.jpeg;
       polarity = "dark";
       imageScalingMode = "stretch";
       targets = {
