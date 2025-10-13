@@ -28,9 +28,10 @@ with lib;
       lutris
       ppsspp
       protonup-qt
-      (retroarch-full.override {
-        cores = lib.filter (core: core.pname or "" != "libretro-thepowdertoy") retroarch-full.cores;
-      })
+      (retroarch.withCores (cores: with cores;
+        # All cores except broken thepowdertoy
+        lib.filter (core: core.pname or "" != "libretro-thepowdertoy") (lib.attrValues cores)
+      ))
       ryubing
     ];
   };
