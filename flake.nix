@@ -11,6 +11,10 @@
     };
     cachyos.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     helium.url = "github:FKouhai/helium2nix/main";
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs:

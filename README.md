@@ -13,6 +13,7 @@ For comprehensive documentation, see the [docs/](docs/) directory:
 - [Configuration Options](docs/CONFIGURATION.md)
 - [Features & Components](docs/FEATURES.md)
 - [Customization Guide](docs/CUSTOMIZATION.md)
+- [Secret Management](docs/SECRETS.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ## 🖥️ System Overview
@@ -96,6 +97,7 @@ stub-up        # Update flake + test Stub + prompt to switch
 
 ### 🔒 Security
 - YubiKey U2F authentication (optional)
+- **Agenix** for encrypted secret management
 - Suricata IDS for network monitoring
 - Hardened firewall with nftables
 - Kernel hardening and SSH hardening

@@ -50,12 +50,19 @@
     users.${config.mySystem.user.name} = import ./home.nix;
   };
 
+  # Agenix secrets configuration
+  age.secrets.restic-password = {
+    file = ./secrets/restic-password.age;
+    owner = "root";
+    mode = "400";
+  };
+
   # Backup service (optional but recommended)
   services.restic.backups = {
     localbackup = {
       initialize = true;
       repository = "/backup/restic-repo";
-      passwordFile = "/etc/nixos/restic-password";
+      passwordFile = config.age.secrets.restic-password.path;
       paths = [
         "/home/${config.mySystem.user.name}"
         "/etc/nixos"

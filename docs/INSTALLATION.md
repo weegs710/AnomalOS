@@ -103,7 +103,30 @@ mySystem = {
 };
 ```
 
-### Step 6: Test Configuration
+### Step 6: Create Secrets (REQUIRED)
+
+**IMPORTANT**: Create encrypted secrets before building:
+
+```bash
+cd ~/dotfiles
+
+# Update flake to get agenix
+nix flake update
+
+# Create restic backup password
+# This will open your $EDITOR (nano, vim, etc.)
+nix run github:ryantm/agenix -- -e secrets/restic-password.age
+
+# In the editor, enter a strong password (or generate one):
+# Example: openssl rand -base64 32
+# Save and exit
+```
+
+The encrypted secret is now stored in `secrets/restic-password.age` and is safe to commit to git.
+
+**Note**: See [docs/SECRETS.md](SECRETS.md) for complete secret management guide.
+
+### Step 7: Test Configuration
 
 **ALWAYS test before switching** to avoid breaking your system:
 
@@ -125,7 +148,7 @@ sudo nixos-rebuild test --flake .#Rig
 - Try a simpler configuration (e.g., Stub) first
 - Check the [Troubleshooting Guide](TROUBLESHOOTING.md)
 
-### Step 7: Apply Configuration
+### Step 8: Apply Configuration
 
 **Only proceed if Step 6 completed successfully:**
 
@@ -140,14 +163,14 @@ sudo nixos-rebuild switch --flake .#Rig
 - Boot loader is updated
 - User environment is configured
 
-### Step 8: Reboot
+### Step 9: Reboot
 
 ```bash
 # Reboot to ensure everything loads correctly
 sudo reboot
 ```
 
-### Step 9: Post-Installation Setup
+### Step 10: Post-Installation Setup
 
 After rebooting, perform configuration-specific setup:
 

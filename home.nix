@@ -32,6 +32,7 @@ in {
 
   # Basic home packages (always included)
   home.packages = with pkgs; [
+    agenix
     alejandra
     alarm-clock-applet
     btop-rocm
