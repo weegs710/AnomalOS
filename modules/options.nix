@@ -1,3 +1,13 @@
+# System Options Definition
+#
+# This module defines all configurable options for the mySystem namespace.
+# These options are set in configuration.nix and control which features are enabled.
+#
+# Usage:
+#   mySystem.features.desktop = true;
+#   mySystem.user.name = "username";
+#   mySystem.hardware.amd = true;
+
 { lib, ... }:
 
 with lib;
@@ -49,6 +59,7 @@ with lib;
       desktop = mkEnableOption "Desktop environment (Hyprland)";
       development = mkEnableOption "Development tools and languages";
       security = mkEnableOption "Enhanced security features";
+      aiAssistant = mkEnableOption "AI assistant (Ollama + Open WebUI)";
     };
 
     # Hardware features

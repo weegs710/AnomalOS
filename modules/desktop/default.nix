@@ -1,3 +1,26 @@
+# Desktop Environment Module
+#
+# Configures a complete Wayland desktop environment when mySystem.features.desktop = true
+#
+# Components:
+#   - hyprland.nix: Hyprland compositor configuration (Waybar, keybindings, window rules)
+#   - stylix.nix: System theming and color schemes
+#   - media.nix: Media player configurations
+#
+# Services Enabled:
+#   - SDDM display manager (Wayland mode)
+#   - PipeWire audio system (ALSA, PulseAudio, JACK compatibility)
+#   - XDG desktop portals for app integration
+#   - Device management (upower, ratbagd, devmon)
+#
+# Key Features:
+#   - Hyprland tiling Wayland compositor
+#   - Complete audio stack with PipeWire
+#   - File manager (Yazi terminal-based, Thunar GUI fallback)
+#   - Desktop applications (mpv, transmission, vesktop, etc.)
+#   - Terminal utilities (kitty, rofi, dunst)
+#   - X11 compatibility libraries for legacy apps
+
 {
   config,
   lib,

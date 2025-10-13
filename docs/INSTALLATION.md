@@ -50,16 +50,29 @@ ls -la
 
 ### Step 3: Generate Hardware Configuration
 
-**IMPORTANT**: This step generates hardware-specific configuration for your system:
+**IMPORTANT**: This step generates hardware-specific configuration for your system.
+
+The `hardware-configuration.nix` file is machine-specific and is **NOT tracked in git**. Each system must generate its own based on detected hardware. A template with documentation is provided at `hardware-configuration.nix.template`.
 
 ```bash
-# Generate hardware configuration (overwrites existing file)
+# Generate hardware configuration for your system
 sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
 
 # Verify the file was created
 ls -lh hardware-configuration.nix
 # File should exist and be larger than 0 bytes
+
+# Optional: Review the generated configuration
+cat hardware-configuration.nix
 ```
+
+**What's detected:**
+- Kernel modules for your hardware
+- Filesystem UUIDs and mount points
+- CPU type (AMD/Intel) for microcode updates
+- Boot configuration
+
+**Note**: Refer to `hardware-configuration.nix.template` for explanations of common hardware scenarios.
 
 ### Step 4: Choose Your Configuration
 
@@ -280,7 +293,12 @@ sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
 
 # Verify file contents
 cat hardware-configuration.nix
+
+# Compare with template to understand common options
+diff hardware-configuration.nix hardware-configuration.nix.template
 ```
+
+**Remember**: The `hardware-configuration.nix` file is machine-specific and not tracked in git. See `hardware-configuration.nix.template` for documentation on common hardware configurations.
 
 ### Network Issues During Build
 

@@ -338,6 +338,62 @@ ssh-add -L | grep -i cardno
 # are easier with a regular key
 ```
 
+### Git Refusing to Add Encrypted Secrets
+
+If git refuses to add `.age` files even though they're encrypted:
+
+```bash
+# Error you might see:
+$ git add secrets/restic-password.age
+The following paths are ignored by one of your .gitignore files:
+secrets/
+
+# Solution: Force add the encrypted file
+git add -f secrets/restic-password.age
+
+# Verify it was added
+git status
+```
+
+**Why this happens:**
+
+The `.gitignore` includes `secrets/` and `*.age` patterns as **defense in depth** - to prevent accidentally committing unencrypted secrets. However, agenix-encrypted `.age` files are safe to commit.
+
+**Defense in depth approach:**
+- `.gitignore` blocks all secrets by default (prevents accidents)
+- Use `git add -f` to explicitly add encrypted secrets (requires intention)
+- This extra step ensures you're consciously adding secrets to git
+
+**Automated workflow:**
+
+```bash
+# After creating/editing a secret
+cd ~/dotfiles
+
+# Verify it's encrypted
+file secrets/restic-password.age
+# Output: secrets/restic-password.age: data
+
+# Force add the encrypted file
+git add -f secrets/restic-password.age
+
+# Commit with descriptive message
+git commit -m "Update restic backup password secret"
+
+# Push to remote
+git push
+```
+
+**What NOT to do:**
+
+```bash
+# ❌ DO NOT modify .gitignore to allow *.age files
+# This defeats the defense in depth approach
+
+# ❌ DO NOT use git add . or git add secrets/
+# These won't work due to .gitignore and don't show clear intent
+```
+
 ## Advanced Usage
 
 ### Per-Secret SSH Keys

@@ -1,0 +1,129 @@
+# Hardware Configuration Template
+#
+# This file is machine-specific and should NOT be committed to git.
+# NixOS will generate this file automatically during installation.
+#
+# To generate for your system:
+#   sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
+#
+# Important: Copy the generated file to your dotfiles directory after installation.
+
+{
+  config,
+  lib,
+  modulesPath,
+  ...
+}: {
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+  ];
+
+  # ===========================================================================
+  # Boot Configuration
+  # ===========================================================================
+
+  # Kernel modules needed at boot time
+  # Common examples:
+  #   - AMD: "nvme", "xhci_pci", "ahci", "usbhid", "usb_storage", "sd_mod"
+  #   - Intel: "nvme", "xhci_pci", "ahci", "usbhid", "usb_storage", "sd_mod"
+  #   - RAID: "raid0", "raid1", "raid456", "raid10"
+  boot.initrd.availableKernelModules = [
+    # YOUR MODULES HERE
+    # Example: "nvme" "xhci_pci" "ahci"
+  ];
+
+  boot.initrd.kernelModules = [];
+
+  # CPU-specific kernel modules
+  # AMD: boot.kernelModules = [ "kvm-amd" ];
+  # Intel: boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [
+    # YOUR CPU MODULE HERE
+  ];
+
+  boot.extraModulePackages = [];
+
+  # ===========================================================================
+  # Filesystem Configuration
+  # ===========================================================================
+
+  # Root filesystem
+  # Get UUID with: ls -l /dev/disk/by-uuid/
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/YOUR-ROOT-UUID-HERE";
+    fsType = "ext4";  # or "btrfs", "xfs", etc.
+  };
+
+  # Boot partition (EFI)
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/YOUR-BOOT-UUID-HERE";
+    fsType = "vfat";
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
+  };
+
+  # Additional filesystem mounts (optional)
+  # Example: Extra drives, network shares, etc.
+  # fileSystems."/mnt/data" = {
+  #   device = "/dev/disk/by-uuid/YOUR-DATA-UUID-HERE";
+  #   fsType = "ext4";
+  #   options = [ "defaults" "user" "rw" ];
+  # };
+
+  # ===========================================================================
+  # Swap Configuration
+  # ===========================================================================
+
+  # Traditional swap partition (optional)
+  swapDevices = [
+    # { device = "/dev/disk/by-uuid/YOUR-SWAP-UUID-HERE"; }
+  ];
+
+  # OR use zram (compressed RAM swap - recommended for systems with enough RAM)
+  zramSwap = {
+    enable = true;
+    memoryPercent = 25;  # Use 25% of RAM for zram
+    algorithm = "zstd";  # Compression algorithm
+    priority = 100;      # Higher priority than disk swap
+  };
+
+  # ===========================================================================
+  # Hardware-Specific Settings
+  # ===========================================================================
+
+  # Network configuration
+  networking.useDHCP = lib.mkDefault true;
+
+  # Platform architecture
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  # CPU microcode updates
+  # AMD:
+  # hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  # Intel:
+  # hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  # ===========================================================================
+  # Common Hardware Scenarios
+  # ===========================================================================
+
+  # Laptop-specific (uncomment if needed)
+  # services.thermald.enable = true;  # Intel thermal management
+  # powerManagement.enable = true;
+  # services.tlp.enable = true;  # Battery optimization
+
+  # SSD optimization (uncomment if using SSD)
+  # services.fstrim.enable = true;
+
+  # Graphics (uncomment as needed)
+  # AMD GPU:
+  # hardware.opengl.driSupport = true;
+  # hardware.opengl.driSupport32Bit = true;
+  # Intel GPU:
+  # hardware.opengl.extraPackages = with pkgs; [ intel-media-driver ];
+  # NVIDIA GPU:
+  # services.xserver.videoDrivers = [ "nvidia" ];
+  # hardware.nvidia.modesetting.enable = true;
+}
