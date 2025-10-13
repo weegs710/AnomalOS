@@ -34,9 +34,10 @@ in {
   # Basic home packages (always included)
   home.packages = with pkgs; [
     inputs.agenix.packages.${pkgs.system}.default
+    inputs.nh.packages.${pkgs.system}.default
     alejandra
     alarm-clock-applet
-    btop-rocm
+    btop
     cliphist
     dunst
     fastfetch
@@ -48,7 +49,6 @@ in {
     hyprshot
     jq
     kitty
-    nh
     nil
     nodejs
     pamixer
@@ -85,5 +85,4 @@ in {
   home.file."claude-projects/.keep" = lib.mkIf osConfig.mySystem.features.claudeCode {
     text = "";
   };
-
 }

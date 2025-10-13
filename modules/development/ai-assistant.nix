@@ -120,21 +120,13 @@ in {
 
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${if config.mySystem.hardware.amd then pkgs.ollama-rocm else pkgs.ollama}/bin/ollama serve";
+        # Using CPU-only ollama to avoid lengthy ROCm compilation
+        ExecStart = "${pkgs.ollama}/bin/ollama serve";
         Restart = "on-failure";
         RestartSec = "5s";
         Environment = [
           "OLLAMA_HOST=127.0.0.1:11434"
           "OLLAMA_NUM_CTX=32000"
-        ] ++ lib.optionals config.mySystem.hardware.amd [
-          "HSA_OVERRIDE_GFX_VERSION=10.3.0"
-          "HIP_VISIBLE_DEVICES=0"
-          "ROCR_VISIBLE_DEVICES=0"
-          "OLLAMA_DEBUG=1"
-          "OLLAMA_GPU_LAYERS=0"
-          "OLLAMA_NUM_PARALLEL=1"
-          "OLLAMA_MAX_LOADED_MODELS=1"
-          "OLLAMA_KEEP_ALIVE=0"
         ];
       };
 
@@ -173,12 +165,8 @@ in {
     # Install system packages
     environment.systemPackages = with pkgs;
       [
-        # Ollama (CLI uses same package as service)
-        (
-          if config.mySystem.hardware.amd
-          then ollama-rocm
-          else ollama
-        )
+        # Ollama (CPU-only to avoid ROCm compilation)
+        ollama
 
         # klank command to open Web UI in browser
         klank
@@ -188,12 +176,6 @@ in {
 
         # Model deployment script
         deployModels
-
-        # ROCm tools for AMD GPU
-      ]
-      ++ lib.optionals config.mySystem.hardware.amd [
-        rocmPackages.rocm-smi
-        rocmPackages.rocminfo
       ];
 
     # Copy assets from dotfiles to system location
@@ -209,20 +191,6 @@ in {
       "kernel.shmmax" = 68719476736; # 64GB shared memory
       "kernel.shmall" = 4294967296; # 16GB in pages
       "vm.swappiness" = 10; # Reduce swapping
-    };
-
-    # ROCm configuration for AMD GPUs
-    systemd.services.ollama = mkIf config.mySystem.hardware.amd {
-      serviceConfig = {
-        # Ensure GPU access
-        SupplementaryGroups = ["render" "video"];
-      };
-    };
-
-    # Enable hardware acceleration
-    hardware.graphics = mkIf config.mySystem.hardware.amd {
-      enable = true;
-      enable32Bit = true;
     };
 
     # Environment variables

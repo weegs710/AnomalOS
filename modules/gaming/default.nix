@@ -4,10 +4,7 @@
   pkgs,
   ...
 }:
-
-with lib;
-
-{
+with lib; {
   imports = [
     ./steam.nix
   ];
@@ -28,7 +25,7 @@ with lib;
       lutris
       ppsspp
       protonup-qt
-      retroarch  # TODO: Switch back to retroarch-full once thepowdertoy is fixed upstream
+      # retroarch  # Commented out temporarily due to issues upstream.
       ryubing
     ];
   };

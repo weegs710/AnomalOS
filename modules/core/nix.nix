@@ -29,12 +29,12 @@
       substituters = [
         "https://nix-community.cachix.org"
         "https://hyprland.cachix.org"
-        "https://cuda-maintainers.cachix.org" # Includes ROCm packages
+        # Note: chaotic-nyx cache is added automatically by inputs.cachyos.nixosModules.default
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+        # Note: chaotic-nyx key is added automatically by inputs.cachyos.nixosModules.default
       ];
     };
   };
@@ -290,8 +290,9 @@
   # Basic shell aliases
   environment.shellAliases = {
     nfa = "cd ~/dotfiles/ && nix flake archive";
-    recycle = "sudo nix-collect-garbage --delete-older-than 7d";
+    recycle = "sudo nix-env --delete-generations +10 --profile /nix/var/nix/profiles/system && sudo nix-collect-garbage";
     update = "cd ~/dotfiles/ && nix flake update";
+    closure = "nix path-info -Sh /run/current-system";
 
     # Configuration-specific rebuild aliases
     nrs-rig = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Rig";
