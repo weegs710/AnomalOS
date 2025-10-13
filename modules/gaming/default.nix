@@ -22,17 +22,21 @@ with lib;
     };
 
     # Gaming applications
-    users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      anki-bin
-      desmume
-      lutris
-      ppsspp
-      protonup-qt
-      (retroarch.withCores (cores: with cores;
-        # All cores except broken thepowdertoy
-        lib.filter (core: core.pname or "" != "libretro-thepowdertoy") (lib.attrValues cores)
-      ))
-      ryubing
-    ];
+    users.users.${config.mySystem.user.name}.packages =
+      let
+        # Get all retroarch cores except the broken one
+        workingCores = lib.filter
+          (core: core.pname or "" != "libretro-thepowdertoy")
+          (lib.attrValues pkgs.libretro);
+      in
+      with pkgs; [
+        anki-bin
+        desmume
+        lutris
+        ppsspp
+        protonup-qt
+        (retroarch.withCores (_: workingCores))
+        ryubing
+      ];
   };
 }
