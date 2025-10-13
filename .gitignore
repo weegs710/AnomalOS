@@ -1,2 +1,231 @@
+# ============================================================================
+# Nix Build Outputs
+# ============================================================================
+
+# Build results
 result
 result-*
+
+# Derivation files
+*.drv
+
+# Nix shell environments
+.envrc
+.direnv/
+
+# Nix profile links
+profile/
+
+# Nix REPL history
+.nix-repl-history
+
+# ============================================================================
+# NixOS Specific
+# ============================================================================
+
+# Hardware configuration (machine-specific, should be regenerated per host)
+hardware-configuration.nix
+
+# Machine-specific local overrides
+local.nix
+*-local.nix
+
+# ============================================================================
+# Home Manager
+# ============================================================================
+
+# Backup files created by home-manager
+*.backup
+*.bak
+*.old
+
+# Home Manager result links
+home-manager-result
+hm-result
+
+# ============================================================================
+# Secrets & Sensitive Data
+# ============================================================================
+
+# Never commit secrets!
+secrets/
+*.age
+*.key
+*.pem
+*-password
+*.secret
+credentials.json
+.env
+.env.*
+
+# SSH keys (if accidentally placed here)
+id_rsa
+id_ed25519
+*.pub.age
+
+# GPG keys
+*.gpg
+*.asc
+
+# ============================================================================
+# Editor & IDE Files
+# ============================================================================
+
+# Vim
+*.swp
+*.swo
+*~
+.*.swp
+.*.swo
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+.netrwhist
+
+# Emacs
+\#*\#
+.\#*
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Nano
+*.save
+
+# VSCode / VSCodium
+.vscode/
+*.code-workspace
+.history/
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================================================
+# OS Specific Files
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# ============================================================================
+# Cache & Temporary Files
+# ============================================================================
+
+# General cache
+.cache/
+cache/
+*.cache
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Log files
+*.log
+logs/
+
+# ============================================================================
+# Development & Build Artifacts
+# ============================================================================
+
+# Compiled files
+*.o
+*.so
+*.a
+*.lib
+*.dll
+*.dylib
+*.exe
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+ENV/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+
+# Rust
+target/
+Cargo.lock
+
+# Go
+*.test
+*.out
+go.work
+
+# ============================================================================
+# Project Specific
+# ============================================================================
+
+# Local testing
+test-result
+test-output/
+
+# Documentation builds
+site/
+_build/
+docs/_build/
+
+# ============================================================================
+# Git Specific
+# ============================================================================
+
+# Patches
+*.patch
+*.diff
+
+# Conflict files
+*.orig
