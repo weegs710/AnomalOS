@@ -59,7 +59,7 @@ with lib;
       desktop = mkEnableOption "Desktop environment (Hyprland)";
       development = mkEnableOption "Development tools and languages";
       security = mkEnableOption "Enhanced security features";
-      aiAssistant = mkEnableOption "AI assistant (Ollama + Open WebUI)";
+      # Note: aiAssistant is declared in modules/development/ai-assistant.nix
     };
 
     # Hardware features
