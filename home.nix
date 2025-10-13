@@ -65,10 +65,15 @@ in {
   ];
 
   home.sessionVariables = {
-    EDITOR = "zeditor";
+    EDITOR = "codium";
     NIXOS_OZONE_WL = "1";
+    SSH_ASKPASS = "${pkgs.writeShellScript "ssh-askpass-notify" ''
+      ${pkgs.libnotify}/bin/notify-send "SSH Yubikey" "Touch your yubikey to authenticate" -t 3000
+      echo ""
+    ''}";
+    SSH_ASKPASS_REQUIRE = "force";
     TERMINAL = "kitty";
-    VISUAL = "zeditor";
+    VISUAL = "codium";
     XDG_TERMINAL_EDITOR = "kitty";
   };
 
@@ -324,7 +329,7 @@ in {
     settings = {
       "$terminal" = "kitty";
       "$fileManager" = "kitty -e yazi";
-      "$menu" = "rofi -show drun -show-icons";
+      "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
       "$webBrowser" = "librewolf";
       "$mainMod" = "SUPER";
       env = [
