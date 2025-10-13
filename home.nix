@@ -3,6 +3,7 @@
   pkgs,
   config,
   osConfig,
+  inputs,
   ...
 }: let
   username = osConfig.mySystem.user.name;
@@ -32,7 +33,7 @@ in {
 
   # Basic home packages (always included)
   home.packages = with pkgs; [
-    agenix
+    inputs.agenix.packages.${pkgs.system}.default
     alejandra
     alarm-clock-applet
     btop-rocm
