@@ -22,21 +22,14 @@ with lib;
     };
 
     # Gaming applications
-    users.users.${config.mySystem.user.name}.packages =
-      let
-        # Get all retroarch cores except the broken one
-        workingCores = lib.filter
-          (core: core.pname or "" != "libretro-thepowdertoy")
-          (lib.attrValues pkgs.libretro);
-      in
-      with pkgs; [
-        anki-bin
-        desmume
-        lutris
-        ppsspp
-        protonup-qt
-        (retroarch.withCores (_: workingCores))
-        ryubing
-      ];
+    users.users.${config.mySystem.user.name}.packages = with pkgs; [
+      anki-bin
+      desmume
+      lutris
+      ppsspp
+      protonup-qt
+      retroarch  # TODO: Switch back to retroarch-full once thepowdertoy is fixed upstream
+      ryubing
+    ];
   };
 }
