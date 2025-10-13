@@ -23,9 +23,6 @@ profile/
 # NixOS Specific
 # ============================================================================
 
-# Hardware configuration (machine-specific, should be regenerated per host)
-hardware-configuration.nix
-
 # Machine-specific local overrides
 local.nix
 *-local.nix
