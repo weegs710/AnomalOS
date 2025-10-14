@@ -20,7 +20,6 @@
 #   - Desktop applications (mpv, transmission, vesktop, etc.)
 #   - Terminal utilities (kitty, rofi, dunst)
 #   - X11 compatibility libraries for legacy apps
-
 {
   config,
   lib,
@@ -128,8 +127,40 @@ with lib; {
 
     # Desktop utility aliases
     environment.shellAliases = {
-      ff = "fastfetch --logo ~/Pictures/nixos-pics/nixos.png --logo-height 20 --logo-width 40";
       gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
+    };
+
+    # Home Manager configuration for desktop
+    home-manager.users.${config.mySystem.user.name} = {
+      # Fastfetch configuration
+      xdg.configFile."fastfetch/config.jsonc".text = builtins.toJSON {
+        "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";
+        logo = {
+          source = "~/dotfiles/modules/desktop/AnomLogo.png";
+          height = 20;
+          width = 40;
+        };
+        modules = [
+          "title"
+          "separator"
+          "os"
+          "host"
+          "kernel"
+          "uptime"
+          "packages"
+          "shell"
+          "display"
+          "wm"
+          "terminal"
+          "cpu"
+          "gpu"
+          "memory"
+          "swap"
+          "disk"
+          "break"
+          "colors"
+        ];
+      };
     };
 
     # Desktop fonts
