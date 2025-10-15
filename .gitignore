@@ -46,6 +46,7 @@ hm-result
 
 # Never commit secrets!
 secrets/
+secrets.nix
 *.age
 *.key
 *.pem
