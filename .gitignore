@@ -44,10 +44,9 @@ hm-result
 # Secrets & Sensitive Data
 # ============================================================================
 
-# Never commit secrets!
-secrets/
-secrets.nix
-*.age
+# Never commit unencrypted secrets!
+# Note: .age files are encrypted with agenix and SAFE to commit
+# Note: secrets.nix only contains public keys and is SAFE to commit
 *.key
 *.pem
 *-password
@@ -56,10 +55,9 @@ credentials.json
 .env
 .env.*
 
-# SSH keys (if accidentally placed here)
+# SSH private keys (if accidentally placed here)
 id_rsa
 id_ed25519
-*.pub.age
 
 # GPG keys
 *.gpg
