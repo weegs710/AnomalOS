@@ -1,0 +1,18 @@
+scheme: "Anomal-16"
+author: "weegs710"
+base00: "0a0019" # Deep space purple - darkest background
+base01: "1a0a33" # Dark purple void - lighter background
+base02: "2a1a5e" # Medium dark blue-purple - selection background
+base03: "3d2a7a" # Medium purple - comments, invisibles
+base04: "a080ff" # Light electric purple - dark foreground
+base05: "c8b0ff" # Bright lavender - default foreground
+base06: "e0d0ff" # Very light lavender - light foreground
+base07: "ffffff" # Pure white - lightest foreground
+base08: "ff0066" # Electric hot pink - variables, red
+base09: "ff6600" # Neon orange - integers, constants
+base0A: "ffdd00" # Electric yellow - classes, warnings
+base0B: "00ff99" # Neon mint green - strings, success
+base0C: "00e5ff" # Electric cyan (logo text) - support, regex
+base0D: "3399ff" # Bright electric blue - functions, methods
+base0E: "ff00ff" # Hot magenta (logo accent) - keywords, tags
+base0F: "ff4488" # Neon pink-red - deprecated, special

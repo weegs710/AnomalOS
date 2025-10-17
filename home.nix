@@ -24,6 +24,16 @@ in {
       set -g fish_color_param b392f0  # base05 light purple
       # Optional: improve autosuggestion visibility
       set -g fish_color_autosuggestion 2f143f  # base03 medium purple
+
+      # Improve syntax highlighting visibility
+      set -g fish_color_command 66ccff  # base0C cyan - commands
+      set -g fish_color_operator ffaa55  # base09 orange - operators like ; & |
+      set -g fish_color_end ffaa55  # base09 orange - command terminators
+      set -g fish_color_quote aaffaa  # base0B green - strings
+      set -g fish_color_error ff6666  # base08 red - errors
+      set -g fish_color_normal b392f0  # base05 light purple - normal text
+      set -g fish_color_redirection 9999ff  # base0D blue - redirections
+      set -g fish_color_option c7aaff  # base06 lighter purple - options/flags
     '';
   };
 
@@ -56,6 +66,7 @@ in {
     rofi
     rustc
     slurp
+    starship
     swww
     tldr
     ueberzugpp
