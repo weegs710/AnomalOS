@@ -27,6 +27,16 @@ with lib; {
         });
         profiles.default.userSettings = {
           "workbench.colorTheme" = "Stylix";
+          "security.workspace.trust.untrustedFiles" = "open";
+          "workbench.startupEditor" = "none";
+          "git.openRepositoryInParentFolders" = "always";
+          "git.autofetch" = true;
+          "git.confirmSync" = false;
+          "workbench.activityBar.location" = "bottom";
+          "terminal.integrated.fontFamily" = lib.mkForce "Terminess Nerd Font";
+          "terminal.integrated.fontSize" = lib.mkForce 12;
+          "editor.fontFamily" = lib.mkForce "'Terminess Nerd Font', monospace";
+          "editor.fontSize" = lib.mkForce 12;
         };
       };
     };
