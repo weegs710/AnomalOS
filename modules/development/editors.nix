@@ -25,7 +25,7 @@ with lib; {
               '"trustedExtensionAuthAccess": ["GitHub.copilot","GitHub.copilot-chat"],"extensionKind": {'
           '';
         });
-        userSettings = {
+        profiles.default.userSettings = {
           "workbench.colorTheme" = "Stylix";
         };
       };
