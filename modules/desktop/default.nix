@@ -83,8 +83,7 @@ with lib; {
       qview
       transmission_4-gtk
       unzipNLS
-      vesktop
-      yazi
+      # vesktop - managed by Home Manager for Stylix theming
       zathura
 
       # Desktop utilities
@@ -132,6 +131,51 @@ with lib; {
 
     # Home Manager configuration for desktop
     home-manager.users.${config.mySystem.user.name} = {
+      # Enable Yazi file manager with Stylix theming
+      programs.yazi = {
+        enable = true;
+        enableFishIntegration = true;
+        # Keep existing custom keymaps and settings
+        keymap = builtins.fromTOML (builtins.readFile ./yazi/keymap.toml);
+        settings = builtins.fromTOML (builtins.readFile ./yazi/yazi.toml);
+        # Override theme to use base00 as background
+        theme = {
+          mgr = {
+            bg = lib.mkForce "#${config.lib.stylix.colors.base00}";
+          };
+          status = {
+            separator_open = lib.mkForce "";
+            separator_close = lib.mkForce "";
+            separator_style = lib.mkForce { fg = "#${config.lib.stylix.colors.base00}"; bg = "#${config.lib.stylix.colors.base00}"; };
+          };
+          which = {
+            mask = { bg = lib.mkForce "#${config.lib.stylix.colors.base00}"; };
+          };
+        };
+      };
+      stylix.targets.yazi.enable = true;
+      stylix.targets.vesktop.enable = true;
+
+      # Enable Vesktop for Stylix theming
+      programs.vesktop = {
+        enable = true;
+      };
+
+      # Override Yazi desktop file to launch via kitty
+      # Using dataFile instead of desktopEntries to ensure higher priority
+      xdg.dataFile."applications/yazi.desktop".text = ''
+        [Desktop Entry]
+        Name=Yazi
+        Icon=yazi
+        Comment=Blazing fast terminal file manager written in Rust, based on async I/O
+        Exec=kitty -e yazi %u
+        Terminal=false
+        Type=Application
+        MimeType=inode/directory
+        Categories=Utility;Core;System;FileTools;FileManager;ConsoleOnly;
+        Keywords=File;Manager;Explorer;Browser;Launcher;
+      '';
+
       # Fastfetch configuration
       xdg.configFile."fastfetch/config.jsonc".text = builtins.toJSON {
         "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";

@@ -83,6 +83,8 @@ in {
     TERMINAL = "kitty";
     VISUAL = "codium";
     XDG_TERMINAL_EDITOR = "kitty";
+    # Ensure ~/.local/share is in XDG_DATA_DIRS so rofi finds our custom desktop files
+    XDG_DATA_DIRS = "$HOME/.local/share:$XDG_DATA_DIRS";
   };
 
   programs.home-manager.enable = true;
