@@ -304,6 +304,8 @@ with lib; {
             "nfa &"
             "tmux new -d waybar &"
             "hyprctl keyword master:orientation top"
+            "env STEAM_FRAME_FORCE_CLOSE=1 steam -silent -bigpicture"
+            "vesktop --start-minimized"
           ];
           general = {
             no_border_on_floating = true;
