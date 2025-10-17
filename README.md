@@ -108,12 +108,13 @@ stub-up        # Update flake + test Stub + prompt to switch
 - **Waybar** status bar
 - **Stylix** theming with Purple Colony color scheme
 - **SDDM** display manager with theme integration
+- **Yazi** terminal file manager with VSCode-style keybindings
 
 ### 🤖 AI Development Tools
 - **Claude Code** with enhanced project management (`cc` command) - optional
 - **Ollama + Open WebUI** for local AI assistance - optional
   - Commands: `klank`, `klank-cli`, `ai`, `ai-cli`, `ai-web`
-  - ROCm support for AMD GPUs
+  - AMD GPU support (ROCm compute libraries removed to avoid rebuild overhead)
   - Custom NixOS expert model
 
 ### 🛠️ Development
@@ -148,6 +149,11 @@ dotfiles/
 ├── configuration.nix            # System configuration and feature toggles
 ├── home.nix                     # Home Manager user configuration
 ├── hardware-configuration.nix   # Hardware-specific settings (generated)
+├── parts/                       # Flake-parts organization
+│   ├── configurations.nix      # NixOS configuration definitions
+│   ├── profiles.nix            # Configuration profiles (Rig, Hack, etc)
+│   ├── common.nix              # Shared module imports
+│   └── shells.nix              # Development shells
 ├── modules/
 │   ├── options.nix             # Configuration schema
 │   ├── core/                   # Essential system components

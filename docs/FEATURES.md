@@ -285,9 +285,9 @@ journalctl --user -u open-webui
 ```
 
 **AMD GPU Support:**
-- ROCm libraries included
-- GPU acceleration via `HSA_OVERRIDE_GFX_VERSION`
-- Tools: `rocm-smi`, `rocminfo`
+- Mesa drivers with GPU acceleration
+- ROCm compute libraries removed to prevent frequent rebuilds
+- Basic GPU support remains for desktop acceleration
 
 **Location**: `modules/development/ai-assistant.nix`
 
@@ -324,13 +324,39 @@ journalctl --user -u open-webui
 
 **Configuration**: `home.nix`
 
+### File Managers
+
+**Yazi**
+- Modern terminal file manager
+- VSCode-style keybindings (arrow keys, Ctrl+C/V/X, Ctrl+T for tabs)
+- File previews and image display
+- Custom theme integration with Stylix
+- Custom keymap configuration (see `modules/desktop/yazi/keymap.toml`)
+
+**Thunar**
+- GUI file manager fallback
+- Volume management support
+- File archiving with file-roller integration
+
+**Configuration**: `modules/desktop/default.nix` and `modules/desktop/yazi/`
+
+### System Information
+
+**Fastfetch**
+- Fast system information tool
+- Custom AnomalOS logo display (AnomLogo.png)
+- Displays: OS, host, kernel, uptime, packages, shell, display, WM, terminal, CPU, GPU, memory, swap, disk
+
+**Configuration**: `modules/desktop/default.nix`
+
 ### Development Languages & Tools
 
 **Installed by default:**
 - **Node.js**: JavaScript/TypeScript development
-- **Python 3**: Python development with pip
+- **Python 3**: Python development with uv package manager
 - **Rust**: Systems programming with Cargo
 - **Nix**: Configuration language
+- **Java**: JDK 21
 
 **Language Servers:**
 - `nil`: Nix language server
@@ -343,6 +369,14 @@ journalctl --user -u open-webui
 - Git with custom aliases
 - GitHub CLI (`gh`)
 
+**Development Utilities:**
+- `btop`: Resource monitor
+- `fzf`: Fuzzy finder
+- `jq`: JSON processor
+- `tldr`: Simplified man pages
+- `ns`: Interactive NixOS package search (nix-search-tv wrapper)
+- `uv`: Fast Python package installer and resolver
+
 **Configuration**: `modules/development/languages.nix`
 
 ## Gaming & Media
@@ -353,9 +387,13 @@ journalctl --user -u open-webui
 
 **Features:**
 - Proton compatibility layer for Windows games
-- Gamescope compositor for better gaming performance
+- Protontricks for per-game Proton management
+- Gamescope session support
+- Remote Play with open firewall
+- Dedicated server support
+- Local network game transfers
 - Hardware compatibility layers (32-bit support)
-- Controller support
+- Controller support (extest enabled)
 
 **Configuration**: `modules/gaming/steam.nix`
 
@@ -371,10 +409,20 @@ journalctl --user -u open-webui
 - Touchscreen support
 - Save states
 
+**Ryubing**
+- Nintendo Switch emulator
+- Modern yuzu alternative
+
 **Lutris**
 - Game management platform
 - Wine integration
 - Multiple emulators support
+
+**ProtonUp-Qt**
+- Proton-GE and Wine-GE version manager
+- Easy compatibility tool updates for Steam
+
+**Note**: RetroArch is temporarily disabled due to upstream build issues
 
 **Configuration**: `modules/gaming/default.nix`
 
@@ -392,22 +440,30 @@ journalctl --user -u open-webui
 - OBS Studio: Screen recording and streaming
 
 **Graphics:**
-- GIMP: Image editing
+- GIMP 3: Image editing with plugins
+
+**File Sharing:**
+- Transmission: BitTorrent client (GTK interface)
 
 **Configuration**: `modules/desktop/media.nix`
 
 ### Applications
-
-**Browser:**
-- LibreWolf: Privacy-focused Firefox fork
 
 **Communication:**
 - Vesktop: Discord client
 
 **Productivity:**
 - Anki: Flashcard application for learning
+- Qalculate: Advanced calculator
+- Alarm Clock Applet: Desktop alarm and timer
 
-**Configuration**: `modules/desktop/media.nix`
+**Utilities:**
+- Pavucontrol: PulseAudio/PipeWire volume control
+- Piper: Gaming mouse configuration (Logitech, Razer, etc)
+- Qview: Minimal image viewer
+- Zathura: Lightweight PDF viewer
+
+**Configuration**: `modules/desktop/default.nix` and `modules/desktop/media.nix`
 
 ## Package Management
 
