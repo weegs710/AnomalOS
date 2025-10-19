@@ -77,12 +77,13 @@ with lib; {
     # Desktop applications and utilities
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       # Desktop applications
-      mpv
+      # mpv - using VLC instead
       pavucontrol
       qalculate-gtk
       qview
       transmission_4-gtk
       unzipNLS
+      vlc
       # vesktop - managed by Home Manager for Stylix theming
       zathura
 
