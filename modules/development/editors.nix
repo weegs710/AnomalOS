@@ -37,6 +37,9 @@ with lib; {
           "terminal.integrated.fontSize" = lib.mkForce 12;
           "editor.fontFamily" = lib.mkForce "'Terminess Nerd Font', monospace";
           "editor.fontSize" = lib.mkForce 12;
+
+          # Disable auto-updates for manually installed extensions
+          "extensions.autoUpdate" = false;
         };
       };
     };

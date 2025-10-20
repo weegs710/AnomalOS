@@ -80,9 +80,9 @@ rules = [
 	{ mime = "application/pdf", use = [ "pdf", "reveal" ] },
 	# Images (open in qview)
 	{ mime = "image/*", use = [ "image", "reveal" ] },
-	# Videos (open in mpv)
-	{ mime = "video/*", use = [ "video", "reveal" ] },
-	{ mime = "audio/*", use = [ "video", "reveal" ] },
+	# Videos and audio (use system default via xdg-open)
+	{ mime = "video/*", use = [ "open", "reveal" ] },
+	{ mime = "audio/*", use = [ "open", "reveal" ] },
 	# Archives (open in file-roller)
 	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", use = [ "archive", "extract", "reveal" ] },
 	# Fallback
