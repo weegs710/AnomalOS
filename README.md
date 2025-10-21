@@ -1,6 +1,6 @@
 # AnomalOS Desktop Configuration
 
-![AnomalOS](modules/desktop/AnomalOS.jpeg)
+![AnomalOS](modules/desktop/AnomalOS.webp)
 
 A comprehensive **modular** NixOS configuration using Nix flakes for a modern desktop system with Hyprland window manager, featuring automated security hardening, theming, AI development tools, and **optional YubiKey and Claude Code support**.
 
