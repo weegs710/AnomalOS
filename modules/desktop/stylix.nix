@@ -10,7 +10,7 @@ with lib; {
     stylix = {
       enable = true;
       base16Scheme = ./anomal-16.yaml;
-      image = ./AnomalOS.jpeg;
+      image = ./AnomalOS.webp;
       polarity = "dark";
       imageScalingMode = "stretch";
       targets = {

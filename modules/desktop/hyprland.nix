@@ -299,12 +299,10 @@ with lib; {
             "XDG_TERMINAL_EDITOR,kitty"
           ];
           exec-once = [
-            "swww-daemon &"
             "dunst &"
-            "nfa &"
             "tmux new -d waybar &"
             "hyprctl keyword master:orientation top"
-            "env STEAM_FRAME_FORCE_CLOSE=1 steam -silent -bigpicture"
+            "env STEAM_FRAME_FORCE_CLOSE=1 steam -silent"
             "vesktop --start-minimized"
           ];
           general = {
