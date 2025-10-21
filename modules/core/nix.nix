@@ -83,7 +83,7 @@
 
       # Test configuration
       echo -e "\n''${BLUE}[2/3] Testing Rig configuration...''${NC}"
-      if sudo nixos-rebuild test --flake .#Rig; then
+      if nh os test .#nixosConfigurations.Rig; then
           echo -e "''${GREEN}✓ Test completed successfully''${NC}"
       else
           echo -e "''${RED}✗ Test failed! Configuration not applied.''${NC}"
@@ -98,7 +98,7 @@
 
       if [[ "$response" =~ ^[Yy]$ ]]; then
           echo -e "''${BLUE}Switching to new configuration...''${NC}"
-          if sudo nixos-rebuild switch --flake .#Rig; then
+          if nh os switch .#nixosConfigurations.Rig; then
               echo -e "''${GREEN}✓ Successfully switched to Rig configuration!''${NC}"
           else
               echo -e "''${RED}✗ Switch failed''${NC}"
@@ -142,7 +142,7 @@
 
       # Test configuration
       echo -e "\n''${BLUE}[2/3] Testing Hack configuration...''${NC}"
-      if sudo nixos-rebuild test --flake .#Hack; then
+      if nh os test .#nixosConfigurations.Hack; then
           echo -e "''${GREEN}✓ Test completed successfully''${NC}"
       else
           echo -e "''${RED}✗ Test failed! Configuration not applied.''${NC}"
@@ -157,7 +157,7 @@
 
       if [[ "$response" =~ ^[Yy]$ ]]; then
           echo -e "''${BLUE}Switching to new configuration...''${NC}"
-          if sudo nixos-rebuild switch --flake .#Hack; then
+          if nh os switch .#nixosConfigurations.Hack; then
               echo -e "''${GREEN}✓ Successfully switched to Hack configuration!''${NC}"
           else
               echo -e "''${RED}✗ Switch failed''${NC}"
@@ -201,7 +201,7 @@
 
       # Test configuration
       echo -e "\n''${BLUE}[2/3] Testing Guard configuration...''${NC}"
-      if sudo nixos-rebuild test --flake .#Guard; then
+      if nh os test .#nixosConfigurations.Guard; then
           echo -e "''${GREEN}✓ Test completed successfully''${NC}"
       else
           echo -e "''${RED}✗ Test failed! Configuration not applied.''${NC}"
@@ -216,7 +216,7 @@
 
       if [[ "$response" =~ ^[Yy]$ ]]; then
           echo -e "''${BLUE}Switching to new configuration...''${NC}"
-          if sudo nixos-rebuild switch --flake .#Guard; then
+          if nh os switch .#nixosConfigurations.Guard; then
               echo -e "''${GREEN}✓ Successfully switched to Guard configuration!''${NC}"
           else
               echo -e "''${RED}✗ Switch failed''${NC}"
@@ -260,7 +260,7 @@
 
       # Test configuration
       echo -e "\n''${BLUE}[2/3] Testing Stub configuration...''${NC}"
-      if sudo nixos-rebuild test --flake .#Stub; then
+      if nh os test .#nixosConfigurations.Stub; then
           echo -e "''${GREEN}✓ Test completed successfully''${NC}"
       else
           echo -e "''${RED}✗ Test failed! Configuration not applied.''${NC}"
@@ -275,7 +275,7 @@
 
       if [[ "$response" =~ ^[Yy]$ ]]; then
           echo -e "''${BLUE}Switching to new configuration...''${NC}"
-          if sudo nixos-rebuild switch --flake .#Stub; then
+          if nh os switch .#nixosConfigurations.Stub; then
               echo -e "''${GREEN}✓ Successfully switched to Stub configuration!''${NC}"
           else
               echo -e "''${RED}✗ Switch failed''${NC}"
@@ -295,13 +295,13 @@
     closure = "nix path-info -Sh /run/current-system";
 
     # Configuration-specific rebuild aliases
-    nrs-rig = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Rig";
-    nrt-rig = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Rig";
-    nrs-hack = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Hack";
-    nrt-hack = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Hack";
-    nrs-guard = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Guard";
-    nrt-guard = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Guard";
-    nrs-stub = "cd ~/dotfiles/ && sudo nixos-rebuild switch --flake .#Stub";
-    nrt-stub = "cd ~/dotfiles/ && sudo nixos-rebuild test --flake .#Stub";
+    nrs-rig = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.Rig";
+    nrt-rig = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.Rig";
+    nrs-hack = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.hack";
+    nrt-hack = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.hack";
+    nrs-guard = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.guard";
+    nrt-guard = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.guard";
+    nrs-stub = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.stub";
+    nrt-stub = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.stub";
   };
 }
