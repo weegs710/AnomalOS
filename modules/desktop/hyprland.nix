@@ -43,7 +43,6 @@ with lib; {
     home-manager.users.${config.mySystem.user.name} = {
       # Enable Stylix theming for Hyprland
       stylix.targets.hyprland.enable = true;
-      stylix.targets.vscode.enable = true;
 
       programs.waybar = lib.mkIf config.mySystem.features.desktop {
         enable = true;

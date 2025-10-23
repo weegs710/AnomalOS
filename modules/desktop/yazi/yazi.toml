@@ -30,7 +30,7 @@ ueberzug_offset = [ 0, 0, 0, 0 ]
 
 [opener]
 edit = [
-	{ run = 'codium "$@"', desc = "VSCodium", block = true, for = "unix" },
+	{ run = 'zed "$@"', desc = "Zed", block = true, for = "unix" },
 ]
 pdf = [
 	{ run = 'zathura "$@"', orphan = true, desc = "Zathura", for = "unix" },
@@ -71,7 +71,7 @@ play = [
 rules = [
 	# Folder
 	{ name = "*/", use = [ "edit", "open", "reveal" ] },
-	# Text/Code (open in VSCodium)
+	# Text and code files
 	{ mime = "text/*", use = [ "edit", "reveal" ] },
 	{ mime = "application/{json,ndjson}", use = [ "edit", "reveal" ] },
 	{ mime = "*/javascript", use = [ "edit", "reveal" ] },

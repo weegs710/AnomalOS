@@ -78,10 +78,10 @@ in {
   ];
 
   home.sessionVariables = {
-    EDITOR = "codium";
+    EDITOR = "zed";
     NIXOS_OZONE_WL = "1";
     TERMINAL = "kitty";
-    VISUAL = "codium";
+    VISUAL = "zed";
     XDG_TERMINAL_EDITOR = "kitty";
     # Ensure ~/.local/share is in XDG_DATA_DIRS so rofi finds our custom desktop files
     XDG_DATA_DIRS = "$HOME/.local/share:$XDG_DATA_DIRS";
@@ -127,12 +127,12 @@ in {
       # Documents
       "application/pdf" = ["org.pwmt.zathura-pdf-mupdf.desktop"];
 
-      # Text and code - VSCodium
-      "text/plain" = ["codium.desktop"];
-      "text/markdown" = ["codium.desktop"];
-      "text/x-csrc" = ["codium.desktop"];
-      "text/x-python" = ["codium.desktop"];
-      "application/x-shellscript" = ["codium.desktop"];
+      # Text and code files
+      "text/plain" = ["dev.zed.Zed.desktop"];
+      "text/markdown" = ["dev.zed.Zed.desktop"];
+      "text/x-csrc" = ["dev.zed.Zed.desktop"];
+      "text/x-python" = ["dev.zed.Zed.desktop"];
+      "application/x-shellscript" = ["dev.zed.Zed.desktop"];
 
       # Archives - File Roller
       "application/zip" = ["org.gnome.FileRoller.desktop"];
