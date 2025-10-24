@@ -42,7 +42,6 @@ in {
     alarm-clock-applet
     btop
     cliphist
-    dunst
     fastfetch
     fzf
     gh

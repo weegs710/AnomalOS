@@ -111,6 +111,9 @@ with lib; {
     };
 
     home-manager.users.${config.mySystem.user.name} = {
+      services.dunst.enable = true;
+      stylix.targets.dunst.enable = true;
+
       programs.kitty = {
         enable = true;
         font = {

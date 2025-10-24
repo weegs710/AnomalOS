@@ -294,7 +294,6 @@ with lib;
           ];
           exec-once = [
             "kwalletd6 &"
-            "dunst &"
             "tmux new -d waybar &"
             "hyprctl keyword master:orientation top"
             "env STEAM_FRAME_FORCE_CLOSE=1 steam -silent"
