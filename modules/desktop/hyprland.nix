@@ -74,48 +74,48 @@ with lib;
               };
             };
             "custom/lock" = {
-              format = "<span color='#7dcfff'>  </span>";
+              format = "<span color='#${config.lib.stylix.colors.base0C}'>  </span>";
               on-click = "hyprlock";
               tooltip = true;
               tooltip-format = "Lock";
             };
             "custom/reboot" = {
-              format = "<span color='#7dcfff'> </span>";
+              format = "<span color='#${config.lib.stylix.colors.base0C}'> </span>";
               on-click = "systemctl reboot";
               tooltip = true;
               tooltip-format = "Reboot";
             };
             "custom/power" = {
-              format = "<span color='#b53dff'>⏻ </span>";
+              format = "<span color='#${config.lib.stylix.colors.base0E}'>⏻ </span>";
               on-click = "systemctl poweroff";
               tooltip = true;
               tooltip-format = "Power Off";
             };
             network = {
-              format-wifi = "<span color='#7dcfff'> 󰤨  </span>{essid} ";
-              format-ethernet = "<span color='#53b397'>   </span>Wired ";
-              tooltip-format = "<span color='#b53dff'> 󰅧  </span>{bandwidthUpBytes}  <span color='#5ca8dc'> 󰅢 </span>{bandwidthDownBytes}";
-              format-linked = "<span color='#2082a6'> 󱘖  </span>{ifname} (No IP) ";
-              format-disconnected = "<span color='#b53dff'>   </span>Disconnected ";
-              format-alt = "<span color='#7dcfff'> 󰤨  </span>{signalStrength}% ";
+              format-wifi = "<span color='#${config.lib.stylix.colors.base0C}'> 󰤨  </span>{signalStrength}% ";
+              format-ethernet = "<span color='#${config.lib.stylix.colors.base0B}'>   </span>Wired ";
+              tooltip-format = "<span color='#${config.lib.stylix.colors.base0E}'> 󰅧  </span>{bandwidthUpBytes}  <span color='#${config.lib.stylix.colors.base0D}'> 󰅢 </span>{bandwidthDownBytes}";
+              format-linked = "<span color='#${config.lib.stylix.colors.base0D}'> 󱘖  </span>{ifname} (No IP) ";
+              format-disconnected = "<span color='#${config.lib.stylix.colors.base0E}'>   </span>Disconnected ";
+              format-alt = "<span color='#${config.lib.stylix.colors.base0C}'> 󰤨  </span>{essid} ";
               interval = 1;
               on-click-right = "kitty -e nmtui";
               tooltip = true;
             };
             pulseaudio = {
-              format = "<span color='#53b397'>{icon}</span>{volume}% ";
-              format-muted = "<span color='#b53dff'>  </span>0% ";
+              format = "<span color='#${config.lib.stylix.colors.base0B}'>{icon}</span>{volume}% ";
+              format-muted = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>0% ";
               format-icons = {
-                headphone = "<span color='#a175d4'>  </span>";
-                hands-free = "<span color='#a175d4'>  </span>";
-                headset = "<span color='#a175d4'>  </span>";
-                phone = "<span color='#7dcfff'>  </span>";
-                portable = "<span color='#7dcfff'>  </span>";
-                car = "<span color='#2082a6'>  </span>";
+                headphone = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>";
+                hands-free = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>";
+                headset = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>";
+                phone = "<span color='#${config.lib.stylix.colors.base0C}'>  </span>";
+                portable = "<span color='#${config.lib.stylix.colors.base0C}'>  </span>";
+                car = "<span color='#${config.lib.stylix.colors.base0D}'>  </span>";
                 default = [
-                  "<span color='#6b7394'>  </span>"
-                  "<span color='#7dcfff'>  </span>"
-                  "<span color='#53b397'>  </span>"
+                  "<span color='#${config.lib.stylix.colors.base03}'>  </span>"
+                  "<span color='#${config.lib.stylix.colors.base0C}'>  </span>"
+                  "<span color='#${config.lib.stylix.colors.base0B}'>  </span>"
                 ];
               };
               on-click-right = "pavucontrol -t 3";
@@ -125,23 +125,23 @@ with lib;
             };
             "custom/temperature" = {
               exec = "/run/current-system/sw/bin/sensors | /run/current-system/sw/bin/awk '/edge:/ {gsub(/[+°C]/, \"\", $2); print int($2); exit}'";
-              format = "<span color='#2082a6'>  </span>{}°C ";
+              format = "<span color='#${config.lib.stylix.colors.base0D}'>  </span>{}°C ";
               interval = 5;
               tooltip = true;
               tooltip-format = "Current CPU Temperature:  {}°C";
             };
             memory = {
-              format = "<span color='#a175d4'>   </span>{used:0.1f}GB ";
+              format = "<span color='#${config.lib.stylix.colors.base0E}'>   </span>{used:0.1f}GB ";
               tooltip = true;
               tooltip-format = "RAM Usage: {used:0.2f}GB/{total:0.2f}GB";
             };
             cpu = {
-              format = "<span color='#2082a6'>   </span>{usage}% ";
+              format = "<span color='#${config.lib.stylix.colors.base0D}'>   </span>{usage}% ";
               tooltip = true;
             };
             clock = {
               interval = 1;
-              format = "<span color='#a175d4'> 󰃰 </span>{:%X} ";
+              format = "<span color='#${config.lib.stylix.colors.base0E}'> 󰥔 </span>{:%I:%M:%S %p} ";
               tooltip = true;
               tooltip-format = "{:L%A %m/%d/%Y}";
             };
@@ -150,9 +150,9 @@ with lib;
               spacing = 6;
             };
             bluetooth = {
-              format = "<span color='#5ca8dc'>  </span>{status} ";
-              format-connected = "<span color='#5ca8dc'>ᛒ</span>{device_alias} ";
-              format-connected-battery = "<span color='#5ca8dc'>ᛒ</span>{device_alias} {device_battery_percentage}% ";
+              format = "<span color='#${config.lib.stylix.colors.base0D}'>  </span>{status} ";
+              format-connected = "<span color='#${config.lib.stylix.colors.base0D}'>ᛒ</span>{device_alias} ";
+              format-connected-battery = "<span color='#${config.lib.stylix.colors.base0D}'>ᛒ</span>{device_alias} {device_battery_percentage}% ";
               tooltip-format = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
               tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
               tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
@@ -186,7 +186,7 @@ with lib;
           #workspaces,
           #window,
           #tray {
-              background: alpha(@base00, 0.5);
+              background: transparent;
               padding: 4px 6px;
               margin-top: 6px;
               margin-left: 6px;
@@ -196,7 +196,7 @@ with lib;
 
           #clock,
           #custom-power {
-              background: alpha(@base00, 0.5);
+              background: transparent;
               margin-top: 6px;
               margin-right: 6px;
               padding: 4px 2px;
@@ -205,7 +205,7 @@ with lib;
 
           #network,
           #custom-lock {
-              background: alpha(@base00, 0.5);
+              background: transparent;
               margin-top: 6px;
               margin-left: 6px;
               padding: 4px 2px;
@@ -220,7 +220,7 @@ with lib;
           #custom-temperature,
           #memory,
           #cpu {
-              background: alpha(@base00, 0.5);
+              background: transparent;
               margin-top: 6px;
               padding: 4px 2px;
           }
@@ -244,7 +244,7 @@ with lib;
           #custom-reboot:hover,
           #custom-power:hover,
           #window:hover {
-              background: alpha(@base03, 0.5);
+              background: transparent;
           }
 
           #workspaces button:hover {
