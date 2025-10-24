@@ -114,6 +114,101 @@ with lib; {
       services.dunst.enable = true;
       stylix.targets.dunst.enable = true;
 
+      programs.hyprlock = {
+        enable = true;
+        settings = {
+          general = {
+            no_fade_in = false;
+            grace = 0;
+            disable_loading_bar = false;
+          };
+
+          image = [
+            {
+              monitor = "";
+              path = "\${HOME}/Pictures/monster.jpg";
+              border_size = 2;
+              border_color = "rgb(${config.lib.stylix.colors.base0C})";
+              size = 300;
+              rounding = 270;
+              position = "25, 0";
+              halign = "center";
+              valign = "center";
+            }
+          ];
+
+          label = [
+            {
+              monitor = "";
+              text = "cmd[update:1000] echo -e \"<b>\$(date +\"%A, %B %d\")</b>\"";
+              color = "rgb(${config.lib.stylix.colors.base09})";
+              font_size = 32;
+              font_family = "Iosevka Nerd Font";
+              position = "0, -110";
+              halign = "center";
+              valign = "top";
+            }
+            {
+              monitor = "";
+              text = "cmd[update:1000] echo \"<span>\$(date +\"%X\")</span>\"";
+              color = "rgb(${config.lib.stylix.colors.base09})";
+              font_size = 42;
+              font_family = "Iosevka Nerd Font";
+              position = "0, -150";
+              halign = "center";
+              valign = "top";
+            }
+            {
+              monitor = "";
+              text = "   \$USER";
+              color = "rgb(${config.lib.stylix.colors.base0E})";
+              outline_thickness = 2;
+              font_size = 20;
+              font_family = "Iosevka Nerd Font";
+              position = "0, 157";
+              halign = "center";
+              valign = "bottom";
+            }
+          ];
+
+          shape = [
+            {
+              monitor = "";
+              size = "320, 55";
+              color = "rgb(${config.lib.stylix.colors.base00})";
+              rounding = -1;
+              border_size = 2;
+              border_color = "rgb(${config.lib.stylix.colors.base0C})";
+              position = "0, 140";
+              halign = "center";
+              valign = "bottom";
+            }
+          ];
+
+          input-field = lib.mkForce [
+            {
+              monitor = "";
+              size = "320, 55";
+              outline_thickness = 2;
+              dots_size = 0.2;
+              dots_spacing = 0.2;
+              dots_center = true;
+              outer_color = "rgb(${config.lib.stylix.colors.base0C})";
+              inner_color = "rgb(${config.lib.stylix.colors.base00})";
+              font_color = "rgb(${config.lib.stylix.colors.base0E})";
+              fade_on_empty = false;
+              font_family = "Iosevka Nerd Font";
+              placeholder_text = "<span foreground=\"##${config.lib.stylix.colors.base0C}\">    </span>";
+              hide_input = false;
+              position = "0, -450";
+              halign = "center";
+              valign = "center";
+            }
+          ];
+        };
+      };
+      stylix.targets.hyprlock.enable = true;
+
       programs.kitty = {
         enable = true;
         font = {
@@ -200,6 +295,9 @@ with lib; {
       jetbrains-mono
       fira-code
       terminess-ttf
+      space-mono
+      hack
+      iosevka
     ];
   };
 }

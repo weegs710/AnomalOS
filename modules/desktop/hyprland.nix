@@ -12,9 +12,10 @@ with lib;
         enable = true;
         xwayland.enable = true;
       };
-      hyprlock.enable = true;
       waybar.enable = false;
     };
+
+    security.pam.services.hyprlock = {};
 
     services = {
       hypridle.enable = true;
