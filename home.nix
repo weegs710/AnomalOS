@@ -13,19 +13,13 @@ in {
     ./modules/claude-code-enhanced
   ];
 
-  # Enable Claude Code enhanced features
   programs.claude-code-enhanced.enable = true;
 
-  # Override Fish shell colors for better visibility
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
-      # Fix parameter color (was 16081f - too dark)
       set -g fish_color_param b392f0  # base05 light purple
-      # Optional: improve autosuggestion visibility
       set -g fish_color_autosuggestion 2f143f  # base03 medium purple
-
-      # Improve syntax highlighting visibility
       set -g fish_color_command 66ccff  # base0C cyan - commands
       set -g fish_color_operator ffaa55  # base09 orange - operators like ; & |
       set -g fish_color_end ffaa55  # base09 orange - command terminators
@@ -41,7 +35,6 @@ in {
   home.homeDirectory = homeDirectory;
   home.stateVersion = "25.05";
 
-  # Basic home packages (always included)
   home.packages = with pkgs; [
     inputs.agenix.packages.${pkgs.system}.default
     inputs.nh.packages.${pkgs.system}.default

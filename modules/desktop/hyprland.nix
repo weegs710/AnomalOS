@@ -6,22 +6,20 @@
 }:
 with lib; {
   config = mkIf config.mySystem.features.desktop {
-    # Hyprland and related programs
     programs = {
       hyprland = {
         enable = true;
         xwayland.enable = true;
       };
       hyprlock.enable = true;
-      waybar.enable = false; # Configured in home-manager
+      waybar.enable = false;
     };
 
     services = {
       hypridle.enable = true;
-      xserver.enable = false; # We're using Wayland
+      xserver.enable = false;
     };
 
-    # Hyprland-specific Wayland utilities
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       grim
       hyprshot
@@ -33,15 +31,11 @@ with lib; {
       wlsunset
     ];
 
-    # Environment variables for Wayland
     environment.sessionVariables = {
-      # Already set in home.nix, but ensuring they're available system-wide
       NIXOS_OZONE_WL = "1";
     };
 
-    # Home Manager Hyprland configuration
     home-manager.users.${config.mySystem.user.name} = {
-      # Enable Stylix theming for Hyprland
       stylix.targets.hyprland.enable = true;
 
       programs.waybar = lib.mkIf config.mySystem.features.desktop {

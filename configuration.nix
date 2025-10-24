@@ -12,7 +12,6 @@
     inputs.home-manager.nixosModules.default
   ];
 
-  # System configuration
   mySystem = {
     hostName = "HX99G";
     user = {
@@ -24,18 +23,16 @@
       ];
     };
 
-    # Feature toggles - customize as needed
     features = {
       desktop = true;
       security = true;
-      yubikey = true; # Set to false to disable YubiKey features
-      claudeCode = true; # Set to false to disable Claude Code
+      yubikey = true;
+      claudeCode = true;
       development = true;
       gaming = true;
-      aiAssistant = true; # Ollama + Open WebUI with clanker command
+      aiAssistant = true;
     };
 
-    # Hardware features
     hardware = {
       amd = true;
       bluetooth = true;
@@ -43,21 +40,18 @@
     };
   };
 
-  # Home Manager configuration
   home-manager = {
     backupFileExtension = "backup";
     extraSpecialArgs = { inherit inputs; };
     users.${config.mySystem.user.name} = import ./home.nix;
   };
 
-  # Agenix secrets configuration
   age.secrets.restic-password = {
     file = ./secrets/restic-password.age;
     owner = "root";
     mode = "400";
   };
 
-  # Backup service (optional but recommended)
   services.restic.backups = {
     localbackup = {
       initialize = true;
@@ -84,6 +78,5 @@
     };
   };
 
-  # System state version
   system.stateVersion = "24.11";
 }

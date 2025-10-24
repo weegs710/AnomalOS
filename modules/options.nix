@@ -1,12 +1,4 @@
-# System Options Definition
-#
-# This module defines all configurable options for the mySystem namespace.
-# These options are set in configuration.nix and control which features are enabled.
-#
-# Usage:
-#   mySystem.features.desktop = true;
-#   mySystem.user.name = "username";
-#   mySystem.hardware.amd = true;
+# System option definitions for the mySystem namespace
 
 { lib, ... }:
 
@@ -14,7 +6,6 @@ with lib;
 
 {
   options.mySystem = {
-    # User configuration
     user = {
       name = mkOption {
         type = types.str;
@@ -38,7 +29,6 @@ with lib;
       };
     };
 
-    # System configuration
     hostName = mkOption {
       type = types.str;
       default = "anomalos";
@@ -51,7 +41,6 @@ with lib;
       description = "System timezone";
     };
 
-    # Optional features
     features = {
       yubikey = mkEnableOption "YubiKey U2F authentication support";
       claudeCode = mkEnableOption "Claude Code development environment";
@@ -59,10 +48,8 @@ with lib;
       desktop = mkEnableOption "Desktop environment (Hyprland)";
       development = mkEnableOption "Development tools and languages";
       security = mkEnableOption "Enhanced security features";
-      # Note: aiAssistant is declared in modules/development/ai-assistant.nix
     };
 
-    # Hardware features
     hardware = {
       amd = mkEnableOption "AMD GPU support";
       nvidia = mkEnableOption "NVIDIA GPU support";

@@ -29,42 +29,32 @@
       substituters = [
         "https://nix-community.cachix.org"
         "https://hyprland.cachix.org"
-        # Note: chaotic-nyx cache is added automatically by inputs.cachyos.nixosModules.default
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        # Note: chaotic-nyx key is added automatically by inputs.cachyos.nixosModules.default
       ];
     };
   };
 
   nixpkgs.config.allowUnfree = true;
 
-  # Essential system packages and scripts
   environment.systemPackages = with pkgs; [
     curl
     git
     wget
     inputs.helium.defaultPackage.${pkgs.system}
 
-    # Custom *-up scripts - portable across users
     (pkgs.writeScriptBin "rig-up" ''
       #!/usr/bin/env bash
-      # Update flake, test Rig configuration, and prompt to switch
-
-      # Colors for output
       RED='\033[0;31m'
       GREEN='\033[0;32m'
       YELLOW='\033[1;33m'
       BLUE='\033[0;34m'
-      NC='\033[0m' # No Color
+      NC='\033[0m'
 
-      # Error handling
       set -e
       trap 'echo -e "''${RED}Error occurred at line $LINENO. Exiting.''${NC}" >&2' ERR
-
-      # Verify we're in the right directory
       if [ ! -f ~/dotfiles/flake.nix ]; then
           echo -e "''${RED}Error: ~/dotfiles/flake.nix not found''${NC}"
           exit 1
@@ -72,7 +62,6 @@
 
       cd ~/dotfiles/
 
-      # Update flake
       echo -e "''${BLUE}[1/3] Updating flake inputs...''${NC}"
       if nix flake update; then
           echo -e "''${GREEN}✓ Flake updated successfully''${NC}"
@@ -81,7 +70,6 @@
           exit 1
       fi
 
-      # Test configuration
       echo -e "\n''${BLUE}[2/3] Testing Rig configuration...''${NC}"
       if nh os test .#nixosConfigurations.Rig; then
           echo -e "''${GREEN}✓ Test completed successfully''${NC}"
@@ -91,7 +79,6 @@
           exit 1
       fi
 
-      # Prompt to switch
       echo -e "\n''${BLUE}[3/3] Apply configuration?''${NC}"
       echo -e "''${YELLOW}Test successful! Switch to new configuration? [y/N]''${NC} "
       read -r response
@@ -110,20 +97,14 @@
     '')
     (pkgs.writeScriptBin "hack-up" ''
       #!/usr/bin/env bash
-      # Update flake, test Hack configuration, and prompt to switch
-
-      # Colors for output
       RED='\033[0;31m'
       GREEN='\033[0;32m'
       YELLOW='\033[1;33m'
       BLUE='\033[0;34m'
-      NC='\033[0m' # No Color
+      NC='\033[0m'
 
-      # Error handling
       set -e
       trap 'echo -e "''${RED}Error occurred at line $LINENO. Exiting.''${NC}" >&2' ERR
-
-      # Verify we're in the right directory
       if [ ! -f ~/dotfiles/flake.nix ]; then
           echo -e "''${RED}Error: ~/dotfiles/flake.nix not found''${NC}"
           exit 1
@@ -131,7 +112,6 @@
 
       cd ~/dotfiles/
 
-      # Update flake
       echo -e "''${BLUE}[1/3] Updating flake inputs...''${NC}"
       if nix flake update; then
           echo -e "''${GREEN}✓ Flake updated successfully''${NC}"
@@ -140,7 +120,6 @@
           exit 1
       fi
 
-      # Test configuration
       echo -e "\n''${BLUE}[2/3] Testing Hack configuration...''${NC}"
       if nh os test .#nixosConfigurations.Hack; then
           echo -e "''${GREEN}✓ Test completed successfully''${NC}"
@@ -150,7 +129,6 @@
           exit 1
       fi
 
-      # Prompt to switch
       echo -e "\n''${BLUE}[3/3] Apply configuration?''${NC}"
       echo -e "''${YELLOW}Test successful! Switch to new configuration? [y/N]''${NC} "
       read -r response
@@ -169,20 +147,14 @@
     '')
     (pkgs.writeScriptBin "guard-up" ''
       #!/usr/bin/env bash
-      # Update flake, test Guard configuration, and prompt to switch
-
-      # Colors for output
       RED='\033[0;31m'
       GREEN='\033[0;32m'
       YELLOW='\033[1;33m'
       BLUE='\033[0;34m'
-      NC='\033[0m' # No Color
+      NC='\033[0m'
 
-      # Error handling
       set -e
       trap 'echo -e "''${RED}Error occurred at line $LINENO. Exiting.''${NC}" >&2' ERR
-
-      # Verify we're in the right directory
       if [ ! -f ~/dotfiles/flake.nix ]; then
           echo -e "''${RED}Error: ~/dotfiles/flake.nix not found''${NC}"
           exit 1
@@ -190,7 +162,6 @@
 
       cd ~/dotfiles/
 
-      # Update flake
       echo -e "''${BLUE}[1/3] Updating flake inputs...''${NC}"
       if nix flake update; then
           echo -e "''${GREEN}✓ Flake updated successfully''${NC}"
@@ -199,7 +170,6 @@
           exit 1
       fi
 
-      # Test configuration
       echo -e "\n''${BLUE}[2/3] Testing Guard configuration...''${NC}"
       if nh os test .#nixosConfigurations.Guard; then
           echo -e "''${GREEN}✓ Test completed successfully''${NC}"
@@ -209,7 +179,6 @@
           exit 1
       fi
 
-      # Prompt to switch
       echo -e "\n''${BLUE}[3/3] Apply configuration?''${NC}"
       echo -e "''${YELLOW}Test successful! Switch to new configuration? [y/N]''${NC} "
       read -r response
@@ -228,20 +197,14 @@
     '')
     (pkgs.writeScriptBin "stub-up" ''
       #!/usr/bin/env bash
-      # Update flake, test Stub configuration, and prompt to switch
-
-      # Colors for output
       RED='\033[0;31m'
       GREEN='\033[0;32m'
       YELLOW='\033[1;33m'
       BLUE='\033[0;34m'
-      NC='\033[0m' # No Color
+      NC='\033[0m'
 
-      # Error handling
       set -e
       trap 'echo -e "''${RED}Error occurred at line $LINENO. Exiting.''${NC}" >&2' ERR
-
-      # Verify we're in the right directory
       if [ ! -f ~/dotfiles/flake.nix ]; then
           echo -e "''${RED}Error: ~/dotfiles/flake.nix not found''${NC}"
           exit 1
@@ -249,7 +212,6 @@
 
       cd ~/dotfiles/
 
-      # Update flake
       echo -e "''${BLUE}[1/3] Updating flake inputs...''${NC}"
       if nix flake update; then
           echo -e "''${GREEN}✓ Flake updated successfully''${NC}"
@@ -258,7 +220,6 @@
           exit 1
       fi
 
-      # Test configuration
       echo -e "\n''${BLUE}[2/3] Testing Stub configuration...''${NC}"
       if nh os test .#nixosConfigurations.Stub; then
           echo -e "''${GREEN}✓ Test completed successfully''${NC}"
@@ -268,7 +229,6 @@
           exit 1
       fi
 
-      # Prompt to switch
       echo -e "\n''${BLUE}[3/3] Apply configuration?''${NC}"
       echo -e "''${YELLOW}Test successful! Switch to new configuration? [y/N]''${NC} "
       read -r response
@@ -287,14 +247,12 @@
     '')
   ];
 
-  # Basic shell aliases
   environment.shellAliases = {
     nfa = "cd ~/dotfiles/ && nix flake archive";
     recycle = "sudo nix-env --delete-generations +10 --profile /nix/var/nix/profiles/system && sudo nix-collect-garbage";
     update = "cd ~/dotfiles/ && nix flake update";
     closure = "nix path-info -Sh /run/current-system";
 
-    # Configuration-specific rebuild aliases
     nrs-rig = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.Rig";
     nrt-rig = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.Rig";
     nrs-hack = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.hack";

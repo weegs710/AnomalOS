@@ -14,7 +14,6 @@ in
 
 {
   config = mkIf config.mySystem.features.yubikey {
-    # YubiKey U2F authentication
     security.pam.u2f = {
       enable = true;
       control = "sufficient";
@@ -31,7 +30,6 @@ in
       polkit-1.u2fAuth = true;
     };
 
-    # YubiKey hardware support
     services = {
       udev = {
         packages = [
@@ -51,16 +49,13 @@ in
       pcscd.enable = true;
     };
 
-    # Add YubiKey packages
     environment.systemPackages = with pkgs; [
       yubikey-manager
       pam_u2f
     ];
 
-    # Add user to plugdev group for YubiKey access
     users.users.${username}.extraGroups = [ "plugdev" ];
 
-    # YubiKey auto-login services
     systemd.services = {
       yubikey-autologin-enable = {
         description = "Enable auto-login when registered YubiKey is present";

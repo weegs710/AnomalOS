@@ -1,25 +1,5 @@
-# Desktop Environment Module
-#
-# Configures a complete Wayland desktop environment when mySystem.features.desktop = true
-#
-# Components:
-#   - hyprland.nix: Hyprland compositor configuration (Waybar, keybindings, window rules)
-#   - stylix.nix: System theming and color schemes
-#   - media.nix: Media player configurations
-#
-# Services Enabled:
-#   - SDDM display manager (Wayland mode)
-#   - PipeWire audio system (ALSA, PulseAudio, JACK compatibility)
-#   - XDG desktop portals for app integration
-#   - Device management (upower, ratbagd, devmon)
-#
-# Key Features:
-#   - Hyprland tiling Wayland compositor
-#   - Complete audio stack with PipeWire
-#   - File manager (Yazi terminal-based, Thunar GUI fallback)
-#   - Desktop applications (mpv, transmission, vesktop, etc.)
-#   - Terminal utilities (kitty, rofi, dunst)
-#   - X11 compatibility libraries for legacy apps
+# Desktop environment configuration
+# Wayland-based desktop with Hyprland compositor, SDDM, and PipeWire audio
 {
   config,
   lib,
@@ -74,20 +54,17 @@ with lib; {
       udevil.enable = true;
     };
 
-    # Desktop applications and utilities
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      # Desktop applications
-      # mpv - using VLC instead
+      # Applications
       pavucontrol
       qalculate-gtk
       qview
       transmission_4-gtk
       unzipNLS
       vlc
-      # vesktop - managed by Home Manager for Stylix theming
       zathura
 
-      # Desktop utilities
+      # Utilities
       alarm-clock-applet
       bluetui
       fastfetch
@@ -130,16 +107,13 @@ with lib; {
       gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
     };
 
-    # Home Manager configuration for desktop
     home-manager.users.${config.mySystem.user.name} = {
-      # Enable Yazi file manager with Stylix theming
       programs.yazi = {
         enable = true;
         enableFishIntegration = true;
-        # Keep existing custom keymaps and settings
         keymap = builtins.fromTOML (builtins.readFile ./yazi/keymap.toml);
         settings = builtins.fromTOML (builtins.readFile ./yazi/yazi.toml);
-        # Override theme to use base00 as background
+        # Override Stylix theme background
         theme = {
           mgr = {
             bg = lib.mkForce "#${config.lib.stylix.colors.base00}";
@@ -157,13 +131,9 @@ with lib; {
       stylix.targets.yazi.enable = true;
       stylix.targets.vesktop.enable = true;
 
-      # Enable Vesktop for Stylix theming
-      programs.vesktop = {
-        enable = true;
-      };
+      programs.vesktop.enable = true;
 
       # Override Yazi desktop file to launch via kitty
-      # Using dataFile instead of desktopEntries to ensure higher priority
       xdg.dataFile."applications/yazi.desktop".text = ''
         [Desktop Entry]
         Name=Yazi
