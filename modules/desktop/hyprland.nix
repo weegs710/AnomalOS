@@ -4,7 +4,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   config = mkIf config.mySystem.features.desktop {
     programs = {
       hyprland = {
@@ -324,8 +325,8 @@ with lib; {
           };
           decoration = {
             rounding = 10;
-            active_opacity = 1;
-            inactive_opacity = 1;
+            active_opacity = 0.92;
+            inactive_opacity = 0.87;
             shadow = {
               enabled = false;
               range = 8;

@@ -51,7 +51,6 @@ in {
     hyprls
     hyprshot
     jq
-    kitty
     nil
     nodejs
     pamixer

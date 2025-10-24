@@ -88,7 +88,6 @@ with lib; {
       # Terminal and system utilities
       cliphist
       dunst
-      kitty
       pamixer
       rofi
       ueberzugpp
@@ -108,6 +107,15 @@ with lib; {
     };
 
     home-manager.users.${config.mySystem.user.name} = {
+      programs.kitty = {
+        enable = true;
+        font = {
+          name = lib.mkForce "Terminess Nerd Font";
+          size = lib.mkForce 14;
+        };
+      };
+      stylix.targets.kitty.enable = true;
+
       programs.yazi = {
         enable = true;
         enableFishIntegration = true;
