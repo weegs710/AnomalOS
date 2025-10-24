@@ -40,6 +40,8 @@ with lib; {
       locate.enable = true;
     };
 
+    security.pam.services.sddm.kwallet.enable = true;
+
     # XDG portal setup
     xdg.portal = {
       enable = true;
@@ -75,7 +77,9 @@ with lib; {
       adwaita-icon-theme
       dbus
       dbus-broker
+      kdePackages.kwallet
       kdePackages.kwallet-pam
+      kdePackages.kwalletmanager
       libGL
       libnotify
       libportal
