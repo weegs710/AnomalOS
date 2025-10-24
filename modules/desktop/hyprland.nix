@@ -293,6 +293,7 @@ with lib;
             "XDG_TERMINAL_EDITOR,kitty"
           ];
           exec-once = [
+            "kwalletd6 &"
             "dunst &"
             "tmux new -d waybar &"
             "hyprctl keyword master:orientation top"
