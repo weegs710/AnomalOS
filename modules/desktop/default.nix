@@ -57,13 +57,13 @@ with lib; {
 
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       # Applications
+      kdePackages.okular
       pavucontrol
       qalculate-gtk
       qview
       transmission_4-gtk
       unzipNLS
       vlc
-      zathura
 
       # Utilities
       alarm-clock-applet
@@ -260,6 +260,14 @@ with lib; {
       stylix.targets.vesktop.enable = true;
 
       programs.vesktop.enable = true;
+
+      # XDG MIME type associations
+      xdg.mimeApps = {
+        enable = true;
+        defaultApplications = {
+          "application/pdf" = "org.kde.okular.desktop";
+        };
+      };
 
       # Override Yazi desktop file to launch via kitty
       xdg.dataFile."applications/yazi.desktop".text = ''

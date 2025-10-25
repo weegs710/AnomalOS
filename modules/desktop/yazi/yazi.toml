@@ -33,7 +33,7 @@ edit = [
 	{ run = 'zed "$@"', desc = "Zed", block = true, for = "unix" },
 ]
 pdf = [
-	{ run = 'zathura "$@"', orphan = true, desc = "Zathura", for = "unix" },
+	{ run = 'okular "$@"', orphan = true, desc = "Okular", for = "unix" },
 ]
 image = [
 	{ run = 'qview "$@"', orphan = true, desc = "qView", for = "unix" },
