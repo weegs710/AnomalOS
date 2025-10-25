@@ -19,8 +19,8 @@ title_format   = "Yazi: {cwd}"
 [preview]
 wrap            = "yes"
 tab_size        = 2
-max_width       = 2000
-max_height      = 2000
+max_width       = 10000
+max_height      = 10000
 cache_dir       = ""
 image_delay     = 30
 image_filter    = "lanczos3"
@@ -93,8 +93,8 @@ rules = [
 micro_workers    = 10
 macro_workers    = 10
 bizarre_retry    = 3
-image_alloc      = 536870912  # 512MB
-image_bound      = [ 5000, 5000 ]
+image_alloc      = 0  # Unlimited
+image_bound      = [ 0, 0 ]  # Unlimited
 suppress_preload = false
 
 [plugin]
