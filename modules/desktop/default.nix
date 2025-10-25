@@ -52,7 +52,6 @@ with lib; {
 
     programs = {
       file-roller.enable = true;
-      thunar.enable = true;
       udevil.enable = true;
     };
 
@@ -87,7 +86,6 @@ with lib; {
       mesa
       wireplumber
       xdg-dbus-proxy
-      xfce.thunar-volman
 
       # Terminal and system utilities
       cliphist
