@@ -10,6 +10,75 @@ with lib;
 let
   username = config.mySystem.user.name;
   homeDirectory = "/home/${username}";
+
+  # Centralized path definitions
+  u2fKeys = "${homeDirectory}/.config/Yubico/u2f_keys";
+  sddmConfDir = "/etc/sddm.conf.d";
+  autologinConf = "${sddmConfDir}/autologin.conf";
+  logFile = "/var/log/yubikey-autologin.log";
+  ykmanPath = "/run/current-system/sw/bin/ykman";
+
+  # Shared helper script for all auto-login operations
+  autologinScript = pkgs.writeShellScript "yubikey-autologin-helper" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    MODE="''${1:-}"
+
+    log() { echo "$(date): $*" >> "${logFile}"; }
+
+    validate_yubikey() {
+      [[ ! -x "${ykmanPath}" ]] && { log "ykman not available"; return 1; }
+      [[ "$MODE" == "init" ]] && sleep 2  # USB settle time at boot
+
+      local info=$("${ykmanPath}" info 2>/dev/null || echo "")
+      [[ ! -f "${u2fKeys}" ]] && { log "No U2F keys file found"; return 1; }
+      [[ -s "${u2fKeys}" && -n "$info" ]] && [[ "$info" == *"Security Key"* || "$info" == *"YubiKey"* ]] || { log "YubiKey validation failed"; return 1; }
+
+      log "Validated YubiKey: $(echo "$info" | head -1)"
+      return 0
+    }
+
+    enable_autologin() {
+      log "Enabling auto-login"
+      mkdir -p "${sddmConfDir}"
+      cat > "${autologinConf}" <<'EOF'
+[Autologin]
+User=${username}
+Session=hyprland
+Relogin=true
+EOF
+      chmod 644 "${autologinConf}"
+    }
+
+    disable_autologin() {
+      if [[ -f "${autologinConf}" ]]; then
+        rm -f "${autologinConf}"
+        log "Auto-login disabled"
+      else
+        log "Auto-login was already disabled"
+      fi
+    }
+
+    case "$MODE" in
+      enable)
+        validate_yubikey && enable_autologin || log "Unregistered/invalid YubiKey, auto-login not enabled"
+        ;;
+      disable)
+        disable_autologin
+        ;;
+      init)
+        touch "${logFile}" && chmod 644 "${logFile}"
+        log "Auto-login service starting"
+        mkdir -p "${sddmConfDir}"
+        validate_yubikey && enable_autologin || { log "No registered YubiKey at boot"; disable_autologin; }
+        ;;
+      *)
+        echo "Usage: $0 {enable|disable|init}" >&2
+        exit 1
+        ;;
+    esac
+  '';
 in
 
 {
@@ -61,61 +130,7 @@ in
         description = "Enable auto-login when registered YubiKey is present";
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = pkgs.writeShellScript "enable-autologin" ''
-                    #!/usr/bin/env bash
-
-                    # Path to registered YubiKeys
-                    U2F_KEYS="${homeDirectory}/.config/Yubico/u2f_keys"
-                    SDDM_CONF_DIR="/etc/sddm.conf.d"
-                    AUTOLOGIN_CONF="$SDDM_CONF_DIR/autologin.conf"
-                    LOG_FILE="/var/log/yubikey-autologin.log"
-
-                    # Function to validate YubiKey registration
-                    validate_yubikey() {
-                      # Use full path to ykman
-                      YKMAN_PATH="/run/current-system/sw/bin/ykman"
-                      if [[ ! -x "$YKMAN_PATH" ]]; then
-                        echo "$(date): ykman not available at $YKMAN_PATH" >> "$LOG_FILE"
-                        return 1
-                      fi
-
-                      # Get YubiKey serial if possible
-                      YUBIKEY_INFO=$($YKMAN_PATH info 2>/dev/null || echo "")
-
-                      # Check if U2F keys file exists and is readable
-                      if [[ ! -f "$U2F_KEYS" ]]; then
-                        echo "$(date): No U2F keys file found" >> "$LOG_FILE"
-                        return 1
-                      fi
-
-                      # Basic validation - if we have U2F keys registered and a YubiKey is present
-                      if [[ -s "$U2F_KEYS" ]] && [[ -n "$YUBIKEY_INFO" ]]; then
-                        # Additional check: try to verify the key works with our system
-                        if [[ "$YUBIKEY_INFO" == *"Security Key"* ]] || [[ "$YUBIKEY_INFO" == *"YubiKey"* ]]; then
-                          echo "$(date): Validated YubiKey: $(echo "$YUBIKEY_INFO" | head -1)" >> "$LOG_FILE"
-                          return 0
-                        fi
-                      fi
-
-                      echo "$(date): YubiKey validation failed" >> "$LOG_FILE"
-                      return 1
-                    }
-
-                    # Validate the inserted YubiKey
-                    if validate_yubikey; then
-                      echo "$(date): Registered YubiKey detected, enabling auto-login" >> "$LOG_FILE"
-                      mkdir -p "$SDDM_CONF_DIR"
-                      cat > "$AUTOLOGIN_CONF" << 'EOF'
-            [Autologin]
-            User=${username}
-            Session=hyprland
-            Relogin=true
-            EOF
-                      chmod 644 "$AUTOLOGIN_CONF"
-                    else
-                      echo "$(date): Unregistered or invalid YubiKey detected, auto-login not enabled" >> "$LOG_FILE"
-                    fi
-          '';
+          ExecStart = "${autologinScript} enable";
           User = "root";
         };
       };
@@ -124,21 +139,7 @@ in
         description = "Disable auto-login when YubiKey is removed";
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = pkgs.writeShellScript "disable-autologin" ''
-            #!/usr/bin/env bash
-
-            SDDM_CONF_DIR="/etc/sddm.conf.d"
-            AUTOLOGIN_CONF="$SDDM_CONF_DIR/autologin.conf"
-            LOG_FILE="/var/log/yubikey-autologin.log"
-
-            # Remove SDDM auto-login config
-            if [[ -f "$AUTOLOGIN_CONF" ]]; then
-              rm -f "$AUTOLOGIN_CONF"
-              echo "$(date): YubiKey removed, auto-login disabled" >> "$LOG_FILE"
-            else
-              echo "$(date): YubiKey removed, auto-login was already disabled" >> "$LOG_FILE"
-            fi
-          '';
+          ExecStart = "${autologinScript} disable";
           User = "root";
         };
       };
@@ -149,72 +150,7 @@ in
         before = [ "display-manager.service" ];
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = pkgs.writeShellScript "init-autologin" ''
-                    #!/usr/bin/env bash
-
-                    U2F_KEYS="${homeDirectory}/.config/Yubico/u2f_keys"
-                    SDDM_CONF_DIR="/etc/sddm.conf.d"
-                    AUTOLOGIN_CONF="$SDDM_CONF_DIR/autologin.conf"
-                    LOG_FILE="/var/log/yubikey-autologin.log"
-
-                    # Ensure log file exists with proper permissions
-                    touch "$LOG_FILE"
-                    chmod 644 "$LOG_FILE"
-
-                    # Function to validate YubiKey registration
-                    validate_yubikey() {
-                      # Use full path to ykman
-                      YKMAN_PATH="/run/current-system/sw/bin/ykman"
-                      if [[ ! -x "$YKMAN_PATH" ]]; then
-                        echo "$(date): ykman not available at boot: $YKMAN_PATH" >> "$LOG_FILE"
-                        return 1
-                      fi
-
-                      # Wait a moment for USB to settle
-                      sleep 2
-
-                      # Get YubiKey info
-                      YUBIKEY_INFO=$($YKMAN_PATH info 2>/dev/null || echo "")
-
-                      # Check if U2F keys file exists and is readable
-                      if [[ ! -f "$U2F_KEYS" ]]; then
-                        echo "$(date): No U2F keys file found at boot" >> "$LOG_FILE"
-                        return 1
-                      fi
-
-                      # Basic validation - if we have U2F keys registered and a YubiKey is present
-                      if [[ -s "$U2F_KEYS" ]] && [[ -n "$YUBIKEY_INFO" ]]; then
-                        if [[ "$YUBIKEY_INFO" == *"Security Key"* ]] || [[ "$YUBIKEY_INFO" == *"YubiKey"* ]]; then
-                          echo "$(date): Boot validation successful for: $(echo "$YUBIKEY_INFO" | head -1)" >> "$LOG_FILE"
-                          return 0
-                        fi
-                      fi
-
-                      echo "$(date): No valid registered YubiKey found at boot" >> "$LOG_FILE"
-                      return 1
-                    }
-
-                    # Initialize log
-                    echo "$(date): YubiKey auto-login service starting..." >> "$LOG_FILE"
-
-                    # Ensure conf directory exists
-                    mkdir -p "$SDDM_CONF_DIR"
-
-                    # Check for registered YubiKey presence at boot
-                    if validate_yubikey; then
-                      echo "$(date): Registered YubiKey present at boot, enabling auto-login" >> "$LOG_FILE"
-                      cat > "$AUTOLOGIN_CONF" << 'EOF'
-            [Autologin]
-            User=${username}
-            Session=hyprland
-            Relogin=true
-            EOF
-                      chmod 644 "$AUTOLOGIN_CONF"
-                    else
-                      echo "$(date): No registered YubiKey at boot, ensuring auto-login is disabled" >> "$LOG_FILE"
-                      rm -f "$AUTOLOGIN_CONF"
-                    fi
-          '';
+          ExecStart = "${autologinScript} init";
           User = "root";
         };
       };
