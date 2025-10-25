@@ -39,7 +39,6 @@ keymap = [
 	# Toggle
 	{ on = "<Space>", run = [ "toggle", "arrow next" ], desc = "Toggle the current selection state" },
 	{ on = "<C-a>",   run = "toggle_all --state=on",    desc = "Select all files" },
-	{ on = "<C-r>",   run = "toggle_all",               desc = "Invert selection of all files" },
 
 	# Visual mode
 	{ on = "v", run = "visual_mode",         desc = "Enter visual mode (selection mode)" },
@@ -69,7 +68,7 @@ keymap = [
 	{ on = "<C-r>",       run = "rename --cursor=before_ext",  desc = "Rename selected file(s)" },
 	{ on = ";",         run = "shell --interactive",         desc = "Run a shell command" },
 	{ on = ":",         run = "shell --block --interactive", desc = "Run a shell command (block until finishes)" },
-	{ on = ".",         run = "hidden toggle",               desc = "Toggle the visibility of hidden files" },
+	{ on = "h",         run = "hidden toggle",               desc = "Toggle the visibility of hidden files" },
 	{ on = "<C-f>",     run = "search --via=fd",             desc = "Search files by name" },
 	{ on = "<C-S-f>",   run = "search --via=rg",             desc = "Search files by content" },
 	{ on = "<Esc>",     run = "escape --search",             desc = "Cancel the ongoing search" },
@@ -116,10 +115,16 @@ keymap = [
 
 	# Goto (custom bookmarks)
 	{ on = [ "g", "h" ],       run = "cd ~",                       desc = "Go home" },
-	{ on = [ "g", "d" ],       run = "cd ~/dotfiles",              desc = "Go to dotfiles" },
+	{ on = [ "g", "." ],       run = "cd ~/dotfiles",              desc = "Go to dotfiles" },
+	{ on = [ "g", "d" ],       run = "cd ~/Downloads",             desc = "Go to Downloads" },
+	{ on = [ "g", "r" ],       run = "cd /",                       desc = "Go to root" },
 	{ on = [ "g", "k" ],       run = "cd /mnt/kingston-1tb",       desc = "Go to Kingston 1TB" },
+	{ on = [ "g", "t" ],       run = "cd ~/.local/share/Trash/files", desc = "Go to trash" },
 	{ on = [ "g", "<Space>" ], run = "cd --interactive",           desc = "Jump interactively" },
 	{ on = [ "g", "f" ],       run = "follow",                     desc = "Follow hovered symlink" },
+
+	# Plugins
+	{ on = "M", run = "plugin mount", desc = "Mount manager" },
 
 	# Tabs (VS Code style)
 	{ on = "<C-t>", run = "tab_create --current", desc = "Create a new tab with CWD" },

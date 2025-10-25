@@ -223,6 +223,26 @@ with lib; {
         enableFishIntegration = true;
         keymap = builtins.fromTOML (builtins.readFile ./yazi/keymap.toml);
         settings = builtins.fromTOML (builtins.readFile ./yazi/yazi.toml);
+
+        plugins = {
+          mount = pkgs.fetchFromGitHub {
+            owner = "yazi-rs";
+            repo = "plugins";
+            rev = "main";
+            sha256 = "sha256-7vsqHvdNimH/YVWegfAo7DfJ+InDr3a1aNU0f+gjcdw=";
+          } + "/mount.yazi";
+          git = pkgs.fetchFromGitHub {
+            owner = "yazi-rs";
+            repo = "plugins";
+            rev = "main";
+            sha256 = "sha256-7vsqHvdNimH/YVWegfAo7DfJ+InDr3a1aNU0f+gjcdw=";
+          } + "/git.yazi";
+        };
+
+        initLua = ''
+          require("git"):setup()
+        '';
+
         # Override Stylix theme background
         theme = {
           mgr = {
