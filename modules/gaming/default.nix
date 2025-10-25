@@ -21,12 +21,29 @@ with lib; {
     # Gaming applications
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       anki-bin
-      desmume
       lutris
-      ppsspp
       protonup-qt
-      # retroarch  # Commented out temporarily due to issues upstream.
       ryubing
+      (wrapRetroArch {
+        cores = with libretro; [
+          nestopia
+          bsnes
+          mupen64plus
+          gambatte
+          mgba
+          desmume
+          genesis-plus-gx
+          beetle-saturn
+          flycast
+          beetle-psx-hw
+          pcsx2
+          ppsspp
+          mame
+          fbneo
+          stella
+          beetle-pce-fast
+        ];
+      })
     ];
   };
 }
