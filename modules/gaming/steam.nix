@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -12,6 +17,10 @@ with lib;
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
       localNetworkGameTransfers.openFirewall = true;
+    };
+
+    environment.sessionVariables = {
+      SDL_VIDEODRIVER = "x11";
     };
   };
 }
