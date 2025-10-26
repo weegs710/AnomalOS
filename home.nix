@@ -82,6 +82,10 @@ in {
 
   # Thunar installed for GTK portal FileChooser dependency (yazi doesn't provide one)
   xdg.desktopEntries = {
+    "thunar" = {
+      name = "Thunar";
+      noDisplay = true;
+    };
     "thunar-bulk-rename" = {
       name = "Thunar Bulk Rename";
       noDisplay = true;
@@ -92,6 +96,26 @@ in {
     };
     "thunar-volman-settings" = {
       name = "Thunar Volume Manager Settings";
+      noDisplay = true;
+    };
+    "qt5ct" = {
+      name = "Qt5 Settings";
+      noDisplay = true;
+    };
+    "qt6ct" = {
+      name = "Qt6 Settings";
+      noDisplay = true;
+    };
+    "kvantummanager" = {
+      name = "Kvantum Manager";
+      noDisplay = true;
+    };
+    "org.pulseaudio.pavucontrol" = {
+      name = "PulseAudio Volume Control";
+      noDisplay = true;
+    };
+    "com.interversehq.qView" = {
+      name = "qView";
       noDisplay = true;
     };
   };
