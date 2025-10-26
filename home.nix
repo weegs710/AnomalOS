@@ -49,6 +49,7 @@ in {
     grim
     hyprls
     hyprshot
+    jan
     jq
     nil
     nodejs
