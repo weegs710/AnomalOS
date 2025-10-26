@@ -29,8 +29,14 @@ ueberzug_scale  = 1
 ueberzug_offset = [ 0, 0, 0, 0 ]
 
 [opener]
+folder = [
+	{ run = 'zeditor "$@"', orphan = true, desc = "Open in Zed", for = "unix" },
+]
 edit = [
-	{ run = 'zed "$@"', desc = "Zed", block = true, for = "unix" },
+	{ run = 'zeditor "$@"', orphan = true, desc = "Edit in Zed", for = "unix" },
+]
+browser = [
+	{ run = 'xdg-open "$@"', orphan = true, desc = "Open in Browser", for = "unix" },
 ]
 pdf = [
 	{ run = 'okular "$@"', orphan = true, desc = "Okular", for = "unix" },
@@ -69,11 +75,19 @@ play = [
 
 [open]
 rules = [
-	# Folder
-	{ name = "*/", use = [ "edit", "open", "reveal" ] },
-	# Text and code files
-	{ mime = "text/*", use = [ "edit", "reveal" ] },
-	{ mime = "application/{json,ndjson}", use = [ "edit", "reveal" ] },
+	# Folders - open in Zed
+	{ name = "*/", use = [ "folder", "reveal" ] },
+
+	# HTML files - open in browser, edit with Zed via interactive menu
+	{ mime = "text/html", use = [ "browser", "edit", "reveal" ] },
+
+	# Text files - whitelist approach for Zed
+	{ mime = "text/plain", use = [ "edit", "reveal" ] },
+	{ mime = "text/markdown", use = [ "edit", "reveal" ] },
+	{ mime = "text/x-python", use = [ "edit", "reveal" ] },
+	{ mime = "text/x-shellscript", use = [ "edit", "reveal" ] },
+	{ mime = "text/x-{c,c++,java,rust}", use = [ "edit", "reveal" ] },
+	{ mime = "application/{json,ndjson,xml,yaml,toml}", use = [ "edit", "reveal" ] },
 	{ mime = "*/javascript", use = [ "edit", "reveal" ] },
 	{ mime = "inode/empty", use = [ "edit", "reveal" ] },
 	# PDFs
@@ -90,9 +104,9 @@ rules = [
 ]
 
 [tasks]
-micro_workers    = 10
-macro_workers    = 10
-bizarre_retry    = 3
+micro_workers    = 30
+macro_workers    = 30
+bizarre_retry    = 5
 image_alloc      = 0  # Unlimited
 image_bound      = [ 0, 0 ]  # Unlimited
 suppress_preload = false

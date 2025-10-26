@@ -60,6 +60,8 @@ in {
     slurp
     starship
     swww
+    xdg-desktop-portal-gtk
+    xfce.thunar
     tldr
     ueberzugpp
     uv
@@ -77,6 +79,22 @@ in {
     XDG_TERMINAL_EDITOR = "kitty";
     # Ensure ~/.local/share is in XDG_DATA_DIRS so rofi finds our custom desktop files
     XDG_DATA_DIRS = "$HOME/.local/share:$XDG_DATA_DIRS";
+  };
+
+  # Thunar installed for GTK portal FileChooser dependency (yazi doesn't provide one)
+  xdg.desktopEntries = {
+    "thunar-bulk-rename" = {
+      name = "Thunar Bulk Rename";
+      noDisplay = true;
+    };
+    "thunar-settings" = {
+      name = "Thunar Settings";
+      noDisplay = true;
+    };
+    "thunar-volman-settings" = {
+      name = "Thunar Volume Manager Settings";
+      noDisplay = true;
+    };
   };
 
   # XDG MIME type associations

@@ -15,6 +15,30 @@ with lib;
       waybar.enable = false;
     };
 
+    xdg.portal = {
+      enable = true;
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      config = {
+        common.default = "gtk";
+        hyprland = {
+          default = [ "gtk" "hyprland" ];
+          "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+          "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
+          "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
+        };
+      };
+    };
+
+    environment.etc."xdg-desktop-portal/hyprland-portals.conf".text = ''
+      [preferred]
+      default=gtk;hyprland
+    '';
+
+    systemd.user.services.xdg-desktop-portal-gtk = {
+      wantedBy = [ "xdg-desktop-portal.service" ];
+      before = [ "xdg-desktop-portal.service" ];
+    };
+
     security.pam.services.hyprlock = {};
 
     services = {
