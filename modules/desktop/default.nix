@@ -11,6 +11,7 @@ with lib; {
     ./hyprland.nix
     ./stylix.nix
     ./media.nix
+    ./rofi.nix
   ];
 
   config = mkIf config.mySystem.features.desktop {
