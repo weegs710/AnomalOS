@@ -51,7 +51,6 @@ in {
     hyprshot
     jan
     jq
-    nil
     nodejs
     pamixer
     python3
