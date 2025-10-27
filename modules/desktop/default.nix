@@ -53,12 +53,6 @@ with lib;
     };
 
     programs = {
-      cdemu = {
-        enable = true;
-        gui = true;
-        image-analyzer = true;
-        group = config.mySystem.user.name;
-      };
       file-roller.enable = true;
       udevil.enable = true;
     };

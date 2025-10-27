@@ -199,15 +199,6 @@ in
 
   programs.home-manager.enable = true;
 
-  # systemd.user.services.net-sf-cdemu-CDEmuDaemon = {
-  #   enable = true;
-  #   serviceConfig = {
-  #     TimeoutStartSec = "15s";
-  #     Type = lib.mkForce "dbus";
-  #     BusName = "net.sf.cdemu.CDEmuDaemon";
-  #   };
-  # };
-
   # Claude Code project directory (conditional)
   home.file."claude-projects/.keep" = lib.mkIf osConfig.mySystem.features.claudeCode {
     text = "";
