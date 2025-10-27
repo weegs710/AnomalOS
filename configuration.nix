@@ -18,6 +18,7 @@
       name = "weegs";
       description = "weegs";
       extraGroups = [
+        "cdrom"
         "networkmanager"
         "wheel"
       ];

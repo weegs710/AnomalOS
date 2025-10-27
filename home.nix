@@ -5,10 +5,12 @@
   osConfig,
   inputs,
   ...
-}: let
+}:
+let
   username = osConfig.mySystem.user.name;
   homeDirectory = "/home/${username}";
-in {
+in
+{
   imports = [
     ./modules/claude-code-enhanced
   ];
@@ -125,74 +127,86 @@ in {
     enable = true;
     defaultApplications = {
       # Directories and file managers
-      "inode/directory" = ["yazi.desktop" "thunar.desktop"];
-      "inode/blockdevice" = ["thunar.desktop"];
+      "inode/directory" = [
+        "yazi.desktop"
+        "thunar.desktop"
+      ];
+      "inode/blockdevice" = [ "thunar.desktop" ];
 
       # Images - qView
-      "image/bmp" = ["com.interversehq.qView.desktop"];
-      "image/gif" = ["com.interversehq.qView.desktop"];
-      "image/jpeg" = ["com.interversehq.qView.desktop"];
-      "image/jpg" = ["com.interversehq.qView.desktop"];
-      "image/png" = ["com.interversehq.qView.desktop"];
-      "image/svg+xml" = ["com.interversehq.qView.desktop"];
-      "image/tiff" = ["com.interversehq.qView.desktop"];
-      "image/webp" = ["com.interversehq.qView.desktop"];
+      "image/bmp" = [ "com.interversehq.qView.desktop" ];
+      "image/gif" = [ "com.interversehq.qView.desktop" ];
+      "image/jpeg" = [ "com.interversehq.qView.desktop" ];
+      "image/jpg" = [ "com.interversehq.qView.desktop" ];
+      "image/png" = [ "com.interversehq.qView.desktop" ];
+      "image/svg+xml" = [ "com.interversehq.qView.desktop" ];
+      "image/tiff" = [ "com.interversehq.qView.desktop" ];
+      "image/webp" = [ "com.interversehq.qView.desktop" ];
 
       # Videos - VLC
-      "video/mp4" = ["vlc.desktop"];
-      "video/mpeg" = ["vlc.desktop"];
-      "video/quicktime" = ["vlc.desktop"];
-      "video/webm" = ["vlc.desktop"];
-      "video/x-matroska" = ["vlc.desktop"];
-      "video/x-msvideo" = ["vlc.desktop"];
+      "video/mp4" = [ "vlc.desktop" ];
+      "video/mpeg" = [ "vlc.desktop" ];
+      "video/quicktime" = [ "vlc.desktop" ];
+      "video/webm" = [ "vlc.desktop" ];
+      "video/x-matroska" = [ "vlc.desktop" ];
+      "video/x-msvideo" = [ "vlc.desktop" ];
 
       # Audio - VLC
-      "audio/aac" = ["vlc.desktop"];
-      "audio/flac" = ["vlc.desktop"];
-      "audio/mp3" = ["vlc.desktop"];
-      "audio/mpeg" = ["vlc.desktop"];
-      "audio/ogg" = ["vlc.desktop"];
-      "audio/wav" = ["vlc.desktop"];
-      "audio/webm" = ["vlc.desktop"];
-      "audio/x-opus+ogg" = ["vlc.desktop"];
-      "audio/x-vorbis+ogg" = ["vlc.desktop"];
+      "audio/aac" = [ "vlc.desktop" ];
+      "audio/flac" = [ "vlc.desktop" ];
+      "audio/mp3" = [ "vlc.desktop" ];
+      "audio/mpeg" = [ "vlc.desktop" ];
+      "audio/ogg" = [ "vlc.desktop" ];
+      "audio/wav" = [ "vlc.desktop" ];
+      "audio/webm" = [ "vlc.desktop" ];
+      "audio/x-opus+ogg" = [ "vlc.desktop" ];
+      "audio/x-vorbis+ogg" = [ "vlc.desktop" ];
 
       # Documents
-      "application/pdf" = ["org.pwmt.zathura-pdf-mupdf.desktop"];
+      "application/pdf" = [ "org.pwmt.zathura-pdf-mupdf.desktop" ];
 
       # Text and code files
-      "text/plain" = ["dev.zed.Zed.desktop"];
-      "text/markdown" = ["dev.zed.Zed.desktop"];
-      "text/x-csrc" = ["dev.zed.Zed.desktop"];
-      "text/x-python" = ["dev.zed.Zed.desktop"];
-      "application/x-shellscript" = ["dev.zed.Zed.desktop"];
+      "text/plain" = [ "dev.zed.Zed.desktop" ];
+      "text/markdown" = [ "dev.zed.Zed.desktop" ];
+      "text/x-csrc" = [ "dev.zed.Zed.desktop" ];
+      "text/x-python" = [ "dev.zed.Zed.desktop" ];
+      "application/x-shellscript" = [ "dev.zed.Zed.desktop" ];
 
       # Archives - File Roller
-      "application/zip" = ["org.gnome.FileRoller.desktop"];
-      "application/x-7z-compressed" = ["org.gnome.FileRoller.desktop"];
-      "application/x-rar" = ["org.gnome.FileRoller.desktop"];
-      "application/x-tar" = ["org.gnome.FileRoller.desktop"];
-      "application/gzip" = ["org.gnome.FileRoller.desktop"];
+      "application/zip" = [ "org.gnome.FileRoller.desktop" ];
+      "application/x-7z-compressed" = [ "org.gnome.FileRoller.desktop" ];
+      "application/x-rar" = [ "org.gnome.FileRoller.desktop" ];
+      "application/x-tar" = [ "org.gnome.FileRoller.desktop" ];
+      "application/gzip" = [ "org.gnome.FileRoller.desktop" ];
 
       # Web - Helium
-      "text/html" = ["helium.desktop"];
-      "x-scheme-handler/http" = ["helium.desktop"];
-      "x-scheme-handler/https" = ["helium.desktop"];
+      "text/html" = [ "helium.desktop" ];
+      "x-scheme-handler/http" = [ "helium.desktop" ];
+      "x-scheme-handler/https" = [ "helium.desktop" ];
 
       # Terminal
-      "application/x-terminal-emulator" = ["kitty.desktop"];
-      "x-scheme-handler/terminal" = ["kitty.desktop"];
+      "application/x-terminal-emulator" = [ "kitty.desktop" ];
+      "x-scheme-handler/terminal" = [ "kitty.desktop" ];
 
       # Torrents - Transmission
-      "x-scheme-handler/magnet" = ["transmission-gtk.desktop"];
-      "application/x-bittorrent" = ["transmission-gtk.desktop"];
+      "x-scheme-handler/magnet" = [ "transmission-gtk.desktop" ];
+      "application/x-bittorrent" = [ "transmission-gtk.desktop" ];
 
       # Discord - Vesktop
-      "x-scheme-handler/discord" = ["vesktop.desktop"];
+      "x-scheme-handler/discord" = [ "vesktop.desktop" ];
     };
   };
 
   programs.home-manager.enable = true;
+
+  # systemd.user.services.net-sf-cdemu-CDEmuDaemon = {
+  #   enable = true;
+  #   serviceConfig = {
+  #     TimeoutStartSec = "15s";
+  #     Type = lib.mkForce "dbus";
+  #     BusName = "net.sf.cdemu.CDEmuDaemon";
+  #   };
+  # };
 
   # Claude Code project directory (conditional)
   home.file."claude-projects/.keep" = lib.mkIf osConfig.mySystem.features.claudeCode {

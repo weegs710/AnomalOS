@@ -6,7 +6,8 @@
   pkgs,
   ...
 }:
-with lib; {
+with lib;
+{
   imports = [
     ./hyprland.nix
     ./stylix.nix
@@ -52,6 +53,12 @@ with lib; {
     };
 
     programs = {
+      cdemu = {
+        enable = true;
+        gui = true;
+        image-analyzer = true;
+        group = config.mySystem.user.name;
+      };
       file-roller.enable = true;
       udevil.enable = true;
     };
@@ -92,7 +99,6 @@ with lib; {
       cliphist
       dunst
       pamixer
-      rofi
       ueberzugpp
 
       # X11 compatibility libraries
@@ -224,18 +230,22 @@ with lib; {
         settings = builtins.fromTOML (builtins.readFile ./yazi/yazi.toml);
 
         plugins = {
-          mount = pkgs.fetchFromGitHub {
-            owner = "yazi-rs";
-            repo = "plugins";
-            rev = "main";
-            sha256 = "sha256-7vsqHvdNimH/YVWegfAo7DfJ+InDr3a1aNU0f+gjcdw=";
-          } + "/mount.yazi";
-          git = pkgs.fetchFromGitHub {
-            owner = "yazi-rs";
-            repo = "plugins";
-            rev = "main";
-            sha256 = "sha256-7vsqHvdNimH/YVWegfAo7DfJ+InDr3a1aNU0f+gjcdw=";
-          } + "/git.yazi";
+          mount =
+            pkgs.fetchFromGitHub {
+              owner = "yazi-rs";
+              repo = "plugins";
+              rev = "main";
+              sha256 = "sha256-7vsqHvdNimH/YVWegfAo7DfJ+InDr3a1aNU0f+gjcdw=";
+            }
+            + "/mount.yazi";
+          git =
+            pkgs.fetchFromGitHub {
+              owner = "yazi-rs";
+              repo = "plugins";
+              rev = "main";
+              sha256 = "sha256-7vsqHvdNimH/YVWegfAo7DfJ+InDr3a1aNU0f+gjcdw=";
+            }
+            + "/git.yazi";
         };
 
         initLua = ''
@@ -250,10 +260,15 @@ with lib; {
           status = {
             separator_open = lib.mkForce "";
             separator_close = lib.mkForce "";
-            separator_style = lib.mkForce { fg = "#${config.lib.stylix.colors.base00}"; bg = "#${config.lib.stylix.colors.base00}"; };
+            separator_style = lib.mkForce {
+              fg = "#${config.lib.stylix.colors.base00}";
+              bg = "#${config.lib.stylix.colors.base00}";
+            };
           };
           which = {
-            mask = { bg = lib.mkForce "#${config.lib.stylix.colors.base00}"; };
+            mask = {
+              bg = lib.mkForce "#${config.lib.stylix.colors.base00}";
+            };
           };
         };
       };
