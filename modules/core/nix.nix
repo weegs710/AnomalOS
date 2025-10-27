@@ -4,7 +4,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   nix = {
     gc = {
       automatic = true;
@@ -16,7 +17,7 @@
       auto-optimise-store = true;
       warn-dirty = false;
       download-buffer-size = 268435456; # 256MB
-      trusted-users = [config.mySystem.user.name];
+      trusted-users = [ config.mySystem.user.name ];
       experimental-features = [
         "nix-command"
         "flakes"
@@ -252,6 +253,7 @@
     recycle = "sudo nix-env --delete-generations +10 --profile /nix/var/nix/profiles/system && sudo nix-collect-garbage";
     update = "cd ~/dotfiles/ && nix flake update";
     closure = "nix path-info -Sh /run/current-system";
+    shh = "tmux new -d 'env STEAM_FRAME_FORCE_CLOSE=1 steam -silent'";
 
     nrs-rig = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.Rig";
     nrt-rig = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.Rig";
