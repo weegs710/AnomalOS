@@ -59,6 +59,7 @@ with lib;
 
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       # Applications
+      gemini-cli
       kdePackages.okular
       pavucontrol
       qalculate-gtk
