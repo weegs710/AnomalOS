@@ -42,7 +42,6 @@ in
     inputs.nh.packages.${pkgs.system}.default
     alejandra
     alarm-clock-applet
-    btop
     cliphist
     fastfetch
     fzf
