@@ -9,4 +9,5 @@ let
 in
 {
   "secrets/restic-password.age".publicKeys = allKeys;
+  "secrets/kwallet.age".publicKeys = allKeys;
 }

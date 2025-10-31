@@ -318,6 +318,7 @@ with lib;
             "XDG_TERMINAL_EDITOR,kitty"
           ];
           exec-once = [
+            "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
             "kwalletd6 &"
             "tmux new -d waybar &"
             "hyprctl keyword master:orientation top"

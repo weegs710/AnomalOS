@@ -42,7 +42,11 @@ with lib;
       locate.enable = true;
     };
 
-    security.pam.services.sddm.kwallet.enable = true;
+    # KWallet PAM integration (SDDM delegates to login stack)
+    security.pam.services.login.kwallet = {
+      enable = true;
+      package = pkgs.kdePackages.kwallet-pam;
+    };
 
     # XDG portal setup
     xdg.portal = {
