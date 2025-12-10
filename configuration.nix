@@ -26,26 +26,26 @@
     };
 
     features = {
-      desktop = false; # TESTING: disabled for minimal boot
-      security = false; # TESTING: disabled for minimal boot
-      yubikey = false; # TESTING: disabled for minimal boot
-      claudeCode = false; # TESTING: disabled for minimal boot
-      development = false; # TESTING: disabled for minimal boot
-      gaming = false; # TESTING: disabled for minimal boot
-      flatpak = false; # TESTING: disabled for minimal boot
-      media = false; # TESTING: disabled for minimal boot
-      kdeconnect = false; # TESTING: disabled for minimal boot
-      vm = false; # TESTING: disabled for minimal boot
+      desktop = true;
+      security = true;
+      yubikey = true;
+      claudeCode = true;
+      development = true;
+      gaming = true;
+      flatpak = true;
+      media = true;
+      kdeconnect = true;
+      vm = true;
     };
 
     hardware = {
       amd = true;
-      bluetooth = false; # TESTING: disabled for minimal boot
-      steam = false; # TESTING: disabled for minimal boot
+      bluetooth = true;
+      steam = true;
     };
 
     security = {
-      dnscrypt = false; # TESTING: disabled for minimal boot
+      dnscrypt = true;
     };
   };
 
