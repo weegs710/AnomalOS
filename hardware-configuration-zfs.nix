@@ -5,15 +5,16 @@
   ...
 }:
 {
-  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
   boot = {
     initrd.availableKernelModules = [
-      "ahci"
+      "nvme"
       "xhci_pci"
-      "virtio_pci"
-      "sr_mod"
-      "virtio_blk"
+      "ahci"
+      "usbhid"
+      "usb_storage"
+      "sd_mod"
     ];
     initrd.kernelModules = [ ];
     kernelModules = [ "kvm-amd" ];
@@ -63,6 +64,12 @@
     device = "zroot/cache";
     fsType = "zfs";
     neededForBoot = true;
+  };
+
+  # Games storage on WD Black 2TB
+  fileSystems."/mnt/games" = {
+    device = "zgames";
+    fsType = "zfs";
   };
 
   swapDevices = [ ];
