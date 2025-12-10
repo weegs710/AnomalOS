@@ -47,6 +47,7 @@
   fileSystems."/nix" = {
     device = "zroot/nix";
     fsType = "zfs";
+    neededForBoot = true;
   };
 
   fileSystems."/tmp" = {
