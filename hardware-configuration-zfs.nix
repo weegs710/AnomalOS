@@ -67,11 +67,11 @@
     neededForBoot = true;
   };
 
-  # Games storage on WD Black 2TB
-  fileSystems."/mnt/games" = {
-    device = "zgames";
-    fsType = "zfs";
-  };
+  # Games storage on WD Black 2TB - ADD AFTER SUCCESSFUL BOOT
+  # fileSystems."/mnt/games" = {
+  #   device = "zgames";
+  #   fsType = "zfs";
+  # };
 
   swapDevices = [ ];
 }
