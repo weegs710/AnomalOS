@@ -70,8 +70,9 @@ nix flake lock --update-input nixpkgs
 # Update home-manager only
 nix flake lock --update-input home-manager
 
-# Update cachyos packages
-nix flake lock --update-input cachyos
+# Update specific flake inputs
+nix flake lock --update-input nixpkgs
+nix flake lock --update-input home-manager
 ```
 
 ## Garbage Collection

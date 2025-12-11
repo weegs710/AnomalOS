@@ -537,7 +537,6 @@ flatpak list              # List installed apps
 - `nix-community.cachix.org`: Community packages
 - `hyprland.cachix.org`: Hyprland compositor and tools
 - `ezkea.cachix.org`: Anime game launchers (aagl-gtk-on-nix)
-- `chaotic-nyx.cachix.org`: CachyOS kernel and additional packages
 - `cache.flakehub.com`: FlakeHub binary cache
 
 **Benefit**: Faster builds by using pre-built binaries
@@ -665,21 +664,36 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 
 ## Performance Optimizations
 
-### CachyOS Kernel
+### ZFS Filesystem
 
 **Features:**
-- Gaming-optimized kernel patches
-- Better desktop responsiveness
-- Lower latency
-- Improved throughput
+- Copy-on-write filesystem with snapshots
+- Data integrity verification (checksums)
+- Compression (zstd) for space savings
+- Auto-trim for SSD health and performance
+- ARC caching for improved read performance
 
-**Configuration**: Enabled via `inputs.cachyos` in `flake.nix`
+**Configuration:**
+- Root pool: `zroot` (system, nix, cache, persist)
+- Games pool: `zgames` (optional, dedicated gaming storage)
+- ARC limits: 4-16GB (kernel parameters in `boot.nix`)
+- Location: `hardware-configuration-zfs.nix`
+
+### Kernel Configuration
+
+**Linux 6.17:**
+- Modern kernel with latest hardware support
+- Security hardening via kernel parameters
+- ZFS module support
+
+**Configuration**: `modules/core/boot.nix`
 
 ### System Tuning
 
 **Memory:**
-- Shared memory optimization for AI workloads (64GB)
+- ZFS ARC cache: 4-16GB (configurable)
 - Swappiness reduced to 10 for better responsiveness
+- Zram swap (25% of RAM) with zstd compression
 
 **Download Buffer:**
 - 256MB buffer for faster downloads

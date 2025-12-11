@@ -132,7 +132,7 @@ This configuration provides:
 
 Located in `modules/core/`:
 
-- **boot.nix**: Boot loader configuration, kernel parameters, CachyOS kernel
+- **boot.nix**: Boot loader configuration, kernel parameters, ZFS ARC limits
 - **networking.nix**: NetworkManager, firewall basics, hostname
 - **nix.nix**: Nix settings, garbage collection, shell aliases, update scripts
 - **users.nix**: User account creation and group membership
@@ -321,7 +321,6 @@ nixosConfigurations.MyConfig = nixpkgs.lib.nixosSystem {
   specialArgs = {inherit inputs;};
   modules = [
     inputs.stylix.nixosModules.stylix
-    inputs.cachyos.nixosModules.default
     ./configuration.nix
     {
       mySystem.features = {

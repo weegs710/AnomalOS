@@ -51,31 +51,28 @@ ls -la
 # You should see: flake.nix, configuration.nix, home.nix, modules/, etc.
 ```
 
-### Step 3: Generate Hardware Configuration
+### Step 3: Understand ZFS Requirements
 
-**IMPORTANT**: This step generates hardware-specific configuration for your system.
+**IMPORTANT**: This configuration uses ZFS for the root filesystem.
 
-The `hardware-configuration.nix` file is machine-specific and is **NOT tracked in git**. Each system must generate its own based on detected hardware. A template with documentation is provided at `hardware-configuration.nix.template`.
+**ZFS Prerequisites:**
+- NixOS must be installed on ZFS (use ZFS option during installation)
+- Requires hardware-configuration file customized for ZFS pools
+- This repository includes `hardware-configuration-zfs.nix` as reference
+
+**If you're NOT using ZFS:**
+You'll need to modify `configuration.nix` to use a standard ext4/btrfs configuration and generate a standard hardware config:
 
 ```bash
-# Generate hardware configuration for your system
 sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
-
-# Verify the file was created
-ls -lh hardware-configuration.nix
-# File should exist and be larger than 0 bytes
-
-# Optional: Review the generated configuration
-cat hardware-configuration.nix
+# Then update configuration.nix to import ./hardware-configuration.nix instead
 ```
 
-**What's detected:**
-- Kernel modules for your hardware
-- Filesystem UUIDs and mount points
-- CPU type (AMD/Intel) for microcode updates
-- Boot configuration
-
-**Note**: Refer to `hardware-configuration.nix.template` for explanations of common hardware scenarios.
+**If you ARE using ZFS:**
+Review and customize `hardware-configuration-zfs.nix` for your pools and mount points. The reference configuration includes:
+- `zroot` pool for system (/, /nix, /cache, /persist)
+- Optional `zgames` pool for gaming storage
+- ZFS ARC memory limits (4-16GB)
 
 ### Step 4: Customize Configuration (Optional but Recommended)
 
@@ -149,7 +146,7 @@ sudo nixos-rebuild test --flake .#nixosConfigurations.Rig
 
 **If test fails:**
 - Read error messages carefully
-- Verify `hardware-configuration.nix` was generated correctly
+- Verify ZFS pools are properly configured if using ZFS
 - Check that you have internet connectivity
 - Check the [Troubleshooting Guide](TROUBLESHOOTING.md)
 
@@ -272,18 +269,27 @@ nh os test .#nixosConfigurations.Rig
 
 ### Hardware Configuration Issues
 
+**For ZFS systems:**
+```bash
+# Verify ZFS pools are imported
+zpool status
+
+# Check ZFS datasets are mounted
+zfs list
+df -h | grep zfs
+
+# Ensure hardware-configuration-zfs.nix references correct pools
+cat hardware-configuration-zfs.nix | grep -A 3 "fileSystems"
+```
+
+**For non-ZFS systems:**
 ```bash
 # Regenerate hardware configuration
 sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
 
 # Verify file contents
 cat hardware-configuration.nix
-
-# Compare with template to understand common options
-diff hardware-configuration.nix hardware-configuration.nix.template
 ```
-
-**Remember**: The `hardware-configuration.nix` file is machine-specific and not tracked in git. See `hardware-configuration.nix.template` for documentation on common hardware configurations.
 
 ### Network Issues During Build
 
@@ -313,10 +319,22 @@ sudo nix-collect-garbage -d
 If the system becomes unbootable:
 
 1. **Boot from NixOS installer** USB
-2. **Mount your filesystems**:
+2. **Import ZFS pools and mount filesystems**:
    ```bash
-   sudo mount /dev/sdXY /mnt
-   sudo mount /dev/sdXZ /mnt/boot  # if separate boot partition
+   # Import ZFS pools
+   sudo zpool import -f zroot
+   sudo zpool import -f zgames  # if you have zgames pool
+
+   # Mount ZFS root
+   sudo mount -t zfs zroot/root /mnt
+
+   # Mount boot partition
+   sudo mount /dev/nvme1n1p1 /mnt/boot  # adjust device as needed
+
+   # Mount other ZFS datasets
+   sudo mount -t zfs zroot/nix /mnt/nix
+   sudo mount -t zfs zroot/persist /mnt/persist
+   sudo mount -t zfs zroot/cache /mnt/cache
    ```
 3. **Rebuild from mounted system**:
    ```bash

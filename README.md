@@ -20,7 +20,8 @@ For comprehensive documentation, see the [docs/](docs/) directory:
 
 This configuration targets x86_64 desktop systems, providing:
 
-- **OS**: NixOS (unstable channel) with CachyOS kernel
+- **OS**: NixOS (unstable channel) with Linux kernel 6.17
+- **Filesystem**: ZFS with dual-drive setup (system + games)
 - **Window Manager**: Hyprland (basic configuration, customizable)
 - **Display Manager**: SDDM with YubiKey U2F authentication
 - **Shell**: Fish with Starship prompt
@@ -55,7 +56,8 @@ git clone https://codeberg.org/weegs710/AnomalOS.git ~/dotfiles
 cd ~/dotfiles
 
 # Generate hardware configuration for your system
-sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
+# NOTE: This config uses ZFS - see docs/INSTALLATION.md for ZFS-specific setup
+sudo nixos-generate-config --show-hardware-config > hardware-configuration-zfs.nix
 
 # Create encrypted secrets (see docs/SECRETS.md)
 nix run github:ryantm/agenix -- -e secrets/restic-password.age
@@ -128,7 +130,7 @@ rig-up         # Update flake + test Rig + prompt to switch
 - Nix Flakes for reproducible configuration
 - Home Manager for user-space management
 - Declarative Flatpak management via nix-flatpak
-- Multiple binary caches (cache.nixos.org, nix-community, hyprland, ezkea, chaotic-nyx, flakehub)
+- Multiple binary caches (cache.nixos.org, nix-community, hyprland, ezkea, flakehub)
 - Restic automated backups with agenix secret management
 
 ## Modular Architecture
@@ -137,24 +139,24 @@ The configuration is organized into logical modules:
 
 ```
 dotfiles/
-├── flake.nix                    # Main flake definition
-├── configuration.nix            # System configuration and feature toggles
-├── home.nix                     # Home Manager user configuration
-├── hardware-configuration.nix   # Hardware-specific settings (generated)
-├── parts/                       # Flake-parts organization
-│   ├── configurations.nix      # NixOS configuration definitions
-│   ├── profiles.nix            # Configuration profiles
-│   ├── common.nix              # Shared module imports
-│   └── shells.nix              # Development shells
+├── flake.nix                         # Main flake definition
+├── configuration.nix                 # System configuration and feature toggles
+├── home.nix                          # Home Manager user configuration
+├── hardware-configuration-zfs.nix    # ZFS hardware configuration
+├── parts/                            # Flake-parts organization
+│   ├── configurations.nix           # NixOS configuration definitions
+│   ├── profiles.nix                 # Configuration profiles
+│   ├── common.nix                   # Shared module imports
+│   └── shells.nix                   # Development shells
 ├── modules/
-│   ├── options.nix             # Configuration schema
-│   ├── core/                   # Essential system components
-│   ├── security/               # Security features and YubiKey
-│   ├── desktop/                # Desktop environment
-│   ├── development/            # Development tools and AI
-│   └── gaming/                 # Gaming support
-├── docs/                       # Comprehensive documentation
-└── assets/                     # Assets (wallpapers, configs)
+│   ├── options.nix                  # Configuration schema
+│   ├── core/                        # Essential system components
+│   ├── security/                    # Security features and YubiKey
+│   ├── desktop/                     # Desktop environment
+│   ├── development/                 # Development tools and AI
+│   └── gaming/                      # Gaming support
+├── docs/                            # Comprehensive documentation
+└── assets/                          # Assets (wallpapers, configs)
 ```
 
 ## Customization
@@ -195,15 +197,24 @@ For detailed customization options, see [docs/CUSTOMIZATION.md](docs/CUSTOMIZATI
 
 **Target Hardware:**
 - AMD/Intel CPU with integrated graphics
-- Nvidia GPU (optional/hybrid)
+- AMD/Nvidia GPU (optional/hybrid)
 - Bluetooth 5.0+
-- NVMe SSD recommended
+- NVMe SSD (required for ZFS)
 
 **Minimum Requirements:**
-- 8GB RAM (16GB+ recommended)
-- 50GB storage (100GB+ recommended for development)
+- 16GB RAM (32GB+ recommended for ZFS ARC caching)
+- 100GB storage for system (ZFS pool)
+- Separate drive for games (optional zgames pool)
 - UEFI boot support
 - Internet connection for initial build
+
+**ZFS Configuration:**
+This system uses ZFS for the root filesystem with:
+- `zroot` pool: System, nix store, cache, and persistent data
+- `zgames` pool: Optional dedicated gaming storage (2TB in reference config)
+- ARC cache limits: 4-16GB (configurable via kernel parameters)
+- Compression: zstd for space savings
+- Auto-trim enabled for SSD health
 
 ## Contributing
 

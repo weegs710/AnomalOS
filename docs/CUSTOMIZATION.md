@@ -417,7 +417,6 @@ nixosConfigurations.MyCustom = nixpkgs.lib.nixosSystem {
   specialArgs = {inherit inputs;};
   modules = [
     inputs.stylix.nixosModules.stylix
-    inputs.cachyos.nixosModules.default
     ./configuration.nix
     {
       # Override specific features
@@ -513,7 +512,6 @@ MyConfig = nixpkgs.lib.nixosSystem {
   specialArgs = {inherit inputs;};
   modules = [
     inputs.stylix.nixosModules.stylix
-    inputs.cachyos.nixosModules.default
     ./my-config.nix
   ];
 };
