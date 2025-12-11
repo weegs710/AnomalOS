@@ -9,6 +9,7 @@ with lib; {
     ./editors.nix
     ./languages.nix
     ./media.nix
+    ./vm.nix
   ];
 
   config = mkIf config.mySystem.features.development {

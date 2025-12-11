@@ -46,6 +46,7 @@ with lib; {
       security = mkEnableOption "Enhanced security features";
       flatpak = mkEnableOption "Declarative Flatpak package management";
       kdeconnect = mkEnableOption "KDE Connect for device integration and file transfer";
+      vm = mkEnableOption "Virtual machine support (libvirtd, virt-manager)";
     };
 
     security = {

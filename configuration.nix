@@ -4,7 +4,7 @@
   ...
 }: {
   imports = [
-    ./hardware-configuration.nix
+    ./hardware-configuration-zfs.nix
     ./modules/options.nix
     ./modules/core
     ./modules/security
@@ -35,6 +35,7 @@
       flatpak = true;
       media = true;
       kdeconnect = true;
+      vm = true;
     };
 
     hardware = {
@@ -54,37 +55,37 @@
     users.${config.mySystem.user.name} = import ./home.nix;
   };
 
-  age.secrets.restic-password = {
-    file = ./secrets/restic-password.age;
-    owner = "root";
-    mode = "400";
-  };
+  # age.secrets.restic-password = {
+  #   file = ./secrets/restic-password.age;
+  #   owner = "root";
+  #   mode = "400";
+  # };
 
-  services.restic.backups = {
-    localbackup = {
-      initialize = true;
-      repository = "/backup/restic-repo";
-      passwordFile = config.age.secrets.restic-password.path;
-      paths = [
-        "/home/${config.mySystem.user.name}"
-        "/etc/nixos"
-      ];
-      exclude = [
-        "/home/${config.mySystem.user.name}/.cache"
-        "/home/${config.mySystem.user.name}/.local/share/Steam"
-        "/home/${config.mySystem.user.name}/Downloads"
-      ];
-      timerConfig = {
-        OnCalendar = "daily";
-        Persistent = true;
-      };
-      pruneOpts = [
-        "--keep-daily 7"
-        "--keep-weekly 5"
-        "--keep-monthly 12"
-      ];
-    };
-  };
+  # services.restic.backups = {
+  #   localbackup = {
+  #     initialize = true;
+  #     repository = "/backup/restic-repo";
+  #     passwordFile = config.age.secrets.restic-password.path;
+  #     paths = [
+  #       "/home/${config.mySystem.user.name}"
+  #       "/etc/nixos"
+  #     ];
+  #     exclude = [
+  #       "/home/${config.mySystem.user.name}/.cache"
+  #       "/home/${config.mySystem.user.name}/.local/share/Steam"
+  #       "/home/${config.mySystem.user.name}/Downloads"
+  #     ];
+  #     timerConfig = {
+  #       OnCalendar = "daily";
+  #       Persistent = true;
+  #     };
+  #     pruneOpts = [
+  #       "--keep-daily 7"
+  #       "--keep-weekly 5"
+  #       "--keep-monthly 12"
+  #     ];
+  #   };
+  # };
 
   nix.settings = {
     substituters = [

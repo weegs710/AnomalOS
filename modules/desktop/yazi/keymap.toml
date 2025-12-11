@@ -115,7 +115,6 @@ keymap = [
 	{ on = [ "g", "." ],       run = "cd ~/dotfiles",              desc = "Go to dotfiles" },
 	{ on = [ "g", "d" ],       run = "cd ~/Downloads",             desc = "Go to Downloads" },
 	{ on = [ "g", "r" ],       run = "cd /",                       desc = "Go to root" },
-	{ on = [ "g", "k" ],       run = "cd /mnt/kingston-1tb",       desc = "Go to Kingston 1TB" },
 	{ on = [ "g", "t" ],       run = "cd ~/.local/share/Trash/files", desc = "Go to trash" },
 	{ on = [ "g", "<Space>" ], run = "cd --interactive",           desc = "Jump interactively" },
 	{ on = [ "g", "f" ],       run = "follow",                     desc = "Follow hovered symlink" },
