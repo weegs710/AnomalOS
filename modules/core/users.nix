@@ -3,8 +3,19 @@
   lib,
   pkgs,
   ...
-}: {
-  users = {
+}:
+let
+  inherit (lib) filter hasInfix mkOption;
+in
+{
+  options = {
+    warnings = mkOption {
+      apply = filter (w: !(hasInfix "If multiple of these password options are set at the same time" w));
+    };
+  };
+
+  config = {
+    users = {
     mutableUsers = true;
     defaultUserShell = pkgs.fish;
 
@@ -29,4 +40,5 @@
 
   # Basic shell setup
   programs.fish.enable = true;
+  };
 }
