@@ -50,7 +50,6 @@ with lib; let
           "Bash(journalctl*)"
           "Bash(nixos-rebuild*)"
           "Bash(home-manager*)"
-          "Read(/mnt/kingston-1tb/steamapps/compatdata/359320/pfx/drive_c/users/steamuser/Saved Games/Frontier Developments/Elite Dangerous/**)"
         ];
         deny = [
           "Bash(rm *)"

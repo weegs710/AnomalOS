@@ -287,10 +287,4 @@ in {
   home.file.".local/share/min-ed-launcher/MinEdLauncher" = {
     source = "${pkgs.min-ed-launcher}/bin/MinEdLauncher";
   };
-
-  home.activation.minEdLauncherSymlink = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    $DRY_RUN_CMD mkdir -p "/mnt/kingston-1tb/steamapps/common/Elite Dangerous"
-    $DRY_RUN_CMD ln -sf "${config.home.homeDirectory}/.local/share/min-ed-launcher/MinEdLauncher" \
-      "/mnt/kingston-1tb/steamapps/common/Elite Dangerous/MinEdLauncher"
-  '';
 }
