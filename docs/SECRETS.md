@@ -44,19 +44,18 @@ These keys are already configured in `secrets.nix`.
 
 ### 3. Create Your First Secret
 
-Create the restic backup password:
+Create the KWallet password secret (example):
 
 ```bash
 cd ~/dotfiles
 
 # Create/edit the secret (opens your $EDITOR)
-nix run github:ryantm/agenix -- -e secrets/restic-password.age
+nix run github:ryantm/agenix -- -e secrets/kwallet.age
 
-# In the editor, type your restic password, save and exit
-# Example: openssl rand -base64 32 (run in another terminal to generate)
+# In the editor, type your KWallet password, save and exit
 ```
 
-The file `secrets/restic-password.age` is now encrypted and safe to commit!
+The file `secrets/kwallet.age` is now encrypted and safe to commit!
 
 ### 4. Rebuild Your System
 
@@ -64,17 +63,14 @@ The file `secrets/restic-password.age` is now encrypted and safe to commit!
 sudo nixos-rebuild switch --flake .#Rig
 ```
 
-Agenix will decrypt the secret at boot to `/run/agenix/restic-password`.
+Agenix will decrypt secrets at boot to `/run/agenix/`.
 
 ### 5. Verify Secret is Available
 
 ```bash
-# Check secret was decrypted
+# Check secrets were decrypted
 ls -la /run/agenix/
-# Should show: restic-password (mode 400, owner root)
-
-# Test backup service can access it
-sudo systemctl status restic-backups-localbackup
+# Should show: kwallet (mode 400, owner weegs)
 ```
 
 ## Managing Secrets
@@ -97,8 +93,8 @@ nix run github:ryantm/agenix -- -e secrets/my-secret.age
 ### Edit Existing Secret
 
 ```bash
-# Edit restic password
-nix run github:ryantm/agenix -- -e secrets/restic-password.age
+# Edit existing secret
+nix run github:ryantm/agenix -- -e secrets/kwallet.age
 
 # Make changes, save, exit
 ```
@@ -166,7 +162,7 @@ Same process as adding a machine, but add to the `users` list in `secrets.nix`.
 
 ```bash
 # Simple password
-nix run github:ryantm/agenix -- -e secrets/restic-password.age
+nix run github:ryantm/agenix -- -e secrets/database-password.age
 # Content: just the password, no newline
 
 # Multi-line credentials
@@ -191,9 +187,9 @@ age.secrets.backup-ssh-key = {
   mode = "600";
 };
 
-services.restic.backups.remote = {
-  repository = "sftp:...";
-  environmentFile = config.age.secrets.backup-ssh-key.path;
+# Example: Use in a backup service or SSH config
+programs.ssh.matchBlocks."backup-server" = {
+  identityFile = config.age.secrets.backup-ssh-key.path;
 };
 ```
 
@@ -221,7 +217,7 @@ environment.sessionVariables = {
 
 | Secret | Used By | Description |
 |--------|---------|-------------|
-| `restic-password.age` | Restic backup service | Encrypts backup repository |
+| `kwallet.age` | KWallet password manager | KWallet password for automatic unlock |
 
 ## Best Practices
 
@@ -239,7 +235,7 @@ grep -A 1 "weegs =" ~/dotfiles/secrets.nix
 
 ```bash
 # After creating/editing a secret, test it
-nix run github:ryantm/agenix -- -d secrets/restic-password.age
+nix run github:ryantm/agenix -- -d secrets/kwallet.age
 # Should decrypt and show your password
 ```
 
@@ -259,11 +255,11 @@ git add secrets/*.age
 
 ```bash
 # Every 6-12 months, rotate important secrets
-nix run github:ryantm/agenix -- -e secrets/restic-password.age
-# Change password, save
+nix run github:ryantm/agenix -- -e secrets/my-secret.age
+# Change password/secret, save
 
-# Update services using the secret
-sudo systemctl restart restic-backups-localbackup
+# Rebuild system to apply changes
+sudo nixos-rebuild switch --flake .#Rig
 ```
 
 ### 5. Use Appropriate Permissions
@@ -294,11 +290,11 @@ age.secrets.shared-secret = {
 
 ```bash
 # Check if secret file exists
-ls -la ~/dotfiles/secrets/restic-password.age
+ls -la ~/dotfiles/secrets/kwallet.age
 
 # Check SSH key can decrypt
 ssh-add -L  # List loaded SSH keys
-nix run github:ryantm/agenix -- -d secrets/restic-password.age
+nix run github:ryantm/agenix -- -d secrets/kwallet.age
 ```
 
 ### Permission Denied
@@ -307,8 +303,8 @@ nix run github:ryantm/agenix -- -d secrets/restic-password.age
 # Check /run/agenix permissions
 ls -la /run/agenix/
 
-# Check secret configuration
-grep -A 3 "restic-password" ~/dotfiles/configuration.nix
+# Check secret configuration in your modules
+grep -r "age.secrets" ~/dotfiles/modules/
 ```
 
 ### Wrong SSH Key
@@ -344,12 +340,12 @@ If git refuses to add `.age` files even though they're encrypted:
 
 ```bash
 # Error you might see:
-$ git add secrets/restic-password.age
+$ git add secrets/kwallet.age
 The following paths are ignored by one of your .gitignore files:
 secrets/
 
 # Solution: Force add the encrypted file
-git add -f secrets/restic-password.age
+git add -f secrets/kwallet.age
 
 # Verify it was added
 git status
@@ -371,14 +367,14 @@ The `.gitignore` includes `secrets/` and `*.age` patterns as **defense in depth*
 cd ~/dotfiles
 
 # Verify it's encrypted
-file secrets/restic-password.age
-# Output: secrets/restic-password.age: data
+file secrets/kwallet.age
+# Output: secrets/kwallet.age: data
 
 # Force add the encrypted file
-git add -f secrets/restic-password.age
+git add -f secrets/kwallet.age
 
 # Commit with descriptive message
-git commit -m "Update restic backup password secret"
+git commit -m "Update kwallet secret"
 
 # Push to remote
 git push
@@ -415,23 +411,21 @@ git push
 ### Automatic Secret Updates
 
 ```bash
-# Script to rotate restic password
+# Example script to rotate a secret
 #!/usr/bin/env bash
 set -euo pipefail
 
-NEW_PASSWORD=$(openssl rand -base64 32)
+NEW_SECRET=$(openssl rand -base64 32)
 cd ~/dotfiles
 
-# Update secret
-echo "$NEW_PASSWORD" | nix run github:ryantm/agenix -- -e secrets/restic-password.age
+# Update secret (interactive, opens editor)
+# You would paste NEW_SECRET into the editor
+nix run github:ryantm/agenix -- -e secrets/my-secret.age
 
 # Rebuild system
 sudo nixos-rebuild switch --flake .#Rig
 
-# Restart service
-sudo systemctl restart restic-backups-localbackup
-
-echo "Restic password rotated successfully"
+echo "Secret rotated successfully"
 ```
 
 ### Using Secrets in Home Manager
@@ -474,20 +468,25 @@ If you have existing plaintext secrets:
 
 ```bash
 # 1. Create encrypted version
-cat /etc/nixos/restic-password | \
-  nix run github:ryantm/agenix -- -e secrets/restic-password.age
+cd ~/dotfiles
+nix run github:ryantm/agenix -- -e secrets/my-secret.age
+# In editor, paste your plaintext secret, save and exit
 
 # 2. Update configuration to use agenix
-# (already done in configuration.nix)
+# Add to configuration.nix or relevant module:
+# age.secrets.my-secret = {
+#   file = ./secrets/my-secret.age;
+#   owner = "weegs";
+# };
 
 # 3. Rebuild system
 sudo nixos-rebuild switch --flake .#Rig
 
 # 4. Remove plaintext version
-sudo shred -u /etc/nixos/restic-password
+sudo shred -u /path/to/old/plaintext-secret
 
-# 5. Verify service works
-sudo systemctl status restic-backups-localbackup
+# 5. Verify secret is available
+ls -la /run/agenix/my-secret
 ```
 
 ## References

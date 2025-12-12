@@ -1,355 +1,341 @@
-# Backup & Recovery Guide
+# ZFS Snapshots & Recovery Guide
 
 ## Overview
 
-This system uses [Restic](https://restic.net/) for automated backups. Restic provides encrypted, deduplicated, and compressed backups with excellent performance.
+This system uses ZFS with automated snapshots via [sanoid](https://github.com/jimsalterjrs/sanoid) for data protection. Snapshots are copy-on-write pointers, consuming minimal space initially and only growing as data changes.
 
 **Key Features:**
-- **Automated**: Runs daily via systemd timer
-- **Encrypted**: All backups encrypted with password (managed via agenix)
-- **Deduplicated**: Only stores changed data, saving space
-- **Retention Policy**: Keeps 7 daily, 5 weekly, 12 monthly snapshots
+- **Automated**: Runs hourly via systemd timer
+- **Efficient**: Copy-on-write snapshots use minimal space
+- **Multi-tier retention**: Hourly, daily, weekly, and monthly retention policies
+- **Automatic pruning**: Old snapshots are automatically removed based on retention policy
 
-## Backup Configuration
+## Snapshot Configuration
 
-### What's Being Backed Up
+### Datasets and Retention Policies
 
-**Included:**
-- `/home/weegs` - All user files and configurations
-- `/etc/nixos` - System configuration (if exists, though we use ~/dotfiles)
+**Critical datasets (zroot/persist):**
+- 50 hourly snapshots
+- 15 daily snapshots
+- 3 weekly snapshots
+- 1 monthly snapshot
 
-**Excluded:**
-- `/home/weegs/.cache` - Temporary cache files
-- `/home/weegs/.local/share/Steam` - Large game files (re-downloadable)
-- `/home/weegs/Downloads` - Temporary downloads
+**Important datasets (zgames/games):**
+- 24 hourly snapshots
+- 7 daily snapshots
+- 2 weekly snapshots
+- 1 monthly snapshot
 
-### Storage Location
+**Standard datasets (zroot/nix):**
+- 12 hourly snapshots
+- 3 daily snapshots
+- 1 weekly snapshot
 
-- **Repository**: `/backup/restic-repo`
-- **Password**: Encrypted in `secrets/restic-password.age`, decrypted to `/run/agenix/restic-password`
+### Snapshot Naming
 
-### Schedule
-
-- **Frequency**: Daily at midnight
-- **Persistent**: Yes (runs on next boot if system was off)
-- **Service**: `restic-backups-localbackup.service`
-- **Timer**: `restic-backups-localbackup.timer`
-
-## Manual Backup Operations
-
-### Trigger Backup Manually
-
-```bash
-# Run backup now
-sudo systemctl start restic-backups-localbackup.service
-
-# Watch backup progress
-sudo journalctl -u restic-backups-localbackup.service -f
+Snapshots are automatically named by sanoid:
+```
+zroot/persist@autosnap_2025-12-11_16:00:00_hourly
+zroot/persist@autosnap_2025-12-11_00:00:00_daily
+zgames/games@autosnap_2025-12-08_00:00:00_weekly
 ```
 
-### Check Backup Status
+## Managing Snapshots
+
+### List All Snapshots
 
 ```bash
-# View timer status
-systemctl status restic-backups-localbackup.timer
+# List all snapshots across all datasets
+zfs list -t snapshot
 
-# View last backup log
-sudo journalctl -u restic-backups-localbackup.service -n 50
+# List snapshots for specific dataset
+zfs list -t snapshot -r zroot/persist
 
-# List all snapshots
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password snapshots
+# Show snapshot space usage
+zfs list -t snapshot -o name,used,refer
 ```
 
-### Verify Backup Integrity
+### View Sanoid Service Status
 
 ```bash
-# Check repository integrity
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password check
+# Check sanoid service status
+systemctl status sanoid.service
 
-# Check with data verification (slower but thorough)
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password check --read-data
+# Check sanoid timer
+systemctl status sanoid.timer
+
+# View sanoid logs
+sudo journalctl -u sanoid.service -f
 ```
 
-## Restoring Files
-
-### List Available Snapshots
+### Trigger Manual Snapshot
 
 ```bash
-# Show all snapshots
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password snapshots
+# Sanoid runs hourly, but you can trigger manually
+sudo systemctl start sanoid.service
 
-# Show specific snapshot contents
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password ls <snapshot-id>
+# Or create a manual snapshot directly
+sudo zfs snapshot zroot/persist@manual-$(date +%Y%m%d-%H%M%S)
 ```
 
-### Restore Specific Files
+## Restoring Data
+
+### Browse Snapshot Contents
+
+Every ZFS dataset has a `.zfs/snapshot` directory containing all snapshots:
 
 ```bash
-# Restore single file to original location
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password restore <snapshot-id> \
-  --target / --include /home/weegs/important-file.txt
+# Browse persistent data snapshots
+cd /persist/.zfs/snapshot
+ls -la
 
-# Restore to different location (safer)
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password restore <snapshot-id> \
-  --target /tmp/restore --include /home/weegs/important-file.txt
+# List specific snapshot
+ls -la autosnap_2025-12-11_16:00:00_hourly/
+
+# Browse game storage snapshots
+cd /mnt/games/.zfs/snapshot
+ls -la
+```
+
+### Restore Individual File
+
+```bash
+# Copy file from snapshot to current location
+cp /persist/.zfs/snapshot/autosnap_2025-12-11_16:00:00_hourly/path/to/file ~/path/to/file
+
+# Restore game save file
+cp /mnt/games/.zfs/snapshot/autosnap_2025-12-11_12:00:00_hourly/SteamLibrary/userdata/12345/saves/save.dat \
+   /mnt/games/SteamLibrary/userdata/12345/saves/save.dat
 ```
 
 ### Restore Entire Directory
 
 ```bash
-# Restore entire home directory to /tmp/restore
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password restore latest \
-  --target /tmp/restore --include /home/weegs
+# Restore directory to temporary location for review
+cp -a /persist/.zfs/snapshot/autosnap_2025-12-11_12:00:00_hourly/home/weegs/Documents /tmp/restored-docs
 
-# After verification, move files back
-cp -a /tmp/restore/home/weegs/some-dir ~/some-dir
+# After verification, move back
+mv /tmp/restored-docs ~/Documents
 ```
 
-### Interactive File Browser
+### Rollback Entire Dataset
+
+**WARNING**: This destroys all changes made after the snapshot.
 
 ```bash
-# Mount backup as filesystem for easy browsing
-sudo mkdir -p /mnt/restic-backup
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password mount /mnt/restic-backup
+# List snapshots to find the one you want
+zfs list -t snapshot -r zroot/persist
 
-# Browse in another terminal
-ls /mnt/restic-backup/snapshots/
+# Rollback to specific snapshot (destroys newer snapshots)
+sudo zfs rollback zroot/persist@autosnap_2025-12-11_12:00:00_hourly
 
-# Unmount when done (Ctrl+C in mount terminal or)
-sudo umount /mnt/restic-backup
+# Rollback to most recent snapshot
+sudo zfs rollback zroot/persist@autosnap_2025-12-11_16:00:00_hourly
 ```
 
-## Full System Recovery
+### Clone Snapshot for Testing
 
-### Scenario: Complete System Rebuild
-
-If you need to rebuild the system from scratch:
-
-**1. Install NixOS**
-```bash
-# Follow standard NixOS installation
-# Don't worry about configuration yet
-```
-
-**2. Restore Dotfiles**
-```bash
-# Clone your dotfiles repo
-git clone <your-dotfiles-repo> ~/dotfiles
-cd ~/dotfiles
-
-# Copy hardware configuration
-sudo cp /etc/nixos/hardware-configuration.nix ~/dotfiles/hardware-configuration.nix
-```
-
-**3. Restore Secrets**
-
-Your encrypted secrets are in the repo, but you'll need your YubiKey to decrypt them:
+Create a writable clone to test changes before committing:
 
 ```bash
-# Secrets are already in repo (secrets/*.age)
-# They'll automatically decrypt on boot if your YubiKey is configured
+# Clone snapshot to new dataset
+sudo zfs clone zroot/persist@autosnap_2025-12-11_12:00:00_hourly zroot/persist-test
+
+# Mount and test
+sudo zfs set mountpoint=/mnt/test zroot/persist-test
+
+# If satisfied, promote clone and delete original (advanced)
+# Otherwise, delete clone
+sudo zfs destroy zroot/persist-test
 ```
 
-**4. Build System**
-```bash
-cd ~/dotfiles
-sudo nixos-rebuild switch --flake .#Rig
-```
+## System Recovery
 
-**5. Restore User Files from Backup**
+### Recover from Boot Failure
 
-```bash
-# Mount backup drive/repository
-# (assumes /backup/restic-repo is accessible)
+If system becomes unbootable after configuration change:
 
-# Restore specific important files
-sudo restic -r /backup/restic-repo restore latest \
-  --target /tmp/restore --include /home/weegs
+1. **Boot from older NixOS generation** (shown in boot menu)
+2. **System automatically boots from last working state**
+3. **No ZFS action needed** - NixOS generations handle boot recovery
 
-# Review and copy back
-cp -a /tmp/restore/home/weegs/Documents ~/
-cp -a /tmp/restore/home/weegs/Pictures ~/
-# etc.
-```
-
-### Scenario: Recover Specific Configuration
+### Recover Deleted Files
 
 ```bash
-# Restore specific config files
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password restore latest \
-  --target /tmp/restore --include /home/weegs/.config/some-app
+# Find when file was last present
+zfs list -t snapshot -r zroot/persist | grep hourly
 
-# Compare with current
-diff -r /tmp/restore/home/weegs/.config/some-app ~/.config/some-app
+# Browse snapshots until you find the file
+ls /persist/.zfs/snapshot/autosnap_2025-12-11_14:00:00_hourly/path/to/deleted-file
 
-# Copy back if needed
-cp -a /tmp/restore/home/weegs/.config/some-app ~/.config/
+# Restore it
+cp /persist/.zfs/snapshot/autosnap_2025-12-11_14:00:00_hourly/path/to/deleted-file ~/restored-file
 ```
+
+### Disaster Recovery
+
+If the system drive fails completely:
+
+1. **Reinstall NixOS on new drive**
+2. **Clone AnomalOS repository** from GitHub/Codeberg
+3. **Rebuild system** with `sudo nixos-rebuild switch --flake .#Rig`
+4. **Your configuration is preserved** in git
+
+**Important**: ZFS snapshots are local to the drives. For true disaster recovery, maintain:
+- Configuration in git (GitHub/Codeberg)
+- Critical personal data in external backup (external drive, cloud storage)
+- ZFS snapshots protect against accidental deletion and corruption, not hardware failure
 
 ## Maintenance
 
-### Prune Old Snapshots
-
-This happens automatically during each backup, but you can run manually:
+### Check Snapshot Space Usage
 
 ```bash
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password forget \
-  --keep-daily 7 \
-  --keep-weekly 5 \
-  --keep-monthly 12 \
-  --prune
+# See how much space snapshots are using
+zfs list -o space
+
+# Check specific dataset
+zfs list -o name,used,avail,refer,usedsnap,usedds zroot/persist
 ```
 
-### Check Repository Statistics
+### Manual Snapshot Cleanup
+
+Sanoid automatically prunes old snapshots, but you can manually delete if needed:
 
 ```bash
-# Show repository stats
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password stats
+# Delete specific snapshot
+sudo zfs destroy zroot/persist@autosnap_2025-12-01_12:00:00_hourly
 
-# Show stats for specific snapshot
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password stats <snapshot-id>
+# Delete range of snapshots (careful!)
+sudo zfs destroy zroot/persist@autosnap_2025-12-01_00:00:00_hourly%autosnap_2025-12-05_00:00:00_hourly
 ```
 
-### Cleanup Unused Data
+### Modify Retention Policy
 
-```bash
-# Remove unreferenced data (run after prune)
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password prune
-```
-
-## Off-Site Backup Strategy
-
-**Current Setup**: Local backups to `/backup/restic-repo`
-
-**Recommended Additions:**
-
-### Option 1: External Drive
+Edit `/home/weegs/dotfiles/modules/core/zfs-snapshots.nix`:
 
 ```nix
-# Add to configuration.nix
-services.restic.backups.external = {
-  inherit (config.services.restic.backups.localbackup)
-    paths exclude passwordFile pruneOpts;
-  initialize = true;
-  repository = "/mnt/external-drive/restic-repo";
-  timerConfig = {
-    OnCalendar = "weekly";
-    Persistent = true;
-  };
+templates.critical = {
+  hourly = 50;   # Increase/decrease retention
+  daily = 15;
+  weekly = 3;
+  monthly = 1;
+  autoprune = true;
+  autosnap = true;
 };
 ```
 
-### Option 2: Cloud Storage (S3/B2/etc)
-
-```nix
-# Add to configuration.nix
-services.restic.backups.cloud = {
-  inherit (config.services.restic.backups.localbackup)
-    paths exclude passwordFile pruneOpts;
-  initialize = true;
-  repository = "s3:s3.amazonaws.com/your-bucket/restic-repo";
-  environmentFile = config.age.secrets.restic-s3-credentials.path;
-  timerConfig = {
-    OnCalendar = "daily";
-    Persistent = true;
-  };
-};
+After changes:
+```bash
+sudo nixos-rebuild switch --flake .#Rig
 ```
 
-### Option 3: Remote Server (SSH)
+## Snapshot Space Efficiency
 
-```nix
-# Add to configuration.nix
-services.restic.backups.remote = {
-  inherit (config.services.restic.backups.localbackup)
-    paths exclude passwordFile pruneOpts;
-  initialize = true;
-  repository = "sftp:user@remote-server.com:/backup/restic-repo";
-  timerConfig = {
-    OnCalendar = "daily";
-    Persistent = true;
-  };
-};
-```
+### How Snapshots Use Space
 
-## Troubleshooting
+1. **Initial snapshot**: Nearly zero space (just metadata)
+2. **As files change**: Only changed blocks consume space
+3. **As files are deleted**: Space cannot be reclaimed until snapshot is pruned
 
-### Backup Service Failing
+### Example Space Usage
 
 ```bash
-# Check service status
-systemctl status restic-backups-localbackup.service
+# Check snapshot overhead
+zfs list -o name,used,avail,refer,usedsnap,usedds
 
-# View full logs
-sudo journalctl -u restic-backups-localbackup.service -xe
-
-# Common issues:
-# - Repository locked: Another backup running or crashed
-#   Solution: sudo restic -r /backup/restic-repo unlock
-# - Permission issues: Check /backup directory ownership
-# - Password file missing: Verify agenix secret is decrypted
+# Output example:
+# NAME            USED  AVAIL   REFER  USEDSNAP  USEDDS
+# zroot/persist   45G   800G    42G    3.2G      42G
+#
+# Interpretation:
+# - Total space used: 45GB
+# - Actual dataset: 42GB
+# - Snapshot overhead: 3.2GB (changed/deleted data in snapshots)
 ```
 
-### Repository Locked
+### When Snapshots Use Significant Space
 
-```bash
-# If backup crashed, repository might be locked
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password unlock
-```
+- **Heavy file churn**: Editing large files frequently
+- **Large deletions**: Deleting data that snapshots still reference
+- **Long retention**: Keeping snapshots of rapidly changing data
 
-### Cannot Access Password File
-
-```bash
-# Verify agenix decrypted the secret
-ls -la /run/agenix/restic-password
-
-# Check agenix service
-systemctl status agenix.service
-
-# Manually decrypt (for testing)
-cd ~/dotfiles
-agenix -d secrets/restic-password.age
-```
-
-### Repository Corruption
-
-```bash
-# Check and repair
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password check
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password rebuild-index
-```
+For gaming datasets, snapshots can grow if you:
+- Delete and reinstall large games often
+- Modify many save files
 
 ## Best Practices
 
-1. **Regular Verification**: Run `restic check` monthly to verify integrity
-2. **Test Restores**: Periodically restore a few files to verify backups work
-3. **Off-Site Copies**: Maintain at least one off-site backup
-4. **Monitor Space**: Check backup repository size doesn't exceed available storage
-5. **Document Recovery**: Keep this guide accessible outside the system (printed or separate device)
-6. **Protect Secrets**: Never commit unencrypted password; always use agenix
-7. **Review Excludes**: Periodically review exclusion list to ensure you're not missing important data
+1. **Regular verification**: Occasionally restore a file from snapshot to verify snapshots work
+2. **Monitor space**: Check `zfs list -o space` monthly to ensure snapshot overhead is reasonable
+3. **Understand limitations**: ZFS snapshots are not off-site backups - they protect against accidental deletion, not hardware failure
+4. **Git for configuration**: Your NixOS configuration in git is your primary system backup
+5. **External backup for irreplaceable data**: Photos, documents, personal projects should have additional backup
+6. **Test rollbacks**: Practice rolling back a non-critical dataset to understand the process
+
+## Troubleshooting
+
+### Snapshots Not Being Created
+
+```bash
+# Check sanoid timer is active
+systemctl status sanoid.timer
+
+# Check sanoid service logs
+sudo journalctl -u sanoid.service -n 50
+
+# Manually trigger sanoid
+sudo systemctl start sanoid.service
+```
+
+### Out of Space
+
+```bash
+# Check what's using space
+zfs list -o space
+
+# If snapshots are using too much space, reduce retention
+# Edit modules/core/zfs-snapshots.nix and rebuild
+```
+
+### Cannot Delete Snapshot
+
+```bash
+# Check if snapshot has dependent clones
+zfs list -t all | grep <snapshot-name>
+
+# Destroy clones first, then snapshot
+```
 
 ## Quick Reference
 
 ```bash
-# Backup now
-sudo systemctl start restic-backups-localbackup.service
+# List all snapshots
+zfs list -t snapshot
 
-# List snapshots
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password snapshots
+# Browse snapshot contents
+cd /persist/.zfs/snapshot
+ls -la
 
-# Restore latest
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password restore latest --target /tmp/restore
+# Restore file from snapshot
+cp /persist/.zfs/snapshot/<snapshot-name>/path/to/file ~/restored-file
 
-# Check integrity
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password check
+# Check space usage
+zfs list -o space
 
-# View stats
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password stats
+# View sanoid status
+systemctl status sanoid.service
+
+# Trigger manual snapshot
+sudo systemctl start sanoid.service
+
+# Rollback dataset (DESTRUCTIVE)
+sudo zfs rollback zroot/persist@<snapshot-name>
 ```
 
 ## Related Documentation
 
-- [SECRETS.md](SECRETS.md) - Password management with agenix
-- [INSTALLATION.md](INSTALLATION.md) - System installation and setup
-- [Restic Documentation](https://restic.readthedocs.io/) - Official Restic docs
+- [INSTALLATION.md](INSTALLATION.md) - ZFS pool setup during installation
+- [FEATURES.md](FEATURES.md) - ZFS filesystem features
+- [Sanoid Documentation](https://github.com/jimsalterjrs/sanoid) - Official sanoid docs
+- [OpenZFS Documentation](https://openzfs.github.io/openzfs-docs/) - Complete ZFS reference

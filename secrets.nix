@@ -6,6 +6,5 @@ let
   systems = [HX99G];
   allKeys = users ++ systems;
 in {
-  "secrets/restic-password.age".publicKeys = allKeys;
   "secrets/kwallet.age".publicKeys = allKeys;
 }

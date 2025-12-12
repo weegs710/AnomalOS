@@ -14,6 +14,7 @@ For comprehensive documentation, see the [docs/](docs/) directory:
 - [Features & Components](docs/FEATURES.md)
 - [Customization Guide](docs/CUSTOMIZATION.md)
 - [Secret Management](docs/SECRETS.md)
+- [ZFS Snapshots & Recovery](docs/BACKUP.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ## System Overview
@@ -58,9 +59,6 @@ cd ~/dotfiles
 # Generate hardware configuration for your system
 # NOTE: This config uses ZFS - see docs/INSTALLATION.md for ZFS-specific setup
 sudo nixos-generate-config --show-hardware-config > hardware-configuration-zfs.nix
-
-# Create encrypted secrets (see docs/SECRETS.md)
-nix run github:ryantm/agenix -- -e secrets/restic-password.age
 
 # Test the configuration (IMPORTANT!)
 sudo nixos-rebuild test --flake .#nixosConfigurations.Rig
@@ -131,7 +129,7 @@ rig-up         # Update flake + test Rig + prompt to switch
 - Home Manager for user-space management
 - Declarative Flatpak management via nix-flatpak
 - Multiple binary caches (cache.nixos.org, nix-community, hyprland, ezkea, flakehub)
-- Restic automated backups with agenix secret management
+- Automated ZFS snapshots with sanoid (hourly, daily, weekly, monthly retention)
 
 ## Modular Architecture
 
@@ -150,7 +148,7 @@ dotfiles/
 │   └── shells.nix                   # Development shells
 ├── modules/
 │   ├── options.nix                  # Configuration schema
-│   ├── core/                        # Essential system components
+│   ├── core/                        # Essential system components (boot, networking, ZFS snapshots)
 │   ├── security/                    # Security features and YubiKey
 │   ├── desktop/                     # Desktop environment
 │   ├── development/                 # Development tools and AI
@@ -212,7 +210,7 @@ For detailed customization options, see [docs/CUSTOMIZATION.md](docs/CUSTOMIZATI
 This system uses ZFS for the root filesystem with:
 - `zroot` pool: System, nix store, cache, and persistent data
 - `zgames` pool: Optional dedicated gaming storage (2TB in reference config)
-- ARC cache limits: 4-16GB (configurable via kernel parameters)
+- Automated snapshots via sanoid (hourly, daily, weekly, monthly retention)
 - Compression: zstd for space savings
 - Auto-trim enabled for SSD health
 

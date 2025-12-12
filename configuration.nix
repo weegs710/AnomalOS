@@ -55,38 +55,6 @@
     users.${config.mySystem.user.name} = import ./home.nix;
   };
 
-  # age.secrets.restic-password = {
-  #   file = ./secrets/restic-password.age;
-  #   owner = "root";
-  #   mode = "400";
-  # };
-
-  # services.restic.backups = {
-  #   localbackup = {
-  #     initialize = true;
-  #     repository = "/backup/restic-repo";
-  #     passwordFile = config.age.secrets.restic-password.path;
-  #     paths = [
-  #       "/home/${config.mySystem.user.name}"
-  #       "/etc/nixos"
-  #     ];
-  #     exclude = [
-  #       "/home/${config.mySystem.user.name}/.cache"
-  #       "/home/${config.mySystem.user.name}/.local/share/Steam"
-  #       "/home/${config.mySystem.user.name}/Downloads"
-  #     ];
-  #     timerConfig = {
-  #       OnCalendar = "daily";
-  #       Persistent = true;
-  #     };
-  #     pruneOpts = [
-  #       "--keep-daily 7"
-  #       "--keep-weekly 5"
-  #       "--keep-monthly 12"
-  #     ];
-  #   };
-  # };
-
   nix.settings = {
     substituters = [
       "https://cache.nixos.org/"

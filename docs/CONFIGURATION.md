@@ -132,10 +132,11 @@ This configuration provides:
 
 Located in `modules/core/`:
 
-- **boot.nix**: Boot loader configuration, kernel parameters, ZFS ARC limits
+- **boot.nix**: Boot loader configuration, kernel parameters
 - **networking.nix**: NetworkManager, firewall basics, hostname
 - **nix.nix**: Nix settings, garbage collection, shell aliases, update scripts
 - **users.nix**: User account creation and group membership
+- **zfs-snapshots.nix**: Automated ZFS snapshot management with sanoid
 
 ### Security Modules
 
@@ -247,40 +248,6 @@ programs.git = {
   userName = "Your Name";
   userEmail = "your.email@example.com";
   # Git aliases and settings
-};
-```
-
-## Backup Configuration
-
-Restic backup service in `configuration.nix`:
-
-```nix
-services.restic.backups.localbackup = {
-  initialize = true;
-  repository = "/backup/restic-repo";          # Backup location
-  passwordFile = "/etc/nixos/restic-password"; # Password file
-
-  paths = [
-    "/home/${config.mySystem.user.name}"
-    "/etc/nixos"
-  ];
-
-  exclude = [
-    "/home/${config.mySystem.user.name}/.cache"
-    "/home/${config.mySystem.user.name}/.local/share/Steam"
-    "/home/${config.mySystem.user.name}/Downloads"
-  ];
-
-  timerConfig = {
-    OnCalendar = "daily";  # Backup frequency
-    Persistent = true;
-  };
-
-  pruneOpts = [
-    "--keep-daily 7"      # Keep 7 daily backups
-    "--keep-weekly 5"     # Keep 5 weekly backups
-    "--keep-monthly 12"   # Keep 12 monthly backups
-  ];
 };
 ```
 

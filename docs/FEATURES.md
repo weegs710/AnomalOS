@@ -543,36 +543,38 @@ flatpak list              # List installed apps
 
 **Configuration**: `configuration.nix` (nix.settings.substituters)
 
-### Restic Backups
+### ZFS Automated Snapshots
 
 **Features:**
-- Automated daily backups
-- Incremental, deduplicated backups
-- Encryption support
-- Retention policies (7 daily, 5 weekly, 12 monthly)
+- Automated hourly snapshots via sanoid
+- Multi-tier retention (hourly, daily, weekly, monthly)
+- Copy-on-write efficiency (minimal space usage)
+- Automatic pruning of old snapshots
 
-**Default backup paths:**
-- `/home/[username]`: User home directory
-- `/etc/nixos`: System configuration
-
-**Excluded:**
-- `.cache` directories
-- Steam library
-- Downloads folder
+**Snapshot retention policies:**
+- **zroot/persist** (critical): 50 hourly, 15 daily, 3 weekly, 1 monthly
+- **zgames/games** (important): 24 hourly, 7 daily, 2 weekly, 1 monthly
+- **zroot/nix** (standard): 12 hourly, 3 daily, 1 weekly
 
 **Management:**
 ```bash
-# Manual backup
-sudo restic -r /backup/restic-repo backup /home/[username]
+# List all snapshots
+zfs list -t snapshot
 
-# Check backup status
-sudo systemctl status restic-backups-localbackup
+# Browse snapshot contents
+cd /persist/.zfs/snapshot
+ls -la
 
-# List snapshots
-sudo restic -r /backup/restic-repo snapshots
+# Restore file from snapshot
+cp /persist/.zfs/snapshot/autosnap_2025-12-11_16:00:00_hourly/path/to/file ~/restored-file
+
+# Check sanoid status
+systemctl status sanoid.service
 ```
 
-**Configuration**: `configuration.nix`
+**Configuration**: `modules/core/zfs-snapshots.nix`
+
+**Note**: See [BACKUP.md](BACKUP.md) for complete snapshot management and recovery guide
 
 ## System Services
 
@@ -667,16 +669,17 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 ### ZFS Filesystem
 
 **Features:**
-- Copy-on-write filesystem with snapshots
+- Copy-on-write filesystem with automated snapshots
 - Data integrity verification (checksums)
 - Compression (zstd) for space savings
 - Auto-trim for SSD health and performance
 - ARC caching for improved read performance
+- Automated snapshots via sanoid (hourly, daily, weekly, monthly)
 
 **Configuration:**
 - Root pool: `zroot` (system, nix, cache, persist)
 - Games pool: `zgames` (optional, dedicated gaming storage)
-- ARC limits: 4-16GB (kernel parameters in `boot.nix`)
+- Snapshots: Automated via `modules/core/zfs-snapshots.nix`
 - Location: `hardware-configuration-zfs.nix`
 
 ### Kernel Configuration
@@ -691,7 +694,7 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 ### System Tuning
 
 **Memory:**
-- ZFS ARC cache: 4-16GB (configurable)
+- ZFS ARC cache: Dynamic (50% of RAM, automatically managed)
 - Swappiness reduced to 10 for better responsiveness
 - Zram swap (25% of RAM) with zstd compression
 
