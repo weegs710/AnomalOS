@@ -12,8 +12,6 @@
     kernelPackages = pkgs.linuxPackages_6_17;
     kernelParams = [
       "quiet"
-      "zfs.zfs_arc_max=17179869184"
-      "zfs.zfs_arc_min=4294967296"
     ];
     consoleLogLevel = 0;
     initrd.verbose = false;
