@@ -37,6 +37,9 @@
       "zroot/persist" = {
         useTemplate = ["critical"];
       };
+      "zroot/root" = {
+        useTemplate = ["important"];
+      };
       "zgames/games" = {
         useTemplate = ["important"];
       };

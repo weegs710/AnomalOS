@@ -553,6 +553,7 @@ flatpak list              # List installed apps
 
 **Snapshot retention policies:**
 - **zroot/persist** (critical): 50 hourly, 15 daily, 3 weekly, 1 monthly
+- **zroot/root** (important): 24 hourly, 7 daily, 2 weekly, 1 monthly
 - **zgames/games** (important): 24 hourly, 7 daily, 2 weekly, 1 monthly
 - **zroot/nix** (standard): 12 hourly, 3 daily, 1 weekly
 
