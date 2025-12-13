@@ -753,7 +753,7 @@ with lib; {
             "opacity 1.0 override 1.0 override 1.0 override, class:^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(steam_app_.*)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(steam)$"
-            "opacity 1.0 override 1.0 override 1.0 override, class:^(vlc)$"
+            "opacity 1.0 override 1.0 override 1.0 override, class:^(Vlc)$"
           ];
         };
       };
