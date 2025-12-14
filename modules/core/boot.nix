@@ -12,6 +12,7 @@
     kernelPackages = pkgs.linuxPackages_6_17;
     kernelParams = [
       "quiet"
+      "hid_apple.fnmode=2"
     ];
     consoleLogLevel = 0;
     initrd.verbose = false;
