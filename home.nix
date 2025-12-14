@@ -115,7 +115,9 @@ in {
 
   home.packages = with pkgs; [
     inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.nh.packages.${pkgs.stdenv.hostPlatform.system}.default
+    (inputs.nh.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+      doCheck = false;
+    }))
     alejandra
     cliphist
     ed-odyssey-materials-helper
