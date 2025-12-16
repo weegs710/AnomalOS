@@ -20,6 +20,7 @@ with lib; {
 
         extraPackages = with pkgs; [
           nixd
+          nil
           alejandra
         ];
 
@@ -42,12 +43,21 @@ with lib; {
             inline_blame.enabled = false;
           };
 
-          lsp.nixd.settings = {
-            nixpkgs.expr = "import (builtins.getFlake \"/home/weegs/dotfiles\").inputs.nixpkgs { }";
-            formatting.command = ["alejandra" "--quiet"];
-            options = {
-              nixos.expr = "(builtins.getFlake \"/home/weegs/dotfiles\").nixosConfigurations.Rig.options";
-              home-manager.expr = "(builtins.getFlake \"/home/weegs/dotfiles\").nixosConfigurations.Rig.options.home-manager.users.type.getSubOptions []";
+          lsp = {
+            nil = {
+              initialization_options = {
+                formatting.command = ["alejandra" "--quiet"];
+                nix.flake.autoArchive = true;
+              };
+            };
+
+            nixd.settings = {
+              nixpkgs.expr = "import (builtins.getFlake \"/home/weegs/dotfiles\").inputs.nixpkgs { }";
+              formatting.command = ["alejandra" "--quiet"];
+              options = {
+                nixos.expr = "(builtins.getFlake \"/home/weegs/dotfiles\").nixosConfigurations.Rig.options";
+                home-manager.expr = "(builtins.getFlake \"/home/weegs/dotfiles\").nixosConfigurations.Rig.options.home-manager.users.type.getSubOptions []";
+              };
             };
           };
         };
