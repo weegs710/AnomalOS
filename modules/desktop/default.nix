@@ -54,14 +54,6 @@ with lib; {
       package = pkgs.kdePackages.kwallet-pam;
     };
 
-    # XDG portal setup
-    xdg.portal = {
-      enable = true;
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-gtk
-      ];
-    };
-
     programs = {
       partition-manager.enable = true;
       udevil.enable = true;
