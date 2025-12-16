@@ -17,9 +17,9 @@ with lib; {
     xdg.portal = {
       enable = true;
       extraPortals = [pkgs.xdg-desktop-portal-gtk];
+      configPackages = [pkgs.hyprland];
       config = {
-        common.default = "gtk";
-        hyprland = {
+        Hyprland = {
           default = [
             "gtk"
             "hyprland"
@@ -31,12 +31,11 @@ with lib; {
       };
     };
 
-    environment.etc."xdg-desktop-portal/hyprland-portals.conf".text = ''
-      [preferred]
-      default=gtk;hyprland
-    '';
-
     security.pam.services.hyprlock = {};
+
+    systemd.user.services.xdg-desktop-portal.environment = {
+      XDG_DESKTOP_PORTAL_DIR = "/run/current-system/sw/share/xdg-desktop-portal/portals";
+    };
 
     services = {
       hypridle.enable = true;

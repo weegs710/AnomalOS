@@ -138,7 +138,6 @@ in {
     slurp
     starship
     swww
-    xdg-desktop-portal-gtk
     xfce.thunar
     tldr
     ueberzugpp
