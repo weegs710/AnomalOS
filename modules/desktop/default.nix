@@ -460,6 +460,57 @@ with lib; {
         Keywords=password;wallet;credentials;
       '';
 
+      xdg.configFile."Nickvision Cavalier/config.json".text = builtins.toJSON {
+        WindowWidth = 500;
+        WindowHeight = 300;
+        WindowMaximized = true;
+        AreaMargin = 0;
+        AreaOffsetX = 0;
+        AreaOffsetY = -2.2351741E-10;
+        Borderless = false;
+        SharpCorners = false;
+        ShowControls = false;
+        AutohideHeader = false;
+        Framerate = 60;
+        BarPairs = 100;
+        Autosens = true;
+        Sensitivity = 10;
+        Stereo = true;
+        Monstercat = true;
+        NoiseReduction = 0.77;
+        ReverseOrder = true;
+        Direction = 2;
+        ItemsOffset = 0.1;
+        ItemsRoundness = 0.52;
+        Filling = true;
+        LinesThickness = 5;
+        Mode = 0;
+        Mirror = 1;
+        ReverseMirror = false;
+        InnerRadius = 0.55;
+        Rotation = 0;
+        ColorProfiles = [
+          {
+            Name = "Default";
+            FgColors = ["#ffc134fe"];
+            BgColors = ["#ff000000"];
+            Theme = 1;
+          }
+        ];
+        ActiveProfile = 0;
+        BgImageIndex = 0;
+        BgImageScale = 1;
+        BgImageAlpha = 1;
+        FgImageIndex = -1;
+        FgImageScale = 1;
+        FgImageAlpha = 1;
+      };
+
+      home.activation.cavalierImage = ''
+        mkdir -p "$HOME/.config/Nickvision Cavalier/images"
+        ln -sf "$HOME/.local/share/wallpapers/Serval.jpg" "$HOME/.config/Nickvision Cavalier/images/Serval.jpg"
+      '';
+
       # Fastfetch configuration
       xdg.configFile."fastfetch/config.jsonc".text = builtins.toJSON {
         "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";
