@@ -39,7 +39,9 @@ with lib; {
         jack.enable = true;
         wireplumber.enable = config.services.pipewire.enable;
       };
+    };
 
+    services = {
       upower.enable = true;
       ratbagd.enable = true;
       devmon.enable = true;
@@ -75,7 +77,14 @@ with lib; {
       qview
       transmission_4-gtk
       unzipNLS
-      vlc
+      (mpv.override {
+        scripts = [
+          mpvScripts.uosc
+          mpvScripts.thumbfast
+          mpvScripts.mpris
+        ];
+      })
+      cavalier
 
       # Utilities
       bluetui

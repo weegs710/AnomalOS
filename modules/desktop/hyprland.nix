@@ -703,7 +703,8 @@ with lib; {
             "workspace 3, title:^(Honkai: Star Rail)$"
 
             # Workspace: 4 (media)
-            "workspace 4, class:^(vlc)$"
+            "workspace 4, class:^(org\.nickvision\.cavalier)$"
+            # "fullscreen, class:^(org\.nickvision\.cavalier)$"
             "workspace 4, class:^(org\.qmmp\.qmmp)$"
             "workspace 4, class:^(com\.stremio\.stremio)$"
             "workspace 4, class:^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$"
@@ -719,6 +720,7 @@ with lib; {
             "tile, class:^(starrail\.exe)$"
 
             # Control-panel workspace utilities (must come before dev workspace wezterm rule)
+            "workspace special:control-panel, class:^(mpv)$"
             "tile, class:^(pavucontrol)$"
             "workspace special:control-panel, class:^(pavucontrol)$"
             "tile, class:^(org\.pulseaudio\.pavucontrol)$"
@@ -753,7 +755,8 @@ with lib; {
             "opacity 1.0 override 1.0 override 1.0 override, class:^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(steam_app_.*)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(steam)$"
-            "opacity 1.0 override 1.0 override 1.0 override, class:^(Vlc)$"
+            "opacity 1.0 override 1.0 override 1.0 override, class:^(mpv)$"
+            "opacity 1.0 override 1.0 override 1.0 override, class:^(org\.nickvision\.cavalier)$"
           ];
         };
       };
