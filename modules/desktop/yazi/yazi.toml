@@ -90,6 +90,12 @@ rules = [
 	{ name = "*.markdown", use = [ "markdown", "reveal" ] },
 	{ mime = "text/markdown", use = [ "markdown", "reveal" ] },
 
+	# Playlists (open in mpv)
+	{ name = "*.m3u8", use = [ "play", "reveal" ] },
+	{ mime = "audio/x-mpegurl", use = [ "play", "reveal" ] },
+	{ mime = "application/vnd.apple.mpegurl", use = [ "play", "reveal" ] },
+	{ mime = "application/x-mpegurl", use = [ "play", "reveal" ] },
+
 	# Text files - whitelist approach for Zed
 	{ mime = "text/plain", use = [ "edit", "reveal" ] },
 	{ mime = "text/x-python", use = [ "edit", "reveal" ] },

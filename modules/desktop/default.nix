@@ -71,7 +71,7 @@ with lib; {
       unzipNLS
       (mpv.override {
         scripts = [
-          mpvScripts.uosc
+          mpvScripts.modernz
           mpvScripts.thumbfast
           mpvScripts.mpris
         ];
@@ -450,6 +450,10 @@ with lib; {
         Type=Application
         Categories=Qt;KDE;Settings;Security;
         Keywords=password;wallet;credentials;
+      '';
+
+      xdg.configFile."mpv/mpv.conf".text = ''
+        volume=30
       '';
 
       xdg.configFile."Nickvision Cavalier/config.json".text = builtins.toJSON {
