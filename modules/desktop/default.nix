@@ -533,33 +533,33 @@ with lib; {
             "break",
             {
               "type": "os",
-              "key": " ",
+              "key": " ",
               "keyColor": "34"
             },
             {
               "type": "kernel",
-              "key": " ",
+              "key": " ",
               "keyColor": "34"
             },
             {
               "type": "packages",
-              "key": " ",
+              "key": " ",
               "keyColor": "34"
             },
             {
               "type": "shell",
-              "key": " ",
+              "key": " ",
               "keyColor": "34"
             },
             "break",
             {
               "type": "wm",
-              "key": " ",
+              "key": " ",
               "keyColor": "34"
             },
             {
               "type": "uptime",
-              "key": " ",
+              "key": " ",
               "keyColor": "34"
             },
             {
@@ -577,17 +577,17 @@ with lib; {
             "break",
             {
               "type": "cpu",
-              "key": " ",
+              "key": " ",
               "keyColor": "blue"
             },
             {
               "type": "gpu",
-              "key": " ",
+              "key": " ",
               "keyColor": "blue"
             },
             {
               "type": "memory",
-              "key": " ",
+              "key": " ",
               "keyColor": "blue"
             },
             "break",
