@@ -33,6 +33,7 @@
   environment.systemPackages = with pkgs; [
     curl
     git
+    nh
     wget
 
     (pkgs.writeScriptBin "rig-up" ''
