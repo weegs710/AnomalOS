@@ -14,6 +14,7 @@ in {
       services.mpd = {
         enable = true;
         musicDirectory = "/home/${username}/Music";
+        playlistDirectory = "/home/${username}/Music/playlists";
         extraConfig = ''
           audio_output {
             type "pipewire"

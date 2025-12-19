@@ -58,9 +58,12 @@ echo -e "${BLUE}Downloading playlist...${NC}"
 nix run nixpkgs#yt-dlp -- -x --audio-format mp3 "$PLAYLIST_URL"
 
 echo -e "${GREEN}Download complete!${NC}"
-echo -e "${BLUE}Creating playlist file...${NC}"
+echo -e "${BLUE}Creating MPD-compatible playlist file...${NC}"
 
-# Create VLC playlist sorted by creation time
+# Ensure playlists directory exists
+mkdir -p "$MUSIC_DIR/playlists"
+
+# Create MPD playlist with paths relative to MUSIC_DIR
 {
     echo "#EXTM3U"
     ls -1tr *.mp3 2>/dev/null | while read -r file; do
@@ -68,9 +71,10 @@ echo -e "${BLUE}Creating playlist file...${NC}"
         title="${file%.mp3}"
         title="${title% \[*\]}"
         echo "#EXTINF:-1,$title"
-        echo "$file"
+        echo "$PLAYLIST_NAME/$file"
     done
-} > "${PLAYLIST_NAME}.m3u8"
+} > "$MUSIC_DIR/playlists/${PLAYLIST_NAME}.m3u"
 
-echo -e "${GREEN}Playlist file created: ${PLAYLIST_NAME}.m3u8${NC}"
-echo -e "${GREEN}All done! Playlist saved to: $MUSIC_DIR/$PLAYLIST_NAME/${NC}"
+echo -e "${GREEN}Playlist file created: $MUSIC_DIR/playlists/${PLAYLIST_NAME}.m3u${NC}"
+echo -e "${GREEN}Music files saved to: $MUSIC_DIR/$PLAYLIST_NAME/${NC}"
+echo -e "${GREEN}All done!${NC}"
