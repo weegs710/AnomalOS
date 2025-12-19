@@ -163,8 +163,8 @@ The system uses a named workspace scheme designed for efficient workflow managem
 1. **comms** (Super+1): Communication apps (Discord/Vesktop)
 2. **dev** (Super+2): Development environment (Zed, Ghostty terminals)
 3. **games** (Super+3): Gaming (Steam, game launchers, game windows)
-4. **media** (Super+4): Media playback (VLC, streaming apps)
-5. **web** (Super+5): Web browsing (Helium, Firefox, Chrome apps)
+4. **media** (Super+4): Media playback (mpv, Stremio, Cavalier)
+5. **web** (Super+5): Web browsing (Brave, Chromium, web apps)
 6. **control-panel** (Super+Grave): Special workspace for utilities
 
 **Control-Panel Utilities:**
@@ -178,13 +178,47 @@ The system uses a named workspace scheme designed for efficient workflow managem
 
 **Workspace Navigation:**
 - `Super+1-5`: Jump to named workspace
+- `Super+Shift+1-5`: Move active window to workspace
 - `Super+PgUp/PgDn`: Cycle through workspaces
+- `Super+Tab/Shift+Tab`: Cycle workspaces forward/backward
 - `Super+MouseWheel`: Cycle through workspaces
 - `Super+Grave`: Toggle control-panel overlay
 
+**Quick Launch (F-keys aligned to workspaces):**
+- `Super+F1`: Vesktop (workspace 1 - comms)
+- `Super+F2`: Zed editor (workspace 2 - dev)
+- `Super+F3`: Steam (workspace 3 - games)
+- `Super+F4`: Stremio (workspace 4 - media)
+- `Super+F5`: Brave browser (workspace 5 - web)
+- `Super+F6`: btop system monitor (control-panel)
+
+**Core Applications:**
+- `Super+Return`: Terminal (Ghostty)
+- `Super+Space`: File manager (Yazi)
+- `Super+Shift+Space`: GUI file manager (Thunar)
+
+**Window Management:**
+- `Super+Escape`: Close active window
+- `Super+F`: Fullscreen toggle
+- `Super+G`: Float toggle
+- `Super+Backspace`: Enter resize mode (arrow keys to resize, Esc/Return to exit)
+- `Super+Arrow Keys`: Move focus
+- `Super+Shift+Arrow Keys`: Move window
+
+**System Controls:**
+- `Ctrl+Alt+L`: Lock screen (hyprlock)
+- `Ctrl+Alt+Delete`: Logout menu (wlogout)
+- `Super+Home/End`: Volume up/down
+- `Super+Pause`: Audio mute toggle
+
+**Screenshots:**
+- `Print`: Region to clipboard
+- `Shift+Print`: Region to ~/Pictures
+- `Ctrl+Print`: Active window to clipboard
+
 **Auto-Launch:**
 Applications automatically open on their designated workspaces:
-- Steam, Vesktop, VLC launch at login on their respective workspaces
+- Steam and Vesktop launch at login on their respective workspaces
 - System boots to comms workspace after auto-launch completes
 - Utility apps open on control-panel when launched via desktop entries or waybar
 
@@ -353,7 +387,8 @@ cc status       # Show system status
 - **Java**: JDK 21
 
 **Language Servers:**
-- `nixd`: Nix language server
+- `nixd`: Nix language server with superior nixpkgs integration
+- `nil`: Nix language server with fast flake diagnostics (runs alongside nixd)
 - `hyprls`: Hyprland configuration language server
 
 **Code Formatting:**
@@ -440,7 +475,8 @@ cc status       # Show system status
 - Hardware mixing support
 
 **Video:**
-- VLC: Full-featured media player with codec support
+- mpv: High-performance media player with ModernZ UI, thumbfast thumbnails, and mpris support
+- Cavalier: Audio visualizer with wave mode and PipeWire integration
 
 **Streaming:**
 - OBS Studio: Screen recording and streaming
@@ -537,7 +573,6 @@ flatpak list              # List installed apps
 - `nix-community.cachix.org`: Community packages
 - `hyprland.cachix.org`: Hyprland compositor and tools
 - `ezkea.cachix.org`: Anime game launchers (aagl-gtk-on-nix)
-- `cache.flakehub.com`: FlakeHub binary cache
 
 **Benefit**: Faster builds by using pre-built binaries
 

@@ -194,13 +194,13 @@ Route specific applications to workspaces by window class:
 windowrulev2 = [
   # Route to specific workspace
   "workspace name:dev, class:^(code)$"
-  "workspace name:web, class:^(firefox)$"
+  "workspace name:web, class:^(brave-browser)$"
 
   # Float specific window types
   "float, class:^(pavucontrol)$"
 
   # Opacity overrides
-  "opacity 1.0 override, class:^(vlc)$"
+  "opacity 1.0 override, class:^(mpv)$"
 ];
 ```
 
@@ -219,7 +219,6 @@ Configure apps to start on specific workspaces at login:
 exec-once = [
   "[workspace name:games] steam"
   "[workspace name:comms] vesktop"
-  "[workspace name:media silent] vlc"
   "hyprctl dispatch workspace name:comms"  # Start on this workspace
 ];
 ```
@@ -355,8 +354,8 @@ environment.systemPackages = with pkgs; [
   postgresql
 
   # Applications
-  firefox
-  thunderbird
+  brave
+  vesktop
 
   # Your packages here
 ];
@@ -680,8 +679,8 @@ System-wide environment variables:
 ```nix
 environment.variables = {
   EDITOR = "vim";
-  VISUAL = "code";
-  BROWSER = "firefox";
+  VISUAL = "zeditor";
+  BROWSER = "brave";
 
   # Your variables
 };

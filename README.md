@@ -118,7 +118,8 @@ rig-up         # Update flake + test Rig + prompt to switch
 - aagl-gtk-on-nix launchers for anime games
 - Lutris, PPSSPP, DeSmuME, Ryujinx emulators
 - RetroArch with automated playlist generation
-- VLC media player
+- mpv media player with ModernZ UI and mpris support
+- Cavalier audio visualizer
 - Beets music library manager
 - Pipewire audio system
 - AMD GPU support with Mesa drivers
@@ -128,7 +129,7 @@ rig-up         # Update flake + test Rig + prompt to switch
 - Nix Flakes for reproducible configuration
 - Home Manager for user-space management
 - Declarative Flatpak management via nix-flatpak
-- Multiple binary caches (cache.nixos.org, nix-community, hyprland, ezkea, flakehub)
+- Multiple binary caches (cache.nixos.org, nix-community, hyprland, ezkea)
 - Automated ZFS snapshots with sanoid (hourly, daily, weekly, monthly retention)
 
 ## Modular Architecture

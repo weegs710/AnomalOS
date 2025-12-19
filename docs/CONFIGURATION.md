@@ -124,7 +124,7 @@ This configuration provides:
 - Claude Code for AI-assisted development
 - Complete development toolchain
 - Gaming support with Steam, anime game launchers, and emulators
-- Media tools including VLC and Beets music manager
+- Media tools including mpv, Cavalier, and Beets music manager
 
 ## Module Configuration
 
@@ -188,8 +188,8 @@ Change wallpapers:
 
 Located in `modules/development/`:
 
-- **editors.nix**: Zed editor, tmux, starship
-- **languages.nix**: Node.js, Python3, Rust, language servers (nixd, hyprls)
+- **editors.nix**: Zed editor with language servers (nixd, nil, hyprls), tmux, starship
+- **languages.nix**: Node.js, Python3, Rust, development toolchains
 - **claude-code.nix**: Claude Code installation and integration
 - **media.nix**: Media tools, Beets music manager, playlist automation
 
