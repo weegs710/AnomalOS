@@ -216,27 +216,20 @@ in {
       "image/tiff" = ["com.interversehq.qView.desktop"];
       "image/webp" = ["com.interversehq.qView.desktop"];
 
-      "video/mp4" = ["mpv.desktop"];
-      "video/mpeg" = ["mpv.desktop"];
-      "video/quicktime" = ["mpv.desktop"];
-      "video/webm" = ["mpv.desktop"];
-      "video/x-matroska" = ["mpv.desktop"];
-      "video/x-msvideo" = ["mpv.desktop"];
-
-      "audio/aac" = ["mpv.desktop"];
-      "audio/flac" = ["mpv.desktop"];
-      "audio/mp3" = ["mpv.desktop"];
-      "audio/mpeg" = ["mpv.desktop"];
-      "audio/ogg" = ["mpv.desktop"];
-      "audio/wav" = ["mpv.desktop"];
-      "audio/webm" = ["mpv.desktop"];
-      "audio/x-opus+ogg" = ["mpv.desktop"];
-      "audio/x-vorbis+ogg" = ["mpv.desktop"];
-      "audio/x-mpegurl" = ["mpv.desktop"];
-      "audio/mpegurl" = ["mpv.desktop"];
-      "application/vnd.apple.mpegurl" = ["mpv.desktop"];
-      "application/x-mpegurl" = ["mpv.desktop"];
-      "application/x-mpegURL" = ["mpv.desktop"];
+      "audio/aac" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/flac" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/mp3" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/mpeg" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/ogg" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/wav" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/webm" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/x-opus+ogg" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/x-vorbis+ogg" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/x-mpegurl" = ["io.github.htkhiem.Euphonica.desktop"];
+      "audio/mpegurl" = ["io.github.htkhiem.Euphonica.desktop"];
+      "application/vnd.apple.mpegurl" = ["io.github.htkhiem.Euphonica.desktop"];
+      "application/x-mpegurl" = ["io.github.htkhiem.Euphonica.desktop"];
+      "application/x-mpegURL" = ["io.github.htkhiem.Euphonica.desktop"];
 
       # Documents
       "application/pdf" = ["org.pwmt.zathura-pdf-mupdf.desktop"];
