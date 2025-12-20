@@ -267,6 +267,20 @@ in {
     };
   };
 
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      icon-theme = "Adwaita";
+    };
+  };
+
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
+    };
+  };
+
   programs.home-manager.enable = true;
 
   # Claude Code project directory (conditional)
