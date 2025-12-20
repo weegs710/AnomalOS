@@ -129,6 +129,7 @@ in {
     jq
     min-ed-launcher
     nodejs
+    obsidian
     pamixer
     python3
     rofi
