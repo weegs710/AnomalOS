@@ -239,7 +239,7 @@ with lib; {
               tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
               tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
               tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
-              on-click-right = "hyprctl dispatch exec '[workspace special:control-panel] ghostty -e bluetui'";
+              on-click-right = "hyprctl dispatch exec '[workspace special:control-panel] blueman-manager'";
               tooltip = true;
             };
           }
@@ -736,8 +736,8 @@ with lib; {
             "workspace special:control-panel, class:^(org\.pulseaudio\.pavucontrol)$"
             "tile, title:^(nmtui)$"
             "workspace special:control-panel, title:^(nmtui)$"
-            "tile, title:^(bluetui)$"
-            "workspace special:control-panel, title:^(bluetui)$"
+            "tile, title:^(blueman-manager)$"
+            "workspace special:control-panel, title:^(blueman-manager)$"
             "float, class:^(qalculate-gtk)$"
             "workspace special:control-panel, class:^(qalculate-gtk)$"
             "tile, class:^(btop)$"

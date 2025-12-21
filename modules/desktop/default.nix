@@ -43,6 +43,7 @@ with lib; {
     };
 
     services = {
+      blueman.enable = true;
       upower.enable = true;
       ratbagd.enable = true;
       devmon.enable = true;

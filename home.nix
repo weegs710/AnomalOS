@@ -95,6 +95,7 @@ in {
     ];
 
     interactiveShellInit = ''
+      set -g fish_greeting
       set -g fish_color_param b392f0  # base05 light purple
       set -g fish_color_autosuggestion 2f143f  # base03 medium purple
       set -g fish_color_command 66ccff  # base0C cyan - commands
@@ -135,7 +136,7 @@ in {
     rofi
     rustc
     slurp
-    starship
+    # starship
     swww
     xfce.thunar
     tldr
@@ -281,7 +282,14 @@ in {
     };
   };
 
-  programs.home-manager.enable = true;
+  programs = {
+    home-manager.enable = true;
+    oh-my-posh = {
+      enable = true;
+      enableFishIntegration = true;
+      useTheme = "kushal";
+    };
+  };
 
   # Claude Code project directory (conditional)
   home.file."claude-projects/.keep" = lib.mkIf osConfig.mySystem.features.claudeCode {
