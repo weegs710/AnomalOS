@@ -156,29 +156,29 @@ with lib; {
               };
             };
             "custom/lock" = {
-              format = "<span color='#${config.lib.stylix.colors.base0C}'>  </span>";
+              format = "<span color='#${config.lib.stylix.colors.base0A}'>  </span>";
               on-click = "hyprlock";
               tooltip = true;
               tooltip-format = "Lock";
             };
             "custom/reboot" = {
-              format = "<span color='#${config.lib.stylix.colors.base0C}'> </span>";
+              format = "<span color='#${config.lib.stylix.colors.base09}'> </span>";
               on-click = "systemctl reboot";
               tooltip = true;
               tooltip-format = "Reboot";
             };
             "custom/power" = {
-              format = "<span color='#${config.lib.stylix.colors.base0E}'>⏻  </span>";
+              format = "<span color='#${config.lib.stylix.colors.base08}'>⏻  </span>";
               on-click = "systemctl poweroff";
               tooltip = true;
               tooltip-format = "Power Off";
             };
             network = {
-              format-wifi = "<span color='#${config.lib.stylix.colors.base0C}'> 󰤨  </span>{signalStrength}% ";
+              format-wifi = "<span color='#${config.lib.stylix.colors.base0E}'> 󰤨  </span>{signalStrength}% ";
               format-ethernet = "<span color='#${config.lib.stylix.colors.base0B}'>   </span>Wired ";
               tooltip-format = "<span color='#${config.lib.stylix.colors.base0E}'> 󰅧  </span>{bandwidthUpBytes}  <span color='#${config.lib.stylix.colors.base0D}'> 󰅢 </span>{bandwidthDownBytes}";
               format-linked = "<span color='#${config.lib.stylix.colors.base0D}'> 󱘖  </span>{ifname} (No IP) ";
-              format-disconnected = "<span color='#${config.lib.stylix.colors.base0E}'>   </span>Disconnected ";
+              format-disconnected = "<span color='#${config.lib.stylix.colors.base08}'>   </span>Disconnected ";
               format-alt = "<span color='#${config.lib.stylix.colors.base0C}'> 󰤨  </span>{essid} ";
               interval = 1;
               on-click-right = "hyprctl dispatch exec '[workspace special:control-panel] ghostty -e nmtui'";
@@ -186,7 +186,7 @@ with lib; {
             };
             pulseaudio = {
               format = "<span color='#${config.lib.stylix.colors.base0B}'>{icon}</span>{volume}% ";
-              format-muted = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>0% ";
+              format-muted = "<span color='#${config.lib.stylix.colors.base03}'>  </span>0% ";
               format-icons = {
                 headphone = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>";
                 hands-free = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>";
@@ -223,7 +223,7 @@ with lib; {
             };
             clock = {
               interval = 1;
-              format = "<span color='#${config.lib.stylix.colors.base0E}'> 󰥔 </span>{:%I:%M:%S %p} ";
+              format = "<span color='#${config.lib.stylix.colors.base0D}'> 󰥔 </span>{:%I:%M:%S %p} ";
               tooltip = true;
               tooltip-format = "{:L%A %m/%d/%Y}";
             };
@@ -249,7 +249,7 @@ with lib; {
               font-family: "Terminess Nerd Font";
               font-weight: bold;
               font-size: 18px;
-              color: @base04;
+              color: @base05;
           }
 
           #tray menu {
@@ -391,7 +391,7 @@ with lib; {
 
           #workspaces button.active {
               background: transparent;
-              color: @base0C;
+              color: @base0E;
               padding: 2px 8px;
               margin: 0 2px;
               border-radius: 10px;
@@ -402,14 +402,14 @@ with lib; {
           }
 
           #workspaces button.active > span {
-              color: @base0C;
+              color: @base0E;
           }
 
           #workspaces button {
               background: transparent;
               border: none;
               outline: none;
-              color: @base04;
+              color: @base05;
               padding: 2px 8px;
               margin: 0 2px;
               font-weight: bold;
