@@ -133,7 +133,7 @@ in {
               "style" = "plain";
               "foreground" = "#${colors.base04}"; # Orange
               "properties" = {
-                "time_format" = "<#${colors.base07}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base07}> 2 Jan, Monday</>";
+                "time_format" = "<#${colors.base0C}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base0C}> 2 Jan, Monday</>";
               };
               "template" = "{{ .CurrentDate | date .Format }} <#${colors.base04}>|</>";
             }
