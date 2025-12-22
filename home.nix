@@ -10,6 +10,7 @@
 in {
   imports = [
     ./modules/claude-code-enhanced
+    ./modules/development/oh-my-posh.nix
   ];
 
   stylix.enableReleaseChecks = false;
@@ -284,11 +285,6 @@ in {
 
   programs = {
     home-manager.enable = true;
-    oh-my-posh = {
-      enable = true;
-      enableFishIntegration = true;
-      useTheme = "kushal";
-    };
   };
 
   # Claude Code project directory (conditional)
