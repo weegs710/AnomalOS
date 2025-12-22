@@ -63,10 +63,10 @@ in {
               "background" = "#${colors.base0B}"; # Green
               "foreground" = "#${colors.base00}"; # Black
               "background_templates" = [
-                "{{ if or (.Working.Changed) (.Staging.Changed) }}#${colors.base04}{{ end }}" # Orange
-                "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#${colors.base04}{{ end }}"
-                "{{ if gt .Ahead 0 }}#${colors.base0E}{{ end }}" # Purple
-                "{{ if gt .Behind 0 }}#${colors.base0E}{{ end }}"
+                "{{ if or (.Working.Changed) (.Staging.Changed) }}#${colors.base0B}{{ end }}" # Orange
+                "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#${colors.base0B}{{ end }}"
+                "{{ if gt .Ahead 0 }}#${colors.base0B}{{ end }}" # Purple
+                "{{ if gt .Behind 0 }}#${colors.base0B}{{ end }}"
               ];
               "properties" = {
                 "branch_icon" = " ";
@@ -131,11 +131,11 @@ in {
             {
               "type" = "time";
               "style" = "plain";
-              "foreground" = "#${colors.base09}"; # Orange
+              "foreground" = "#${colors.base04}"; # Orange
               "properties" = {
-                "time_format" = "<#${colors.base06}> 15:04:05</> <#${colors.base07}>|</> <#${colors.base04}> 2 Jan, Monday</>";
+                "time_format" = "<#${colors.base07}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base07}> 2 Jan, Monday</>";
               };
-              "template" = "{{ .CurrentDate | date .Format }} <#${colors.base07}>|</>";
+              "template" = "{{ .CurrentDate | date .Format }} <#${colors.base04}>|</>";
             }
             # Path (Blue Diamond)
             {
