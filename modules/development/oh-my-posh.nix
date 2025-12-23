@@ -11,18 +11,16 @@ in {
       "version" = 2;
       "console_title_template" = "{{ if .Root }}root @ {{ end }}{{ .Shell }} in {{ .Folder }}";
       "blocks" = [
-        # --- Top Line ---
         {
           "alignment" = "left";
           "type" = "prompt";
           "segments" = [
-            # OS Icon (Grey Diamond)
             {
               "type" = "os";
               "style" = "diamond";
               "leading_diamond" = "";
-              "background" = "#${colors.base02}"; # Grey
-              "foreground" = "#${colors.base05}"; # Light Cyan Text
+              "background" = "#${colors.base02}";
+              "foreground" = "#${colors.base05}";
               "template" = " {{ if .WSL }} on {{ end }}{{ .Icon }} ";
               "properties" = {
                 "alpine" = "";
@@ -37,36 +35,36 @@ in {
                 "windows" = "";
               };
             }
-            # Shell Name (Cyan Powerline)
+
             {
               "type" = "shell";
               "style" = "powerline";
               "powerline_symbol" = "";
-              "background" = "#${colors.base0C}"; # Neon Cyan
-              "foreground" = "#${colors.base00}"; # Black Text
+              "background" = "#${colors.base0C}";
+              "foreground" = "#${colors.base00}";
               "template" = "  {{ .Name }} ";
             }
-            # Root Indicator (Red Powerline)
+
             {
               "type" = "root";
               "style" = "powerline";
               "powerline_symbol" = "";
-              "background" = "#${colors.base08}"; # Red
+              "background" = "#${colors.base08}";
               "foreground" = "#${colors.base05}";
               "template" = "  admin ";
             }
-            # Git (Green Powerline)
+
             {
               "type" = "git";
               "style" = "powerline";
               "powerline_symbol" = "";
-              "background" = "#${colors.base0B}"; # Green
-              "foreground" = "#${colors.base00}"; # Black
+              "background" = "#6cc644";
+              "foreground" = "#${colors.base00}";
               "background_templates" = [
-                "{{ if or (.Working.Changed) (.Staging.Changed) }}#${colors.base0B}{{ end }}" # Orange
-                "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#${colors.base0B}{{ end }}"
-                "{{ if gt .Ahead 0 }}#${colors.base0B}{{ end }}" # Purple
-                "{{ if gt .Behind 0 }}#${colors.base0B}{{ end }}"
+                "{{ if or (.Working.Changed) (.Staging.Changed) }}#FFEB3B{{ end }}"
+                "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#FFCC80{{ end }}"
+                "{{ if gt .Ahead 0 }}#B388FF{{ end }}"
+                "{{ if gt .Behind 0 }}#B388FB{{ end }}"
               ];
               "properties" = {
                 "branch_icon" = " ";
@@ -78,34 +76,33 @@ in {
             }
           ];
         }
-        # --- Right Side Status ---
+
         {
           "alignment" = "right";
           "type" = "prompt";
           "segments" = [
-            # Status Check (Green/Red Diamond)
             {
               "type" = "status";
               "style" = "diamond";
               "leading_diamond" = "";
-              "background" = "#${colors.base0B}"; # Green
-              "foreground" = "#${colors.base00}"; # Black
+              "background" = "#6cc644";
+              "foreground" = "#${colors.base00}";
               "background_templates" = [
-                "{{ if gt .Code 0 }}#${colors.base08}{{ end }}" # Red
+                "{{ if gt .Code 0 }}#f85149{{ end }}"
               ];
               "foreground_templates" = [
-                "{{ if gt .Code 0 }}#${colors.base05}{{ end }}" # Light Text
+                "{{ if gt .Code 0 }}#${colors.base05}{{ end }}"
               ];
               "properties" = {"always_enabled" = true;};
               "template" = " {{ if gt .Code 0 }}{{ else }}λ{{ end }} ";
             }
-            # Exec Time (Grey Diamond)
+
             {
               "type" = "executiontime";
               "style" = "diamond";
               "trailing_diamond" = "";
-              "background" = "#${colors.base02}"; # Grey
-              "foreground" = "#${colors.base05}"; # Text
+              "background" = "#${colors.base02}";
+              "foreground" = "#${colors.base05}";
               "properties" = {
                 "style" = "roundrock";
                 "threshold" = 0;
@@ -114,35 +111,34 @@ in {
             }
           ];
         }
-        # --- Second Line (Date, Path) ---
+
         {
           "alignment" = "left";
           "type" = "prompt";
           "newline" = true;
           "segments" = [
-            # Corner
             {
               "type" = "text";
               "style" = "plain";
               "foreground" = "#${colors.base05}";
               "template" = "╭─";
             }
-            # Time
+
             {
               "type" = "time";
               "style" = "plain";
-              "foreground" = "#${colors.base04}"; # Orange
+              "foreground" = "#${colors.base04}";
               "properties" = {
-                "time_format" = "<#${colors.base0C}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base0C}> 2 Jan, Monday</>";
+                "time_format" = "<#${colors.base0C}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base0C}> 2 Jan, Monday</> <#${colors.base04}>|</>";
               };
-              "template" = "{{ .CurrentDate | date .Format }} <#${colors.base04}>|</>";
+              "template" = "{{ .CurrentDate | date .Format }}";
             }
-            # Path (Blue Diamond)
+
             {
               "type" = "path";
               "style" = "diamond";
-              "leading_diamond" = "<#${colors.base07}>  </><#${colors.base0D}> in </>"; # Neon Cyan -> Blue
-              "foreground" = "#${colors.base0D}"; # Blue
+              "leading_diamond" = "<#${colors.base07}>  </><#${colors.base0D}> in </>";
+              "foreground" = "#${colors.base0D}";
               "properties" = {
                 "folder_icon" = "  ";
                 "folder_separator_icon" = "  ";
@@ -154,20 +150,19 @@ in {
             }
           ];
         }
-        # --- Bottom Line ---
+
         {
           "alignment" = "left";
           "type" = "prompt";
           "newline" = true;
           "segments" = [
-            # Corner
             {
               "type" = "text";
               "style" = "plain";
               "foreground" = "#${colors.base05}";
               "template" = "╰─";
             }
-            # Prompt Char
+
             {
               "type" = "status";
               "style" = "plain";
