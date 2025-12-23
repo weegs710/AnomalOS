@@ -557,8 +557,8 @@ with lib; {
           };
           decoration = {
             rounding = 10;
-            active_opacity = 0.98;
-            inactive_opacity = 0.97;
+            active_opacity = 0.95;
+            inactive_opacity = 0.90;
             shadow = {
               enabled = true;
               range = 8;
