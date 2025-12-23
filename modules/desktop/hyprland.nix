@@ -525,9 +525,9 @@ with lib; {
           ];
           general = {
             no_border_on_floating = false;
-            gaps_in = 1;
-            gaps_out = 2;
-            border_size = 1;
+            gaps_in = 3;
+            gaps_out = 6;
+            border_size = 2;
             resize_on_border = false;
             allow_tearing = false;
             layout = "dwindle";
@@ -537,11 +537,11 @@ with lib; {
             preserve_split = true;
           };
           workspace = [
-            "1, gapsin:1, gapsout:2"
-            "2, gapsin:1, gapsout:2"
+            "1, gapsin:3, gapsout:6"
+            "2, gapsin:3, gapsout:6"
             "3, gapsin:0, gapsout:0, rounding:false"
-            "4, gapsin:1, gapsout:2"
-            "5, gapsin:1, gapsout:2"
+            "4, gapsin:3, gapsout:6"
+            "5, gapsin:3, gapsout:6"
             "special:control-panel, gapsin:2, gapsout:5"
           ];
           master = {
@@ -556,9 +556,9 @@ with lib; {
             disable_hyprland_logo = lib.mkForce false;
           };
           decoration = {
-            rounding = 2;
-            active_opacity = 1.0;
-            inactive_opacity = 1.0;
+            rounding = 10;
+            active_opacity = 0.98;
+            inactive_opacity = 0.97;
             shadow = {
               enabled = true;
               range = 8;
