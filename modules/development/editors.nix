@@ -16,12 +16,17 @@ with lib; {
       programs.zed-editor = {
         enable = true;
 
-        extensions = ["nix"];
+        extensions = ["nix" "basedpyright" "ruff"];
 
         extraPackages = with pkgs; [
+          # Nix language servers
           nixd
           nil
           alejandra
+
+          # Python language servers
+          basedpyright
+          ruff
         ];
 
         userSettings = {
@@ -43,6 +48,19 @@ with lib; {
             inline_blame.enabled = false;
           };
 
+          languages = {
+            Python = {
+              language_servers = ["basedpyright" "ruff"];
+              format_on_save = "on";
+              formatter = {
+                external = {
+                  command = "ruff";
+                  arguments = ["format" "-"];
+                };
+              };
+            };
+          };
+
           lsp = {
             nil = {
               initialization_options = {
@@ -57,6 +75,29 @@ with lib; {
               options = {
                 nixos.expr = "(builtins.getFlake \"/home/weegs/dotfiles\").nixosConfigurations.Rig.options";
                 home-manager.expr = "(builtins.getFlake \"/home/weegs/dotfiles\").nixosConfigurations.Rig.options.home-manager.users.type.getSubOptions []";
+              };
+            };
+
+            basedpyright.settings = {
+              basedpyright = {
+                analysis = {
+                  typeCheckingMode = "standard";
+                  diagnosticSeverityOverrides = {
+                    reportUnusedImport = "warning";
+                    reportUnusedVariable = "warning";
+                  };
+                };
+              };
+            };
+
+            ruff = {
+              initialization_options = {
+                settings = {
+                  lineLength = 88;
+                  lint = {
+                    select = ["E" "F" "I"];
+                  };
+                };
               };
             };
           };

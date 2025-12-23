@@ -143,6 +143,7 @@ in {
     environment.shellAliases = {
       scrapem = "download-playlist";
       scrapev = "download-video";
+      snag = "cd ~/Documents/test-zone/ && ./snag.py";
     };
   };
 }
