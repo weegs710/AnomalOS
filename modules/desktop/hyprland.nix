@@ -509,6 +509,10 @@ with lib; {
           "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
           "$webBrowser" = "brave";
           "$mainMod" = "SUPER";
+          monitor = [
+            "HDMI-A-2, 2560x1440@144, 0x0, 1"
+            ", preferred, auto, 1"
+          ];
           env = [
             "HYPRCURSOR_THEME,Nordzy-hyprcursors"
             "HYPRCURSOR_SIZE,30"
@@ -527,10 +531,12 @@ with lib; {
             no_border_on_floating = false;
             gaps_in = 3;
             gaps_out = 6;
-            border_size = 2;
+            border_size = 4;
             resize_on_border = false;
             allow_tearing = false;
             layout = "dwindle";
+            "col.active_border" = lib.mkForce "rgb(${config.lib.stylix.colors.base0D})";
+            "col.inactive_border" = lib.mkForce "rgb(${config.lib.stylix.colors.base0C})";
           };
           dwindle = {
             pseudotile = true;
@@ -554,11 +560,12 @@ with lib; {
           misc = {
             force_default_wallpaper = lib.mkForce (-1);
             disable_hyprland_logo = lib.mkForce false;
+            vrr = 1;
           };
           decoration = {
             rounding = 10;
-            active_opacity = 0.95;
-            inactive_opacity = 0.90;
+            active_opacity = 0.80;
+            inactive_opacity = 0.80;
             shadow = {
               enabled = true;
               range = 8;
@@ -757,15 +764,13 @@ with lib; {
             "workspace 2, class:^(com\.mitchellh\.ghostty)$"
 
             # Opacity overrides
-            "opacity 1.0 override 1.0 override 1.0 override, class:^(vesktop)$"
+            # "opacity 1.0 override 1.0 override 1.0 override, class:^(vesktop)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(com\.stremio\.stremio)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(brave-browser)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(starrail\.exe)$"
-            "opacity 1.0 override 1.0 override 1.0 override, class:^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(steam_app_.*)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(steam)$"
-            "opacity 1.0 override 1.0 override 1.0 override, class:^(io\.github\.htkhiem\.Euphonica)$"
-            # "opacity 1.0 override 1.0 override 1.0 override, class:^(org\.nickvision\.cavalier)$"
+            # "opacity 1.0 override 1.0 override 1.0 override, class:^(io\.github\.htkhiem\.Euphonica)$"
           ];
         };
         extraConfig = ''

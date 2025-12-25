@@ -9,7 +9,8 @@
     # initrd.supportedFilesystems = [ "zfs" ];
     initrd.systemd.enable = true;
     plymouth.enable = true;
-    kernelPackages = pkgs.linuxPackages_6_17;
+    # kernelPackages = pkgs.linuxPackages_6_17;
+    kernelPackages = pkgs.linuxPackages_xanmod_latest;
     kernelParams = [
       "quiet"
       "hid_apple.fnmode=2"
