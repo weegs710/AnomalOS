@@ -137,7 +137,6 @@ with lib; {
 
       services.swaync.style = ''
         * {
-          font-family: "DejaVu Sans";
           font-size: 11pt;
         }
 
@@ -271,7 +270,6 @@ with lib; {
       programs.ghostty = {
         enable = true;
         settings = {
-          font-family = "Terminess Nerd Font";
           font-size = 13;
           copy-on-select = "clipboard";
           window-show-tab-bar = "never";

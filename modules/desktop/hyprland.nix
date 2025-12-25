@@ -119,7 +119,7 @@ with lib; {
           {
             layer = "bottom";
             position = "top";
-            height = 36;
+            height = 28;
             spacing = 0;
             modules-left = [
               "tray"
@@ -156,48 +156,48 @@ with lib; {
               };
             };
             "custom/lock" = {
-              format = "<span color='#${config.lib.stylix.colors.base0A}'>  </span>";
+              format = "<span color='#F39C12'>  </span>";
               on-click = "hyprlock";
               tooltip = true;
               tooltip-format = "Lock";
             };
             "custom/reboot" = {
-              format = "<span color='#${config.lib.stylix.colors.base09}'> </span>";
+              format = "<span color='#E67E22'> </span>";
               on-click = "systemctl reboot";
               tooltip = true;
               tooltip-format = "Reboot";
             };
             "custom/power" = {
-              format = "<span color='#${config.lib.stylix.colors.base08}'>⏻  </span>";
+              format = "<span color='#E74C3C'>⏻  </span>";
               on-click = "systemctl poweroff";
               tooltip = true;
               tooltip-format = "Power Off";
             };
             network = {
-              format-wifi = "<span color='#${config.lib.stylix.colors.base0E}'> 󰤨  </span>{signalStrength}% ";
-              format-ethernet = "<span color='#${config.lib.stylix.colors.base0B}'>   </span>Wired ";
-              tooltip-format = "<span color='#${config.lib.stylix.colors.base0E}'> 󰅧  </span>{bandwidthUpBytes}  <span color='#${config.lib.stylix.colors.base0D}'> 󰅢 </span>{bandwidthDownBytes}";
-              format-linked = "<span color='#${config.lib.stylix.colors.base0D}'> 󱘖  </span>{ifname} (No IP) ";
-              format-disconnected = "<span color='#${config.lib.stylix.colors.base08}'>   </span>Disconnected ";
-              format-alt = "<span color='#${config.lib.stylix.colors.base0C}'> 󰤨  </span>{essid} ";
+              format-wifi = "<span color='#00D9FF'> 󰤨  </span>{signalStrength}% ";
+              format-ethernet = "<span color='#2ECC71'>   </span>Wired ";
+              tooltip-format = "<span color='#00D9FF'> 󰅧  </span>{bandwidthUpBytes}  <span color='#3498DB'> 󰅢 </span>{bandwidthDownBytes}";
+              format-linked = "<span color='#3498DB'> 󱘖  </span>{ifname} (No IP) ";
+              format-disconnected = "<span color='#E74C3C'>   </span>Disconnected ";
+              format-alt = "<span color='#00CED1'> 󰤨  </span>{essid} ";
               interval = 1;
               on-click-right = "hyprctl dispatch exec '[workspace special:control-panel] ghostty -e nmtui'";
               tooltip = true;
             };
             pulseaudio = {
-              format = "<span color='#${config.lib.stylix.colors.base0B}'>{icon}</span>{volume}% ";
-              format-muted = "<span color='#${config.lib.stylix.colors.base03}'>  </span>0% ";
+              format = "<span color='#2ECC71'>{icon}</span>{volume}% ";
+              format-muted = "<span color='#95A5A6'>  </span>0% ";
               format-icons = {
-                headphone = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>";
-                hands-free = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>";
-                headset = "<span color='#${config.lib.stylix.colors.base0E}'>  </span>";
-                phone = "<span color='#${config.lib.stylix.colors.base0C}'>  </span>";
-                portable = "<span color='#${config.lib.stylix.colors.base0C}'>  </span>";
-                car = "<span color='#${config.lib.stylix.colors.base0D}'>  </span>";
+                headphone = "<span color='#00D9FF'>  </span>";
+                hands-free = "<span color='#00D9FF'>  </span>";
+                headset = "<span color='#00D9FF'>  </span>";
+                phone = "<span color='#00CED1'>  </span>";
+                portable = "<span color='#00CED1'>  </span>";
+                car = "<span color='#3498DB'>  </span>";
                 default = [
-                  "<span color='#${config.lib.stylix.colors.base03}'>  </span>"
-                  "<span color='#${config.lib.stylix.colors.base0C}'>  </span>"
-                  "<span color='#${config.lib.stylix.colors.base0B}'>  </span>"
+                  "<span color='#95A5A6'>  </span>"
+                  "<span color='#00CED1'>  </span>"
+                  "<span color='#2ECC71'>  </span>"
                 ];
               };
               on-click-right = "pavucontrol -t 3";
@@ -207,23 +207,23 @@ with lib; {
             };
             "custom/temperature" = {
               exec = "/run/current-system/sw/bin/sensors | /run/current-system/sw/bin/awk '/edge:/ {gsub(/[+°C]/, \"\", $2); print int($2); exit}'";
-              format = "<span color='#${config.lib.stylix.colors.base0D}'>  </span>{}°C ";
+              format = "<span color='#3498DB'>  </span>{}°C ";
               interval = 5;
               tooltip = true;
               tooltip-format = "Current CPU Temperature:  {}°C";
             };
             memory = {
-              format = "<span color='#${config.lib.stylix.colors.base0E}'>   </span>{used:0.1f}GB ";
+              format = "<span color='#9B59B6'>   </span>{used:0.1f}GB ";
               tooltip = true;
               tooltip-format = "RAM Usage: {used:0.2f}GB/{total:0.2f}GB";
             };
             cpu = {
-              format = "<span color='#${config.lib.stylix.colors.base0D}'>   </span>{usage}% ";
+              format = "<span color='#3498DB'>   </span>{usage}% ";
               tooltip = true;
             };
             clock = {
               interval = 1;
-              format = "<span color='#${config.lib.stylix.colors.base0D}'> 󰥔 </span>{:%I:%M:%S %p} ";
+              format = "<span color='#5DADE2'> 󰥔 </span>{:%m/%d/%y %I:%M:%S %p} ";
               tooltip = true;
               tooltip-format = "{:L%A %m/%d/%Y}";
             };
@@ -232,9 +232,9 @@ with lib; {
               spacing = 6;
             };
             bluetooth = {
-              format = "<span color='#${config.lib.stylix.colors.base0D}'>  </span>{status} ";
-              format-connected = "<span color='#${config.lib.stylix.colors.base0D}'>ᛒ</span>{device_alias} ";
-              format-connected-battery = "<span color='#${config.lib.stylix.colors.base0D}'>ᛒ</span>{device_alias} {device_battery_percentage}% ";
+              format = "<span color='#3498DB'>  </span>{status} ";
+              format-connected = "<span color='#3498DB'>ᛒ</span>{device_alias} ";
+              format-connected-battery = "<span color='#3498DB'>ᛒ</span>{device_alias} {device_battery_percentage}% ";
               tooltip-format = "{controller_alias}\t{controller_address}\n\n{num_connections} connected";
               tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}";
               tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
@@ -246,9 +246,8 @@ with lib; {
         ];
         style = lib.mkAfter ''
           * {
-              font-family: "Terminess Nerd Font";
-              font-weight: bold;
-              font-size: 18px;
+              font-family: "FiraCode Nerd Font";
+              font-size: 14px;
               color: @base05;
           }
 
@@ -257,44 +256,48 @@ with lib; {
           }
 
           window#waybar {
-              background: alpha(@base00, 0.5);
-              border-radius: 0 0 25px 25px;
+              background: transparent;
+              border-radius: 0 0 12px 12px;
           }
 
           #waybar {
-              background: alpha(@base00, 0.5);
+              background: transparent;
               border: none;
               border-radius: 0 0 10px 10px;
           }
 
           #workspaces {
               background: alpha(@base00, 0.5);
-              padding: 4px 6px;
-              margin-top: 6px;
-              margin-bottom: 6px;
+              padding: 2px 6px;
+              margin-top: 3px;
+              margin-bottom: 3px;
               margin-left: 6px;
               margin-right: 6px;
-              border-radius: 50px;
+              border-radius: 12px;
           }
 
           #tray {
               background: alpha(@base00, 0.5);
-              padding: 4px 6px;
-              margin-top: 6px;
-              margin-bottom: 6px;
+              padding: 2px 6px;
+              margin-top: 3px;
+              margin-bottom: 3px;
               margin-left: 6px;
               margin-right: 6px;
-              border-radius: 50px;
+              border-radius: 12px;
           }
 
           #window {
               background: alpha(@base00, 0.5);
-              padding: 4px 6px;
-              margin-top: 6px;
-              margin-bottom: 6px;
+              padding: 2px 6px;
+              margin-top: 3px;
+              margin-bottom: 3px;
               margin-left: 6px;
               margin-right: 6px;
-              border-radius: 50px;
+              border-radius: 12px;
+          }
+
+          window#waybar.empty #window {
+              opacity: 0;
           }
 
           #network,
@@ -302,14 +305,14 @@ with lib; {
           #pulseaudio,
           #clock {
               background: alpha(@base00, 0.5);
-              margin-top: 6px;
-              margin-bottom: 6px;
-              padding: 4px 2px;
+              margin-top: 3px;
+              margin-bottom: 3px;
+              padding: 2px 2px;
           }
 
           #network {
               margin-left: 6px;
-              border-radius: 50px 0 0 50px;
+              border-radius: 12px 0 0 12px;
           }
 
           #bluetooth,
@@ -319,21 +322,21 @@ with lib; {
 
           #clock {
               margin-right: 6px;
-              border-radius: 0 50px 50px 0;
+              border-radius: 0 12px 12px 0;
           }
 
           #custom-lock,
           #custom-reboot,
           #custom-power {
               background: alpha(@base00, 0.5);
-              margin-top: 6px;
-              margin-bottom: 6px;
-              padding: 4px 2px;
+              margin-top: 3px;
+              margin-bottom: 3px;
+              padding: 2px 2px;
           }
 
           #custom-lock {
               margin-left: 6px;
-              border-radius: 50px 0 0 50px;
+              border-radius: 12px 0 0 12px;
           }
 
           #custom-reboot {
@@ -342,7 +345,7 @@ with lib; {
 
           #custom-power {
               margin-right: 6px;
-              border-radius: 0 50px 50px 0;
+              border-radius: 0 12px 12px 0;
           }
 
           #battery,
@@ -351,9 +354,9 @@ with lib; {
           #memory,
           #cpu {
               background: transparent;
-              margin-top: 6px;
-              margin-bottom: 6px;
-              padding: 4px 2px;
+              margin-top: 3px;
+              margin-bottom: 3px;
+              padding: 2px 2px;
           }
 
           #custom-temperature.critical,
@@ -373,13 +376,12 @@ with lib; {
           #clock:hover,
           #custom-lock:hover,
           #custom-reboot:hover,
-          #custom-power:hover,
-          #window:hover {
-              background: transparent;
+          #custom-power:hover {
+              background: alpha(@base0C, 0.5);
           }
 
           #workspaces button:hover {
-              background: transparent;
+              background: alpha(@base0C, 0.5);
               padding: 2px 8px;
               margin: 0 2px;
               border-radius: 10px;
@@ -389,20 +391,30 @@ with lib; {
               box-shadow: none;
           }
 
-          #workspaces button.active {
+          #tray > * {
               background: transparent;
-              color: @base0E;
-              padding: 2px 8px;
-              margin: 0 2px;
-              border-radius: 10px;
-              border: none;
-              outline: none;
-              text-shadow: none;
-              box-shadow: none;
           }
 
-          #workspaces button.active > span {
-              color: @base0E;
+          #tray > *:hover {
+              background: alpha(@base0C, 0.5);
+          }
+
+          .modules-left #workspaces button.active {
+              background: transparent;
+              color: @base05;
+              border-bottom: 3px solid @base0D;
+          }
+
+          .modules-center #workspaces button.active {
+              background: transparent;
+              color: @base05;
+              border-bottom: 3px solid @base0D;
+          }
+
+          .modules-right #workspaces button.active {
+              background: transparent;
+              color: @base05;
+              border-bottom: 3px solid @base0D;
           }
 
           #workspaces button {

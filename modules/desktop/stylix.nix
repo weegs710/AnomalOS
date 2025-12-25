@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; {
@@ -11,6 +12,33 @@ with lib; {
       enableReleaseChecks = false;
       base16Scheme = ./axion.yaml;
       polarity = "dark";
+
+      # Font configuration
+      fonts = {
+        monospace = {
+          package = pkgs.nerd-fonts.fira-code;
+          name = "FiraCode Nerd Font";
+        };
+        sansSerif = {
+          package = pkgs.google-fonts.override {
+            fonts = ["Orbitron"];
+          };
+          name = "Orbitron";
+        };
+        serif = {
+          package = pkgs.google-fonts.override {
+            fonts = ["SpaceGrotesk"];
+          };
+          name = "Space Grotesk";
+        };
+        sizes = {
+          applications = 12;
+          terminal = 14;
+          desktop = 10;
+          popups = 12;
+        };
+      };
+
       targets = {
         gtk.enable = true;
         qt.enable = true;

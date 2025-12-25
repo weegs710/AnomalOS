@@ -20,7 +20,7 @@ with lib; {
          * Bottom-center positioning with stylix colors
          */
         * {
-            font:                        "Terminess Nerd Font 18";
+            font:                        "sans 18";
             background-color:            #${config.lib.stylix.colors.base00};
             foreground:                  #${config.lib.stylix.colors.base05};
             selected-normal-foreground:  #${config.lib.stylix.colors.base00};
@@ -147,7 +147,7 @@ with lib; {
         * {
         	background-color: transparent;
         	text-color:       #00e5ff;
-        	font:             "Terminess Nerd Font 10";
+        	font:             "sans 10";
         }
 
         window {
