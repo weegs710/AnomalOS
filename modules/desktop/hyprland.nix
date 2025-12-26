@@ -65,8 +65,8 @@ with lib; {
       };
 
       home.activation.setWallpaper = ''
-        ${pkgs.swww}/bin/swww img ~/.local/share/wallpapers/The Rail Unto the Stars.png --resize stretch 2>/dev/null || true
-        ln -sf ~/.local/share/wallpapers/The\ Rail\ Unto\ the\ Stars.png ~/.cache/hyprlock-wallpaper
+        ${pkgs.swww}/bin/swww img ~/.local/share/wallpapers/The Rail Unto the Stars.webp --resize stretch 2>/dev/null || true
+        ln -sf ~/.local/share/wallpapers/The\ Rail\ Unto\ the\ Stars.webp ~/.cache/hyprlock-wallpaper
       '';
 
       home.file.".local/bin/rotate-wallpaper.sh" = {
@@ -267,7 +267,7 @@ with lib; {
           }
 
           #workspaces {
-              background: alpha(@base00, 0.5);
+              background: alpha(@base00, 0.75);
               padding: 2px 6px;
               margin-top: 3px;
               margin-bottom: 3px;
@@ -277,7 +277,7 @@ with lib; {
           }
 
           #tray {
-              background: alpha(@base00, 0.5);
+              background: alpha(@base00, 0.75);
               padding: 2px 6px;
               margin-top: 3px;
               margin-bottom: 3px;
@@ -287,7 +287,7 @@ with lib; {
           }
 
           #window {
-              background: alpha(@base00, 0.5);
+              background: alpha(@base00, 0.75);
               padding: 2px 6px;
               margin-top: 3px;
               margin-bottom: 3px;
@@ -304,7 +304,7 @@ with lib; {
           #bluetooth,
           #pulseaudio,
           #clock {
-              background: alpha(@base00, 0.5);
+              background: alpha(@base00, 0.75);
               margin-top: 3px;
               margin-bottom: 3px;
               padding: 2px 2px;
@@ -328,7 +328,7 @@ with lib; {
           #custom-lock,
           #custom-reboot,
           #custom-power {
-              background: alpha(@base00, 0.5);
+              background: alpha(@base00, 0.75);
               margin-top: 3px;
               margin-bottom: 3px;
               padding: 2px 2px;
@@ -543,7 +543,7 @@ with lib; {
             no_border_on_floating = false;
             gaps_in = 3;
             gaps_out = 6;
-            border_size = 4;
+            border_size = 3;
             resize_on_border = false;
             allow_tearing = false;
             layout = "dwindle";
@@ -731,6 +731,10 @@ with lib; {
             "workspace 3, class:^(moe\.launcher\.the-honkers-railway-launcher)$"
             "workspace 3, title:^(Honkai: Star Rail)$"
 
+            # Where Winds Meet - force fullscreen and prevent the game from toggling fullscreen itself.
+            "fullscreen, class:^(steam_app_3564740)$"
+            "suppressevent fullscreen, class:^(steam_app_3564740)$"
+
             # Workspace: 4 (media)
             "workspace 4, class:^(io\.github\.htkhiem\.Euphonica)$"
             # "workspace 4, class:^(org\.nickvision\.cavalier)$"
@@ -745,7 +749,6 @@ with lib; {
             "focusonactivate, class:^(brave-browser)$"
             "focusonactivate, class:^(firefox)$"
             "focusonactivate, class:^(chromium-browser)$"
-            "tile, class:^(steam_app_3564740)$" # Where Winds Meet - force tiled
             "tile, class:^(starrail\.exe)$"
 
             # Control-panel workspace utilities (must come before dev workspace ghostty rule)
