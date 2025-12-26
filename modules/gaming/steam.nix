@@ -14,10 +14,14 @@ with lib; {
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
       localNetworkGameTransfers.openFirewall = true;
+      extraPackages = with pkgs; [
+        mangohud
+      ];
     };
 
     environment.sessionVariables = {
       SDL_VIDEODRIVER = "x11";
+      MANGOHUD = "1";
     };
   };
 }

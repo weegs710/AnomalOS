@@ -8,6 +8,7 @@ with lib; {
   imports = [
     ./steam.nix
     ./aagl.nix
+    ./mangohud.nix
   ];
 
   config = mkIf config.mySystem.features.gaming {
