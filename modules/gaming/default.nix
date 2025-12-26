@@ -9,9 +9,12 @@ with lib; {
     ./steam.nix
     ./aagl.nix
     ./mangohud.nix
+    ./decky-loader.nix
   ];
 
   config = mkIf config.mySystem.features.gaming {
+    programs.nix-ld.enable = true;
+
     # Hardware support for gaming
     hardware.steam-hardware.enable = mkIf config.mySystem.hardware.steam true;
 
