@@ -27,6 +27,7 @@ with lib; {
       openraPackages.engines.bleed
       protonup-qt
       ryubing
+      sgdboop
       (wrapRetroArch {
         cores = with libretro; [
           nestopia
