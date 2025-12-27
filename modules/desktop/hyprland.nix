@@ -80,10 +80,17 @@ with lib; {
           wallpaper_dir="$HOME/.local/share/wallpapers"
           cache_link="$HOME/.cache/hyprlock-wallpaper"
 
-          image=$(ls "$wallpaper_dir"/* 2>/dev/null | shuf -n 1)
+          mapfile -t wallpapers < <(find "$wallpaper_dir" -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.webp" \))
 
-          if [ -n "$image" ]; then
-            ${pkgs.swww}/bin/swww img "$image" --resize stretch 2>/dev/null || true
+          if [ ''${#wallpapers[@]} -gt 0 ]; then
+            image="''${wallpapers[RANDOM % ''${#wallpapers[@]}]}"
+
+            ${pkgs.swww}/bin/swww img "$image" \
+              --resize stretch \
+              --transition-type grow \
+              --transition-duration 2 \
+              2>/dev/null || true
+
             ln -sf "$image" "$cache_link"
           fi
         '';
@@ -103,13 +110,13 @@ with lib; {
 
       systemd.user.timers.rotate-wallpaper = {
         Unit = {
-          Description = "Rotate wallpaper at a regular interval";
+          Description = "Rotate wallpaper every 15 minutes";
           Requires = ["rotate-wallpaper.service"];
         };
         Timer = {
-          OnBootSec = "42s";
-          OnUnitActiveSec = "42s";
-          AccuracySec = "1s";
+          OnBootSec = "2m";
+          OnUnitActiveSec = "15m";
+          AccuracySec = "1m";
           Persistent = true;
         };
         Install = {
