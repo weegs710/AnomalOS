@@ -214,8 +214,8 @@ with lib; {
             ", preferred, auto, 1"
           ];
           env = [
-            "HYPRCURSOR_THEME,Nordzy-hyprcursors"
-            "HYPRCURSOR_SIZE,30"
+            "XCURSOR_THEME,oreo_axion-cyan_cursors"
+            "XCURSOR_SIZE,30"
             "TERMINAL,ghostty"
             "XDG_TERMINAL_EDITOR,ghostty"
           ];
