@@ -465,13 +465,13 @@ with lib; {
             "workspace 2, class:^(com\.mitchellh\.ghostty)$"
 
             # Opacity overrides
-            # "opacity 1.0 override 1.0 override 1.0 override, class:^(vesktop)$"
+            "opacity 1.0 override 1.0 override 1.0 override, class:^(vesktop)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(com\.stremio\.stremio)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(brave-browser)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(starrail\.exe)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(steam_app_.*)$"
             "opacity 1.0 override 1.0 override 1.0 override, class:^(steam)$"
-            # "opacity 1.0 override 1.0 override 1.0 override, class:^(io\.github\.htkhiem\.Euphonica)$"
+            "opacity 1.0 override 1.0 override 1.0 override, class:^(io\.github\.htkhiem\.Euphonica)$"
           ];
         };
         extraConfig = ''
