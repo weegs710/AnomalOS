@@ -21,7 +21,6 @@ with lib; {
 
     environment.sessionVariables = {
       SDL_VIDEODRIVER = "x11";
-      MANGOHUD = "1";
     };
   };
 }

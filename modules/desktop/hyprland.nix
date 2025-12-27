@@ -117,7 +117,6 @@ with lib; {
         };
       };
 
-
       programs.hyprlock = {
         enable = true;
         settings = {
@@ -217,8 +216,6 @@ with lib; {
             "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
             "kwalletd6 &"
             "tmux new -d waybar &"
-            "[workspace 3] steam -silent"
-            "[workspace 1] vesktop --start-minimized"
             "hyprctl dispatch workspace 1"
           ];
           general = {
