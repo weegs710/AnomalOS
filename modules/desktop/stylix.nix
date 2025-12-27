@@ -16,8 +16,8 @@ with lib; {
       # Font configuration
       fonts = {
         monospace = {
-          package = pkgs.nerd-fonts.fira-code;
-          name = "FiraCode Nerd Font";
+          package = pkgs.nerd-fonts.terminess-ttf;
+          name = "Terminess Nerd Font";
         };
         sansSerif = {
           package = pkgs.google-fonts.override {
@@ -33,7 +33,7 @@ with lib; {
         };
         sizes = {
           applications = 12;
-          terminal = 14;
+          terminal = 13;
           desktop = 10;
           popups = 12;
         };

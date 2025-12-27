@@ -270,7 +270,7 @@ with lib; {
       programs.ghostty = {
         enable = true;
         settings = {
-          font-size = 13;
+          scroll-to-bottom = "keystroke";
           copy-on-select = "clipboard";
           window-show-tab-bar = "never";
           keybind = [
