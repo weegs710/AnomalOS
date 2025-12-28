@@ -19,6 +19,12 @@ with lib; let
     dontUnpack = true;
     dontBuild = true;
 
+    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+    buildInputs = [
+      pkgs.zlib
+      pkgs.stdenv.cc.cc.lib
+    ];
+
     installPhase = ''
       mkdir -p $out/bin
       cp $src $out/bin/PluginLoader
@@ -76,7 +82,13 @@ in {
           Environment = [
             "PLUGIN_PATH=%h/homebrew/plugins"
             "LOG_LEVEL=INFO"
-            "PATH=/run/current-system/sw/bin:/run/wrappers/bin:${pkgs.systemd}/bin"
+            "PATH=${lib.makeBinPath [
+              pkgs.python3
+              pkgs.systemd
+              pkgs.coreutils
+              pkgs.curl
+              pkgs.git
+            ]}:/run/current-system/sw/bin:/run/wrappers/bin"
           ];
         };
         Install = {
