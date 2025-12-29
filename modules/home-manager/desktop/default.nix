@@ -8,8 +8,8 @@
 }:
 {
   imports = [
-    ./hyprland.nix
-    ./waybar.nix
+    ./hyprland
+    ./waybar
     ./yazi.nix
     ./ghostty.nix
     ./swaync.nix
