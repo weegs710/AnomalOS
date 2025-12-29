@@ -209,7 +209,7 @@ in {
 
   home.pointerCursor = {
     package = axion-cursors;
-    name = "oreo_axion-purple_cursors";
+    name = "oreo_axion-magenta_cursors";
     size = 30;
     gtk.enable = true;
     x11.enable = true;

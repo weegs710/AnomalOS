@@ -214,7 +214,7 @@ with lib; {
             ", preferred, auto, 1"
           ];
           env = [
-            "XCURSOR_THEME,oreo_axion-cyan_cursors"
+            "XCURSOR_THEME,oreo_axion-magenta_cursors"
             "XCURSOR_SIZE,30"
             "TERMINAL,ghostty"
             "XDG_TERMINAL_EDITOR,ghostty"
