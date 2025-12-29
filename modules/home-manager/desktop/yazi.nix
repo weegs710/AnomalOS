@@ -39,19 +39,19 @@ with lib; {
       # Override Stylix theme background
       theme = {
         mgr = {
-          bg = lib.mkForce "#\${config.lib.stylix.colors.base00}";
+          bg = lib.mkForce "#${config.lib.stylix.colors.base00}";
         };
         status = {
           separator_open = lib.mkForce "";
           separator_close = lib.mkForce "";
           separator_style = lib.mkForce {
-            fg = "#\${config.lib.stylix.colors.base00}";
-            bg = "#\${config.lib.stylix.colors.base00}";
+            fg = "#${config.lib.stylix.colors.base00}";
+            bg = "#${config.lib.stylix.colors.base00}";
           };
         };
         which = {
           mask = {
-            bg = lib.mkForce "#\${config.lib.stylix.colors.base00}";
+            bg = lib.mkForce "#${config.lib.stylix.colors.base00}";
           };
         };
       };
