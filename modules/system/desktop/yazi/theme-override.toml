@@ -1,0 +1,12 @@
+# Theme overrides to ensure proper background color
+# This merges with Stylix-generated theme
+
+[manager]
+# Empty to use terminal background (transparent)
+
+[status]
+# Empty to use terminal background (transparent)
+
+[which]
+# Empty mask to use terminal background
+mask = {}

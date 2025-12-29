@@ -6,11 +6,11 @@
   imports = [
     ./hardware-configuration-zfs.nix
     ./modules/options.nix
-    ./modules/core
-    ./modules/security
-    ./modules/desktop
-    ./modules/development
-    ./modules/gaming
+    ./modules/system/core
+    ./modules/system/security
+    ./modules/system/desktop
+    ./modules/system/development
+    ./modules/system/gaming
     inputs.home-manager.nixosModules.default
   ];
 

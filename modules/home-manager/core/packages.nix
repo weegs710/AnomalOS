@@ -1,0 +1,41 @@
+{
+  pkgs,
+  inputs,
+  ...
+}:
+{
+  home.packages = with pkgs; [
+    inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
+    alejandra
+    cliphist
+    ed-odyssey-materials-helper
+    edmarketconnector
+    fastfetch
+    fzf
+    gh
+    glow
+    gparted
+    grim
+    hyprls
+    hyprshot
+    jq
+    min-ed-launcher
+    nodejs
+    obsidian
+    pamixer
+    python3
+    rofi
+    rustc
+    slurp
+    # starship
+    swww
+    xfce.thunar
+    tldr
+    ueberzugpp
+    uv
+    wl-clipboard
+    wl-clip-persist
+    wlogout
+    wlsunset
+  ];
+}

@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  osConfig,
   ...
 }:
 with lib; {
-  config = mkIf config.mySystem.features.desktop {
-    home-manager.users.${config.mySystem.user.name}.programs.waybar = {
+  config = mkIf osConfig.mySystem.features.desktop {
+    programs.waybar = {
         enable = true;
+        systemd.enable = true;
         settings = [
           {
             layer = "bottom";
