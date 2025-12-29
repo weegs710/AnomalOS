@@ -67,12 +67,15 @@ with lib; {
               };
             };
 
-            nixd.settings = {
-              nixpkgs.expr = "import (builtins.getFlake \"/home/weegs/dotfiles\").inputs.nixpkgs { }";
+            nixd.settings = let
+              flakePath = "${config.users.users.${config.mySystem.user.name}.home}/dotfiles";
+              hostName = "${config.networking.hostName}";
+            in {
+              nixpkgs.expr = "import (builtins.getFlake \"${flakePath}\").inputs.nixpkgs { }";
               formatting.command = ["alejandra" "--quiet"];
               options = {
-                nixos.expr = "(builtins.getFlake \"/home/weegs/dotfiles\").nixosConfigurations.Rig.options";
-                home-manager.expr = "(builtins.getFlake \"/home/weegs/dotfiles\").nixosConfigurations.Rig.options.home-manager.users.type.getSubOptions []";
+                nixos.expr = "(builtins.getFlake \"${flakePath}\").nixosConfigurations.${hostName}.options";
+                home-manager.expr = "(builtins.getFlake \"${flakePath}\").nixosConfigurations.${hostName}.options.home-manager.users.type.getSubOptions []";
               };
             };
 
