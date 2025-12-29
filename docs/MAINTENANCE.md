@@ -82,7 +82,7 @@ nix flake lock --update-input home-manager
 The system automatically removes old generations daily:
 
 ```nix
-# In modules/core/nix.nix
+# In modules/system/core/nix.nix
 nix.gc = {
   automatic = true;
   dates = "daily";
@@ -361,7 +361,7 @@ nix store optimise --dry-run
 
 ### Build Optimization
 
-Already configured in `modules/core/nix.nix`:
+Already configured in `modules/system/core/nix.nix`:
 
 ```nix
 nix.settings = {

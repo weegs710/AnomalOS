@@ -124,13 +124,13 @@ This configuration provides:
 - Claude Code for AI-assisted development
 - Complete development toolchain
 - Gaming support with Steam, anime game launchers, and emulators
-- Media tools including mpv, Cavalier, and Beets music manager
+- Music system with MPD, Euphonica client, and Beets library manager
 
 ## Module Configuration
 
 ### Core Modules
 
-Located in `modules/core/`:
+Located in `modules/system/core/`:
 
 - **boot.nix**: Boot loader configuration, kernel parameters
 - **networking.nix**: NetworkManager, firewall basics, hostname
@@ -140,7 +140,7 @@ Located in `modules/core/`:
 
 ### Security Modules
 
-Located in `modules/security/`:
+Located in `modules/system/security/`:
 
 - **firewall.nix**: nftables configuration, custom gaming ports (23243-23262), SSH on port 2222
 - **hardening.nix**: Kernel sysctl parameters, SSH hardening, PAM configuration
@@ -149,7 +149,7 @@ Located in `modules/security/`:
 
 **Security Configuration Options:**
 
-Edit `modules/security/firewall.nix` to adjust ports:
+Edit `modules/system/security/firewall.nix` to adjust ports:
 ```nix
 # Open additional TCP ports
 networking.firewall.allowedTCPPorts = [ 2222 ];
@@ -162,36 +162,37 @@ networking.firewall.allowedTCPPortRanges = [
 
 ### Desktop Modules
 
-Located in `modules/desktop/`:
+Located in `modules/system/desktop/`:
 
-- **hyprland.nix**: Hyprland compositor, utilities (grim, slurp, wl-clipboard)
-- **media.nix**: Applications (GIMP, Anki, Vesktop), media tools
-- **stylix.nix**: Theme configuration (Anomal-16 color scheme)
+- **hyprland.nix**: Hyprland compositor system-level configuration (enables Hyprland, XDG portals, PAM)
+- **mpd.nix**: MPD (Music Player Daemon) service configuration
+- **media.nix**: Applications (GIMP, Anki, Vesktop, OBS), media tools
+- **stylix.nix**: Theme configuration (Axion custom base16 color scheme)
 
 **Theme Customization:**
 
-Edit `modules/desktop/stylix.nix` to change colors:
+Edit `modules/system/desktop/stylix.nix` to change the theme:
 ```nix
-stylix.base16Scheme = {
-  base00 = "1b002b";  # Background
-  base05 = "b392f0";  # Foreground
-  # ... more color definitions
-  scheme = "Anomal-16";
-};
+stylix.base16Scheme = ./axion.yaml;  # Custom Axion theme
+# Or use a different base16 theme file
 ```
 
-Change wallpapers:
+The Axion theme file (`axion.yaml`) contains custom purple/magenta color palette.
+
+**Wallpaper Management:**
 - Add images to `~/.local/share/wallpapers/`
-- Wallpapers rotate automatically every 3 minutes via `swww`
+- Wallpapers rotate automatically every 15 minutes
+- Systemd service manages wallpaper rotation
+- Configuration: `modules/home-manager/desktop/hyprland/wallpaper.nix`
 
 ### Development Modules
 
-Located in `modules/development/`:
+Located in `modules/system/development/`:
 
-- **editors.nix**: Zed editor with language servers (nixd, nil, hyprls), tmux, starship
+- **editors.nix**: Zed editor with language servers (nixd, nil, hyprls), tmux
 - **languages.nix**: Node.js, Python3, Rust, development toolchains
 - **claude-code.nix**: Claude Code installation and integration
-- **media.nix**: Media tools, Beets music manager, playlist automation
+- **media.nix**: Beets music manager, yt-dlp, scrapem/scrapev download commands
 
 **Claude Code Configuration:**
 
@@ -203,41 +204,47 @@ Managed by `modules/claude-code-enhanced/default.nix`:
 
 ### Gaming Modules
 
-Located in `modules/gaming/`:
+Located in `modules/system/gaming/`:
 
 - **steam.nix**: Steam with Proton, hardware compatibility
 - **default.nix**: Lutris, PPSSPP, DeSmuME emulators
 
 ## Home Manager Configuration
 
-User-level configuration in `home.nix`:
+User-level configuration managed in `modules/home-manager/`:
 
 ### Shell Configuration
 
+Configured in `modules/home-manager/development/`:
+
 ```nix
+# Fish shell - modules/home-manager/development/fish.nix
 programs.fish = {
   enable = true;
-  # Fish shell customization
+  # Custom functions, aliases, plugins
 };
 
-programs.starship = {
+# Oh My Posh prompt - modules/home-manager/development/oh-my-posh.nix
+programs.oh-my-posh = {
   enable = true;
-  # Starship prompt customization
+  # JSON schema configuration with git integration
 };
 ```
 
 ### Terminal Configuration
 
+Configured in `modules/home-manager/desktop/ghostty.nix`:
+
 ```nix
 programs.ghostty = {
   enable = true;
   settings = {
-    font-family = "Terminess Nerd Font";
-    font-size = 14;
-    theme = "auto";  # Automatically uses Stylix theme
+    font-family = "Terminess Nerd Font";  # From Stylix
+    font-size = 13;  # Configured in Stylix
+    theme = "Axion";  # Uses Stylix theme
+    scroll-to-bottom = "keystroke";
   };
 };
-stylix.targets.ghostty.enable = true;
 ```
 
 ### Git Configuration
@@ -253,7 +260,7 @@ programs.git = {
 
 ## Shell Aliases and Functions
 
-Defined in `modules/core/nix.nix`:
+Defined in `modules/system/core/nix.nix`:
 
 ### Quick Rebuild Aliases
 
@@ -312,7 +319,7 @@ environment.systemPackages = with pkgs; [
 ];
 ```
 
-User packages in `home.nix`:
+User packages in `modules/home-manager/core/packages.nix`:
 ```nix
 home.packages = with pkgs; [
   your-package-here

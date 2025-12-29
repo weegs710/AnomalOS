@@ -1,6 +1,6 @@
 # AnomalOS Desktop Configuration
 
-![AnomalOS](modules/desktop/anomalos.jpg)
+![AnomalOS](modules/system/desktop/anomalos.jpg)
 
 A comprehensive modular NixOS configuration using Nix flakes for a modern desktop system with Hyprland window manager, featuring automated security hardening, theming, AI development tools, and optional YubiKey and Claude Code support.
 
@@ -25,9 +25,9 @@ This configuration targets x86_64 desktop systems, providing:
 - **Filesystem**: ZFS with dual-drive setup (system + games)
 - **Window Manager**: Hyprland (basic configuration, customizable)
 - **Display Manager**: SDDM with YubiKey U2F authentication
-- **Shell**: Fish with Starship prompt
+- **Shell**: Fish with Oh My Posh prompt
 - **Editor**: Zed with language server support
-- **Theme**: Anomal-16 dark theme with consistent styling via Stylix
+- **Theme**: Axion custom base16 theme with consistent styling via Stylix
 - **Security**: Hardened with YubiKey U2F for login, sudo, and polkit
 
 ## System Configuration
@@ -98,11 +98,11 @@ rig-up         # Update flake + test Rig + prompt to switch
 - Secure PAM configuration
 
 ### Desktop Environment
-- Hyprland compositor
-- Waybar status bar
-- Stylix theming with Anomal-16 color scheme
+- Hyprland compositor with focused modular configuration
+- Waybar status bar with custom styling
+- Stylix theming with Axion custom base16 color scheme
 - SDDM display manager with theme integration
-- Yazi terminal file manager with vim-style keybindings
+- Yazi terminal file manager with plugins (git, mount)
 
 ### Development Tools
 - Claude Code with enhanced project management (`cc` command)
@@ -118,9 +118,8 @@ rig-up         # Update flake + test Rig + prompt to switch
 - aagl-gtk-on-nix launchers for anime games
 - Lutris, PPSSPP, DeSmuME, Ryujinx emulators
 - RetroArch with automated playlist generation
-- mpv media player with ModernZ UI and mpris support
-- Cavalier audio visualizer
-- Beets music library manager
+- MPD (Music Player Daemon) with Euphonica GTK4 client for music playback
+- Beets music library manager with declarative configuration
 - Pipewire audio system
 - AMD GPU support with Mesa drivers
 - Bluetooth stack with bluetui interface
@@ -149,11 +148,16 @@ dotfiles/
 │   └── shells.nix                   # Development shells
 ├── modules/
 │   ├── options.nix                  # Configuration schema
-│   ├── core/                        # Essential system components (boot, networking, ZFS snapshots)
-│   ├── security/                    # Security features and YubiKey
-│   ├── desktop/                     # Desktop environment
-│   ├── development/                 # Development tools and AI
-│   └── gaming/                      # Gaming support
+│   ├── home-manager/                # User-level Home Manager modules
+│   │   ├── core/                   # Core user config (packages, xdg)
+│   │   ├── desktop/                # Desktop apps (hyprland/, waybar/, yazi, etc.)
+│   │   └── development/            # Dev tools (zed, fish, oh-my-posh)
+│   └── system/                      # System-level NixOS modules
+│       ├── core/                   # Essential system components (boot, networking, ZFS)
+│       ├── security/               # Security features and YubiKey
+│       ├── desktop/                # Desktop environment (stylix, mpd, rofi, etc.)
+│       ├── development/            # Development tools and AI
+│       └── gaming/                 # Gaming support
 ├── docs/                            # Comprehensive documentation
 └── assets/                          # Assets (wallpapers, configs)
 ```

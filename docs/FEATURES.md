@@ -45,7 +45,7 @@ sudo journalctl -u yubikey-autologin-init
 sudo journalctl -u yubikey-autologin-monitor
 ```
 
-**Location**: `modules/security/yubikey.nix`
+**Location**: `modules/system/security/yubikey.nix`
 
 ### Suricata IDS
 
@@ -71,7 +71,7 @@ sudo tail -f /var/log/suricata/eve.json
 
 **Configuration**: Alert on unusual network activity, logs to `/var/log/suricata/`
 
-**Location**: `modules/security/suricata.nix`
+**Location**: `modules/system/security/suricata.nix`
 
 ### Firewall (nftables)
 
@@ -96,7 +96,7 @@ sudo nft list ruleset
 sudo ss -tulpn
 ```
 
-**Location**: `modules/security/firewall.nix`
+**Location**: `modules/system/security/firewall.nix`
 
 ### Kernel & System Hardening
 
@@ -117,7 +117,7 @@ sudo ss -tulpn
 - ICMP rate limiting
 - Restricted kernel logs
 
-**Location**: `modules/security/hardening.nix`
+**Location**: `modules/system/security/hardening.nix`
 
 ### DNSCrypt-Proxy Encrypted DNS
 
@@ -140,7 +140,7 @@ sudo systemctl status dnscrypt-proxy
 sudo journalctl -u dnscrypt-proxy
 ```
 
-**Location**: `modules/security/dnscrypt-proxy.nix`
+**Location**: `modules/system/security/dnscrypt-proxy.nix`
 
 ## Desktop Environment
 
@@ -163,7 +163,7 @@ The system uses a named workspace scheme designed for efficient workflow managem
 1. **comms** (Super+1): Communication apps (Discord/Vesktop)
 2. **dev** (Super+2): Development environment (Zed, Ghostty terminals)
 3. **games** (Super+3): Gaming (Steam, game launchers, game windows)
-4. **media** (Super+4): Media playback (mpv, Stremio, Cavalier)
+4. **media** (Super+4): Media playback (Euphonica music player, Stremio)
 5. **web** (Super+5): Web browsing (Brave, Chromium, web apps)
 6. **control-panel** (Super+Grave): Special workspace for utilities
 
@@ -237,9 +237,13 @@ Applications automatically open on their designated workspaces:
 - `swww`: Animated wallpaper daemon
 
 **Configuration:**
-- System-level: `modules/desktop/hyprland.nix`
-- Desktop entries: `modules/desktop/default.nix`
-- User-level: `home.nix` (for additional customization)
+- System-level: `modules/system/desktop/hyprland.nix` (enables Hyprland, XDG portals, PAM)
+- User-level: `modules/home-manager/desktop/hyprland/` (focused modules):
+  - `config.nix`: Hyprland settings (monitor, env, animations, etc.)
+  - `keybinds.nix`: All keybindings and submaps
+  - `rules.nix`: Window rules
+  - `wallpaper.nix`: swww service and wallpaper scripts
+  - `hyprlock.nix`: Screen lock configuration
 
 ### Waybar Status Bar
 
@@ -248,11 +252,14 @@ Applications automatically open on their designated workspaces:
 **Features:**
 - System monitoring (CPU, memory, disk)
 - Network status
-- Audio controls
+- Audio controls (PipeWire/PulseAudio)
 - Workspace indicators
-- Styled with Stylix theme
+- Bluetooth status
+- Custom styling with CSS
 
-**Configuration**: `home.nix` under `programs.waybar`
+**Configuration**: `modules/home-manager/desktop/waybar/` (focused modules):
+  - `config.nix`: Bar layout and module definitions
+  - `style.nix`: Custom CSS styling
 
 ### SDDM Display Manager
 
@@ -264,7 +271,7 @@ Applications automatically open on their designated workspaces:
 - Themed with Stylix
 - Session selection
 
-**Location**: `modules/desktop/default.nix`
+**Location**: `modules/system/desktop/default.nix`
 
 ### Stylix Theming
 
@@ -272,29 +279,23 @@ Applications automatically open on their designated workspaces:
 
 **Features:**
 - Consistent theming across all applications
-- Anomal-16 color scheme
-- Automatic color generation from wallpaper
+- Axion custom base16 color scheme
 - GTK and Qt theme integration
 - Terminal and editor theming
 
-**Current Theme**: Anomal-16 (dark)
-- Base colors: Deep purple backgrounds
-- Accent colors: Pink, cyan, yellow highlights
-- Wallpapers: Rotating from `~/.local/share/wallpapers/` every 3 minutes
+**Current Theme**: Axion (dark)
+- Base colors: Custom purple/magenta palette
+- Wallpapers: Rotating from `~/.local/share/wallpapers/` every 15 minutes
 
 **Customization:**
 ```nix
-# Change color scheme in modules/desktop/stylix.nix
-stylix.base16Scheme = {
-  base00 = "1b002b";  # Background
-  base05 = "b392f0";  # Foreground
-  # ... more colors
-};
+# Change color scheme in modules/system/desktop/stylix.nix
+stylix.base16Scheme = ./axion.yaml;
 ```
 
 **Change wallpapers**: Add images to `~/.local/share/wallpapers/`
 
-**Location**: `modules/desktop/stylix.nix`
+**Location**: `modules/system/desktop/stylix.nix`
 
 ## Development Tools
 
@@ -323,7 +324,7 @@ cc status       # Show system status
 - Commands: `.claude/commands/*.md`
 
 **Implementation**:
-- System: `modules/development/claude-code.nix`
+- System: `modules/system/development/claude-code.nix`
 - Enhanced: `modules/claude-code-enhanced/default.nix`
 
 ### Editors
@@ -334,7 +335,7 @@ cc status       # Show system status
 - Integrated terminal and git
 - Extension support
 
-**Configuration**: `modules/development/editors.nix`
+**Configuration**: `modules/system/development/editors.nix`
 
 ### Terminal & Shell
 
@@ -349,13 +350,13 @@ cc status       # Show system status
 - Command history search
 - Web-based configuration
 
-**Starship Prompt**
-- Fast, customizable prompt
-- Git integration
-- Directory truncation
-- Language version display
+**Oh My Posh Prompt**
+- Fast, customizable prompt with JSON schema configuration
+- Git integration with branch and status display
+- Directory truncation and navigation
+- Language/tooling version detection (Node, Python, etc.)
 
-**Configuration**: `home.nix`
+**Configuration**: `modules/home-manager/development/oh-my-posh.nix`
 
 ### File Managers
 
@@ -364,9 +365,10 @@ cc status       # Show system status
 - Vim-style keybindings with custom mappings
 - File previews and image display
 - Custom theme integration with Stylix
-- Custom keymap configuration (see `modules/desktop/yazi/keymap.toml`)
+- Plugins: git integration, mount support
+- Custom keymap configuration (see `modules/home-manager/desktop/yazi/keymap.toml`)
 
-**Configuration**: `modules/desktop/default.nix` and `modules/desktop/yazi/`
+**Configuration**: `modules/home-manager/desktop/yazi.nix` and `modules/home-manager/desktop/yazi/`
 
 ### System Information
 
@@ -375,7 +377,7 @@ cc status       # Show system status
 - Custom AnomalOS logo display (AnomLogo.png)
 - Displays: OS, host, kernel, uptime, packages, shell, display, WM, terminal, CPU, GPU, memory, swap, disk
 
-**Configuration**: `modules/desktop/default.nix`
+**Configuration**: `modules/system/desktop/default.nix`
 
 ### Development Languages & Tools
 
@@ -406,7 +408,7 @@ cc status       # Show system status
 - `ns`: Interactive NixOS package search (nix-search-tv wrapper)
 - `uv`: Fast Python package installer and resolver
 
-**Configuration**: `modules/development/languages.nix`
+**Configuration**: `modules/system/development/languages.nix`
 
 ## Gaming & Media
 
@@ -424,7 +426,7 @@ cc status       # Show system status
 - Hardware compatibility layers (32-bit support)
 - Controller support (extest enabled)
 
-**Configuration**: `modules/gaming/steam.nix`
+**Configuration**: `modules/system/gaming/steam.nix`
 
 ### Anime Game Launchers
 
@@ -433,7 +435,7 @@ cc status       # Show system status
 - Conditionally enabled via gaming feature flag
 - Binary cache support for fast installation
 
-**Configuration**: `modules/gaming/aagl.nix`
+**Configuration**: `modules/system/gaming/aagl.nix`
 
 ### Emulators
 
@@ -465,7 +467,7 @@ cc status       # Show system status
 - Automated playlist generation for 16 platforms
 - CRC32 checksums for metadata matching
 
-**Configuration**: `modules/gaming/default.nix`
+**Configuration**: `modules/system/gaming/default.nix`
 
 ### Media Tools
 
@@ -474,11 +476,13 @@ cc status       # Show system status
 - WirePlumber: Pipewire session manager
 - Hardware mixing support
 
-**Video:**
-- mpv: High-performance media player with ModernZ UI, thumbfast thumbnails, and mpris support
-- Cavalier: Audio visualizer with wave mode and PipeWire integration
+**Music:**
+- MPD (Music Player Daemon): Systemd user service for music playback
+- Euphonica: GTK4/Libadwaita MPD client with modern interface
+- Music directory: ~/Music with Artist/Album folder structure
 
 **Streaming:**
+- Stremio: Media center for streaming video content
 - OBS Studio: Screen recording and streaming
 
 **Graphics:**
@@ -493,8 +497,9 @@ cc status       # Show system status
 - YouTube playlist downloader with MP3 conversion (scrapem command)
 
 **Configuration**:
-- Desktop media tools: `modules/desktop/media.nix` (OBS, GIMP, Video2x)
-- Music/playlist tools: `modules/development/media.nix` (Beets, yt-dlp, download-playlist script)
+- MPD service: `modules/system/desktop/mpd.nix`
+- Desktop media tools: `modules/system/desktop/media.nix` (OBS, GIMP, Video2x)
+- Music/playlist tools: `modules/system/development/media.nix` (Beets, yt-dlp, scrapem/scrapev commands)
 
 ### Applications
 
@@ -516,7 +521,7 @@ cc status       # Show system status
 - min-ed-launcher: Minimal CLI launcher for Elite Dangerous
 - ed-odyssey-materials-helper: Materials tracking for Elite Dangerous
 
-**Configuration**: `modules/desktop/default.nix` and `modules/desktop/media.nix`
+**Configuration**: `modules/system/desktop/default.nix` and `modules/system/desktop/media.nix`
 
 ## Package Management
 
@@ -558,7 +563,7 @@ home-manager generations  # List generations
 - Permission overrides for Wayland and GPU acceleration
 - Version pinning and multi-app declaration
 
-**Configuration**: Managed declaratively in `modules/desktop/flatpak.nix`
+**Configuration**: Managed declaratively in `modules/system/desktop/flatpak.nix`
 
 **Manual Commands:**
 ```bash
@@ -608,7 +613,7 @@ cp /persist/.zfs/snapshot/autosnap_2025-12-11_16:00:00_hourly/path/to/file ~/res
 systemctl status sanoid.service
 ```
 
-**Configuration**: `modules/core/zfs-snapshots.nix`
+**Configuration**: `modules/system/core/zfs-snapshots.nix`
 
 **Note**: See [BACKUP.md](BACKUP.md) for complete snapshot management and recovery guide
 
@@ -629,7 +634,7 @@ sudo nix-collect-garbage -d       # Clean all old generations
 sudo nix-collect-garbage --delete-older-than 30d  # Custom age
 ```
 
-**Configuration**: `modules/core/nix.nix`
+**Configuration**: `modules/system/core/nix.nix`
 
 ### Bluetooth
 
@@ -715,7 +720,7 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 **Configuration:**
 - Root pool: `zroot` (system, nix, cache, persist)
 - Games pool: `zgames` (optional, dedicated gaming storage)
-- Snapshots: Automated via `modules/core/zfs-snapshots.nix`
+- Snapshots: Automated via `modules/system/core/zfs-snapshots.nix`
 - Location: `hardware-configuration-zfs.nix`
 
 ### Kernel Configuration
@@ -725,7 +730,7 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 - Security hardening via kernel parameters
 - ZFS module support
 
-**Configuration**: `modules/core/boot.nix`
+**Configuration**: `modules/system/core/boot.nix`
 
 ### System Tuning
 

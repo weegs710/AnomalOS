@@ -128,7 +128,7 @@ This guide helps resolve common issues you may encounter with AnomalOS configura
 
 1. **Add verbose boot:**
    ```nix
-   # In modules/core/boot.nix
+   # In modules/system/core/boot.nix
    boot.kernelParams = [ "debug" "verbose" ];
    ```
 
@@ -551,7 +551,7 @@ This guide helps resolve common issues you may encounter with AnomalOS configura
 
 3. **Open required ports in configuration:**
    ```nix
-   # In modules/security/firewall.nix
+   # In modules/system/security/firewall.nix
    networking.firewall.allowedTCPPorts = [ your-port ];
    ```
 

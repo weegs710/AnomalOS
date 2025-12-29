@@ -82,92 +82,111 @@ nh os switch .#nixosConfigurations.Rig
 
 ### Changing the Color Scheme
 
-Edit `modules/desktop/stylix.nix`:
+The system currently uses the Axion custom base16 theme. Edit `modules/system/desktop/stylix.nix`:
 
+**Current configuration:**
 ```nix
-stylix.base16Scheme = {
-  base00 = "1b002b";  # Default background
-  base01 = "1c0c25";  # Lighter background
-  base02 = "261033";  # Selection background
-  base03 = "2f143f";  # Comments, invisible
-  base04 = "16081f";  # Dark foreground
-  base05 = "b392f0";  # Default foreground
-  base06 = "c7aaff";  # Light foreground
-  base07 = "ffffff";  # Lightest foreground
-  base08 = "ff6666";  # Red (errors, deletions)
-  base09 = "ffaa55";  # Orange (warnings, numbers)
-  base0A = "ffff66";  # Yellow (classes, search)
-  base0B = "aaffaa";  # Green (strings, additions)
-  base0C = "66ccff";  # Cyan (support, regex)
-  base0D = "9999ff";  # Blue (functions, headings)
-  base0E = "cc66cc";  # Magenta (keywords, tags)
-  base0F = "a565f0";  # Brown (deprecated)
+stylix.base16Scheme = ./axion.yaml;  # Custom Axion theme file
+```
 
-  scheme = "Your Theme Name";
-  author = "Your Name";
-};
+**To create a custom theme:**
+1. Create a YAML file in `modules/system/desktop/` (e.g., `my-theme.yaml`)
+2. Define base16 colors following the base16 specification
+3. Update stylix.nix to point to your theme file
+
+**Example custom theme structure:**
+```yaml
+scheme: "My Theme Name"
+author: "Your Name"
+base00: "1b002b"  # Default background
+base01: "1c0c25"  # Lighter background
+base02: "261033"  # Selection background
+# ... and so on for base03-base0F
 ```
 
 **Base16 color meanings:**
-- `base00-03`: Background shades (dark to light)
-- `base04-07`: Foreground shades (dark to light)
-- `base08-0F`: Accent colors (semantic meanings)
+- `base00-03`: Background shades (darkest to lighter)
+- `base04-07`: Foreground shades (darker to lightest)
+- `base08-0F`: Accent colors (red, orange, yellow, green, cyan, blue, magenta, brown)
 
 **Using existing base16 themes:**
 ```nix
-# Import from base16 repository
+# Import from base16-schemes package
 stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
 ```
 
 ### Changing the Wallpaper
 
-The system uses `swww` for wallpaper management with automatic rotation every 3 minutes from `~/.local/share/wallpapers/`.
+The system uses `swww` for wallpaper management with automatic rotation every 15 minutes from `~/.local/share/wallpapers/`.
 
-To change wallpapers:
+**To change wallpapers:**
 1. Add your images to `~/.local/share/wallpapers/`
-2. They will automatically rotate every 3 minutes
+2. They will automatically rotate every 15 minutes via systemd timer
+3. The wallpaper service is configured in `modules/home-manager/desktop/hyprland/wallpaper.nix`
 
-**Note**: Stylix uses the `anomal-16.yaml` color scheme directly, not wallpaper-based color extraction.
+**To change rotation interval:**
+Edit the timer in `modules/home-manager/desktop/hyprland/wallpaper.nix`:
+```nix
+systemd.user.timers.rotate-wallpaper = {
+  Timer = {
+    OnBootSec = "2m";      # First rotation 2 minutes after boot
+    OnUnitActiveSec = "15m";  # Rotate every 15 minutes (change this)
+  };
+};
+```
+
+**Note**: Stylix uses the `axion.yaml` color scheme directly, not wallpaper-based color extraction.
 
 ### Font Configuration
 
-Edit font settings in `modules/desktop/stylix.nix` or `home.nix`:
+Edit font settings in `modules/system/desktop/stylix.nix`:
 
+**Current configuration:**
 ```nix
 stylix.fonts = {
   monospace = {
-    package = pkgs.nerdfonts;
-    name = "JetBrainsMono Nerd Font";
+    package = pkgs.nerd-fonts.terminess-ttf;
+    name = "Terminess Nerd Font";
   };
   sansSerif = {
-    package = pkgs.dejavu_fonts;
-    name = "DejaVu Sans";
+    package = pkgs.google-fonts.override { fonts = ["Orbitron"]; };
+    name = "Orbitron";
   };
   serif = {
-    package = pkgs.dejavu_fonts;
-    name = "DejaVu Serif";
+    package = pkgs.google-fonts.override { fonts = ["SpaceGrotesk"]; };
+    name = "Space Grotesk";
   };
   sizes = {
     applications = 12;
-    terminal = 14;
+    terminal = 13;
     desktop = 10;
     popups = 12;
   };
 };
 ```
 
+**Note**: Font packages use the new `pkgs.nerd-fonts.*` and `pkgs.google-fonts` syntax.
+
 ## Desktop Environment
 
 ### Hyprland Configuration
 
-System-level Hyprland is configured in `modules/desktop/hyprland.nix`. The current setup uses named workspaces with automatic window routing.
+Hyprland configuration is split across system and user levels:
+- **System-level**: `modules/system/desktop/hyprland.nix` (enables Hyprland, XDG portals, PAM)
+- **User-level**: `modules/home-manager/desktop/hyprland/` (focused modules for settings, keybinds, rules)
+
+**Configuration structure:**
+- `config.nix`: Hyprland settings (monitor, env, animations, workspace definitions)
+- `keybinds.nix`: All keybindings and submap resize mode
+- `rules.nix`: Window rules (workspace routing, opacity, float)
+- `wallpaper.nix`: swww service and wallpaper systemd services
+- `hyprlock.nix`: Screen lock configuration
 
 **Workspace Customization:**
 
-To modify workspace names or keybinds, edit `modules/desktop/hyprland.nix`:
+To modify workspace names or properties, edit `modules/home-manager/desktop/hyprland/config.nix`:
 
 ```nix
-# Define workspace properties
 workspace = [
   "1, name:comms, gapsin:1, gapsout:2"
   "2, name:dev, gapsin:1, gapsout:2"
@@ -176,31 +195,37 @@ workspace = [
   "5, name:web, gapsin:1, gapsout:2"
   "special:control-panel, gapsin:10, gapsout:20"
 ];
+```
 
-# Workspace navigation keybinds
+**Modifying Keybindings:**
+
+Edit `modules/home-manager/desktop/hyprland/keybinds.nix` to change keybindings:
+
+```nix
 bind = [
   "$mainMod, 1, workspace, name:comms"
   "$mainMod, 2, workspace, name:dev"
-  # ... more workspace binds
+  # ... customize workspace navigation
   "$mainMod, grave, togglespecialworkspace, control-panel"
 ];
 ```
 
 **Adding Window Routing Rules:**
 
-Route specific applications to workspaces by window class:
+Edit `modules/home-manager/desktop/hyprland/rules.nix` to route applications:
 
 ```nix
 windowrulev2 = [
   # Route to specific workspace
-  "workspace name:dev, class:^(code)$"
+  "workspace name:dev, class:^(Zed)$"
   "workspace name:web, class:^(brave-browser)$"
+  "workspace name:media, class:^(io\.github\.htkhiem\.Euphonica)$"
 
   # Float specific window types
   "float, class:^(pavucontrol)$"
 
-  # Opacity overrides
-  "opacity 1.0 override, class:^(mpv)$"
+  # Opacity overrides (full opacity for specific apps)
+  "opacity 1.0 override 1.0 override 1.0 override, class:^(vesktop)$"
 ];
 ```
 
@@ -225,7 +250,7 @@ exec-once = [
 
 **Customizing Control-Panel Utilities:**
 
-To add an application to the control-panel workspace, create a desktop entry override in `modules/desktop/default.nix`:
+To add an application to the control-panel workspace, create a desktop entry override in `modules/home-manager/desktop/xdg-apps.nix`:
 
 ```nix
 xdg.dataFile."applications/myapp.desktop".text = ''
@@ -239,19 +264,19 @@ xdg.dataFile."applications/myapp.desktop".text = ''
 
 **Monitor Configuration:**
 
-For multi-monitor setups, edit the monitor section in `modules/desktop/hyprland.nix`:
+For multi-monitor setups, edit the monitor section in `modules/home-manager/desktop/hyprland/config.nix`:
 
 ```nix
 monitor = [
-  "DP-1,2560x1440@144,0x0,1"
-  "HDMI-A-1,1920x1080@60,2560x0,1"
-  ",preferred,auto,1"  # Auto-configure other monitors
+  "HDMI-A-2, 2560x1440@144, 0x0, 1"  # Primary monitor
+  "DP-1, 1920x1080@60, 2560x0, 1"    # Secondary monitor
+  ", preferred, auto, 1"               # Auto-configure other monitors
 ];
 ```
 
 **Visual Customization:**
 
-Adjust window appearance in the decoration and general sections:
+Adjust window appearance in `modules/home-manager/desktop/hyprland/config.nix`:
 
 ```nix
 decoration = {
@@ -266,20 +291,22 @@ decoration = {
 };
 
 general = {
-  border_size = 1;
-  gaps_in = 1;
-  gaps_out = 2;
+  border_size = 3;
+  gaps_in = 3;
+  gaps_out = 6;
   layout = "dwindle";
 };
 ```
 
 ### Waybar Configuration
 
-Waybar is configured in `modules/desktop/hyprland.nix` and integrates with the named workspace system.
+Waybar is configured in `modules/home-manager/desktop/waybar/` with focused modules:
+- `config.nix`: Bar layout and module definitions
+- `style.nix`: Custom CSS styling
 
 **Workspace Display:**
 
-The workspace module shows named workspaces in the correct order:
+Edit workspace module configuration in `modules/home-manager/desktop/waybar/config.nix`:
 
 ```nix
 "hyprland/workspaces" = {
@@ -300,13 +327,17 @@ The workspace module shows named workspaces in the correct order:
 
 **Customizing Module Order:**
 
-To change what appears in waybar, edit the modules-left, modules-center, and modules-right arrays:
+To change what appears in waybar, edit the modules-left, modules-center, and modules-right arrays in `config.nix`:
 
 ```nix
-modules-left = [ "hyprland/workspaces" "hyprland/window" ];
-modules-center = [ "clock" ];
+modules-left = [ "tray" "hyprland/workspaces" ];
+modules-center = [ "hyprland/window" ];
 modules-right = [
-  "tray"
+  "network"
+  "custom/temperature"
+  "bluetooth"
+  "pulseaudio"
+  "clock"
   "bluetooth"
   "network"
   "pulseaudio"
@@ -613,7 +644,7 @@ mySystem.features.myFeature = true;
 
 ### Custom Shell Aliases
 
-Add aliases in `modules/core/nix.nix` or `configuration.nix`:
+Add aliases in `modules/system/core/nix.nix` or `configuration.nix`:
 
 ```nix
 environment.shellAliases = {
@@ -637,7 +668,7 @@ environment.shellAliases = {
 
 ### Custom Scripts
 
-Create scripts in `modules/core/nix.nix`:
+Create scripts in `modules/system/core/nix.nix`:
 
 ```nix
 environment.systemPackages = with pkgs; [
@@ -696,7 +727,7 @@ home.sessionVariables = {
 
 ### Firewall Customization
 
-Edit `modules/security/firewall.nix`:
+Edit `modules/system/security/firewall.nix`:
 
 ```nix
 # Open specific ports
@@ -720,7 +751,7 @@ networking.firewall.trustedInterfaces = [ "virbr0" ];
 
 ### Boot Configuration
 
-Customize boot options in `modules/core/boot.nix`:
+Customize boot options in `modules/system/core/boot.nix`:
 
 ```nix
 boot = {
