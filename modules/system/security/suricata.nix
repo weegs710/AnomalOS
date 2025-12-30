@@ -44,5 +44,18 @@ with lib; {
         app-layer.protocols.modbus.enabled = "no";
       };
     };
+
+    services.logrotate.settings.suricata = {
+      files = "/var/log/suricata/*.log /var/log/suricata/*.json";
+      frequency = "daily";
+      rotate = 7;
+      compress = true;
+      delaycompress = true;
+      missingok = true;
+      notifempty = true;
+      create = "0640 root root";
+      sharedscripts = true;
+      postrotate = "systemctl reload suricata.service || true";
+    };
   };
 }
