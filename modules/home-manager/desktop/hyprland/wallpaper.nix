@@ -13,11 +13,18 @@ with lib; {
       enable = true;
     };
 
+    systemd.user.services.swww = {
+      Unit = {
+        After = lib.mkForce [];
+        PartOf = ["graphical-session.target"];
+      };
+    };
+
     systemd.user.services.set-wallpaper = {
       Unit = {
         Description = "Set initial Hyprland wallpaper";
         After = ["swww.service"];
-        PartOf = ["graphical-session.target"];
+        # PartOf = ["graphical-session.target"];
       };
       Service = {
         Type = "oneshot";
