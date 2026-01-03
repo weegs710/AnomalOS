@@ -127,11 +127,17 @@ in {
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       icon-theme = "Adwaita";
+      gtk-theme = "adw-gtk3";
+      color-scheme = "prefer-dark";
     };
   };
 
   gtk = {
     enable = true;
+    theme = {
+      name = "adw-gtk3";
+      package = pkgs.adw-gtk3;
+    };
     iconTheme = {
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
