@@ -104,8 +104,6 @@ with lib; {
           };
         };
       };
-
-      stylix.targets.zed.enable = true;
     };
   };
 }

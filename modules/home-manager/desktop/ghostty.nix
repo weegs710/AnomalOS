@@ -7,8 +7,6 @@
 }:
 with lib; {
   config = mkIf osConfig.mySystem.features.desktop {
-    stylix.targets.hyprlock.enable = false;
-
     programs.ghostty = {
       enable = true;
       settings = {
@@ -21,7 +19,6 @@ with lib; {
         ];
       };
     };
-    stylix.targets.ghostty.enable = true;
 
     xdg.dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
       [Desktop Entry]

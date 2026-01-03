@@ -26,8 +26,6 @@ with lib; {
       };
     };
 
-    stylix.targets.swaync.enable = true;
-
     services.swaync.style = ''
       * {
         font-size: 11pt;
