@@ -7,7 +7,7 @@
 with lib; {
   imports = [
     ./steam.nix
-    ./aagl.nix
+    # ./aagl.nix
     ./mangohud.nix
     ./decky-loader.nix
   ];
@@ -26,16 +26,15 @@ with lib; {
     # Gaming applications
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       anki-bin
-      lutris
+      # lutris
       openraPackages.engines.bleed
       protonup-qt
       ryubing
-      sgdboop
       (wrapRetroArch {
         cores = with libretro; [
           nestopia
           bsnes
-          mupen64plus
+          # mupen64plus
           gambatte
           mgba
           desmume

@@ -20,7 +20,7 @@ with lib; {
     };
 
     environment.sessionVariables = {
-      SDL_VIDEODRIVER = "x11";
+      SDL_VIDEODRIVER = "wayland";
     };
   };
 }
