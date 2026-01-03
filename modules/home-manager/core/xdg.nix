@@ -26,24 +26,7 @@ in {
     XDG_DATA_DIRS = "$HOME/.local/share/flatpak/exports/share:$HOME/.local/share:$XDG_DATA_DIRS";
   };
 
-  # Thunar installed for GTK portal FileChooser dependency (yazi doesn't provide one)
   xdg.desktopEntries = {
-    "thunar" = {
-      name = "Thunar";
-      noDisplay = true;
-    };
-    "thunar-bulk-rename" = {
-      name = "Thunar Bulk Rename";
-      noDisplay = true;
-    };
-    "thunar-settings" = {
-      name = "Thunar Settings";
-      noDisplay = true;
-    };
-    "thunar-volman-settings" = {
-      name = "Thunar Volume Manager Settings";
-      noDisplay = true;
-    };
     "qt5ct" = {
       name = "Qt5 Settings";
       noDisplay = true;
@@ -78,12 +61,8 @@ in {
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      # Directories and file managers
-      "inode/directory" = [
-        "yazi.desktop"
-        "thunar.desktop"
-      ];
-      "inode/blockdevice" = ["thunar.desktop"];
+      "inode/directory" = ["nemo.desktop"];
+      "inode/blockdevice" = ["nemo.desktop"];
 
       # Images - qView
       "image/bmp" = ["com.interversehq.qView.desktop"];

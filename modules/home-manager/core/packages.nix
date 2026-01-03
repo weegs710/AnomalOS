@@ -2,8 +2,7 @@
   pkgs,
   inputs,
   ...
-}:
-{
+}: {
   home.packages = with pkgs; [
     inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
     alejandra
@@ -13,7 +12,6 @@
     fastfetch
     fzf
     gh
-    glow
     gparted
     grim
     hyprls
@@ -27,9 +25,7 @@
     rofi
     rustc
     slurp
-    # starship
     swww
-    xfce.thunar
     tldr
     ueberzugpp
     uv

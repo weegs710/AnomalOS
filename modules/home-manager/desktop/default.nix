@@ -10,11 +10,12 @@
   imports = [
     ./hyprland
     ./waybar
-    ./yazi.nix
+    ./nemo.nix
     ./ghostty.nix
     ./swaync.nix
     ./vesktop.nix
     ./xdg-apps.nix
     ./fastfetch.nix
+    ./udiskie.nix
   ];
 }

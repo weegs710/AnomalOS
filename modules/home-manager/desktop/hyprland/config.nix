@@ -11,7 +11,7 @@ with lib; {
     enable = true;
     settings = {
       "$terminal" = "ghostty";
-      "$fileManager" = "ghostty -e yazi";
+      "$fileManager" = "nemo";
       "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
       "$webBrowser" = "brave";
       "$mainMod" = "SUPER";
@@ -31,7 +31,6 @@ with lib; {
         "hyprctl dispatch workspace 1"
       ];
       general = {
-        no_border_on_floating = false;
         gaps_in = 3;
         gaps_out = 6;
         border_size = 3;

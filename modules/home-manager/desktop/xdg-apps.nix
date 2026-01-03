@@ -15,21 +15,6 @@ with lib; {
       };
     };
 
-    xdg.dataFile."pixmaps/yazi.png".source = pkgs.yazi + "/share/pixmaps/yazi.png";
-
-    xdg.dataFile."applications/yazi.desktop".text = ''
-      [Desktop Entry]
-      Name=Yazi
-      Icon=/home/\${osConfig.mySystem.user.name}/.local/share/pixmaps/yazi.png
-      Comment=Blazing fast terminal file manager written in Rust, based on async I/O
-      Exec=ghostty -e yazi %u
-      Terminal=false
-      Type=Application
-      MimeType=inode/directory
-      Categories=Utility;Core;System;FileTools;FileManager;ConsoleOnly;
-      Keywords=File;Manager;Explorer;Browser;Launcher;
-    '';
-
     xdg.dataFile."applications/btop.desktop".text = ''
       [Desktop Entry]
       Type=Application
