@@ -17,5 +17,6 @@
     ./xdg-apps.nix
     ./fastfetch.nix
     ./udiskie.nix
+    ./mission-center.nix
   ];
 }

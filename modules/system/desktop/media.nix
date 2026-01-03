@@ -9,11 +9,16 @@ with lib; {
     # Hardware support
     hardware = {
       amdgpu.opencl.enable = mkIf config.mySystem.hardware.amd true;
+      amdgpu.overdrive.enable = mkIf config.mySystem.hardware.amd true;
       graphics = mkIf config.mySystem.hardware.amd {
         enable = true;
         enable32Bit = true;
       };
       bluetooth.enable = mkIf config.mySystem.hardware.bluetooth true;
+    };
+
+    services.lact = mkIf config.mySystem.hardware.amd {
+      enable = true;
     };
 
     # Media applications

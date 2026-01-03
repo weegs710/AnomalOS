@@ -24,7 +24,6 @@ in {
 
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       # Development tools
-      btop-rocm
       fzf
       gh
       jq

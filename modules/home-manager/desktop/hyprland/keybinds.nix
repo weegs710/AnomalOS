@@ -20,7 +20,7 @@ with lib; {
         "$mainMod, F4, exec, euphonica"
         "$mainMod SHIFT, F4, exec, flatpak run com.stremio.Stremio"
         "$mainMod, F5, exec, brave"
-        "$mainMod, F6, exec, [workspace special:control-panel] ghostty -e btop"
+        "$mainMod, F6, exec, missioncenter"
         "$mainMod, Return, exec, $terminal"
         "$mainMod, Space, exec, $fileManager"
         "$mainMod, Backspace, submap, resize"

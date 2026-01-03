@@ -9,6 +9,9 @@ with lib; {
   config = mkIf osConfig.mySystem.features.desktop {
   wayland.windowManager.hyprland.settings = {
       windowrule = [
+        # Global opacity override for all floating windows
+        "opacity 1.0 override 1.0 override 1.0 override, match:float yes"
+
         # KWallet password prompts - lock focus to prevent typing into wrong window
         "stay_focused on, match:class ^(org.kde.kwalletd.*)$"
         "stay_focused on, match:class ^(kwalletmanager.*)$"
@@ -91,10 +94,10 @@ with lib; {
         "workspace special:control-panel, match:title ^(blueman-manager)$"
         "float on, match:class ^(qalculate-gtk)$"
         "workspace special:control-panel, match:class ^(qalculate-gtk)$"
-        "tile on, match:class ^(btop)$"
-        "workspace special:control-panel, match:class ^(btop)$"
-        "tile on, match:title ^(btop)$"
-        "workspace special:control-panel, match:title ^(btop)$"
+        "float on, match:class ^(io\.missioncenter\.MissionCenter)$"
+        "workspace special:control-panel, match:class ^(io\.missioncenter\.MissionCenter)$"
+        "float on, match:class ^(io\.github\.ilya_zlobintsev\.LACT)$"
+        "workspace special:control-panel, match:class ^(io\.github\.ilya_zlobintsev\.LACT)$"
         "float on, match:class ^(cliphist)$"
         "workspace special:control-panel, match:class ^(cliphist)$"
         "float on, match:class ^(piper)$"

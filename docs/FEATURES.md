@@ -171,7 +171,8 @@ The system uses a named workspace scheme designed for efficient workflow managem
 - pavucontrol: Audio volume control
 - nmtui: Network configuration
 - bluetui: Bluetooth management
-- btop: System resource monitor
+- mission-center: GUI system resource monitor with GPU support
+- lact: AMD GPU control and monitoring
 - qalculate-gtk: Calculator
 - piper: Gaming mouse configuration
 - kwalletmanager: Password wallet manager
@@ -190,7 +191,7 @@ The system uses a named workspace scheme designed for efficient workflow managem
 - `Super+F3`: Steam (workspace 3 - games)
 - `Super+F4`: Stremio (workspace 4 - media)
 - `Super+F5`: Brave browser (workspace 5 - web)
-- `Super+F6`: btop system monitor (control-panel)
+- `Super+F6`: Mission Center system monitor (control-panel)
 
 **Core Applications:**
 - `Super+Return`: Terminal (Ghostty)
@@ -401,7 +402,6 @@ cc status       # Show system status
 - GitHub CLI (`gh`)
 
 **Development Utilities:**
-- `btop`: Resource monitor
 - `fzf`: Fuzzy finder
 - `jq`: JSON processor
 - `tldr`: Simplified man pages
