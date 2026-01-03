@@ -20,6 +20,7 @@
     supportedFilesystems.ntfs = true;
     supportedFilesystems.exfat = true;
     supportedFilesystems.zfs = true;
+    zfs.package = pkgs.zfs_unstable;
     loader = {
       systemd-boot = {
         enable = true;

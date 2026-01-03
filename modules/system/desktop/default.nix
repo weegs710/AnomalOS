@@ -45,7 +45,7 @@ with lib; {
       blueman.enable = true;
       upower.enable = true;
       ratbagd.enable = true;
-      devmon.enable = true;
+      udisks2.enable = true;
       locate.enable = true;
     };
 
@@ -57,13 +57,11 @@ with lib; {
 
     programs = {
       partition-manager.enable = true;
-      udevil.enable = true;
     };
 
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       # Applications
       file-roller
-      gemini-cli
       kdePackages.okular
       pavucontrol
       qalculate-gtk
