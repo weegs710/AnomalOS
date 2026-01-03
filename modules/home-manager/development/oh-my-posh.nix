@@ -1,5 +1,15 @@
-{config, ...}: let
-  colors = config.lib.stylix.colors;
+{...}: let
+  # High contrast base16 dark theme
+  colors = {
+    base00 = "000000"; # pure black background
+    base02 = "303030"; # dark gray
+    base04 = "b0b0b0"; # light gray
+    base05 = "f8f8f8"; # bright white foreground
+    base07 = "ffffff"; # pure white
+    base08 = "ff0000"; # red
+    base0C = "00ffff"; # cyan
+    base0D = "0080ff"; # blue
+  };
 in {
   programs.oh-my-posh = {
     enable = true;
@@ -72,7 +82,7 @@ in {
                 "fetch_upstream_icon" = true;
                 "fetch_worktree_count" = true;
               };
-              "template" = " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#${colors.base05}>  {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} ";
+              "template" = " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#${colors.base00}>  {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} ";
             }
           ];
         }

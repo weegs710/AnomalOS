@@ -10,6 +10,6 @@
   imports = [
     ./fish.nix
     ./zed.nix
-    # ./oh-my-posh.nix  # Disabled - uses stylix colors
+    ./oh-my-posh.nix
   ];
 }
