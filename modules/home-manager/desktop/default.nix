@@ -9,7 +9,8 @@
 {
   imports = [
     ./hyprland
-    ./waybar
+    # ./waybar  # Replaced by noctalia shell
+    ./noctalia
     ./nemo.nix
     ./ghostty.nix
     ./swaync.nix

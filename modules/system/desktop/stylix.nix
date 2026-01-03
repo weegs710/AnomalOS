@@ -6,9 +6,8 @@
 }:
 with lib; {
   config = mkIf config.mySystem.features.desktop {
-    # Stylix theming
     stylix = {
-      enable = true;
+      enable = false;
       enableReleaseChecks = false;
       base16Scheme = ./axion.yaml;
       polarity = "dark";

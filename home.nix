@@ -13,8 +13,6 @@ in {
     ./modules/home-manager
   ];
 
-  stylix.enableReleaseChecks = false;
-
   programs.claude-code-enhanced.enable = true;
 
   home.username = username;
