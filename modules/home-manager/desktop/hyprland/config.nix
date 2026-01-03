@@ -25,10 +25,14 @@ with lib; {
         "TERMINAL,ghostty"
         "XDG_TERMINAL_EDITOR,ghostty"
       ];
+      source = [
+        "~/.config/hypr/noctalia/noctalia-colors.conf"
+      ];
       exec-once = [
         "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
         "kwalletd6 &"
         "hyprctl dispatch workspace 1"
+        "noctalia-shell"
       ];
       general = {
         gaps_in = 3;
@@ -37,8 +41,6 @@ with lib; {
         resize_on_border = false;
         allow_tearing = false;
         layout = "dwindle";
-        "col.active_border" = lib.mkForce "rgb(${osConfig.lib.stylix.colors.base0D})";
-        "col.inactive_border" = lib.mkForce "rgb(${osConfig.lib.stylix.colors.base0C})";
       };
       dwindle = {
         pseudotile = true;

@@ -28,11 +28,12 @@ with lib; {
           dots_size = 0.2;
           dots_spacing = 0.35;
           dots_center = true;
-          outer_color = "rgb(${osConfig.lib.stylix.colors.base04})";
-          inner_color = "rgba(${osConfig.lib.stylix.colors.base00}BF)";
-          font_color = "rgb(${osConfig.lib.stylix.colors.base04})";
+          # Temporary hardcoded colors while stylix is disabled for noctalia testing
+          outer_color = "rgb(C77DFF)";
+          inner_color = "rgba(0F0326BF)";
+          font_color = "rgb(C77DFF)";
           fade_on_empty = false;
-          placeholder_text = "<span foreground='##${osConfig.lib.stylix.colors.base04}'>Enter Password...</span>";
+          placeholder_text = "<span foreground='##C77DFF'>Enter Password...</span>";
           hide_input = false;
           position = "0, -100";
           halign = "center";
@@ -43,7 +44,7 @@ with lib; {
       shape = [
         {
           size = "350, 120";
-          color = "rgba(${osConfig.lib.stylix.colors.base00}BF)";
+          color = "rgba(0F0326BF)";  # Temporary hardcoded color
           rounding = 60;
           border_size = 0;
           position = "0, 150";
@@ -52,7 +53,7 @@ with lib; {
         }
         {
           size = "350, 50";
-          color = "rgba(${osConfig.lib.stylix.colors.base00}BF)";
+          color = "rgba(0F0326BF)";  # Temporary hardcoded color
           rounding = 25;
           border_size = 0;
           position = "0, 50";
@@ -64,7 +65,7 @@ with lib; {
       label = [
         {
           text = ''cmd[update:1000] echo "$(date +"%-I:%M")"'';
-          color = "rgb(${osConfig.lib.stylix.colors.base05})";
+          color = "rgb(E0AAFF)";  # Temporary hardcoded color
           font_size = 95;
           font_family = "Terminess Nerd Font";
           position = "0, 150";
@@ -73,7 +74,7 @@ with lib; {
         }
         {
           text = ''cmd[update:60000] echo "$(date +"%A, %B %d")"'';
-          color = "rgb(${osConfig.lib.stylix.colors.base04})";
+          color = "rgb(C77DFF)";  # Temporary hardcoded color
           font_size = 22;
           font_family = "Terminess Nerd Font";
           position = "0, 50";

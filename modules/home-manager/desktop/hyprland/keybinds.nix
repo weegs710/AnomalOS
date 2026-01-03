@@ -49,7 +49,7 @@ with lib; {
         "$mainMod, end, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ];
       bindl = [
-        "SUPER,Super_L, exec, $menu"
+        "SUPER,Super_L, exec, noctalia-shell ipc call launcher toggle"
         "CTRL ALT, delete, exec, wlogout"
       ];
       binde = [
