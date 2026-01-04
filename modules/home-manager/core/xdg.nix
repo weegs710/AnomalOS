@@ -7,6 +7,28 @@
 }: let
   username = osConfig.mySystem.user.name;
   homeDirectory = "/home/${username}";
+
+  # Phinger cursors dark - hyprcursor format (local compiled theme)
+  phinger-cursors-dark-hyprcursor = pkgs.stdenvNoCC.mkDerivation {
+    pname = "phinger-cursors-dark-hyprcursor";
+    version = "2.1";
+
+    src = ./../../../assets/cursors/phinger-cursors-dark-hyprcursor;
+
+    dontBuild = true;
+
+    installPhase = ''
+      mkdir -p $out/share/icons/phinger-cursors-dark-hyprcursor
+      cp -r $src/* $out/share/icons/phinger-cursors-dark-hyprcursor/
+    '';
+
+    meta = with lib; {
+      description = "Phinger cursors dark variant in hyprcursor format";
+      homepage = "https://github.com/phisch/phinger-cursors";
+      license = licenses.cc-by-sa-40;
+      platforms = platforms.linux;
+    };
+  };
 in {
   home.sessionVariables = {
     EDITOR = "zed";
@@ -46,7 +68,18 @@ in {
     size = 32;
     gtk.enable = true;
     x11.enable = true;
+
+    # Enable hyprcursor support (native Wayland cursor format)
+    hyprcursor = {
+      enable = true;
+      size = 32;
+    };
   };
+
+  # Install hyprcursor theme package
+  home.packages = [
+    phinger-cursors-dark-hyprcursor
+  ];
 
   # XDG MIME type associations
   xdg.mimeApps = {

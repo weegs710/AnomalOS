@@ -20,6 +20,10 @@ with lib; {
           ", preferred, auto, 1"
         ];
         env = [
+          # Hyprcursor (native Wayland format - prioritized by Hyprland)
+          "HYPRCURSOR_THEME,phinger-cursors-dark-hyprcursor"
+          "HYPRCURSOR_SIZE,32"
+          # XCursor (fallback for GTK apps and apps without hyprcursor support)
           "XCURSOR_THEME,phinger-cursors-dark"
           "XCURSOR_SIZE,32"
           "TERMINAL,ghostty"
