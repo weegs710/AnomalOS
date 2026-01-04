@@ -68,12 +68,12 @@ mySystem.features = {
 
 **Feature Descriptions:**
 
-- **desktop**: Enables Hyprland compositor, Waybar, SDDM, Stylix theming
+- **desktop**: Enables Hyprland compositor, Noctalia shell UI, SDDM, Nemo file manager
 - **security**: Enables firewall, Suricata IDS, kernel hardening, SSH hardening, DNSCrypt-Proxy
 - **yubikey**: Enables YubiKey U2F for login, sudo, and polkit
-- **claudeCode**: Installs Claude Code with enhanced project management
+- **claudeCode**: Installs Claude Code with project management
 - **development**: Installs editors, language servers, development toolchains
-- **gaming**: Installs Steam, anime game launchers, emulators, gaming optimizations
+- **gaming**: Installs Steam, Decky Loader, MangoHud, emulators
 - **flatpak**: Enables declarative Flatpak management via nix-flatpak
 - **media**: Enables media tools, applications, and Beets music manager
 - **kdeconnect**: Enables KDE Connect for device integration
@@ -93,13 +93,13 @@ mySystem.hardware = {
 
 **Hardware Options:**
 
-- **amd**: Enables AMD GPU drivers and Mesa acceleration
-- **bluetooth**: Enables Bluetooth stack with bluetui interface
-- **steam**: Enables Steam with Proton, Gamescope, hardware compatibility
+- **amd**: Enables AMD GPU drivers, Mesa acceleration, and LACT GPU control
+- **bluetooth**: Enables Bluetooth stack with Blueman GTK interface
+- **steam**: Enables Steam with Proton, Gamescope, Decky Loader, hardware compatibility
 
 ## System Configuration
 
-AnomalOS provides the **Rig** configuration - a complete, full-featured system:
+AnomalOS provides the **Rig** configuration:
 
 ### Rig Configuration
 
@@ -119,12 +119,13 @@ features = {
 ```
 
 This configuration provides:
-- Full desktop environment with Hyprland
+- Desktop environment with Hyprland and Noctalia shell UI
 - YubiKey hardware authentication for login, sudo, and polkit
 - Claude Code for AI-assisted development
-- Complete development toolchain
-- Gaming support with Steam, anime game launchers, and emulators
+- Development toolchain (Node.js, Python, Rust, Nix)
+- Gaming support with Steam, Decky Loader, MangoHud, and emulators
 - Music system with MPD, Euphonica client, and Beets library manager
+- System monitoring with Mission Center and LACT GPU control
 
 ## Module Configuration
 
@@ -167,23 +168,36 @@ Located in `modules/system/desktop/`:
 - **hyprland.nix**: Hyprland compositor system-level configuration (enables Hyprland, XDG portals, PAM)
 - **mpd.nix**: MPD (Music Player Daemon) service configuration
 - **media.nix**: Applications (GIMP, Anki, Vesktop, OBS), media tools
-- **stylix.nix**: Theme configuration (Axion custom base16 color scheme)
+
+Located in `modules/home-manager/desktop/`:
+
+- **noctalia/**: Dynamic shell UI with launcher, bar, notifications (settings.nix, default.nix)
+- **hyprland/**: User-level Hyprland configuration (config.nix, keybinds.nix, rules.nix, wallpaper.nix, hyprlock.nix)
+- **nemo.nix**: Nemo file manager configuration
+- **mission-center.nix**: System monitor configuration
 
 **Theme Customization:**
 
-Edit `modules/system/desktop/stylix.nix` to change the theme:
+Noctalia theming is managed in `modules/home-manager/desktop/noctalia/settings.nix`:
 ```nix
-stylix.base16Scheme = ./axion.yaml;  # Custom Axion theme
-# Or use a different base16 theme file
-```
+# Change matugen color scheme
+"theme" = {
+  "matugen" = {
+    "scheme" = "scheme-fruit-salad";  # Current: Fruit Salad
+  };
+};
 
-The Axion theme file (`axion.yaml`) contains custom purple/magenta color palette.
+# Change fonts
+"fonts" = {
+  "family" = "SpaceMono Nerd Font";   # Current font family
+};
+```
 
 **Wallpaper Management:**
 - Add images to `~/.local/share/wallpapers/`
-- Wallpapers rotate automatically every 15 minutes
-- Systemd service manages wallpaper rotation
-- Configuration: `modules/home-manager/desktop/hyprland/wallpaper.nix`
+- Wallpapers rotate automatically every 10 minutes via noctalia
+- Wave transitions with 5-second duration
+- Configuration: `modules/home-manager/desktop/noctalia/settings.nix` (wallpaper section)
 
 ### Development Modules
 
@@ -207,7 +221,7 @@ Managed by `modules/claude-code-enhanced/default.nix`:
 Located in `modules/system/gaming/`:
 
 - **steam.nix**: Steam with Proton, hardware compatibility
-- **default.nix**: Lutris, PPSSPP, DeSmuME emulators
+- **default.nix**: RetroArch cores, PPSSPP, DeSmuME, Ryujinx emulators
 
 ## Home Manager Configuration
 
@@ -239,9 +253,8 @@ Configured in `modules/home-manager/desktop/ghostty.nix`:
 programs.ghostty = {
   enable = true;
   settings = {
-    font-family = "Terminess Nerd Font";  # From Stylix
-    font-size = 13;  # Configured in Stylix
-    theme = "Axion";  # Uses Stylix theme
+    font-family = "SpaceMono Nerd Font Mono";
+    font-size = 13;
     scroll-to-bottom = "keystroke";
   };
 };
@@ -283,7 +296,7 @@ nfa           # Archive flake for sharing
 recycle       # Keep last 10 generations, remove older
 ```
 
-## Advanced Customization
+## Custom Configurations
 
 ### Creating Custom Configurations
 
@@ -294,7 +307,7 @@ nixosConfigurations.MyConfig = nixpkgs.lib.nixosSystem {
   system = "x86_64-linux";
   specialArgs = {inherit inputs;};
   modules = [
-    inputs.stylix.nixosModules.stylix
+    # inputs.stylix.nixosModules.stylix  # Disabled, using noctalia
     ./configuration.nix
     {
       mySystem.features = {
@@ -372,7 +385,7 @@ nrs-rig       # Switch
 ## Next Steps
 
 - Review [Features Guide](FEATURES.md) for detailed feature documentation
-- Check [Customization Guide](CUSTOMIZATION.md) for advanced modifications
+- Check [Customization Guide](CUSTOMIZATION.md) for modifications
 - See [Troubleshooting Guide](TROUBLESHOOTING.md) if you encounter issues
 
 ---

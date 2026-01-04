@@ -12,7 +12,7 @@ This guide explains how to customize and extend AnomalOS for your specific needs
 - [Adding Software](#adding-software)
 - [Creating Custom Configurations](#creating-custom-configurations)
 - [Service Configuration](#service-configuration)
-- [Advanced Customization](#advanced-customization)
+- [Further Customization](#further-customization)
 
 ## Basic Customization
 
@@ -82,90 +82,90 @@ nh os switch .#nixosConfigurations.Rig
 
 ### Changing the Color Scheme
 
-The system currently uses the Axion custom base16 theme. Edit `modules/system/desktop/stylix.nix`:
+The system currently uses the Noctalia shell UI with dynamic theming via matugen. The theme is configured in `modules/home-manager/desktop/noctalia/settings.nix`.
 
 **Current configuration:**
 ```nix
-stylix.base16Scheme = ./axion.yaml;  # Custom Axion theme file
+"theme" = {
+  "matugen" = {
+    "scheme" = "scheme-fruit-salad";  # Current color scheme
+  };
+};
 ```
 
-**To create a custom theme:**
-1. Create a YAML file in `modules/system/desktop/` (e.g., `my-theme.yaml`)
-2. Define base16 colors following the base16 specification
-3. Update stylix.nix to point to your theme file
+**Available matugen schemes:**
+- `scheme-content`: Content-based color extraction
+- `scheme-fruit-salad`: Vibrant, fruity color palette (current)
+- `scheme-monochrome`: Monochrome grayscale theme
+- `scheme-neutral`: Neutral, subdued colors
+- `scheme-tonal-spot`: Material You tonal spot colors
+- `scheme-vibrant`: High-saturation vibrant colors
+- `scheme-expressive`: Bold, expressive color combinations
+- `scheme-fidelity`: High color fidelity
+- `scheme-rainbow`: Full spectrum rainbow colors
 
-**Example custom theme structure:**
-```yaml
-scheme: "My Theme Name"
-author: "Your Name"
-base00: "1b002b"  # Default background
-base01: "1c0c25"  # Lighter background
-base02: "261033"  # Selection background
-# ... and so on for base03-base0F
-```
+**To change the color scheme:**
+1. Edit `modules/home-manager/desktop/noctalia/settings.nix`
+2. Change the `"scheme"` value to one of the schemes above
+3. Rebuild with `nh os switch .#nixosConfigurations.Rig`
+4. Noctalia will regenerate colors on next launch
 
-**Base16 color meanings:**
-- `base00-03`: Background shades (darkest to lighter)
-- `base04-07`: Foreground shades (darker to lightest)
-- `base08-0F`: Accent colors (red, orange, yellow, green, cyan, blue, magenta, brown)
+**GTK Theme:**
+The system uses `adw-gtk3` dark theme for GTK applications. This integrates with noctalia's color scheme for consistent theming.
 
-**Using existing base16 themes:**
-```nix
-# Import from base16-schemes package
-stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
-```
+**Legacy Theming:**
+Stylix is disabled system-wide but remains available in the repository. Axion custom base16 color scheme files are preserved in `modules/home-manager/desktop/axion.yaml` for potential re-enablement.
 
 ### Changing the Wallpaper
 
-The system uses `swww` for wallpaper management with automatic rotation every 15 minutes from `~/.local/share/wallpapers/`.
+The system uses noctalia for wallpaper management with automatic rotation every 10 minutes from `~/.local/share/wallpapers/`.
 
 **To change wallpapers:**
 1. Add your images to `~/.local/share/wallpapers/`
-2. They will automatically rotate every 15 minutes via systemd timer
-3. The wallpaper service is configured in `modules/home-manager/desktop/hyprland/wallpaper.nix`
+2. They will automatically rotate every 10 minutes via noctalia
+3. Transitions use wave animation with 5-second duration
 
-**To change rotation interval:**
-Edit the timer in `modules/home-manager/desktop/hyprland/wallpaper.nix`:
+**To change rotation interval and transitions:**
+Edit the wallpaper section in `modules/home-manager/desktop/noctalia/settings.nix`:
 ```nix
-systemd.user.timers.rotate-wallpaper = {
-  Timer = {
-    OnBootSec = "2m";      # First rotation 2 minutes after boot
-    OnUnitActiveSec = "15m";  # Rotate every 15 minutes (change this)
+"wallpaper" = {
+  "random" = {
+    "enabled" = true;
+    "interval" = 600;  # Rotation interval in seconds (600 = 10 minutes)
+  };
+  "transitions" = {
+    "enabled" = true;
+    "duration" = 5000;        # Transition duration in milliseconds
+    "type" = "wave";          # Transition type: wave, grow, fade, etc.
+    "edge_smoothness" = 0.5;  # Edge smoothing (0.0-1.0)
   };
 };
 ```
 
-**Note**: Stylix uses the `axion.yaml` color scheme directly, not wallpaper-based color extraction.
+**Supported transition types:**
+- `wave`: Wave animation (current)
+- `grow`: Growing circle transition
+- `fade`: Crossfade transition
+- `none`: Instant change
 
 ### Font Configuration
 
-Edit font settings in `modules/system/desktop/stylix.nix`:
+Noctalia uses SpaceMono Nerd Font for the shell UI. Font configuration is managed in `modules/home-manager/desktop/noctalia/gui-settings.json`:
 
 **Current configuration:**
 ```nix
-stylix.fonts = {
-  monospace = {
-    package = pkgs.nerd-fonts.terminess-ttf;
-    name = "Terminess Nerd Font";
-  };
-  sansSerif = {
-    package = pkgs.google-fonts.override { fonts = ["Orbitron"]; };
-    name = "Orbitron";
-  };
-  serif = {
-    package = pkgs.google-fonts.override { fonts = ["SpaceGrotesk"]; };
-    name = "Space Grotesk";
-  };
-  sizes = {
-    applications = 12;
-    terminal = 13;
-    desktop = 10;
-    popups = 12;
-  };
+"ui" = {
+  "fontDefault" = "SpaceMono Nerd Font";         # Default UI font
+  "fontDefaultScale" = 1;                        # Default font scale
+  "fontFixed" = "SpaceMono Nerd Font Mono";      # Fixed-width (monospace) font
+  "fontFixedScale" = 1;                          # Fixed font scale
 };
 ```
 
-**Note**: Font packages use the new `pkgs.nerd-fonts.*` and `pkgs.google-fonts` syntax.
+**To change fonts:**
+1. Edit `modules/home-manager/desktop/noctalia/gui-settings.json`
+2. Update the `ui.fontDefault` and `ui.fontFixed` values
+3. Rebuild with `nh os switch .#nixosConfigurations.Rig`
 
 ## Desktop Environment
 
@@ -298,72 +298,21 @@ general = {
 };
 ```
 
-### Waybar Configuration
+### Noctalia Shell Bar Configuration
 
-Waybar is configured in `modules/home-manager/desktop/waybar/` with focused modules:
-- `config.nix`: Bar layout and module definitions
-- `style.nix`: Custom CSS styling
+Noctalia shell bar is configured in `modules/home-manager/desktop/noctalia/settings.nix`.
 
-**Workspace Display:**
-
-Edit workspace module configuration in `modules/home-manager/desktop/waybar/config.nix`:
+**Bar Settings:**
 
 ```nix
-"hyprland/workspaces" = {
-  disable-scroll = false;
-  all-outputs = true;
-  format = "{name}";
-  on-click = "activate";
-  sort-by-number = true;
-  persistent-workspaces = {
-    "comms" = [ ];
-    "web" = [ ];
-    "dev" = [ ];
-    "media" = [ ];
-    "games" = [ ];
+"bar" = {
+  "outer_corners" = false;  # Disable rounded outer corners
+  "outline" = true;         # Enable outline
+  "max_width" = 300;       # Maximum bar width
+  "active_window" = {
+    "max_width" = 300;     # Active window title max width
   };
-};
-```
-
-**Customizing Module Order:**
-
-To change what appears in waybar, edit the modules-left, modules-center, and modules-right arrays in `config.nix`:
-
-```nix
-modules-left = [ "tray" "hyprland/workspaces" ];
-modules-center = [ "hyprland/window" ];
-modules-right = [
-  "network"
-  "custom/temperature"
-  "bluetooth"
-  "pulseaudio"
-  "clock"
-  "bluetooth"
-  "network"
-  "pulseaudio"
-  "cpu"
-  "memory"
-  "disk"
-  "battery"
-];
-```
-
-**Adding Custom Click Actions:**
-
-Waybar modules support click actions for quick access:
-
-```nix
-network = {
-  format-wifi = "{essid} ({signalStrength}%) ";
-  format-ethernet = "{ipaddr}/{cidr} ";
-  format-disconnected = "Disconnected ⚠";
-  on-click-right = "hyprctl dispatch exec '[workspace special:control-panel; tile] ghostty nmtui'";
-};
-
-bluetooth = {
-  format = " {status}";
-  format-connected = " {device_alias}";
-  on-click-right = "hyprctl dispatch exec '[workspace special:control-panel; tile] ghostty bluetui'";
+  "media_mini" = "wave";   # Media visualizer type
 };
 ```
 
@@ -446,7 +395,7 @@ nixosConfigurations.MyCustom = nixpkgs.lib.nixosSystem {
   system = "x86_64-linux";
   specialArgs = {inherit inputs;};
   modules = [
-    inputs.stylix.nixosModules.stylix
+    # inputs.stylix.nixosModules.stylix  # Disabled, using noctalia
     ./configuration.nix
     {
       # Override specific features
@@ -541,7 +490,7 @@ MyConfig = nixpkgs.lib.nixosSystem {
   system = "x86_64-linux";
   specialArgs = {inherit inputs;};
   modules = [
-    inputs.stylix.nixosModules.stylix
+    # inputs.stylix.nixosModules.stylix  # Disabled, using noctalia
     ./my-config.nix
   ];
 };
@@ -607,7 +556,7 @@ services.openssh = {
 };
 ```
 
-## Advanced Customization
+## Further Customization
 
 ### Creating Custom Modules
 

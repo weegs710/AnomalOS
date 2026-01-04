@@ -183,7 +183,7 @@ Test Claude Code is available:
 # Check Claude Code is installed
 claude --version
 
-# Test the cc command (enhanced project launcher)
+# Test the cc command (project launcher)
 cc status
 
 # Launch Claude Code
@@ -210,7 +210,7 @@ rig-up      # Updates flake, tests, and prompts to switch
 After installation, verify these items:
 
 - [ ] System boots successfully
-- [ ] Desktop environment loads (Hyprland + Waybar)
+- [ ] Desktop environment loads (Hyprland + Noctalia shell)
 - [ ] Network connectivity works
 - [ ] Audio is functional (`systemctl --user status pipewire`)
 - [ ] Keyboard and mouse work correctly

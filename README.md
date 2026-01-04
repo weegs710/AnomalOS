@@ -2,13 +2,13 @@
 
 ![AnomalOS](modules/system/desktop/anomalos.jpg)
 
-A comprehensive modular NixOS configuration using Nix flakes for a modern desktop system with Hyprland window manager, featuring automated security hardening, theming, AI development tools, and optional YubiKey and Claude Code support.
+A modular NixOS configuration using Nix flakes for a desktop system with Hyprland window manager, featuring security hardening, theming, development tools, and optional YubiKey and Claude Code support.
 
 > **Important Notice**: This configuration is provided as-is for personal use and educational purposes. It is specifically designed for my personal hardware and workflow. While efforts have been made to enable customization, there are no guarantees this will work on your system without modifications. You are free to adopt the entire configuration or pick and choose components that suit your needs. This is entirely FOSS (Free and Open Source Software).
 
 ## Documentation
 
-For comprehensive documentation, see the [docs/](docs/) directory:
+For documentation, see the [docs/](docs/) directory:
 - [Installation Guide](docs/INSTALLATION.md)
 - [Configuration Options](docs/CONFIGURATION.md)
 - [Features & Components](docs/FEATURES.md)
@@ -21,21 +21,21 @@ For comprehensive documentation, see the [docs/](docs/) directory:
 
 This configuration targets x86_64 desktop systems, providing:
 
-- **OS**: NixOS (unstable channel) with Linux kernel 6.17
+- **OS**: NixOS (unstable channel) with Linux kernel 6.18+ (xanmod)
 - **Filesystem**: ZFS with dual-drive setup (system + games)
-- **Window Manager**: Hyprland (basic configuration, customizable)
+- **Window Manager**: Hyprland (modular configuration)
 - **Display Manager**: SDDM with YubiKey U2F authentication
-- **Shell**: Fish with Oh My Posh prompt
+- **Shell**: Fish with Oh My Posh prompt (high contrast base16 colors)
 - **Editor**: Zed with language server support
-- **Theme**: Axion custom base16 theme with consistent styling via Stylix
+- **Theme**: Noctalia shell UI with dynamic theming via matugen, SpaceMono Nerd Font
 - **Security**: Hardened with YubiKey U2F for login, sudo, and polkit
 
 ## System Configuration
 
-This flake provides the **Rig** configuration - a complete, optimized NixOS system with:
+This flake provides the **Rig** configuration - a NixOS system with:
 
 - **YubiKey Security**: Hardware authentication for login, sudo, and polkit
-- **Claude Code**: Enhanced AI-assisted development
+- **Claude Code**: AI-assisted development
 - **Full Feature Set**: All gaming, development, desktop, and media features enabled
 
 ## Quick Start
@@ -98,31 +98,32 @@ rig-up         # Update flake + test Rig + prompt to switch
 - Secure PAM configuration
 
 ### Desktop Environment
-- Hyprland compositor with focused modular configuration
-- Waybar status bar with custom styling
-- Stylix theming with Axion custom base16 color scheme
+- Hyprland compositor with modular configuration
+- Noctalia shell UI with dynamic theming (matugen + adw-gtk3)
 - SDDM display manager with theme integration
-- Yazi terminal file manager with plugins (git, mount)
+- Nemo file manager with tree sidebar and preview support
+- Mission Center system monitor (GTK4/Libadwaita)
+- LACT AMD GPU management and monitoring
 
 ### Development Tools
-- Claude Code with enhanced project management (`cc` command)
+- Claude Code with project management (`cc` command)
 - Zed editor with language server support
-- Fish shell with intelligent autocompletions
+- Fish shell with autocompletions
 - Development toolchains: Node.js, Python, Rust, Nix
 - Language servers: nixd (Nix), hyprls (Hyprland)
 - Git with custom aliases and workflows
 - Ghostty GPU-accelerated terminal emulator
 
 ### Gaming & Media
-- Steam with Proton and hardware compatibility
-- aagl-gtk-on-nix launchers for anime games
-- Lutris, PPSSPP, DeSmuME, Ryujinx emulators
-- RetroArch with automated playlist generation
+- Steam with Proton, hardware compatibility, and Decky Loader plugin system
+- MangoHud performance overlay with 5 preset levels (Steam Deck-style)
+- PPSSPP, DeSmuME, Ryujinx emulators
+- RetroArch with automated playlist generation (NES, SNES, N64, GBA, etc.)
 - MPD (Music Player Daemon) with Euphonica GTK4 client for music playback
 - Beets music library manager with declarative configuration
 - Pipewire audio system
-- AMD GPU support with Mesa drivers
-- Bluetooth stack with bluetui interface
+- AMD GPU support with Mesa drivers and LACT control tool
+- Bluetooth stack with Blueman management interface
 
 ### Package Management
 - Nix Flakes for reproducible configuration
@@ -150,15 +151,15 @@ dotfiles/
 │   ├── options.nix                  # Configuration schema
 │   ├── home-manager/                # User-level Home Manager modules
 │   │   ├── core/                   # Core user config (packages, xdg)
-│   │   ├── desktop/                # Desktop apps (hyprland/, waybar/, yazi, etc.)
+│   │   ├── desktop/                # Desktop apps (hyprland/, noctalia/, nemo, etc.)
 │   │   └── development/            # Dev tools (zed, fish, oh-my-posh)
 │   └── system/                      # System-level NixOS modules
 │       ├── core/                   # Essential system components (boot, networking, ZFS)
 │       ├── security/               # Security features and YubiKey
-│       ├── desktop/                # Desktop environment (stylix, mpd, rofi, etc.)
+│       ├── desktop/                # Desktop environment (sddm, mpd, rofi, etc.)
 │       ├── development/            # Development tools and AI
-│       └── gaming/                 # Gaming support
-├── docs/                            # Comprehensive documentation
+│       └── gaming/                 # Gaming support (steam, mangohud, decky-loader)
+├── docs/                            # Documentation
 └── assets/                          # Assets (wallpapers, configs)
 ```
 
@@ -216,12 +217,12 @@ This system uses ZFS for the root filesystem with:
 - `zroot` pool: System, nix store, cache, and persistent data
 - `zgames` pool: Optional dedicated gaming storage (2TB in reference config)
 - Automated snapshots via sanoid (hourly, daily, weekly, monthly retention)
-- Compression: zstd for space savings
+- Compression: zstd
 - Auto-trim enabled for SSD health
 
 ## Contributing
 
-This configuration is designed to be easily forkable and customizable:
+This configuration can be forked and customized:
 
 1. Fork the repository
 2. Customize `configuration.nix` for your needs

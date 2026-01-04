@@ -2,11 +2,11 @@
 
 ## Overview
 
-This system uses ZFS with automated snapshots via [sanoid](https://github.com/jimsalterjrs/sanoid) for data protection. Snapshots are copy-on-write pointers, consuming minimal space initially and only growing as data changes.
+This system uses ZFS with automated snapshots via [sanoid](https://github.com/jimsalterjrs/sanoid) for data protection. Snapshots are copy-on-write pointers that initially reference existing data and only consume additional space as data changes.
 
 **Key Features:**
 - **Automated**: Runs hourly via systemd timer
-- **Efficient**: Copy-on-write snapshots use minimal space
+- **Copy-on-write**: Snapshots share unchanged data with original
 - **Multi-tier retention**: Hourly, daily, weekly, and monthly retention policies
 - **Automatic pruning**: Old snapshots are automatically removed based on retention policy
 
@@ -144,7 +144,7 @@ sudo zfs clone zroot/persist@autosnap_2025-12-11_12:00:00_hourly zroot/persist-t
 # Mount and test
 sudo zfs set mountpoint=/mnt/test zroot/persist-test
 
-# If satisfied, promote clone and delete original (advanced)
+# If satisfied, promote clone and delete original
 # Otherwise, delete clone
 sudo zfs destroy zroot/persist-test
 ```
@@ -338,4 +338,4 @@ sudo zfs rollback zroot/persist@<snapshot-name>
 - [INSTALLATION.md](INSTALLATION.md) - ZFS pool setup during installation
 - [FEATURES.md](FEATURES.md) - ZFS filesystem features
 - [Sanoid Documentation](https://github.com/jimsalterjrs/sanoid) - Official sanoid docs
-- [OpenZFS Documentation](https://openzfs.github.io/openzfs-docs/) - Complete ZFS reference
+- [OpenZFS Documentation](https://openzfs.github.io/openzfs-docs/) - ZFS reference documentation

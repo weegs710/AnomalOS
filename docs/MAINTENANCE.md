@@ -296,12 +296,12 @@ Create `CHANGELOG.md` in your dotfiles:
 
 ## 2025-01-13
 - Added hyprland configuration consolidation
-- Improved backup documentation
-- Enhanced profiles with better comments
+- Updated backup documentation
+- Updated profiles with comments
 
 ## 2025-01-12
 - Integrated agenix for secret management
-- Enhanced .gitignore for better security
+- Updated .gitignore for security
 - Moved binary files out of repo
 ```
 
@@ -388,7 +388,7 @@ substituters = [
 
 ## Backup Maintenance
 
-See [BACKUP.md](BACKUP.md) for comprehensive backup procedures.
+See [BACKUP.md](BACKUP.md) for backup procedures.
 
 ### Quick Backup Check
 

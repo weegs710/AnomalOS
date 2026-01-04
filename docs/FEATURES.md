@@ -1,6 +1,6 @@
 # Features & Components Guide
 
-This guide provides comprehensive documentation of all features and components available in AnomalOS.
+This guide documents all features and components available in AnomalOS.
 
 > **Note**: This configuration includes features tailored to my personal workflow. You may enable/disable features as needed, but some may require hardware-specific adjustments.
 
@@ -104,7 +104,7 @@ sudo ss -tulpn
 
 **Features:**
 - Extensive sysctl security parameters
-- SSH hardening with modern ciphers
+- SSH hardening configuration
 - Secure PAM configuration
 - Memory protection and randomization
 - Network stack hardening
@@ -158,7 +158,7 @@ sudo journalctl -u dnscrypt-proxy
 
 **Workspace Organization:**
 
-The system uses a named workspace scheme designed for efficient workflow management:
+The system uses a named workspace scheme:
 
 1. **comms** (Super+1): Communication apps (Discord/Vesktop)
 2. **dev** (Super+2): Development environment (Zed, Ghostty terminals)
@@ -170,12 +170,12 @@ The system uses a named workspace scheme designed for efficient workflow managem
 **Control-Panel Utilities:**
 - pavucontrol: Audio volume control
 - nmtui: Network configuration
-- bluetui: Bluetooth management
-- mission-center: GUI system resource monitor with GPU support
-- lact: AMD GPU control and monitoring
+- blueman-manager: Bluetooth management (GTK interface)
+- mission-center: GUI system resource monitor with GPU monitoring (GTK4/Libadwaita)
+- lact: AMD GPU control, monitoring, and overclocking
 - qalculate-gtk: Calculator
-- piper: Gaming mouse configuration
-- kwalletmanager: Password wallet manager
+- piper: Gaming mouse configuration (Logitech, Razer, etc)
+- kwalletmanager: Password wallet manager (KDE)
 
 **Workspace Navigation:**
 - `Super+1-5`: Jump to named workspace
@@ -189,14 +189,14 @@ The system uses a named workspace scheme designed for efficient workflow managem
 - `Super+F1`: Vesktop (workspace 1 - comms)
 - `Super+F2`: Zed editor (workspace 2 - dev)
 - `Super+F3`: Steam (workspace 3 - games)
-- `Super+F4`: Stremio (workspace 4 - media)
+- `Super+F4`: Euphonica music player (workspace 4 - media)
 - `Super+F5`: Brave browser (workspace 5 - web)
 - `Super+F6`: Mission Center system monitor (control-panel)
 
 **Core Applications:**
 - `Super+Return`: Terminal (Ghostty)
-- `Super+Space`: File manager (Yazi)
-- `Super+Shift+Space`: GUI file manager (Thunar)
+- `Super+Space`: File manager (Nemo)
+- `Super+Super_L`: Noctalia shell launcher toggle
 
 **Window Management:**
 - `Super+Escape`: Close active window
@@ -221,14 +221,15 @@ The system uses a named workspace scheme designed for efficient workflow managem
 Applications automatically open on their designated workspaces:
 - Steam and Vesktop launch at login on their respective workspaces
 - System boots to comms workspace after auto-launch completes
-- Utility apps open on control-panel when launched via desktop entries or waybar
+- Utility apps open on control-panel when launched via desktop entries
 
 **Window Behavior:**
 - Dialogs float with natural Wayland positioning (xdg-dialog protocol)
 - Auth dialogs (KWallet) stay focused to prevent credential exposure
 - Games workspace: no gaps, no rounding, full opacity
-- Other workspaces: 1px gaps in, 2px gaps out, slight transparency (0.90 active, 0.80 inactive)
-- Media/streaming apps: full opacity overrides for optimal viewing
+- Other workspaces: 3px gaps in, 6px gaps out, slight transparency (0.94 active, 0.90 inactive)
+- Media/streaming apps: full opacity overrides
+- Floating windows: always full opacity
 
 **Included Utilities:**
 - `grim`: Screenshot utility
@@ -239,28 +240,29 @@ Applications automatically open on their designated workspaces:
 
 **Configuration:**
 - System-level: `modules/system/desktop/hyprland.nix` (enables Hyprland, XDG portals, PAM)
-- User-level: `modules/home-manager/desktop/hyprland/` (focused modules):
+- User-level: `modules/home-manager/desktop/hyprland/` (modular organization):
   - `config.nix`: Hyprland settings (monitor, env, animations, etc.)
   - `keybinds.nix`: All keybindings and submaps
   - `rules.nix`: Window rules
-  - `wallpaper.nix`: swww service and wallpaper scripts
+  - `wallpaper.nix`: swww service (managed by noctalia)
   - `hyprlock.nix`: Screen lock configuration
 
-### Waybar Status Bar
+### Noctalia Shell UI
 
-**Available in**: All configurations
+**Available in**: All configurations (when desktop feature enabled)
 
 **Features:**
-- System monitoring (CPU, memory, disk)
-- Network status
-- Audio controls (PipeWire/PulseAudio)
-- Workspace indicators
-- Bluetooth status
-- Custom styling with CSS
+- Dynamic shell UI with launcher, bar, and notification system
+- Matugen-based color scheme generation
+- Persistent GUI settings via NOCTALIA_SETTINGS_FALLBACK
+- GTK4/Libadwaita integration with adw-gtk3 theme
+- Wave visualizer for media playback
+- Configurable wallpaper rotation (10-minute intervals with wave transitions)
+- Custom panel layouts and styling
 
-**Configuration**: `modules/home-manager/desktop/waybar/` (focused modules):
-  - `config.nix`: Bar layout and module definitions
-  - `style.nix`: Custom CSS styling
+**Configuration**: `modules/home-manager/desktop/noctalia/`
+  - `default.nix`: Noctalia module with systemd service configuration
+  - `settings.nix`: Declarative GUI settings (launcher, bar, appearance, wallpaper)
 
 ### SDDM Display Manager
 
@@ -269,34 +271,32 @@ Applications automatically open on their designated workspaces:
 **Features:**
 - Graphical login screen
 - YubiKey authentication integration (when enabled)
-- Themed with Stylix
 - Session selection
+- Wayland session support
 
 **Location**: `modules/system/desktop/default.nix`
 
-### Stylix Theming
+### Theming System
 
 **Available in**: All configurations
 
-**Features:**
-- Consistent theming across all applications
-- Axion custom base16 color scheme
-- GTK and Qt theme integration
-- Terminal and editor theming
+**Primary Theming:**
+- **Noctalia shell**: Dynamic theming via matugen color scheme generation
+- **Theme**: Fruit Salad scheme with SpaceMono Nerd Font family
+- **GTK**: adw-gtk3 dark theme with prefer-dark dconf configuration
+- **Qt**: Qt6ct platform theme with environment variable support
 
-**Current Theme**: Axion (dark)
-- Base colors: Custom purple/magenta palette
-- Wallpapers: Rotating from `~/.local/share/wallpapers/` every 15 minutes
+**Legacy Theming (disabled):**
+- Stylix is disabled system-wide but remains available for potential re-enablement
+- Axion custom base16 color scheme files preserved in repository
 
-**Customization:**
-```nix
-# Change color scheme in modules/system/desktop/stylix.nix
-stylix.base16Scheme = ./axion.yaml;
-```
+**Font Configuration:**
+- **Monospace**: SpaceMono Nerd Font (noctalia)
+- **Terminal**: Size 13 in Ghostty
 
-**Change wallpapers**: Add images to `~/.local/share/wallpapers/`
+**Wallpapers**: Managed by noctalia with 10-minute rotation intervals, wave transitions
 
-**Location**: `modules/system/desktop/stylix.nix`
+**Location**: `modules/home-manager/desktop/noctalia/`
 
 ## Development Tools
 
@@ -304,7 +304,7 @@ stylix.base16Scheme = ./axion.yaml;
 
 **Features:**
 - AI-powered development assistant
-- Enhanced project management via `cc` command
+- Project management via `cc` command
 - Global project navigation and organization
 - Pre-approved commands for autonomous operation
 - MCP server integration
@@ -326,12 +326,12 @@ cc status       # Show system status
 
 **Implementation**:
 - System: `modules/system/development/claude-code.nix`
-- Enhanced: `modules/claude-code-enhanced/default.nix`
+- Module: `modules/claude-code-enhanced/default.nix`
 
 ### Editors
 
 **Zed**
-- Fast, native editor with GPU acceleration
+- Editor with GPU acceleration
 - Language server protocol support
 - Integrated terminal and git
 - Extension support
@@ -352,7 +352,7 @@ cc status       # Show system status
 - Web-based configuration
 
 **Oh My Posh Prompt**
-- Fast, customizable prompt with JSON schema configuration
+- Prompt with JSON schema configuration
 - Git integration with branch and status display
 - Directory truncation and navigation
 - Language/tooling version detection (Node, Python, etc.)
@@ -361,20 +361,42 @@ cc status       # Show system status
 
 ### File Managers
 
-**Yazi**
-- Modern terminal file manager
-- Vim-style keybindings with custom mappings
-- File previews and image display
-- Custom theme integration with Stylix
-- Plugins: git integration, mount support
-- Custom keymap configuration (see `modules/home-manager/desktop/yazi/keymap.toml`)
+**Nemo**
+- GTK file manager with Cinnamon desktop integration
+- Tree sidebar for quick directory navigation
+- List view with detailed file information
+- File preview support via nemo-preview (Space key on files)
+- Configured as floating window with full opacity
+- Set as $fileManager variable in Hyprland for system-wide integration
 
-**Configuration**: `modules/home-manager/desktop/yazi.nix` and `modules/home-manager/desktop/yazi/`
+**Configuration**: `modules/home-manager/desktop/nemo.nix`
+
+### System Monitoring
+
+**Mission Center**
+- GTK4/Libadwaita system monitor
+- Real-time CPU, GPU, memory, and disk monitoring
+- Process management with detailed resource usage
+- Network traffic visualization
+- GPU monitoring for AMD hardware via LACT integration
+- Quick launch via Super+F6 keybind
+- Opens in control-panel workspace with floating layout
+
+**Configuration**: `modules/home-manager/desktop/mission-center.nix`
+
+**LACT (Linux AMDGPU Control Tool)**
+- AMD GPU control and monitoring systemd service
+- Power management and fan curve configuration
+- GPU overclocking and undervolting support
+- Temperature and power consumption monitoring
+- Hardware.amdgpu.overdrive enabled for performance tuning
+
+**Configuration**: `modules/system/hardware/default.nix`
 
 ### System Information
 
 **Fastfetch**
-- Fast system information tool
+- System information tool
 - Custom AnomalOS logo display (AnomLogo.png)
 - Displays: OS, host, kernel, uptime, packages, shell, display, WM, terminal, CPU, GPU, memory, swap, disk
 
@@ -390,8 +412,8 @@ cc status       # Show system status
 - **Java**: JDK 21
 
 **Language Servers:**
-- `nixd`: Nix language server with superior nixpkgs integration
-- `nil`: Nix language server with fast flake diagnostics (runs alongside nixd)
+- `nixd`: Nix language server with nixpkgs integration
+- `nil`: Nix language server with flake diagnostics (runs alongside nixd)
 - `hyprls`: Hyprland configuration language server
 
 **Code Formatting:**
@@ -406,7 +428,7 @@ cc status       # Show system status
 - `jq`: JSON processor
 - `tldr`: Simplified man pages
 - `ns`: Interactive NixOS package search (nix-search-tv wrapper)
-- `uv`: Fast Python package installer and resolver
+- `uv`: Python package installer and resolver
 
 **Configuration**: `modules/system/development/languages.nix`
 
@@ -428,14 +450,60 @@ cc status       # Show system status
 
 **Configuration**: `modules/system/gaming/steam.nix`
 
-### Anime Game Launchers
+### Decky Loader Steam Plugin System
+
+**Available in**: All configurations (when gaming feature enabled)
+
+**Features:**
+- Steam plugin system for Steam Deck-like functionality on desktop
+- v3.2.1 packaged via fetchurl with hash verification
+- Systemd user service with NixOS-compatible PATH configuration
+- ~/homebrew directory structure for plugins and services
+- Steam CEF remote debugging for plugin UI injection
+- Firewall ports 8080 and 1337 opened for web interface
+- Python3, systemd, coreutils, curl, and git in service PATH for plugin operations
+- autoPatchelfHook for proper binary dependencies (zlib, gcc libs)
+
+**Management:**
+- Access at http://localhost:8080 when Steam is running
+- Plugin installation and updates via Decky web interface
+- Service managed via systemd: `systemctl --user status decky-loader`
+
+**Configuration**: `modules/system/gaming/decky-loader.nix`
+
+### MangoHud Performance Overlay
+
+**Available in**: All configurations (when gaming feature enabled)
+
+**Features:**
+- Steam Deck-style performance overlay with 5 preset levels
+- Integrated into Steam FHS environment via extraPackages
+- Real-time FPS, GPU/CPU stats, RAM usage, temperatures
+- Extended metrics: VRAM, power consumption, frame timing, I/O
+- Full detailed mode: clocks, core loads, driver info
+- Configuration files in ~/.config/MangoHud/
+
+**Preset Levels:**
+- Preset 0: Overlay disabled
+- Preset 1: FPS only (minimal)
+- Preset 2: Horizontal summary (GPU/CPU stats, RAM, FPS)
+- Preset 3: Extended metrics (temps, VRAM, power, frame timing)
+- Preset 4: Full detailed (clocks, core loads, I/O, driver info)
+
+**Usage:**
+- Switch presets with Shift+F2 in-game
+- Toggle overlay with Shift+F12
+
+**Configuration**: `modules/system/gaming/mangohud.nix`
+
+### Anime Game Launchers (Disabled)
 
 **aagl-gtk-on-nix**
-- Native Linux launchers for anime games
-- Conditionally enabled via gaming feature flag
-- Binary cache support for fast installation
+- Disabled in current configuration (commented out in gaming/default.nix)
+- Can be re-enabled by uncommenting `./aagl.nix` import
+- Binary cache (ezkea.cachix.org) still configured
 
-**Configuration**: `modules/system/gaming/aagl.nix`
+**Configuration**: `modules/system/gaming/aagl.nix` (commented out)
 
 ### Emulators
 
@@ -451,16 +519,11 @@ cc status       # Show system status
 
 **Ryujinx**
 - Nintendo Switch emulator
-- Modern yuzu alternative
-
-**Lutris**
-- Game management platform
-- Wine integration
-- Multiple emulators support
+- Yuzu alternative
 
 **ProtonUp-Qt**
 - Proton-GE and Wine-GE version manager
-- Easy compatibility tool updates for Steam
+- Compatibility tool updates for Steam
 
 **RetroArch**
 - Multi-system emulator with libretro cores
@@ -472,13 +535,13 @@ cc status       # Show system status
 ### Media Tools
 
 **Audio:**
-- Pipewire: Modern audio system with low-latency
+- Pipewire: Audio system
 - WirePlumber: Pipewire session manager
 - Hardware mixing support
 
 **Music:**
 - MPD (Music Player Daemon): Systemd user service for music playback
-- Euphonica: GTK4/Libadwaita MPD client with modern interface
+- Euphonica: GTK4/Libadwaita MPD client
 - Music directory: ~/Music with Artist/Album folder structure
 
 **Streaming:**
@@ -508,7 +571,7 @@ cc status       # Show system status
 
 **Productivity:**
 - Anki: Flashcard application for learning
-- Qalculate: Advanced calculator
+- Qalculate: Calculator
 
 **Utilities:**
 - Pavucontrol: PulseAudio/PipeWire volume control
@@ -530,7 +593,7 @@ cc status       # Show system status
 **Features:**
 - Reproducible system configuration
 - Pinned dependencies via `flake.lock`
-- Easy configuration versioning
+- Configuration versioning via git
 - Atomic updates and rollbacks
 
 **Commands:**
@@ -579,7 +642,7 @@ flatpak list              # List installed apps
 - `hyprland.cachix.org`: Hyprland compositor and tools
 - `ezkea.cachix.org`: Anime game launchers (aagl-gtk-on-nix)
 
-**Benefit**: Faster builds by using pre-built binaries
+**Benefit**: Use pre-built binaries instead of building from source
 
 **Configuration**: `configuration.nix` (nix.settings.substituters)
 
@@ -588,7 +651,7 @@ flatpak list              # List installed apps
 **Features:**
 - Automated hourly snapshots via sanoid
 - Multi-tier retention (hourly, daily, weekly, monthly)
-- Copy-on-write efficiency (minimal space usage)
+- Copy-on-write (space usage grows only with changed data)
 - Automatic pruning of old snapshots
 
 **Snapshot retention policies:**
@@ -643,13 +706,35 @@ sudo nix-collect-garbage --delete-older-than 30d  # Custom age
 **Features:**
 - Bluetooth 5.0+ support
 - PipeWire audio routing
-- `bluetui`: Terminal UI for Bluetooth management
+- Blueman: GTK Bluetooth management interface
 
 **Management:**
 ```bash
-bluetui         # Launch Bluetooth TUI
-bluetoothctl    # CLI management
+blueman-manager     # Launch Blueman GUI
+bluetoothctl        # CLI management
 ```
+
+### USB Device Automount
+
+**Available in**: All configurations (when desktop feature enabled)
+
+**Features:**
+- Automatic mounting of USB drives via udiskie service
+- Desktop notifications for mount/unmount events
+- udisks2 backend for device management
+- Passwordless mounting for removable devices
+- Automatic cleanup on device removal
+
+**Service:**
+```bash
+# Check udiskie status
+systemctl --user status udiskie
+
+# View mount events
+journalctl --user -u udiskie
+```
+
+**Configuration**: `modules/home-manager/desktop/default.nix`
 
 ### System Update Workflow
 
@@ -714,7 +799,7 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 - Data integrity verification (checksums)
 - Compression (zstd) for space savings
 - Auto-trim for SSD health and performance
-- ARC caching for improved read performance
+- ARC caching
 - Automated snapshots via sanoid (hourly, daily, weekly, monthly)
 
 **Configuration:**
@@ -725,8 +810,9 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 
 ### Kernel Configuration
 
-**Linux 6.17:**
-- Modern kernel with latest hardware support
+**Linux 6.18+ (xanmod):**
+- Xanmod kernel with additional patches
+- Hardware support
 - Security hardening via kernel parameters
 - ZFS module support
 
@@ -736,18 +822,18 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 
 **Memory:**
 - ZFS ARC cache: Dynamic (50% of RAM, automatically managed)
-- Swappiness reduced to 10 for better responsiveness
+- Swappiness: 10
 - Zram swap (25% of RAM) with zstd compression
 
 **Download Buffer:**
-- 256MB buffer for faster downloads
+- 256MB buffer
 
 **Configuration**: Various modules
 
 ## Next Steps
 
 - Read [Configuration Guide](CONFIGURATION.md) to customize features
-- Check [Customization Guide](CUSTOMIZATION.md) for advanced modifications
+- Check [Customization Guide](CUSTOMIZATION.md) for modifications
 - See [Troubleshooting Guide](TROUBLESHOOTING.md) if features aren't working
 
 ---

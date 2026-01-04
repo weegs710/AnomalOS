@@ -238,25 +238,34 @@ This guide helps resolve common issues you may encounter with AnomalOS configura
    services.xserver.displayManager.sddm.enable = false;
    ```
 
-### Waybar Not Showing
+### Noctalia Shell Not Showing
 
-**Symptom**: Waybar missing or crashes
+**Symptom**: Noctalia bar/launcher missing or crashes
 
 **Solutions:**
 
-1. **Start Waybar manually:**
+1. **Check noctalia service:**
    ```bash
-   waybar
+   systemctl --user status noctalia
    ```
 
-2. **Check Waybar config:**
+2. **Check configuration:**
    ```bash
-   waybar --config ~/.config/waybar/config --style ~/.config/waybar/style.css
+   # Verify settings file exists
+   cat ~/.config/noctalia/settings.json
+
+   # Check NOCTALIA_SETTINGS_FALLBACK environment variable
+   echo $NOCTALIA_SETTINGS_FALLBACK
    ```
 
 3. **View errors:**
    ```bash
-   journalctl --user -u waybar
+   journalctl --user -u noctalia
+   ```
+
+4. **Restart noctalia:**
+   ```bash
+   systemctl --user restart noctalia
    ```
 
 ## Hardware Issues

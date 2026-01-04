@@ -390,7 +390,7 @@ git push
 # These won't work due to .gitignore and don't show clear intent
 ```
 
-## Advanced Usage
+## Further Usage
 
 ### Per-Secret SSH Keys
 
