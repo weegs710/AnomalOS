@@ -20,8 +20,8 @@ with lib; {
           ", preferred, auto, 1"
         ];
         env = [
-          "XCURSOR_THEME,oreo_axion-magenta_cursors"
-          "XCURSOR_SIZE,30"
+          "XCURSOR_THEME,phinger-cursors-dark"
+          "XCURSOR_SIZE,32"
           "TERMINAL,ghostty"
           "XDG_TERMINAL_EDITOR,ghostty"
         ];

@@ -7,15 +7,6 @@
 }: let
   username = osConfig.mySystem.user.name;
   homeDirectory = "/home/${username}";
-
-  axion-cursors = pkgs.oreo-cursors-plus.override {
-    cursorsConf = ''
-      axion-cyan = color: #21d6c9, label: #e8f6f5, shadow: #000000, shadow-opacity: 0.4, stroke: #5ec4bc, stroke-opacity: 0.8, stroke-width: 1
-      axion-magenta = color: #ec95ec, label: #e8f6f5, shadow: #000000, shadow-opacity: 0.4, stroke: #d486d4, stroke-opacity: 0.8, stroke-width: 1
-      axion-purple = color: #80638e, label: #e8f6f5, shadow: #000000, shadow-opacity: 0.4, stroke: #d486d4, stroke-opacity: 0.8, stroke-width: 1
-      sizes = 24, 30, 32, 48
-    '';
-  };
 in {
   home.sessionVariables = {
     EDITOR = "zed";
@@ -50,9 +41,9 @@ in {
   };
 
   home.pointerCursor = {
-    package = axion-cursors;
-    name = "oreo_axion-magenta_cursors";
-    size = 30;
+    package = pkgs.phinger-cursors;
+    name = "phinger-cursors-dark";
+    size = 32;
     gtk.enable = true;
     x11.enable = true;
   };
