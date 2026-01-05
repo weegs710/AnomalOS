@@ -51,11 +51,11 @@ with lib; {
           preserve_split = true;
         };
         workspace = [
-          "1:comms, gapsin:3, gapsout:6"
-          "2:dev, gapsin:3, gapsout:6"
-          "3:games, gapsin:0, gapsout:0, rounding:false"
-          "4:media, gapsin:3, gapsout:6"
-          "5:web, gapsin:3, gapsout:6"
+          "1, defaultName:comms, gapsin:3, gapsout:6, persistent:true"
+          "2, defaultName:dev, gapsin:3, gapsout:6, persistent:true"
+          "3, defaultName:games, gapsin:0, gapsout:0, rounding:false, persistent:true"
+          "4, defaultName:media, gapsin:3, gapsout:6, persistent:true"
+          "5, defaultName:web, gapsin:3, gapsout:6, persistent:true"
           "special:control-panel, gapsin:2, gapsout:5"
         ];
         master = {

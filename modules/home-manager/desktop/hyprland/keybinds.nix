@@ -63,7 +63,7 @@ with lib; {
         "$mainMod SHIFT, down, movewindow, d"
       ];
       bindr = [
-        "CTRL_ALT, L, exec, hyprlock"
+        "CTRL_ALT, L, exec, noctalia-shell ipc call lockScreen toggle"
       ];
       bindm = [
         "$mainMod, mouse:272, movewindow"

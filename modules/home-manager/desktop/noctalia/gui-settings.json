@@ -233,14 +233,14 @@
         "animationSpeed": 2,
         "avatarImage": "/home/weegs/Pictures/2026-01-03-143506_hyprshot.png",
         "boxRadiusRatio": 1,
-        "compactLockScreen": false,
+        "compactLockScreen": true,
         "dimmerOpacity": 0,
         "enableShadows": false,
         "forceBlackScreenCorners": false,
-        "iRadiusRatio": 1,
+        "iRadiusRatio": 2,
         "language": "",
         "lockOnSuspend": false,
-        "radiusRatio": 1,
+        "radiusRatio": 2,
         "scaleRatio": 1.2,
         "screenRadiusRatio": 1,
         "shadowDirection": "bottom_right",
@@ -248,7 +248,7 @@
         "shadowOffsetY": 3,
         "showHibernateOnLockScreen": false,
         "showScreenCorners": false,
-        "showSessionButtonsOnLockScreen": false
+        "showSessionButtonsOnLockScreen": true
     },
     "hooks": {
         "darkModeChange": "",
@@ -343,12 +343,18 @@
         "videoSource": "portal"
     },
     "sessionMenu": {
-        "countdownDuration": 5000,
+        "countdownDuration": 3000,
         "enableCountdown": true,
         "largeButtonsLayout": "single-row",
         "largeButtonsStyle": false,
         "position": "center",
         "powerOptions": [
+            {
+                "action": "lock",
+                "command": "",
+                "countdownEnabled": true,
+                "enabled": true
+            },
             {
                 "action": "reboot",
                 "command": "",
@@ -360,12 +366,6 @@
                 "command": "",
                 "countdownEnabled": true,
                 "enabled": true
-            },
-            {
-                "action": "lock",
-                "command": "",
-                "countdownEnabled": true,
-                "enabled": false
             },
             {
                 "action": "suspend",
@@ -406,7 +406,7 @@
         "loadAvgPollingInterval": 250,
         "memCriticalThreshold": 90,
         "memPollingInterval": 250,
-        "memWarningThreshold": 80,
+        "memWarningThreshold": 75,
         "networkPollingInterval": 250,
         "tempCriticalThreshold": 90,
         "tempPollingInterval": 250,
@@ -423,7 +423,7 @@
         "enableUserTemplates": true,
         "foot": false,
         "fuzzel": false,
-        "ghostty": true,
+        "ghostty": false,
         "gtk": true,
         "helix": false,
         "hyprland": true,

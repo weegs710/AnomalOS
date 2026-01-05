@@ -7,7 +7,6 @@
 }: {
   imports = [
     ./wallpaper.nix
-    ./hyprlock.nix
     ./config.nix
     ./keybinds.nix
     ./rules.nix
