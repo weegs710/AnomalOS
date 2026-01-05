@@ -9,11 +9,9 @@
 {
   imports = [
     ./hyprland
-    # ./waybar  # Replaced by noctalia shell
     ./noctalia
     ./nemo.nix
     ./ghostty.nix
-    ./swaync.nix
     ./vesktop.nix
     ./xdg-apps.nix
     ./fastfetch.nix
