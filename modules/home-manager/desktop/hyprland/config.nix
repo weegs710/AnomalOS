@@ -37,6 +37,9 @@ with lib; {
           "kwalletd6 &"
           "hyprctl dispatch workspace 1"
           "noctalia-shell"
+          "vesktop"
+          "steam"
+          "euphonica"
         ];
         general = {
           gaps_in = 3;
