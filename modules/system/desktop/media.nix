@@ -23,7 +23,6 @@ with lib; {
 
     # Media applications
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      obs-studio
       gimp3-with-plugins
       video2x
     ];
