@@ -14,6 +14,7 @@
     kernelParams = [
       "quiet"
       "hid_apple.fnmode=2"
+      "amdgpu.dcdebugmask=0x610"
     ];
     consoleLogLevel = 0;
     initrd.verbose = false;
