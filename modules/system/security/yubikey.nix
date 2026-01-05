@@ -43,7 +43,7 @@ with lib; let
     [Autologin]
     User=${username}
     Session=hyprland
-    Relogin=true
+    Relogin=false
     EOF
           chmod 644 "${autologinConf}"
         }
