@@ -48,9 +48,6 @@ with lib; {
         "$mainMod, home, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
         "$mainMod, end, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ];
-      bindl = [
-        "SUPER,Super_L, exec, noctalia-shell ipc call launcher toggle"
-      ];
       binde = [
         "$mainMod, left, movefocus, l"
         "$mainMod, right, movefocus, r"
@@ -62,6 +59,7 @@ with lib; {
         "$mainMod SHIFT, down, movewindow, d"
       ];
       bindr = [
+        "SUPER, Super_L, exec, noctalia-shell ipc call launcher toggle"
         "CTRL_ALT, L, exec, noctalia-shell ipc call lockScreen lock"
         "$mainMod, tab, exec, noctalia-shell ipc call controlCenter toggle"
       ];
