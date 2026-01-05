@@ -496,15 +496,6 @@ cc status       # Show system status
 
 **Configuration**: `modules/system/gaming/mangohud.nix`
 
-### Anime Game Launchers (Disabled)
-
-**aagl-gtk-on-nix**
-- Disabled in current configuration (commented out in gaming/default.nix)
-- Can be re-enabled by uncommenting `./aagl.nix` import
-- Binary cache (ezkea.cachix.org) still configured
-
-**Configuration**: `modules/system/gaming/aagl.nix` (commented out)
-
 ### Emulators
 
 **PPSSPP**
@@ -640,7 +631,6 @@ flatpak list              # List installed apps
 - `cache.nixos.org`: Official NixOS binary cache
 - `nix-community.cachix.org`: Community packages
 - `hyprland.cachix.org`: Hyprland compositor and tools
-- `ezkea.cachix.org`: Anime game launchers (aagl-gtk-on-nix)
 
 **Benefit**: Use pre-built binaries instead of building from source
 

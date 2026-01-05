@@ -59,9 +59,6 @@ with lib; {
         # Workspace: 3 (games)
         "workspace 3, match:class ^(steam)$"
         "workspace 3, match:class ^(steam_app_.*)$"
-        "workspace 3, match:class ^(starrail\.exe)$"
-        "workspace 3, match:class ^(moe\.launcher\.the-honkers-railway-launcher)$"
-        "workspace 3, match:title ^(Honkai: Star Rail)$"
 
         # Where Winds Meet - force fullscreen and prevent the game from toggling fullscreen itself.
         "fullscreen on, match:class ^(steam_app_3564740)$"
@@ -81,7 +78,6 @@ with lib; {
         "focus_on_activate on, match:class ^(brave-browser)$"
         "focus_on_activate on, match:class ^(firefox)$"
         "focus_on_activate on, match:class ^(chromium-browser)$"
-        "tile on, match:class ^(starrail\.exe)$"
 
         # Control-panel workspace utilities (must come before dev workspace ghostty rule)
         "tile on, match:class ^(pavucontrol)$"
@@ -114,7 +110,6 @@ with lib; {
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(vesktop)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(com\.stremio\.stremio)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(brave-browser)$"
-        "opacity 1.0 override 1.0 override 1.0 override, match:class ^(starrail\.exe)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(io\.github\.htkhiem\.Euphonica)$"

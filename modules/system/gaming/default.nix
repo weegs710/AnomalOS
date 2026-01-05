@@ -7,7 +7,6 @@
 with lib; {
   imports = [
     ./steam.nix
-    # ./aagl.nix
     ./mangohud.nix
     ./decky-loader.nix
   ];
