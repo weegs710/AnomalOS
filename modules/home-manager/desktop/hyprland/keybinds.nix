@@ -7,7 +7,7 @@
 }:
 with lib; {
   config = mkIf osConfig.mySystem.features.desktop {
-  wayland.windowManager.hyprland.settings = {
+    wayland.windowManager.hyprland.settings = {
       bind = [
         "$mainMod, escape, killactive"
         "$mainMod, F, fullscreen"
@@ -50,7 +50,6 @@ with lib; {
       ];
       bindl = [
         "SUPER,Super_L, exec, noctalia-shell ipc call launcher toggle"
-        "CTRL ALT, delete, exec, wlogout"
       ];
       binde = [
         "$mainMod, left, movefocus, l"
@@ -64,14 +63,15 @@ with lib; {
       ];
       bindr = [
         "CTRL_ALT, L, exec, noctalia-shell ipc call lockScreen lock"
+        "$mainMod, tab, exec, noctalia-shell ipc call controlCenter toggle"
       ];
       bindm = [
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
-  };
+    };
 
-  wayland.windowManager.hyprland.extraConfig = ''
+    wayland.windowManager.hyprland.extraConfig = ''
       submap = resize
       binde = , right, resizeactive, 100 0
       binde = , left, resizeactive, -100 0
@@ -80,6 +80,6 @@ with lib; {
       bind = , escape, submap, reset
       bind = , return, submap, reset
       submap = reset
-  '';
+    '';
   };
 }
