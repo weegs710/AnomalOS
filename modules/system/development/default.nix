@@ -5,6 +5,7 @@
 }:
 with lib; {
   imports = [
+    ./android-webcam.nix
     ./claude-code.nix
     ./editors.nix
     ./languages.nix

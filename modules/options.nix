@@ -47,6 +47,7 @@ with lib; {
       flatpak = mkEnableOption "Declarative Flatpak package management";
       kdeconnect = mkEnableOption "KDE Connect for device integration and file transfer";
       vm = mkEnableOption "Virtual machine support (libvirtd, virt-manager)";
+      androidWebcam = mkEnableOption "Android phone as USB webcam via scrcpy";
     };
 
     security = {

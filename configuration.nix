@@ -36,6 +36,7 @@
       media = true;
       kdeconnect = true;
       vm = true;
+      androidWebcam = true;
     };
 
     hardware = {
