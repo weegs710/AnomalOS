@@ -97,7 +97,7 @@
             "right": [
                 {
                     "customFont": "",
-                    "formatHorizontal": "ddd, yyyy-MM-dd\\nh:mmAP",
+                    "formatHorizontal": "h:mmAP\\nddd, dd MMM yyyy",
                     "formatVertical": "",
                     "id": "Clock",
                     "tooltipFormat": "",

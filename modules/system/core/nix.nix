@@ -94,7 +94,8 @@
     update = "cd ~/dotfiles/ && nix flake update";
     closure = "nix path-info -Sh /run/current-system";
     shh = "tmux new -d 'env STEAM_FRAME_FORCE_CLOSE=1 steam -silent'";
-
+    gui-up = "cp ~/.config/noctalia/gui-settings.json ~/dotfiles/modules/home-manager/desktop/noctalia/gui-settings.json";
+    noct-up = "cd ~/dotfiles/ && nix flake update noctalia";
     nrs-rig = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.Rig";
     nrt-rig = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.Rig";
   };

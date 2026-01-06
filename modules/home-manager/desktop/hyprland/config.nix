@@ -103,20 +103,20 @@ with lib; {
         animations = {
           enabled = 1;
           animation = [
-            "windows, 1, 3, myBezier"
-            "windowsOut, 1, 5, default, popin 80%"
-            "border, 1, 10, default"
-            "fade, 1, 5, default"
-            "workspaces, 1, 7, default"
-            "windowsMove, 1, 5, myBezier"
-            "windowsOut, 1, 5, myBezier"
-            "fade, 1, 5, default"
-            "workspaces,1,4,overshot,slide"
+            "windows, 1, 3, zoom"
+            "windowsOut, 1, 3, default, popin 10%"
+            "border, 1, 3, default"
+            "fade, 1, 3, default"
+            "workspaces, 1, 3, default"
+            "windowsMove, 1, 3, zoom"
+            "windowsOut, 1, 3, zoom"
+            "fade, 1, 3, default"
+            "workspaces, 1, 3, overshot, slide"
           ];
           bezier = [
-            "myBezier, 0.05, 0.9, 0.1, 1.05"
-            "overshot,0.05,0.9,0.1,1.1"
-            "overshot,0.13,0.99,0.29,1.1"
+            "zoom, 0.1, 0.9, 0.1, 1.2"
+            "overshot,0.05,0.9,0.1,1.5"
+            "overshot,0.13,0.99,0.29,1.5"
           ];
         };
       };
