@@ -58,6 +58,57 @@ in {
     };
     "com.interversehq.qView" = {
       name = "qView";
+      genericName = "Image Viewer";
+      comment = "Minimal image viewer";
+      exec = "qview %U";
+      icon = "com.interversehq.qView";
+      mimeType = [
+        "image/bmp"
+        "image/x-win-bitmap"
+        "image/gif"
+        "image/icns"
+        "image/x-icon"
+        "image/jpeg"
+        "image/jpg"
+        "image/x-portable-bitmap"
+        "image/x-portable-graymap"
+        "image/png"
+        "image/x-portable-pixmap"
+        "image/svg+xml"
+        "image/tiff"
+        "image/vnd.wap.wbmp"
+        "image/webp"
+        "image/x-xbitmap"
+        "image/x-xpixmap"
+        "application/x-navi-animation"
+        "image/apng"
+        "image/avif"
+        "image/avif-sequence"
+        "image/x-sgi-bw"
+        "image/aces"
+        "image/x-exr"
+        "image/vnd.radiance"
+        "image/heic"
+        "image/heif"
+        "image/jxl"
+        "application/x-krita"
+        "image/openraster"
+        "image/vnd.zbrush.pcx"
+        "image/x-pcx"
+        "image/x-pic"
+        "image/vnd.adobe.photoshop"
+        "application/x-photoshop"
+        "application/photoshop"
+        "application/psd"
+        "image/psd"
+        "image/x-sun-raster"
+        "image/x-rgb"
+        "image/x-sgi-rgba"
+        "image/sgi"
+        "image/x-tga"
+        "image/x-xcf"
+      ];
+      categories = ["Qt" "Graphics" "Viewer" "Photography"];
       noDisplay = true;
     };
   };

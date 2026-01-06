@@ -254,7 +254,6 @@ in {
       '';
     };
 
-    programs.adb.enable = true;
     users.users.${config.mySystem.user.name}.extraGroups = ["adbusers"];
 
     environment.systemPackages = with pkgs; [
