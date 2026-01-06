@@ -91,7 +91,7 @@
                     "showProgressRing": true,
                     "showVisualizer": true,
                     "useFixedWidth": false,
-                    "visualizerType": "wave"
+                    "visualizerType": "linear"
                 }
             ],
             "right": [
@@ -170,7 +170,7 @@
             }
         ],
         "diskPath": "/",
-        "position": "close_to_bar_button",
+        "position": "center",
         "shortcuts": {
             "left": [
                 {
