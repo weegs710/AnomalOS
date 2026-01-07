@@ -79,31 +79,31 @@ with lib; {
         "focus_on_activate on, match:class ^(firefox)$"
         "focus_on_activate on, match:class ^(chromium-browser)$"
 
-        # Control-panel workspace utilities (must come before dev workspace ghostty rule)
+        # Stash workspace utilities (must come before dev workspace ghostty rule)
         "tile on, match:class ^(pavucontrol)$"
-        "workspace special:control-panel, match:class ^(pavucontrol)$"
+        "workspace special:stash, match:class ^(pavucontrol)$"
         "tile on, match:class ^(org\.pulseaudio\.pavucontrol)$"
-        "workspace special:control-panel, match:class ^(org\.pulseaudio\.pavucontrol)$"
+        "workspace special:stash, match:class ^(org\.pulseaudio\.pavucontrol)$"
         "tile on, match:title ^(nmtui)$"
-        "workspace special:control-panel, match:title ^(nmtui)$"
+        "workspace special:stash, match:title ^(nmtui)$"
         "tile on, match:title ^(blueman-manager)$"
-        "workspace special:control-panel, match:title ^(blueman-manager)$"
+        "workspace special:stash, match:title ^(blueman-manager)$"
         "float on, match:class ^(qalculate-gtk)$"
-        "workspace special:control-panel, match:class ^(qalculate-gtk)$"
+        "workspace special:stash, match:class ^(qalculate-gtk)$"
         "float on, match:class ^(io\.missioncenter\.MissionCenter)$"
-        "workspace special:control-panel, match:class ^(io\.missioncenter\.MissionCenter)$"
+        "workspace special:stash, match:class ^(io\.missioncenter\.MissionCenter)$"
         "float on, match:class ^(io\.github\.ilya_zlobintsev\.LACT)$"
-        "workspace special:control-panel, match:class ^(io\.github\.ilya_zlobintsev\.LACT)$"
+        "workspace special:stash, match:class ^(io\.github\.ilya_zlobintsev\.LACT)$"
         "float on, match:class ^(cliphist)$"
-        "workspace special:control-panel, match:class ^(cliphist)$"
+        "workspace special:stash, match:class ^(cliphist)$"
         "float on, match:class ^(piper)$"
-        "workspace special:control-panel, match:class ^(piper)$"
+        "workspace special:stash, match:class ^(piper)$"
         "float on, match:class ^(com\.github\.jkotra\.eovpn)$"
-        "workspace special:control-panel, match:class ^(com\.github\.jkotra\.eovpn)$"
+        "workspace special:stash, match:class ^(com\.github\.jkotra\.eovpn)$"
         "float on, match:class ^(org\.kde\.kwalletmanager)$"
-        "workspace special:control-panel, match:class ^(org\.kde\.kwalletmanager)$"
+        "workspace special:stash, match:class ^(org\.kde\.kwalletmanager)$"
 
-        # Workspace: 2 (dev) - ghostty terminals (must come after control-panel utilities)
+        # Workspace: 2 (dev) - ghostty terminals (must come after stash utilities)
         "workspace 2, match:class ^(com\.mitchellh\.ghostty)$"
 
         # Opacity overrides
