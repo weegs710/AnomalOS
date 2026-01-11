@@ -20,11 +20,17 @@ This system uses ZFS with automated snapshots via [sanoid](https://github.com/ji
 - 3 weekly snapshots
 - 1 monthly snapshot
 
-**Important datasets (zroot/root, zgames/games):**
+**Important datasets (zroot/root):**
 - 24 hourly snapshots
 - 7 daily snapshots
 - 2 weekly snapshots
 - 1 monthly snapshot
+
+**Games datasets (zgames/games):**
+- 12 hourly snapshots
+- 7 daily snapshots
+- 1 weekly snapshot
+- 0 monthly snapshots
 
 **Standard datasets (zroot/nix):**
 - 12 hourly snapshots

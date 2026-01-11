@@ -33,6 +33,15 @@
       autosnap = true;
     };
 
+    templates.games = {
+      hourly = 12;
+      daily = 7;
+      weekly = 1;
+      monthly = 0;
+      autoprune = true;
+      autosnap = true;
+    };
+
     datasets = {
       "zroot/persist" = {
         useTemplate = ["critical"];
@@ -41,7 +50,7 @@
         useTemplate = ["important"];
       };
       "zgames/games" = {
-        useTemplate = ["important"];
+        useTemplate = ["games"];
       };
       "zroot/nix" = {
         useTemplate = ["standard"];
