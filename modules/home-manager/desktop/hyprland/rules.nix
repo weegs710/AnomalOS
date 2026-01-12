@@ -37,7 +37,7 @@ with lib; {
         "float on, match:title ^(Rename)(.*)$"
         "float on, match:title ^(Delete)(.*)$"
 
-        # Nemo file manager
+        # File managers
         "float on, match:class ^(nemo)$"
 
         # Browser popups
@@ -99,7 +99,10 @@ with lib; {
         "float on, match:class ^(org\.kde\.kwalletmanager)$"
         "workspace special:stash, match:class ^(org\.kde\.kwalletmanager)$"
 
-        # Workspace: 2 (dev) - ghostty terminals (must come after stash utilities)
+        # Superfile (must come before general ghostty workspace rule)
+        "float on, match:title ^(superfile)$"
+
+        # Workspace: 2 (dev) - ghostty terminals (must come after stash utilities and superfile)
         "workspace 2, match:class ^(com\.mitchellh\.ghostty)$"
 
         # Opacity overrides
@@ -110,6 +113,7 @@ with lib; {
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(io\.github\.htkhiem\.Euphonica)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(nemo)$"
+        "opacity 1.0 override 1.0 override 1.0 override, match:title ^(superfile)$"
       ];
   };
   };

@@ -195,7 +195,8 @@ The system uses a named workspace scheme:
 
 **Core Applications:**
 - `Super+Return`: Terminal (Ghostty)
-- `Super+Space`: File manager (Nemo)
+- `Super+Space`: File manager (Superfile)
+- `Super+Shift+Space`: GUI file manager (Nemo)
 - `Super+Super_L`: Noctalia shell launcher toggle
 
 **Window Management:**

@@ -11,7 +11,7 @@ with lib; {
       enable = true;
       settings = {
         "$terminal" = "ghostty";
-        "$fileManager" = "nemo";
+        "$fileManager" = "ghostty -e superfile";
         "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
         "$webBrowser" = "zen";
         "$mainMod" = "SUPER";
