@@ -72,12 +72,8 @@ with lib; {
         "workspace 4, match:class ^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$"
 
         # Workspace: 5 (web)
-        "workspace 5, match:class ^(brave-browser)$"
-        "workspace 5, match:class ^(firefox)$"
-        "workspace 5, match:class ^(chromium-browser)$"
-        "focus_on_activate on, match:class ^(brave-browser)$"
-        "focus_on_activate on, match:class ^(firefox)$"
-        "focus_on_activate on, match:class ^(chromium-browser)$"
+        "workspace 5, match:class ^(zen)$"
+        "focus_on_activate on, match:class ^(zen)$"
 
         # Stash workspace utilities (must come before dev workspace ghostty rule)
         "tile on, match:class ^(pavucontrol)$"
@@ -109,7 +105,7 @@ with lib; {
         # Opacity overrides
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(vesktop)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(com\.stremio\.stremio)$"
-        "opacity 1.0 override 1.0 override 1.0 override, match:class ^(brave-browser)$"
+        "opacity 1.0 override 1.0 override 1.0 override, match:class ^(zen)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(io\.github\.htkhiem\.Euphonica)$"

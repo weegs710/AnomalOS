@@ -181,10 +181,10 @@ in {
       "application/x-tar" = ["org.gnome.FileRoller.desktop"];
       "application/gzip" = ["org.gnome.FileRoller.desktop"];
 
-      # Web - Brave
-      "text/html" = ["brave-browser.desktop"];
-      "x-scheme-handler/http" = ["brave-browser.desktop"];
-      "x-scheme-handler/https" = ["brave-browser.desktop"];
+      # Web - Zen Browser
+      "text/html" = ["zen.desktop"];
+      "x-scheme-handler/http" = ["zen.desktop"];
+      "x-scheme-handler/https" = ["zen.desktop"];
 
       # Terminal
       "application/x-terminal-emulator" = ["com.mitchellh.ghostty.desktop"];

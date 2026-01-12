@@ -19,7 +19,7 @@ with lib; {
         "$mainMod, F3, exec, steam"
         "$mainMod, F4, exec, euphonica"
         "$mainMod SHIFT, F4, exec, flatpak run com.stremio.Stremio"
-        "$mainMod, F5, exec, brave"
+        "$mainMod, F5, exec, $webBrowser"
         "$mainMod, F6, exec, missioncenter"
         "$mainMod, Return, exec, $terminal"
         "$mainMod, Space, exec, $fileManager"

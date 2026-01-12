@@ -164,7 +164,7 @@ The system uses a named workspace scheme:
 2. **dev** (Super+2): Development environment (Zed, Ghostty terminals)
 3. **games** (Super+3): Gaming (Steam, game launchers, game windows)
 4. **media** (Super+4): Media playback (Euphonica music player, Stremio)
-5. **web** (Super+5): Web browsing (Brave, Chromium, web apps)
+5. **web** (Super+5): Web browsing (Zen Browser)
 6. **control-panel** (Super+Grave): Special workspace for utilities
 
 **Control-Panel Utilities:**
@@ -190,7 +190,7 @@ The system uses a named workspace scheme:
 - `Super+F2`: Zed editor (workspace 2 - dev)
 - `Super+F3`: Steam (workspace 3 - games)
 - `Super+F4`: Euphonica music player (workspace 4 - media)
-- `Super+F5`: Brave browser (workspace 5 - web)
+- `Super+F5`: Zen Browser (workspace 5 - web)
 - `Super+F6`: Mission Center system monitor (control-panel)
 
 **Core Applications:**

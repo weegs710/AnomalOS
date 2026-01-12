@@ -218,7 +218,7 @@ Edit `modules/home-manager/desktop/hyprland/rules.nix` to route applications:
 windowrulev2 = [
   # Route to specific workspace
   "workspace name:dev, class:^(Zed)$"
-  "workspace name:web, class:^(brave-browser)$"
+  "workspace name:web, class:^(zen)$"
   "workspace name:media, class:^(io\.github\.htkhiem\.Euphonica)$"
 
   # Float specific window types
@@ -334,7 +334,6 @@ environment.systemPackages = with pkgs; [
   postgresql
 
   # Applications
-  brave
   vesktop
 
   # Your packages here
@@ -660,7 +659,7 @@ System-wide environment variables:
 environment.variables = {
   EDITOR = "vim";
   VISUAL = "zeditor";
-  BROWSER = "brave";
+  BROWSER = "zen";
 
   # Your variables
 };

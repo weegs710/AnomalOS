@@ -13,7 +13,7 @@ with lib; {
         "$terminal" = "ghostty";
         "$fileManager" = "nemo";
         "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
-        "$webBrowser" = "brave";
+        "$webBrowser" = "zen";
         "$mainMod" = "SUPER";
         monitor = [
           "HDMI-A-2, 2560x1440@144, 0x0, 1"

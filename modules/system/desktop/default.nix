@@ -16,7 +16,7 @@ with lib; {
     ./flatpak.nix
     ./kdeconnect.nix
     ./autotrash.nix
-    ./brave.nix
+    ./zen-browser.nix
   ];
 
   config = mkIf config.mySystem.features.desktop {
