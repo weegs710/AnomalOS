@@ -17,5 +17,6 @@
     ./fastfetch.nix
     ./udiskie.nix
     ./mission-center.nix
+    ./superfile.nix
   ];
 }
