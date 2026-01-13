@@ -10,8 +10,8 @@ with lib; {
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
-        "$terminal" = "ghostty";
-        "$fileManager" = "ghostty -e superfile";
+        "$fileManager" = "hyprctl dispatch exec '[float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'";
+        "$terminal" = "ghostty --title=ghostty";
         "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
         "$webBrowser" = "zen";
         "$mainMod" = "SUPER";
@@ -33,13 +33,14 @@ with lib; {
           "~/.config/hypr/noctalia/noctalia-colors.conf"
         ];
         exec-once = [
+          "steam"
+          "noctalia-shell"
+          "zen"
+          "ghostty --title=ghostty"
+          "euphonica"
+          "vesktop"
           "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
           "kwalletd6 &"
-          "hyprctl dispatch workspace 1"
-          "noctalia-shell"
-          "vesktop"
-          "steam"
-          "euphonica"
         ];
         general = {
           gaps_in = 3;

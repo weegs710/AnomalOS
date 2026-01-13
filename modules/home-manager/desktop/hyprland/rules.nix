@@ -7,7 +7,7 @@
 }:
 with lib; {
   config = mkIf osConfig.mySystem.features.desktop {
-  wayland.windowManager.hyprland.settings = {
+    wayland.windowManager.hyprland.settings = {
       windowrule = [
         # Global opacity override for all floating windows
         "opacity 1.0 override 1.0 override 1.0 override, match:float yes"
@@ -55,6 +55,7 @@ with lib; {
         # Workspace: 2 (dev)
         "workspace 2, match:class ^(dev\.zed\.Zed)$"
         "workspace 2, match:class ^(Zed)$"
+        "workspace 2, match:title ^(ghostty)$"
 
         # Workspace: 3 (games)
         "workspace 3, match:class ^(steam)$"
@@ -75,7 +76,7 @@ with lib; {
         "workspace 5, match:class ^(zen)$"
         "focus_on_activate on, match:class ^(zen)$"
 
-        # Stash workspace utilities (must come before dev workspace ghostty rule)
+        # Stash workspace utilities
         "tile on, match:class ^(pavucontrol)$"
         "workspace special:stash, match:class ^(pavucontrol)$"
         "tile on, match:class ^(org\.pulseaudio\.pavucontrol)$"
@@ -99,12 +100,6 @@ with lib; {
         "float on, match:class ^(org\.kde\.kwalletmanager)$"
         "workspace special:stash, match:class ^(org\.kde\.kwalletmanager)$"
 
-        # Superfile (must come before general ghostty workspace rule)
-        "float on, match:title ^(superfile)$"
-
-        # Workspace: 2 (dev) - ghostty terminals (must come after stash utilities and superfile)
-        "workspace 2, match:class ^(com\.mitchellh\.ghostty)$"
-
         # Opacity overrides
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(vesktop)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(com\.stremio\.stremio)$"
@@ -113,8 +108,7 @@ with lib; {
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(io\.github\.htkhiem\.Euphonica)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(nemo)$"
-        "opacity 1.0 override 1.0 override 1.0 override, match:title ^(superfile)$"
       ];
-  };
+    };
   };
 }
