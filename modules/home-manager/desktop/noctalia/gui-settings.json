@@ -1,13 +1,14 @@
 {
   "appLauncher": {
     "autoPasteClipboard": false,
+    "clipboardWrapText": true,
     "customLaunchPrefix": "",
     "customLaunchPrefixEnabled": false,
     "enableClipPreview": true,
     "enableClipboardHistory": true,
     "iconMode": "tabler",
     "ignoreMouseInput": false,
-    "pinnedExecs": [],
+    "pinnedApps": [],
     "position": "center",
     "screenshotAnnotationTool": "",
     "showCategories": true,
@@ -19,7 +20,6 @@
   },
   "audio": {
     "cavaFrameRate": 144,
-    "externalMixer": "pwvucontrol || pavucontrol",
     "mprisBlacklist": [],
     "preferredPlayer": "",
     "visualizerType": "linear",
@@ -32,8 +32,8 @@
     "density": "spacious",
     "exclusive": true,
     "floating": false,
-    "marginHorizontal": 0.25,
-    "marginVertical": 0.25,
+    "marginHorizontal": 5,
+    "marginVertical": 5,
     "monitors": [],
     "outerCorners": false,
     "position": "top",
@@ -76,10 +76,15 @@
           "unfocusedIconsOpacity": 1
         },
         {
+          "compactMode": false,
+          "compactShowAlbumArt": true,
+          "compactShowVisualizer": false,
           "hideMode": "idle",
           "hideWhenIdle": false,
           "id": "MediaMini",
           "maxWidth": 300,
+          "panelShowAlbumArt": true,
+          "panelShowVisualizer": true,
           "scrollingMode": "always",
           "showAlbumArt": false,
           "showArtistFirst": true,
@@ -131,7 +136,7 @@
     "darkMode": true,
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "matugenSchemeType": "scheme-fruit-salad",
+    "matugenSchemeType": "scheme-content",
     "predefinedScheme": "Noctalia (default)",
     "schedulingMode": "off",
     "useWallpaperColors": true
@@ -178,9 +183,6 @@
         },
         {
           "id": "Notifications"
-        },
-        {
-          "id": "ScreenRecorder"
         }
       ],
       "right": []
@@ -209,6 +211,7 @@
     "onlySameOutput": true,
     "pinnedApps": [],
     "pinnedStatic": false,
+    "position": "bottom",
     "size": 1
   },
   "general": {
@@ -310,18 +313,6 @@
     "monitors": [],
     "overlayLayer": false
   },
-  "screenRecorder": {
-    "audioCodec": "opus",
-    "audioSource": "default_output",
-    "colorRange": "limited",
-    "copyToClipboard": false,
-    "directory": "/home/weegs/Videos",
-    "frameRate": 60,
-    "quality": "very_high",
-    "showCursor": true,
-    "videoCodec": "h264",
-    "videoSource": "portal"
-  },
   "sessionMenu": {
     "countdownDuration": 3000,
     "enableCountdown": true,
@@ -369,7 +360,7 @@
     "showHeader": true,
     "showNumberLabels": true
   },
-  "settingsVersion": 37,
+  "settingsVersion": 39,
   "systemMonitor": {
     "cpuCriticalThreshold": 90,
     "cpuPollingInterval": 250,
@@ -420,7 +411,7 @@
     "wezterm": false,
     "yazi": false,
     "zed": true,
-    "zenBrowser": false
+    "zenBrowser": true
   },
   "ui": {
     "bluetoothDetailsViewMode": "grid",
@@ -443,7 +434,7 @@
     "enabled": true,
     "fillColor": "#000000",
     "fillMode": "crop",
-    "hideWallpaperFilenames": false,
+    "hideWallpaperFilenames": true,
     "monitorDirectories": [],
     "overviewEnabled": false,
     "panelPosition": "follow_bar",
@@ -452,8 +443,8 @@
     "recursiveSearch": false,
     "setWallpaperOnAllMonitors": true,
     "solidColor": "#1a1a2e",
-    "transitionDuration": 5000,
-    "transitionEdgeSmoothness": 0.5,
+    "transitionDuration": 2000,
+    "transitionEdgeSmoothness": 0,
     "transitionType": "stripes",
     "useSolidColor": false,
     "useWallhaven": false,
@@ -461,7 +452,7 @@
     "wallhavenCategories": "111",
     "wallhavenOrder": "desc",
     "wallhavenPurity": "100",
-    "wallhavenQuery": "",
+    "wallhavenQuery": "nixos",
     "wallhavenRatios": "",
     "wallhavenResolutionHeight": "",
     "wallhavenResolutionMode": "atleast",
