@@ -10,7 +10,7 @@ with lib; {
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
-        "$fileManager" = "hyprctl dispatch exec '[float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'";
+        "$fileManager" = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'";
         "$terminal" = "ghostty --title=ghostty";
         "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
         "$webBrowser" = "zen";
