@@ -74,12 +74,14 @@
           "showApplications": false,
           "showLabelsOnlyWhenOccupied": false,
           "unfocusedIconsOpacity": 1
-        },
+        }
+      ],
+      "right": [
         {
           "compactMode": false,
           "compactShowAlbumArt": true,
           "compactShowVisualizer": false,
-          "hideMode": "idle",
+          "hideMode": "visible",
           "hideWhenIdle": false,
           "id": "MediaMini",
           "maxWidth": 300,
@@ -92,9 +94,7 @@
           "showVisualizer": true,
           "useFixedWidth": false,
           "visualizerType": "linear"
-        }
-      ],
-      "right": [
+        },
         {
           "customFont": "",
           "formatHorizontal": "h:mmAP\\nddd, dd MMM yyyy",
