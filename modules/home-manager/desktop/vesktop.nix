@@ -12,7 +12,7 @@ with lib; {
     xdg.configFile."vesktop/settings/settings.json" = {
       force = true;
       text = builtins.toJSON {
-        enabledThemes = [ "noctalia.theme.css" ];
+        enabledThemes = ["noctalia.theme.css"];
         autoUpdate = true;
         useQuickCss = true;
       };

@@ -6,5 +6,6 @@ let
   systems = [HX99G];
   allKeys = users ++ systems;
 in {
-  "secrets/kwallet.age".publicKeys = allKeys;
+  # Add secret definitions here
+  # Example: "secrets/example.age".publicKeys = allKeys;
 }

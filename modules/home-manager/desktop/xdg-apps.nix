@@ -60,18 +60,5 @@ with lib; {
       Name=Piper
       Hidden=true
     '';
-
-    xdg.dataFile."applications/org.kde.kwalletmanager5.desktop".text = ''
-      [Desktop Entry]
-      Name=KWallet Manager
-      GenericName=Password Manager
-      Comment=Manage KDE Wallet passwords
-      Icon=kwalletmanager
-      Exec=hyprctl dispatch exec '[workspace special:control-panel; float] kwalletmanager5'
-      Terminal=false
-      Type=Application
-      Categories=Qt;KDE;Settings;Security;
-      Keywords=password;wallet;credentials;
-    '';
   };
 }

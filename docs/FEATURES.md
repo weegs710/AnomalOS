@@ -175,7 +175,6 @@ The system uses a named workspace scheme:
 - lact: AMD GPU control, monitoring, and overclocking
 - qalculate-gtk: Calculator
 - piper: Gaming mouse configuration (Logitech, Razer, etc)
-- kwalletmanager: Password wallet manager (KDE)
 
 **Workspace Navigation:**
 - `Super+1-5`: Jump to named workspace
@@ -226,7 +225,6 @@ Applications automatically open on their designated workspaces:
 
 **Window Behavior:**
 - Dialogs float with natural Wayland positioning (xdg-dialog protocol)
-- Auth dialogs (KWallet) stay focused to prevent credential exposure
 - Games workspace: no gaps, no rounding, full opacity
 - Other workspaces: 3px gaps in, 6px gaps out, slight transparency (0.94 active, 0.90 inactive)
 - Media/streaming apps: full opacity overrides

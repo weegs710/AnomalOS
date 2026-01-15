@@ -44,18 +44,18 @@ These keys are already configured in `secrets.nix`.
 
 ### 3. Create Your First Secret
 
-Create the KWallet password secret (example):
+Create an example secret:
 
 ```bash
 cd ~/dotfiles
 
 # Create/edit the secret (opens your $EDITOR)
-nix run github:ryantm/agenix -- -e secrets/kwallet.age
+nix run github:ryantm/agenix -- -e secrets/example-secret.age
 
-# In the editor, type your KWallet password, save and exit
+# In the editor, type your secret value, save and exit
 ```
 
-The file `secrets/kwallet.age` is now encrypted and safe to commit!
+The file `secrets/example-secret.age` is now encrypted and safe to commit!
 
 ### 4. Rebuild Your System
 
@@ -70,7 +70,7 @@ Agenix will decrypt secrets at boot to `/run/agenix/`.
 ```bash
 # Check secrets were decrypted
 ls -la /run/agenix/
-# Should show: kwallet (mode 400, owner weegs)
+# Should show your secrets (mode 400, owner weegs)
 ```
 
 ## Managing Secrets
@@ -94,7 +94,7 @@ nix run github:ryantm/agenix -- -e secrets/my-secret.age
 
 ```bash
 # Edit existing secret
-nix run github:ryantm/agenix -- -e secrets/kwallet.age
+nix run github:ryantm/agenix -- -e secrets/my-secret.age
 
 # Make changes, save, exit
 ```
@@ -215,9 +215,7 @@ environment.sessionVariables = {
 
 ## Current Secrets
 
-| Secret | Used By | Description |
-|--------|---------|-------------|
-| `kwallet.age` | KWallet password manager | KWallet password for automatic unlock |
+No secrets are currently configured in this repository.
 
 ## Best Practices
 
@@ -235,8 +233,8 @@ grep -A 1 "weegs =" ~/dotfiles/secrets.nix
 
 ```bash
 # After creating/editing a secret, test it
-nix run github:ryantm/agenix -- -d secrets/kwallet.age
-# Should decrypt and show your password
+nix run github:ryantm/agenix -- -d secrets/my-secret.age
+# Should decrypt and show your secret value
 ```
 
 ### 3. Backup Secrets Responsibly
@@ -290,11 +288,11 @@ age.secrets.shared-secret = {
 
 ```bash
 # Check if secret file exists
-ls -la ~/dotfiles/secrets/kwallet.age
+ls -la ~/dotfiles/secrets/my-secret.age
 
 # Check SSH key can decrypt
 ssh-add -L  # List loaded SSH keys
-nix run github:ryantm/agenix -- -d secrets/kwallet.age
+nix run github:ryantm/agenix -- -d secrets/my-secret.age
 ```
 
 ### Permission Denied
@@ -340,12 +338,12 @@ If git refuses to add `.age` files even though they're encrypted:
 
 ```bash
 # Error you might see:
-$ git add secrets/kwallet.age
+$ git add secrets/my-secret.age
 The following paths are ignored by one of your .gitignore files:
 secrets/
 
 # Solution: Force add the encrypted file
-git add -f secrets/kwallet.age
+git add -f secrets/my-secret.age
 
 # Verify it was added
 git status
@@ -367,14 +365,14 @@ The `.gitignore` includes `secrets/` and `*.age` patterns as **defense in depth*
 cd ~/dotfiles
 
 # Verify it's encrypted
-file secrets/kwallet.age
-# Output: secrets/kwallet.age: data
+file secrets/my-secret.age
+# Output: secrets/my-secret.age: data
 
 # Force add the encrypted file
-git add -f secrets/kwallet.age
+git add -f secrets/my-secret.age
 
 # Commit with descriptive message
-git commit -m "Update kwallet secret"
+git commit -m "Update my-secret"
 
 # Push to remote
 git push

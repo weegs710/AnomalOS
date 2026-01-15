@@ -49,12 +49,6 @@ with lib; {
       locate.enable = true;
     };
 
-    # KWallet PAM integration (SDDM delegates to login stack)
-    security.pam.services.login.kwallet = {
-      enable = true;
-      package = pkgs.kdePackages.kwallet-pam;
-    };
-
     programs = {
       partition-manager.enable = true;
     };
@@ -80,9 +74,6 @@ with lib; {
       adwaita-icon-theme
       dbus
       dbus-broker
-      kdePackages.kwallet
-      kdePackages.kwallet-pam
-      kdePackages.kwalletmanager
       libGL
       libnotify
       libportal

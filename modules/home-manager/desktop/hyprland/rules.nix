@@ -12,14 +12,6 @@ with lib; {
         # Global opacity override for all floating windows
         "opacity 1.0 override 1.0 override 1.0 override, match:float yes"
 
-        # KWallet password prompts - lock focus to prevent typing into wrong window
-        "stay_focused on, match:class ^(org.kde.kwalletd.*)$"
-        "stay_focused on, match:class ^(kwalletmanager.*)$"
-        "stay_focused on, match:title ^(KDE Wallet Service)(.*)$"
-        "stay_focused on, match:title ^(.*)KWallet(.*)$"
-        "float on, match:class ^(org.kde.kwalletd.*)$"
-        "float on, match:title ^(.*)KWallet(.*)$"
-
         # Float common dialog windows (let them position naturally)
         "float on, match:title ^(Open)(.*)$"
         "float on, match:title ^(Save)(.*)$"
@@ -97,8 +89,6 @@ with lib; {
         "workspace special:stash, match:class ^(piper)$"
         "float on, match:class ^(com\.github\.jkotra\.eovpn)$"
         "workspace special:stash, match:class ^(com\.github\.jkotra\.eovpn)$"
-        "float on, match:class ^(org\.kde\.kwalletmanager)$"
-        "workspace special:stash, match:class ^(org\.kde\.kwalletmanager)$"
 
         # Opacity overrides
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(vesktop)$"

@@ -39,8 +39,6 @@ with lib; {
           "ghostty --title=ghostty"
           "euphonica"
           "vesktop"
-          "${pkgs.kdePackages.kwallet-pam}/libexec/pam_kwallet_init"
-          "kwalletd6 &"
         ];
         general = {
           gaps_in = 3;
