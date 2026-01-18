@@ -7,98 +7,98 @@
 }:
 with lib; {
   config = mkIf osConfig.mySystem.features.desktop {
-      # Fastfetch configuration
-      xdg.configFile."fastfetch/config.jsonc".text = ''
-        {
-          "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
-          "logo": {
-            "source": "/home/${osConfig.mySystem.user.name}/dotfiles/assets/nixos.png",
-            "type": "kitty",
-            "width": 30,
-            "height": 15,
-            "padding": {
-              "right": 2,
-              "top": 3
-            }
+    # Fastfetch configuration
+    xdg.configFile."fastfetch/config.jsonc".text = ''
+      {
+        "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+        "logo": {
+          "source": "/home/${osConfig.mySystem.user.name}/dotfiles/assets/nixos.png",
+          "type": "kitty",
+          "width": 30,
+          "height": 15,
+          "padding": {
+            "right": 2,
+            "top": 3
+          }
+        },
+        "display": {
+          "separator": " "
+        },
+        "modules": [
+          "break",
+          {
+            "type": "title",
+            "keyWidth": 10
           },
-          "display": {
-            "separator": " "
+          "break",
+          {
+            "type": "os",
+            "key": " ",
+            "keyColor": "34"
           },
-          "modules": [
-            "break",
-            {
-              "type": "title",
-              "keyWidth": 10
-            },
-            "break",
-            {
-              "type": "os",
-              "key": " ",
-              "keyColor": "34"
-            },
-            {
-              "type": "kernel",
-              "key": " ",
-              "keyColor": "34"
-            },
-            {
-              "type": "packages",
-              "key": " ",
-              "keyColor": "34"
-            },
-            {
-              "type": "shell",
-              "key": " ",
-              "keyColor": "34"
-            },
-            "break",
-            {
-              "type": "wm",
-              "key": " ",
-              "keyColor": "34"
-            },
-            {
-              "type": "uptime",
-              "key": " ",
-              "keyColor": "34"
-            },
-            {
-              "type": "command",
-              "key": "󱦟 ",
-              "keyColor": "34",
-              "text": "birth_install=1765484353; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days"
-            },
-            {
-              "type": "media",
-              "key": "󰝚 ",
-              "keyColor": "34"
-            },
-            "break",
-            "break",
-            {
-              "type": "cpu",
-              "key": " ",
-              "keyColor": "blue"
-            },
-            {
-              "type": "gpu",
-              "key": " ",
-              "keyColor": "blue"
-            },
-            {
-              "type": "memory",
-              "key": " ",
-              "keyColor": "blue"
-            },
-            "break",
-            {
-              "type": "custom",
-              "format": "\u001b[90m  \u001b[31m  \u001b[32m  \u001b[33m  \u001b[34m  \u001b[35m  \u001b[36m  \u001b[37m "
-            },
-            "break",
-            "break"
-          ]
-        }
-      '';
+          {
+            "type": "kernel",
+            "key": " ",
+            "keyColor": "34"
+          },
+          {
+            "type": "packages",
+            "key": " ",
+            "keyColor": "34"
+          },
+          {
+            "type": "shell",
+            "key": " ",
+            "keyColor": "34"
+          },
+          "break",
+          {
+            "type": "wm",
+            "key": " ",
+            "keyColor": "34"
+          },
+          {
+            "type": "uptime",
+            "key": "󱦟 ",
+            "keyColor": "34"
+          },
+          {
+            "type": "command",
+            "key": " ",
+            "keyColor": "34",
+            "text": "birth_install=1765484353; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days"
+          },
+          {
+            "type": "media",
+            "key": "󰝚 ",
+            "keyColor": "34"
+          },
+          "break",
+          "break",
+          {
+            "type": "cpu",
+            "key": " ",
+            "keyColor": "blue"
+          },
+          {
+            "type": "gpu",
+            "key": " ",
+            "keyColor": "blue"
+          },
+          {
+            "type": "memory",
+            "key": " ",
+            "keyColor": "blue"
+          },
+          "break",
+          {
+            "type": "custom",
+            "format": "\u001b[90m \u001b[31m \u001b[32m \u001b[33m \u001b[34m \u001b[35m \u001b[36m \u001b[37m"
+          },
+          "break",
+          "break"
+        ]
+      }
+    '';
   };
 }
