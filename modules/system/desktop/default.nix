@@ -8,19 +8,19 @@
 }:
 with lib; {
   imports = [
+    ./audio.nix
+    ./autotrash.nix
+    ./flatpak.nix
     ./hyprland.nix
-    ./stylix.nix
+    ./kdeconnect.nix
     ./media.nix
     ./mpd.nix
     ./rofi.nix
-    ./flatpak.nix
-    ./kdeconnect.nix
-    ./autotrash.nix
+    ./stylix.nix
     ./zen-browser.nix
   ];
 
   config = mkIf config.mySystem.features.desktop {
-    # Basic desktop services
     services = {
       displayManager = {
         autoLogin.enable = false;
@@ -30,18 +30,6 @@ with lib; {
           wayland.enable = true;
         };
       };
-
-      pipewire = {
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
-        pulse.enable = true;
-        jack.enable = true;
-        wireplumber.enable = config.services.pipewire.enable;
-      };
-    };
-
-    services = {
       blueman.enable = true;
       upower.enable = true;
       ratbagd.enable = true;
@@ -57,7 +45,6 @@ with lib; {
       # Applications
       file-roller
       kdePackages.okular
-      pavucontrol
       qalculate-gtk
       qview
       transmission_4-gtk
@@ -79,12 +66,10 @@ with lib; {
       libportal
       lm_sensors
       mesa
-      wireplumber
       xdg-dbus-proxy
 
       # Terminal and system utilities
       cliphist
-      pamixer
       ueberzugpp
 
       # X11 compatibility libraries
@@ -100,7 +85,6 @@ with lib; {
     environment.shellAliases = {
       gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
     };
-
 
     # Desktop fonts
     fonts.packages = with pkgs.nerd-fonts; [
