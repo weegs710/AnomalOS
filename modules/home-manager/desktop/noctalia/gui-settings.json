@@ -32,6 +32,7 @@
     "density": "spacious",
     "exclusive": true,
     "floating": false,
+    "hideOnOverview": false,
     "marginHorizontal": 5,
     "marginVertical": 5,
     "monitors": [],
@@ -136,7 +137,7 @@
     "darkMode": true,
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "matugenSchemeType": "scheme-content",
+    "matugenSchemeType": "scheme-tonal-spot",
     "predefinedScheme": "Noctalia (default)",
     "schedulingMode": "off",
     "useWallpaperColors": true
@@ -236,7 +237,8 @@
     "showChangelogOnStartup": true,
     "showHibernateOnLockScreen": false,
     "showScreenCorners": false,
-    "showSessionButtonsOnLockScreen": true
+    "showSessionButtonsOnLockScreen": true,
+    "telemetryEnabled": true
   },
   "hooks": {
     "darkModeChange": "",
@@ -245,13 +247,14 @@
     "performanceModeEnabled": "",
     "screenLock": "",
     "screenUnlock": "",
+    "session": "",
     "wallpaperChange": ""
   },
   "location": {
     "analogClockInCalendar": false,
     "firstDayOfWeek": -1,
-    "hideWeatherCityName": false,
-    "hideWeatherTimezone": false,
+    "hideWeatherCityName": true,
+    "hideWeatherTimezone": true,
     "name": "Wauseon",
     "showCalendarEvents": true,
     "showCalendarWeather": true,
@@ -273,7 +276,7 @@
     "autoSchedule": true,
     "dayTemp": "6500",
     "enabled": false,
-    "forced": false,
+    "forced": true,
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
     "nightTemp": "4000"
@@ -360,7 +363,7 @@
     "showHeader": true,
     "showNumberLabels": true
   },
-  "settingsVersion": 39,
+  "settingsVersion": 40,
   "systemMonitor": {
     "cpuCriticalThreshold": 90,
     "cpuPollingInterval": 250,
@@ -386,32 +389,41 @@
     "warningColor": ""
   },
   "templates": {
-    "alacritty": false,
-    "cava": false,
-    "code": false,
-    "discord": true,
-    "emacs": false,
-    "enableUserTemplates": true,
-    "foot": false,
-    "fuzzel": false,
-    "ghostty": true,
-    "gtk": true,
-    "helix": false,
-    "hyprland": true,
-    "kcolorscheme": true,
-    "kitty": false,
-    "mango": false,
-    "niri": false,
-    "pywalfox": false,
-    "qt": true,
-    "spicetify": false,
-    "telegram": false,
-    "vicinae": false,
-    "walker": false,
-    "wezterm": false,
-    "yazi": false,
-    "zed": true,
-    "zenBrowser": true
+    "activeTemplates": [
+      {
+        "enabled": true,
+        "id": "gtk"
+      },
+      {
+        "enabled": true,
+        "id": "qt"
+      },
+      {
+        "enabled": true,
+        "id": "kcolorscheme"
+      },
+      {
+        "enabled": true,
+        "id": "ghostty"
+      },
+      {
+        "enabled": true,
+        "id": "discord"
+      },
+      {
+        "enabled": true,
+        "id": "hyprland"
+      },
+      {
+        "enabled": true,
+        "id": "zed"
+      },
+      {
+        "enabled": true,
+        "id": "zenBrowser"
+      }
+    ],
+    "enableUserTemplates": true
   },
   "ui": {
     "bluetoothDetailsViewMode": "grid",
@@ -454,9 +466,9 @@
     "wallhavenPurity": "100",
     "wallhavenQuery": "nixos",
     "wallhavenRatios": "",
-    "wallhavenResolutionHeight": "",
+    "wallhavenResolutionHeight": "1440",
     "wallhavenResolutionMode": "atleast",
-    "wallhavenResolutionWidth": "",
+    "wallhavenResolutionWidth": "2560",
     "wallhavenSorting": "relevance",
     "wallpaperChangeMode": "random"
   }
