@@ -35,8 +35,8 @@ with lib; {
         exec-once = [
           "steam"
           "noctalia-shell"
-          "zen"
-          "ghostty --title=ghostty"
+          "$webBrowser"
+          "zeditor"
           "euphonica"
           "vesktop"
         ];
