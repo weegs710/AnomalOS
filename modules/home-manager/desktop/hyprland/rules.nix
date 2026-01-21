@@ -32,6 +32,9 @@ with lib; {
         # File managers
         "float on, match:class ^(nemo)$"
 
+        # Terminal file chooser (xdg-desktop-portal-termfilechooser)
+        "float on, match:title ^(termfilechooser)$"
+
         # Browser popups
         "float on, match:title ^(Picture-in-Picture)(.*)$"
         "pin on, match:title ^(Picture-in-Picture)(.*)$"
