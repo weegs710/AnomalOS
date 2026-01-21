@@ -16,7 +16,10 @@ with lib; {
 
     xdg.portal = {
       enable = true;
-      extraPortals = [pkgs.xdg-desktop-portal-gtk];
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+        pkgs.xdg-desktop-portal-termfilechooser
+      ];
       configPackages = [pkgs.hyprland];
       config = {
         Hyprland = {
@@ -24,7 +27,7 @@ with lib; {
             "gtk"
             "hyprland"
           ];
-          "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
+          "org.freedesktop.impl.portal.FileChooser" = ["termfilechooser" "gtk"];
           "org.freedesktop.impl.portal.ScreenCast" = ["hyprland"];
           "org.freedesktop.impl.portal.Screenshot" = ["hyprland"];
         };
@@ -56,6 +59,5 @@ with lib; {
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
     };
-
   };
 }

@@ -5,8 +5,7 @@
   lib,
   pkgs,
   ...
-}:
-{
+}: {
   imports = [
     ./hyprland
     ./noctalia
@@ -18,5 +17,6 @@
     ./udiskie.nix
     ./mission-center.nix
     ./superfile.nix
+    ./termfilechooser.nix
   ];
 }
