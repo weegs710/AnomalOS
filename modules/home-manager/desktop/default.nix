@@ -9,7 +9,6 @@
   imports = [
     ./hyprland
     ./noctalia
-    ./nemo.nix
     ./ghostty.nix
     ./vesktop.nix
     ./xdg-apps.nix

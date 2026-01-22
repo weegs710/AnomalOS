@@ -136,9 +136,6 @@ in {
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "inode/directory" = ["nemo.desktop"];
-      "inode/blockdevice" = ["nemo.desktop"];
-
       # Images - qView
       "image/bmp" = ["com.interversehq.qView.desktop"];
       "image/gif" = ["com.interversehq.qView.desktop"];

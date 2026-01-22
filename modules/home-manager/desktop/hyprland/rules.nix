@@ -29,9 +29,6 @@ with lib; {
         "float on, match:title ^(Rename)(.*)$"
         "float on, match:title ^(Delete)(.*)$"
 
-        # File managers
-        "float on, match:class ^(nemo)$"
-
         # Terminal file chooser (xdg-desktop-portal-termfilechooser)
         "float on, match:title ^(termfilechooser)$"
         "size 1600 900, match:title ^(termfilechooser)$"
@@ -103,7 +100,6 @@ with lib; {
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(io\.github\.htkhiem\.Euphonica)$"
-        "opacity 1.0 override 1.0 override 1.0 override, match:class ^(nemo)$"
       ];
     };
   };

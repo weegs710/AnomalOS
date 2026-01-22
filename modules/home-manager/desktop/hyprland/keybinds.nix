@@ -23,7 +23,6 @@ with lib; {
         "$mainMod, F6, exec, missioncenter"
         "$mainMod, Return, exec, $terminal"
         "$mainMod, Space, exec, $fileManager"
-        "$mainMod SHIFT, Space, exec, nemo"
         "$mainMod, Backspace, submap, resize"
         "$mainMod, 1, workspace, 1"
         "$mainMod, 2, workspace, 2"
