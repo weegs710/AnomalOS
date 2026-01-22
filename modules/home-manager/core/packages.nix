@@ -22,7 +22,6 @@
     obsidian
     pamixer
     python3
-    rofi
     rustc
     slurp
     swww

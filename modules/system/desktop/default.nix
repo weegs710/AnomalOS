@@ -15,8 +15,6 @@ with lib; {
     ./kdeconnect.nix
     ./media.nix
     ./mpd.nix
-    ./rofi.nix
-    ./stylix.nix
   ];
 
   config = mkIf config.mySystem.features.desktop {

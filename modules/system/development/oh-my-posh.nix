@@ -1,5 +1,14 @@
-{config, ...}: let
-  colors = config.lib.stylix.colors;
+{...}: let
+  # Hardcoded colors from axion.yaml base16 scheme
+  colors = {
+    base00 = "000000";
+    base02 = "2d5b58";
+    base04 = "80638e";
+    base05 = "e8f6f5";
+    base07 = "21d6c9";
+    base0C = "80638e";
+    base0D = "5ec4bc";
+  };
 in {
   programs.oh-my-posh = {
     enable = true;

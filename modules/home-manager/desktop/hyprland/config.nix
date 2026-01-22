@@ -12,7 +12,6 @@ with lib; {
       settings = {
         "$fileManager" = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'";
         "$terminal" = "ghostty --title=ghostty";
-        "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
         "$webBrowser" = "helium";
         "$mainMod" = "SUPER";
         monitor = [

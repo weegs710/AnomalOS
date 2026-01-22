@@ -11,7 +11,6 @@ with lib; {
         enable = true;
         xwayland.enable = true;
       };
-      waybar.enable = false;
     };
 
     xdg.portal = {
@@ -33,8 +32,6 @@ with lib; {
         };
       };
     };
-
-    security.pam.services.hyprlock = {};
 
     systemd.user.services.xdg-desktop-portal.environment = {
       XDG_DESKTOP_PORTAL_DIR = "/run/current-system/sw/share/xdg-desktop-portal/portals";
