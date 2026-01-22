@@ -34,6 +34,9 @@ with lib; {
 
         # Terminal file chooser (xdg-desktop-portal-termfilechooser)
         "float on, match:title ^(termfilechooser)$"
+        "size 1600 900, match:title ^(termfilechooser)$"
+        "move 531 262, match:title ^(termfilechooser)$"
+        "opacity 1.0 override 1.0 override 1.0 override, match:title ^(termfilechooser)$"
 
         # Browser popups
         "float on, match:title ^(Picture-in-Picture)(.*)$"
