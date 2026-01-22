@@ -101,7 +101,7 @@ rig-up         # Update flake + test Rig + prompt to switch
 - Hyprland compositor with modular configuration
 - Noctalia shell UI with dynamic theming (matugen + adw-gtk3)
 - SDDM display manager with theme integration
-- Nemo file manager with tree sidebar and preview support
+- Superfile TUI file manager
 - Mission Center system monitor (GTK4/Libadwaita)
 - LACT AMD GPU management and monitoring
 
@@ -151,12 +151,12 @@ dotfiles/
 │   ├── options.nix                  # Configuration schema
 │   ├── home-manager/                # User-level Home Manager modules
 │   │   ├── core/                   # Core user config (packages, xdg)
-│   │   ├── desktop/                # Desktop apps (hyprland/, noctalia/, nemo, etc.)
+│   │   ├── desktop/                # Desktop apps (hyprland/, noctalia/, helium, etc.)
 │   │   └── development/            # Dev tools (zed, fish, oh-my-posh)
 │   └── system/                      # System-level NixOS modules
 │       ├── core/                   # Essential system components (boot, networking, ZFS)
 │       ├── security/               # Security features and YubiKey
-│       ├── desktop/                # Desktop environment (sddm, mpd, rofi, etc.)
+│       ├── desktop/                # Desktop environment (sddm, mpd, etc.)
 │       ├── development/            # Development tools and AI
 │       └── gaming/                 # Gaming support (steam, mangohud, decky-loader)
 ├── docs/                            # Documentation

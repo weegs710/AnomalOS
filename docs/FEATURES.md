@@ -164,7 +164,7 @@ The system uses a named workspace scheme:
 2. **dev** (Super+2): Development environment (Zed, Ghostty terminals)
 3. **games** (Super+3): Gaming (Steam, game launchers, game windows)
 4. **media** (Super+4): Media playback (Euphonica music player, Stremio)
-5. **web** (Super+5): Web browsing (Zen Browser)
+5. **web** (Super+5): Web browsing (Helium)
 6. **control-panel** (Super+Grave): Special workspace for utilities
 
 **Control-Panel Utilities:**
@@ -189,13 +189,12 @@ The system uses a named workspace scheme:
 - `Super+F2`: Zed editor (workspace 2 - dev)
 - `Super+F3`: Steam (workspace 3 - games)
 - `Super+F4`: Euphonica music player (workspace 4 - media)
-- `Super+F5`: Zen Browser (workspace 5 - web)
+- `Super+F5`: Helium web browser (workspace 5 - web)
 - `Super+F6`: Mission Center system monitor (control-panel)
 
 **Core Applications:**
 - `Super+Return`: Terminal (Ghostty)
-- `Super+Space`: File manager (Superfile)
-- `Super+Shift+Space`: GUI file manager (Nemo)
+- `Super+Space`: File manager (Superfile TUI)
 - `Super+Super_L`: Noctalia shell launcher toggle
 
 **Window Management:**
@@ -207,7 +206,7 @@ The system uses a named workspace scheme:
 - `Super+Shift+Arrow Keys`: Move window
 
 **System Controls:**
-- `Ctrl+Alt+L`: Lock screen (hyprlock)
+- `Ctrl+Alt+L`: Lock screen (noctalia shell)
 - `Ctrl+Alt+Delete`: Logout menu (wlogout)
 - `Super+Home/End`: Volume up/down
 - `Super+Pause`: Audio mute toggle
@@ -244,7 +243,6 @@ Applications automatically open on their designated workspaces:
   - `keybinds.nix`: All keybindings and submaps
   - `rules.nix`: Window rules
   - `wallpaper.nix`: swww service (managed by noctalia)
-  - `hyprlock.nix`: Screen lock configuration
 
 ### Noctalia Shell UI
 
@@ -360,15 +358,27 @@ cc status       # Show system status
 
 ### File Managers
 
-**Nemo**
-- GTK file manager with Cinnamon desktop integration
-- Tree sidebar for quick directory navigation
-- List view with detailed file information
-- File preview support via nemo-preview (Space key on files)
-- Configured as floating window with full opacity
-- Set as $fileManager variable in Hyprland for system-wide integration
+**Superfile**
+- Modern TUI file manager with vim-style navigation
+- Dual-pane interface for efficient file operations
+- Image and media preview support
+- Quick access via Super+Space keybind
+- Launches in floating Ghostty terminal window
+- Configured with custom opener integrations for Zed editor
 
-**Configuration**: `modules/home-manager/desktop/nemo.nix`
+**Configuration**: `modules/home-manager/desktop/superfile.nix`
+
+### Web Browsers
+
+**Helium**
+- Lightweight web browser built on Electron
+- Widevine CDM support for DRM-protected content (streaming services, etc.)
+- Dedicated workspace 5 (web) integration
+- Auto-launches on login for quick access
+- Full opacity override for media playback
+- Keyboard-friendly navigation
+
+**Configuration**: `modules/home-manager/desktop/helium.nix`
 
 ### System Monitoring
 

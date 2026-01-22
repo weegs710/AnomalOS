@@ -68,7 +68,7 @@ mySystem.features = {
 
 **Feature Descriptions:**
 
-- **desktop**: Enables Hyprland compositor, Noctalia shell UI, SDDM, Nemo file manager
+- **desktop**: Enables Hyprland compositor, Noctalia shell UI, SDDM, Superfile TUI file manager
 - **security**: Enables firewall, Suricata IDS, kernel hardening, SSH hardening, DNSCrypt-Proxy
 - **yubikey**: Enables YubiKey U2F for login, sudo, and polkit
 - **claudeCode**: Installs Claude Code with project management
@@ -172,8 +172,9 @@ Located in `modules/system/desktop/`:
 Located in `modules/home-manager/desktop/`:
 
 - **noctalia/**: Dynamic shell UI with launcher, bar, notifications (settings.nix, default.nix)
-- **hyprland/**: User-level Hyprland configuration (config.nix, keybinds.nix, rules.nix, wallpaper.nix, hyprlock.nix)
-- **nemo.nix**: Nemo file manager configuration
+- **hyprland/**: User-level Hyprland configuration (config.nix, keybinds.nix, rules.nix, wallpaper.nix)
+- **helium.nix**: Helium music browser with Widevine CDM support
+- **superfile.nix**: Superfile TUI file manager configuration
 - **mission-center.nix**: System monitor configuration
 
 **Theme Customization:**
