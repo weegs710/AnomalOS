@@ -18,5 +18,6 @@
     ./mission-center.nix
     ./superfile.nix
     ./termfilechooser.nix
+    ./helium.nix
   ];
 }
