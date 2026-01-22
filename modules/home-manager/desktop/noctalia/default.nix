@@ -8,13 +8,13 @@
 }:
 with lib; {
   # Import noctalia home-manager module at top level
-  imports = [ inputs.noctalia.homeModules.default ];
+  imports = [inputs.noctalia.homeModules.default];
 
   config = mkIf osConfig.mySystem.features.desktop {
     programs.noctalia-shell = {
       enable = true;
       systemd.enable = false;
-      settings = import ./settings.nix { inherit lib; };
+      settings = import ./settings.nix {inherit lib;};
     };
 
     home.packages = with pkgs; [

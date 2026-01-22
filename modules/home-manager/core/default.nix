@@ -5,8 +5,7 @@
   lib,
   pkgs,
   ...
-}:
-{
+}: {
   imports = [
     ./packages.nix
     ./xdg.nix

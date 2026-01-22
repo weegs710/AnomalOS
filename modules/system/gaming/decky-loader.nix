@@ -19,7 +19,7 @@ with lib; let
     dontUnpack = true;
     dontBuild = true;
 
-    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
+    nativeBuildInputs = [pkgs.autoPatchelfHook];
     buildInputs = [
       pkgs.zlib
       pkgs.stdenv.cc.cc.lib

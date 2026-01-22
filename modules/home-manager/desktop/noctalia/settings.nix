@@ -8,8 +8,6 @@
 #    diff -u <(jq -S . ~/.config/noctalia/settings.json) \
 #            <(jq -S . ~/.config/noctalia/gui-settings.json)
 # 4. Copy new gui-settings.json to this directory and rebuild to make permanent
-
-{ lib, ... }:
-
+{lib, ...}:
 # Read and convert the JSON file to a Nix attribute set
 builtins.fromJSON (builtins.readFile ./gui-settings.json)
