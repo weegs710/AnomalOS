@@ -17,7 +17,6 @@ with lib; {
     ./mpd.nix
     ./rofi.nix
     ./stylix.nix
-    ./zen-browser.nix
   ];
 
   config = mkIf config.mySystem.features.desktop {

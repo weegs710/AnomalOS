@@ -71,8 +71,8 @@ with lib; {
         "workspace 4, match:class ^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$"
 
         # Workspace: 5 (web)
-        "workspace 5, match:class ^(zen)$"
-        "focus_on_activate on, match:class ^(zen)$"
+        "workspace 5, match:class ^(helium)$"
+        "focus_on_activate on, match:class ^(helium)$"
 
         # Stash workspace utilities
         "tile on, match:class ^(pavucontrol)$"
@@ -99,7 +99,7 @@ with lib; {
         # Opacity overrides
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(vesktop)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(com\.stremio\.stremio)$"
-        "opacity 1.0 override 1.0 override 1.0 override, match:class ^(zen)$"
+        "opacity 1.0 override 1.0 override 1.0 override, match:class ^(helium)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$"
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(io\.github\.htkhiem\.Euphonica)$"

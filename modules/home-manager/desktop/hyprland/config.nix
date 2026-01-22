@@ -13,7 +13,7 @@ with lib; {
         "$fileManager" = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'";
         "$terminal" = "ghostty --title=ghostty";
         "$menu" = "rofi -show drun -show-icons -drun-display-format '{name}'";
-        "$webBrowser" = "zen";
+        "$webBrowser" = "helium";
         "$mainMod" = "SUPER";
         monitor = [
           "HDMI-A-2, 2560x1440@144, 0x0, 1"

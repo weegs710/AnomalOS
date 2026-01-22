@@ -21,10 +21,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.6.0";
-    zen-browser = {
-      url = "github:youwen5/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     helium = {
       url = "github:FKouhai/helium2nix/main";
       inputs.nixpkgs.follows = "nixpkgs";
