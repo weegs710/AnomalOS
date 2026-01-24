@@ -10,11 +10,15 @@ with lib; {
   imports = [
     ./audio.nix
     ./autotrash.nix
+    ./btop.nix
     ./flatpak.nix
     ./hyprland.nix
     ./kdeconnect.nix
     ./media.nix
     ./mpd.nix
+    ./pulsemixer.nix
+    ./qalc.nix
+    ./timg.nix
   ];
 
   config = mkIf config.mySystem.features.desktop {
@@ -42,7 +46,6 @@ with lib; {
       # Applications
       file-roller
       kdePackages.okular
-      qalculate-gtk
       qview
       transmission_4-gtk
       unzipNLS

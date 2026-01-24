@@ -1,22 +1,14 @@
-# Desktop environment home-manager configuration
-# Hyprland, Waybar, terminal, file manager, and other desktop applications
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+{...}: {
   imports = [
     ./hyprland
     ./noctalia
-    ./ghostty.nix
-    ./vesktop.nix
-    ./xdg-apps.nix
     ./fastfetch.nix
-    ./udiskie.nix
-    ./mission-center.nix
+    ./ghostty.nix
+    ./helium.nix
     ./superfile.nix
     ./termfilechooser.nix
-    ./helium.nix
+    ./udiskie.nix
+    ./vesktop.nix
+    ./xdg-apps.nix
   ];
 }

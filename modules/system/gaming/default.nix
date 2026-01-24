@@ -24,7 +24,6 @@ with lib; {
 
     # Gaming applications
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      anki-bin
       # lutris
       openraPackages.engines.bleed
       protonup-qt

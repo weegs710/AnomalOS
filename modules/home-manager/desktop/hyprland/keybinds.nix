@@ -1,7 +1,5 @@
 {
-  config,
   lib,
-  pkgs,
   osConfig,
   ...
 }:
@@ -20,7 +18,7 @@ with lib; {
         "$mainMod, F4, exec, euphonica"
         "$mainMod SHIFT, F4, exec, flatpak run com.stremio.Stremio"
         "$mainMod, F5, exec, $webBrowser"
-        "$mainMod, F6, exec, missioncenter"
+        "$mainMod, F6, exec, $sysMon"
         "$mainMod, Return, exec, $terminal"
         "$mainMod, Space, exec, $fileManager"
         "$mainMod, Backspace, submap, resize"

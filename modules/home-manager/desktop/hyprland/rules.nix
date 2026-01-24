@@ -1,7 +1,5 @@
 {
-  config,
   lib,
-  pkgs,
   osConfig,
   ...
 }:
@@ -80,10 +78,6 @@ with lib; {
         "workspace special:stash, match:title ^(nmtui)$"
         "tile on, match:title ^(blueman-manager)$"
         "workspace special:stash, match:title ^(blueman-manager)$"
-        "float on, match:class ^(qalculate-gtk)$"
-        "workspace special:stash, match:class ^(qalculate-gtk)$"
-        "float on, match:class ^(io\.missioncenter\.MissionCenter)$"
-        "workspace special:stash, match:class ^(io\.missioncenter\.MissionCenter)$"
         "float on, match:class ^(io\.github\.ilya_zlobintsev\.LACT)$"
         "workspace special:stash, match:class ^(io\.github\.ilya_zlobintsev\.LACT)$"
         "float on, match:class ^(cliphist)$"
@@ -92,6 +86,10 @@ with lib; {
         "workspace special:stash, match:class ^(piper)$"
         "float on, match:class ^(com\.github\.jkotra\.eovpn)$"
         "workspace special:stash, match:class ^(com\.github\.jkotra\.eovpn)$"
+        "float on, match:title ^(btop)$"
+        "workspace special:stash, match:title ^(btop)$"
+        "tile on, match:title ^(pulsemixer)$"
+        "workspace special:stash, match:title ^(pulsemixer)$"
 
         # Opacity overrides
         "opacity 1.0 override 1.0 override 1.0 override, match:class ^(vesktop)$"

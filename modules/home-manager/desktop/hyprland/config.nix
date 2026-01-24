@@ -1,7 +1,5 @@
 {
-  config,
   lib,
-  pkgs,
   osConfig,
   ...
 }:
@@ -14,6 +12,7 @@ with lib; {
         "$terminal" = "ghostty --title=ghostty";
         "$webBrowser" = "helium";
         "$mainMod" = "SUPER";
+        "$sysMon" = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'";
         monitor = [
           "HDMI-A-2, 2560x1440@144, 0x0, 1"
           ", preferred, auto, 1"
