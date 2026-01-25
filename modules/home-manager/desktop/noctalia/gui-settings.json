@@ -78,6 +78,9 @@
           "tooltipFormat": "",
           "useCustomFont": false,
           "usePrimaryColor": true
+        },
+        {
+          "id": "plugin:screen-recorder"
         }
       ]
     },
