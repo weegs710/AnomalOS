@@ -83,7 +83,7 @@ in {
       control = "sufficient";
       settings = {
         interactive = true;
-        authFile = "~/.config/Yubico/u2f_key";
+        authFile = u2fKeys;
       };
     };
 
