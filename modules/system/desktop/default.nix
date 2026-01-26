@@ -24,11 +24,9 @@ with lib; {
   config = mkIf config.mySystem.features.desktop {
     services = {
       displayManager = {
-        autoLogin.enable = false;
         defaultSession = "hyprland";
-        sddm = {
+        ly = {
           enable = true;
-          wayland.enable = true;
         };
       };
       blueman.enable = true;
