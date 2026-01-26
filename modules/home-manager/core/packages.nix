@@ -7,8 +7,6 @@
     inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
     alejandra
     cliphist
-    ed-odyssey-materials-helper
-    edmarketconnector
     fastfetch
     fzf
     gh
@@ -17,7 +15,6 @@
     hyprls
     hyprshot
     jq
-    min-ed-launcher
     nodejs
     obsidian
     pamixer
