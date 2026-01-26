@@ -42,6 +42,11 @@
       ],
       "center": [
         {
+          "displayMode": "onhover",
+          "id": "Volume",
+          "middleClickCommand": "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0\n override 1.0 override] ghostty --title=pulsemixer -e pulsemixer'"
+        },
+        {
           "colorizeIcons": false,
           "hideMode": "hidden",
           "id": "ActiveWindow",
@@ -49,6 +54,24 @@
           "scrollingMode": "always",
           "showIcon": true,
           "useFixedWidth": false
+        },
+        {
+          "defaultSettings": {
+            "audioCodec": "opus",
+            "audioSource": "default_output",
+            "colorRange": "limited",
+            "copyToClipboard": false,
+            "directory": "",
+            "filenamePattern": "recording_yyyyMMdd_HHmmss",
+            "frameRate": "60",
+            "hideInactive": false,
+            "quality": "very_high",
+            "resolution": "original",
+            "showCursor": true,
+            "videoCodec": "h264",
+            "videoSource": "portal"
+          },
+          "id": "plugin:screen-recorder"
         }
       ],
       "right": [
@@ -78,9 +101,6 @@
           "tooltipFormat": "",
           "useCustomFont": false,
           "usePrimaryColor": true
-        },
-        {
-          "id": "plugin:screen-recorder"
         }
       ]
     },
@@ -102,10 +122,10 @@
     "lockOnSuspend": false,
     "showSessionButtonsOnLockScreen": true,
     "showHibernateOnLockScreen": false,
-    "enableShadows": false,
-    "shadowDirection": "bottom_right",
-    "shadowOffsetX": 2,
-    "shadowOffsetY": 3,
+    "enableShadows": true,
+    "shadowDirection": "center",
+    "shadowOffsetX": 0,
+    "shadowOffsetY": 0,
     "language": "",
     "allowPanelsOnScreenWithoutBar": true,
     "showChangelogOnStartup": true,
@@ -129,7 +149,7 @@
     "boxBorderEnabled": true
   },
   "location": {
-    "name": "Wauseon",
+    "name": "43567",
     "weatherEnabled": true,
     "weatherShowEffects": true,
     "useFahrenheit": true,
@@ -151,10 +171,6 @@
       {
         "enabled": true,
         "id": "calendar-month-card"
-      },
-      {
-        "enabled": true,
-        "id": "timer-card"
       },
       {
         "enabled": true,
@@ -184,7 +200,7 @@
     "panelPosition": "follow_bar",
     "hideWallpaperFilenames": true,
     "useWallhaven": false,
-    "wallhavenQuery": "nixos",
+    "wallhavenQuery": "singularity",
     "wallhavenSorting": "relevance",
     "wallhavenOrder": "desc",
     "wallhavenCategories": "111",
@@ -209,7 +225,7 @@
     "customLaunchPrefix": "",
     "viewMode": "grid",
     "showCategories": true,
-    "iconMode": "tabler",
+    "iconMode": "native",
     "showIconBackground": false,
     "enableSettingsSearch": true,
     "ignoreMouseInput": false,
