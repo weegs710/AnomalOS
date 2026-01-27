@@ -82,7 +82,7 @@ nh os switch .#nixosConfigurations.Rig
 
 ### Changing the Color Scheme
 
-The system currently uses the Noctalia shell UI with dynamic theming via matugen. The theme is configured in `features/noctalia/settings.nix`.
+The system currently uses the Noctalia shell UI with dynamic theming via matugen. The theme is configured in `features/noctalia/_settings.nix`.
 
 **Current configuration:**
 ```nix
@@ -105,7 +105,7 @@ The system currently uses the Noctalia shell UI with dynamic theming via matugen
 - `scheme-rainbow`: Full spectrum rainbow colors
 
 **To change the color scheme:**
-1. Edit `features/noctalia/settings.nix`
+1. Edit `features/noctalia/_settings.nix`
 2. Change the `"scheme"` value to one of the schemes above
 3. Rebuild with `nh os switch .#nixosConfigurations.Rig`
 4. Noctalia will regenerate colors on next launch
@@ -126,7 +126,7 @@ The system uses noctalia for wallpaper management with automatic rotation every 
 3. Transitions use wave animation with 5-second duration
 
 **To change rotation interval and transitions:**
-Edit the wallpaper section in `features/noctalia/settings.nix`:
+Edit the wallpaper section in `features/noctalia/_settings.nix`:
 ```nix
 "wallpaper" = {
   "random" = {
@@ -176,15 +176,16 @@ Hyprland configuration is split across system and user levels:
 - **User-level**: `features/hyprland/` (focused modules for settings, keybinds, rules)
 
 **Configuration structure:**
-- `config.nix`: Hyprland settings (monitor, env, animations, workspace definitions)
-- `keybinds.nix`: All keybindings and submap resize mode
-- `rules.nix`: Window rules (workspace routing, opacity, float)
-- `wallpaper.nix`: swww service and wallpaper systemd services
-- `hyprlock.nix`: Screen lock configuration
+- `_config.nix`: Hyprland settings (monitor, env, animations, workspace definitions)
+- `_keybinds.nix`: All keybindings and submap resize mode
+- `_rules.nix`: Window rules (workspace routing, opacity, float)
+- `_wallpaper.nix`: swww service and wallpaper systemd services
+
+**Note:** Helper files are prefixed with underscore to exclude them from auto-discovery. They are imported by `default.nix`.
 
 **Workspace Customization:**
 
-To modify workspace names or properties, edit `features/hyprland/config.nix`:
+To modify workspace names or properties, edit `features/hyprland/_config.nix`:
 
 ```nix
 workspace = [
@@ -199,7 +200,7 @@ workspace = [
 
 **Modifying Keybindings:**
 
-Edit `features/hyprland/keybinds.nix` to change keybindings:
+Edit `features/hyprland/_keybinds.nix` to change keybindings:
 
 ```nix
 bind = [
@@ -212,7 +213,7 @@ bind = [
 
 **Adding Window Routing Rules:**
 
-Edit `features/hyprland/rules.nix` to route applications:
+Edit `features/hyprland/_rules.nix` to route applications:
 
 ```nix
 windowrulev2 = [
@@ -264,7 +265,7 @@ xdg.dataFile."applications/myapp.desktop".text = ''
 
 **Monitor Configuration:**
 
-For multi-monitor setups, edit the monitor section in `features/hyprland/config.nix`:
+For multi-monitor setups, edit the monitor section in `features/hyprland/_config.nix`:
 
 ```nix
 monitor = [
@@ -276,7 +277,7 @@ monitor = [
 
 **Visual Customization:**
 
-Adjust window appearance in `features/hyprland/config.nix`:
+Adjust window appearance in `features/hyprland/_config.nix`:
 
 ```nix
 decoration = {
@@ -300,7 +301,7 @@ general = {
 
 ### Noctalia Shell Bar Configuration
 
-Noctalia shell bar is configured in `features/noctalia/settings.nix`.
+Noctalia shell bar is configured in `features/noctalia/_settings.nix`.
 
 **Bar Settings:**
 
@@ -431,18 +432,26 @@ nh os switch .#nixosConfigurations.MyCustom
 Create a new file like `my-config.nix`:
 
 ```nix
-{ config, inputs, ... }:
-
-{
-  imports = [
-    ./hardware-configuration.nix
-    ./features/core/options.nix
-    ./features/core
-    ./features/security
-    ./features/desktop
-    ./features/development
-    inputs.home-manager.nixosModules.default
-  ];
+{ config, inputs, ... }: let
+  lib = inputs.nixpkgs.lib;
+  # Import all .nix files except those whose name or any parent directory starts with _
+  import-tree = path:
+    let
+      allFiles = lib.filesystem.listFilesRecursive path;
+      nixFiles = builtins.filter (file:
+        lib.hasSuffix ".nix" (toString file)
+        && !(lib.hasInfix "/_" (toString file))
+        && !(lib.hasPrefix "_" (baseNameOf (toString file)))
+      ) allFiles;
+    in
+      nixFiles;
+in {
+  imports =
+    import-tree ./features
+    ++ [
+      ./hardware-configuration.nix
+      inputs.home-manager.nixosModules.default
+    ];
 
   mySystem = {
     hostName = "my-system";
@@ -559,8 +568,17 @@ services.openssh = {
 
 ### Creating Custom Modules
 
-Create a new module in `features/custom/my-feature.nix`:
+With the import-tree system, creating custom modules is simple - just create a `.nix` file in the appropriate `features/` subdirectory:
 
+**Example: Create a new feature module**
+
+1. Create the directory and module file:
+```bash
+mkdir -p features/custom
+touch features/custom/my-feature.nix
+```
+
+2. Write your module:
 ```nix
 { config, lib, pkgs, ... }:
 with lib;
@@ -580,15 +598,17 @@ with lib;
 }
 ```
 
-**Import in `configuration.nix`:**
+3. Enable the feature in `configuration.nix`:
 ```nix
-imports = [
-  # ... existing imports
-  ./features/custom/my-feature.nix
-];
-
 mySystem.features.myFeature = true;
 ```
+
+4. Rebuild - the module is automatically discovered:
+```bash
+nrt-rig  # Test the configuration
+```
+
+**No manual imports needed!** The import-tree system automatically discovers and imports all `.nix` files from `features/`. If you need helper files that shouldn't be auto-imported, prefix them with underscore (e.g., `_config.nix`).
 
 ### Custom Shell Aliases
 

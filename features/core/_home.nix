@@ -9,7 +9,7 @@
   homeDirectory = "/home/${username}";
 in {
   imports = [
-    ../development/claude-code-enhanced
+    ../development/_claude-code-enhanced
   ];
 
   home.username = username;

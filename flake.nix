@@ -23,13 +23,14 @@
     };
   };
 
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs = inputs@{flake-parts, ...}: let
+    inherit (inputs.nixpkgs.lib.fileset) toList fileFilter;
+    import-tree = path:
+      toList (fileFilter (file: file.hasExt "nix" && !(inputs.nixpkgs.lib.hasPrefix "_" file.name)) path);
+  in
+    flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
 
-      imports = [
-        ./parts/system-rig.nix
-        ./features/development/devshell.nix
-      ];
+      imports = import-tree ./parts;
     };
 }

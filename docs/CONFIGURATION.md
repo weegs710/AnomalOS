@@ -6,7 +6,7 @@ This guide explains the configuration options available in AnomalOS and how to c
 
 ## Configuration Structure
 
-AnomalOS uses a modular configuration structure defined in `configuration.nix`:
+AnomalOS uses a modular configuration structure with **automatic module discovery**:
 
 ```
 configuration.nix          # Main configuration file
@@ -16,8 +16,22 @@ configuration.nix          # Main configuration file
 │   ├── features          # Feature toggles
 │   └── hardware          # Hardware capabilities
 ├── home-manager          # User environment settings
-└── services.restic       # Backup configuration
+└── import-tree           # Automatic module discovery from features/
 ```
+
+### Import-Tree Auto-Discovery
+
+The configuration uses **import-tree** to automatically discover and import modules from the `features/` directory. This means:
+
+- **No manual import lists** - modules are discovered automatically
+- **Add modules by creating files** - no need to update import statements
+- **Rename/move modules freely** - changes are picked up automatically
+- **Remove modules by deleting files** - no cleanup needed
+
+**Naming Convention:**
+- Files without underscore prefix (e.g., `boot.nix`, `steam.nix`) are **auto-imported**
+- Files with underscore prefix (e.g., `_settings.nix`, `_config.nix`) are **excluded** (must be imported manually by parent modules)
+- Directories with underscore prefix (e.g., `_claude-code-enhanced/`) are **entirely excluded**
 
 ## Core Configuration Options
 
@@ -323,6 +337,76 @@ nixosConfigurations.MyConfig = nixpkgs.lib.nixosSystem {
   ];
 };
 ```
+
+### Adding New Modules
+
+Thanks to the import-tree system, adding new modules is simple - just create a `.nix` file in the appropriate `features/` subdirectory:
+
+**Example: Adding Lutris Gaming Support**
+
+1. Create the module file:
+```bash
+touch features/gaming/lutris.nix
+```
+
+2. Write the module (no import statements needed):
+```nix
+{ config, lib, pkgs, ... }:
+
+with lib; {
+  config = mkIf config.mySystem.features.gaming {
+    environment.systemPackages = with pkgs; [
+      lutris
+    ];
+  };
+}
+```
+
+3. Rebuild - the module is automatically discovered:
+```bash
+nrt-rig  # Test the configuration
+```
+
+**Multi-File Modules:**
+
+For complex features, create a directory with `default.nix` and helper files:
+
+```bash
+mkdir -p features/gaming/lutris
+touch features/gaming/lutris/default.nix
+touch features/gaming/lutris/_config.nix
+touch features/gaming/lutris/_settings.nix
+```
+
+Structure:
+```
+features/gaming/lutris/
+├── default.nix      # Auto-imported (entry point)
+├── _config.nix      # Helper (imported by default.nix)
+└── _settings.nix    # Helper (imported by default.nix)
+```
+
+In `default.nix`:
+```nix
+{ config, lib, pkgs, ... }:
+
+{
+  imports = [
+    ./_config.nix
+    ./_settings.nix
+  ];
+
+  config = lib.mkIf config.mySystem.features.gaming {
+    # Main module implementation
+  };
+}
+```
+
+**Key Points:**
+- Module filename determines if it's auto-imported (no underscore = auto-import)
+- Helper files use underscore prefix to exclude from auto-discovery
+- No need to update `configuration.nix` or any import lists
+- Module is active when appropriate feature flag is enabled
 
 ### Adding Custom Packages
 

@@ -132,7 +132,7 @@ rig-up         # Update flake + test Rig + prompt to switch
 
 ## Dendritic Architecture
 
-The configuration uses a dendritic flake-parts pattern where features are organized by category:
+The configuration uses a dendritic flake-parts pattern with **automatic module discovery** via import-tree. Features are organized by category and automatically imported without manual import lists:
 
 ```
 dotfiles/
@@ -144,7 +144,7 @@ dotfiles/
 ├── features/                         # Dendritic feature modules
 │   ├── core/                        # Core system features
 │   │   ├── options.nix             # Configuration schema
-│   │   ├── home.nix                # Home Manager user configuration
+│   │   ├── _home.nix               # Home Manager user configuration (helper)
 │   │   ├── boot.nix                # Boot configuration
 │   │   ├── networking.nix          # Network configuration
 │   │   ├── nix-daemon.nix          # Nix daemon and helper scripts
@@ -183,25 +183,84 @@ dotfiles/
 │   │   └── services.nix            # Security services (SSH, polkit)
 │   ├── development/                 # Development tools
 │   │   ├── claude-code.nix         # Claude Code AI assistant
-│   │   ├── claude-code-enhanced/   # Enhanced Claude Code features
+│   │   ├── _claude-code-enhanced/  # Enhanced Claude Code features (helper dir)
 │   │   ├── languages.nix           # Programming language toolchains
 │   │   ├── vm.nix                  # Virtual machine support
-│   │   ├── tools.nix               # Development utilities
-│   │   └── devshell.nix            # Development shell environment
+│   │   └── tools.nix               # Development utilities
 │   ├── hyprland/                    # Hyprland compositor
 │   │   ├── default.nix             # Main Hyprland module
 │   │   ├── system.nix              # System-level configuration
-│   │   ├── config.nix              # Compositor configuration
-│   │   ├── keybinds.nix            # Keyboard shortcuts
-│   │   ├── rules.nix               # Window rules
-│   │   └── wallpaper.nix           # Wallpaper management
+│   │   ├── _config.nix             # Compositor configuration (helper)
+│   │   ├── _keybinds.nix           # Keyboard shortcuts (helper)
+│   │   ├── _rules.nix              # Window rules (helper)
+│   │   └── _wallpaper.nix          # Wallpaper management (helper)
 │   └── noctalia/                    # Noctalia shell UI
 │       ├── default.nix             # Main Noctalia module
-│       ├── settings.nix            # Shell configuration
+│       ├── _settings.nix           # Shell configuration (helper)
 │       └── gui-settings.json       # GUI settings
 ├── docs/                            # Documentation
 └── assets/                          # Assets (wallpapers, configs)
 ```
+
+### Import-Tree Auto-Discovery
+
+The configuration uses **import-tree** for automatic module discovery, eliminating the need for manual import lists:
+
+**How It Works:**
+
+1. **Flake Level** (`flake.nix`):
+   - Auto-imports all `.nix` files from `parts/` directory
+   - Discovers flake-parts modules automatically
+
+2. **Configuration Level** (`configuration.nix`):
+   - Auto-imports all `.nix` files from `features/` directory
+   - Discovers NixOS feature modules automatically
+
+3. **Naming Convention**:
+   - **Normal files** (e.g., `boot.nix`, `steam.nix`) → Auto-imported as modules
+   - **Underscore-prefixed files** (e.g., `_settings.nix`, `_config.nix`) → Excluded from auto-discovery, must be imported manually by parent modules
+   - **Underscore-prefixed directories** (e.g., `_claude-code-enhanced/`) → Entire directory excluded from auto-discovery
+
+**Adding New Modules:**
+
+To add a new feature module, simply create a `.nix` file in the appropriate category:
+
+```bash
+# Example: Adding Lutris gaming support
+# Just create the file - no import statements needed!
+touch features/gaming/lutris.nix
+```
+
+The module will be automatically discovered and imported on the next rebuild.
+
+**Multi-File Modules:**
+
+For complex features requiring multiple files:
+
+```
+features/gaming/lutris/
+├── default.nix      # Auto-imported (module entry point)
+├── _config.nix      # Excluded (helper file, imported by default.nix)
+└── _settings.nix    # Excluded (helper file, imported by default.nix)
+```
+
+The `default.nix` explicitly imports helper files:
+```nix
+{
+  imports = [
+    ./_config.nix
+    ./_settings.nix
+  ];
+
+  # Module implementation...
+}
+```
+
+This dendritic pattern allows features to be:
+- **Added** without touching import lists
+- **Renamed** without updating references
+- **Moved** to different categories seamlessly
+- **Removed** by simply deleting the file
 
 ## Customization
 

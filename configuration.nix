@@ -2,76 +2,26 @@
   config,
   inputs,
   ...
-}: {
-  imports = [
-    ./hardware-configuration-zfs.nix
-
-    # Core features (always enabled)
-    ./features/core/options.nix
-    ./features/core/boot.nix
-    ./features/core/networking.nix
-    ./features/core/nix-daemon.nix
-    ./features/core/users.nix
-    ./features/core/zfs.nix
-    ./features/core/xdg.nix
-    ./features/core/packages.nix
-    ./features/core/fish.nix
-    ./features/core/oh-my-posh.nix
-    ./features/core/ghostty.nix
-    ./features/core/superfile.nix
-    ./features/core/desktop-services.nix
-    ./features/core/desktop-packages.nix
-
-    # Desktop
-    ./features/hyprland
-    ./features/noctalia
-    ./features/desktop/kdeconnect.nix
-    ./features/desktop/flatpak.nix
-    ./features/desktop/autotrash.nix
-    ./features/desktop/btop.nix
-    ./features/desktop/qalc.nix
-    ./features/desktop/timg.nix
-    ./features/desktop/pulsemixer.nix
-    ./features/desktop/udiskie.nix
-    ./features/desktop/fastfetch.nix
-    ./features/desktop/helium.nix
-    ./features/desktop/vesktop.nix
-    ./features/desktop/xdg-apps.nix
-    ./features/desktop/termfilechooser.nix
-
-    # Editors
-    ./features/editors/zed.nix
-    ./features/editors/tmux.nix
-
-    # Media
-    ./features/media/audio.nix
-    ./features/media/creation.nix
-    ./features/media/scraping.nix
-    ./features/media/mpd.nix
-
-    # Gaming
-    ./features/gaming/steam.nix
-    ./features/gaming/mangohud.nix
-    ./features/gaming/decky.nix
-    ./features/gaming/packages.nix
-
-    # Security
-    ./features/security/dnscrypt.nix
-    ./features/security/firewall.nix
-    ./features/security/suricata.nix
-    ./features/security/yubikey.nix
-    ./features/security/services.nix
-
-    # Development
-    ./features/development/languages.nix
-    ./features/development/vm.nix
-    ./features/development/android-webcam.nix
-    ./features/development/claude-code.nix
-    ./features/development/tools.nix
-
-    # Home Manager integration
-    inputs.home-manager.nixosModules.default
-  ];
+}: let
+  lib = inputs.nixpkgs.lib;
+  # Import all .nix files except those whose name or any parent directory starts with _
+  import-tree = path:
+    let
+      allFiles = lib.filesystem.listFilesRecursive path;
+      nixFiles = builtins.filter (file:
+        lib.hasSuffix ".nix" (toString file)
+        && !(lib.hasInfix "/_" (toString file))
+        && !(lib.hasPrefix "_" (baseNameOf (toString file)))
+      ) allFiles;
+    in
+      nixFiles;
+in {
+  imports =
+    import-tree ./features
+    ++ [
+      ./hardware-configuration-zfs.nix
+      inputs.home-manager.nixosModules.default
+    ];
 
   mySystem = {
     hostName = "HX99G";
@@ -113,7 +63,7 @@
     useGlobalPkgs = true;
     backupFileExtension = "backup";
     extraSpecialArgs = {inherit inputs;};
-    users.${config.mySystem.user.name} = import ./features/core/home.nix;
+    users.${config.mySystem.user.name} = import ./features/core/_home.nix;
   };
 
   nix.settings = {

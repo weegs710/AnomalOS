@@ -9,10 +9,10 @@ in
 
   imports = [
     ./system.nix
-    ./config.nix
-    ./keybinds.nix
-    ./rules.nix
-    ./wallpaper.nix
+    ./_config.nix
+    ./_keybinds.nix
+    ./_rules.nix
+    ./_wallpaper.nix
   ];
 
   # All submodules are gated by mySystem.features.desktop

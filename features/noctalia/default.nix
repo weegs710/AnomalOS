@@ -15,7 +15,7 @@ with lib; {
       programs.noctalia-shell = {
         enable = true;
         systemd.enable = false;
-        settings = import ./settings.nix {inherit lib;};
+        settings = import ./_settings.nix {inherit lib;};
       };
 
       home.packages = with pkgs; [
