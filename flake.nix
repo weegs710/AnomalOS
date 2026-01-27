@@ -26,9 +26,10 @@
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
+
       imports = [
-        ./parts/configurations.nix
-        ./parts/shells.nix
+        ./parts/system-rig.nix
+        ./features/development/devshell.nix
       ];
     };
 }
