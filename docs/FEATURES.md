@@ -45,7 +45,7 @@ sudo journalctl -u yubikey-autologin-init
 sudo journalctl -u yubikey-autologin-monitor
 ```
 
-**Location**: `features/security/yubikey.nix`
+**Location**: `modules/nixos-modules/security/yubikey.nix`
 
 ### Suricata IDS
 
@@ -71,7 +71,7 @@ sudo tail -f /var/log/suricata/eve.json
 
 **Configuration**: Alert on unusual network activity, logs to `/var/log/suricata/`
 
-**Location**: `features/security/suricata.nix`
+**Location**: `modules/nixos-modules/security/suricata.nix`
 
 ### Firewall (nftables)
 
@@ -96,7 +96,7 @@ sudo nft list ruleset
 sudo ss -tulpn
 ```
 
-**Location**: `features/security/firewall.nix`
+**Location**: `modules/nixos-modules/security/firewall.nix`
 
 ### Kernel & System Hardening
 
@@ -117,7 +117,7 @@ sudo ss -tulpn
 - ICMP rate limiting
 - Restricted kernel logs
 
-**Location**: `features/security/hardening.nix`
+**Location**: Kernel hardening in `modules/nixos-modules/boot.nix`, SSH hardening in `modules/nixos-modules/services.nix`
 
 ### DNSCrypt-Proxy Encrypted DNS
 
@@ -140,7 +140,7 @@ sudo systemctl status dnscrypt-proxy
 sudo journalctl -u dnscrypt-proxy
 ```
 
-**Location**: `features/security/dnscrypt-proxy.nix`
+**Location**: `modules/nixos-modules/dnscrypt.nix`
 
 ## Desktop Environment
 
@@ -171,10 +171,12 @@ The system uses a named workspace scheme:
 - pavucontrol: Audio volume control
 - nmtui: Network configuration
 - blueman-manager: Bluetooth management (GTK interface)
-- mission-center: GUI system resource monitor with GPU monitoring (GTK4/Libadwaita)
 - lact: AMD GPU control, monitoring, and overclocking
 - qalculate-gtk: Calculator
 - piper: Gaming mouse configuration (Logitech, Razer, etc)
+
+**System Monitoring:**
+- btop++: Terminal-based system monitor with GPU monitoring (accessible system-wide)
 
 **Workspace Navigation:**
 - `Super+1-5`: Jump to named workspace
@@ -190,7 +192,6 @@ The system uses a named workspace scheme:
 - `Super+F3`: Steam (workspace 3 - games)
 - `Super+F4`: Euphonica music player (workspace 4 - media)
 - `Super+F5`: Helium web browser (workspace 5 - web)
-- `Super+F6`: Mission Center system monitor (control-panel)
 
 **Core Applications:**
 - `Super+Return`: Terminal (Ghostty)
@@ -237,12 +238,12 @@ Applications automatically open on their designated workspaces:
 - `swww`: Animated wallpaper daemon
 
 **Configuration:**
-- System-level: `features/hyprland/system.nix` (enables Hyprland, XDG portals, PAM)
-- User-level: `features/hyprland/` (modular organization):
-  - `config.nix`: Hyprland settings (monitor, env, animations, etc.)
-  - `keybinds.nix`: All keybindings and submaps
-  - `rules.nix`: Window rules
-  - `wallpaper.nix`: swww service (managed by noctalia)
+- System-level: `modules/nixos-modules/hyprland-system.nix` (enables Hyprland, XDG portals, PAM)
+- User-level (in `modules/nixos-modules/`):
+  - `hyprland-config.nix`: Hyprland settings (monitor, env, animations, workspace definitions)
+  - `hyprland-keybinds.nix`: All keybindings and submap resize mode
+  - `hyprland-rules.nix`: Window rules (workspace routing, opacity, float)
+  - `hyprland-wallpaper.nix`: swww service and wallpaper systemd services
 
 ### Noctalia Shell UI
 
@@ -257,9 +258,9 @@ Applications automatically open on their designated workspaces:
 - Configurable wallpaper rotation (10-minute intervals with wave transitions)
 - Custom panel layouts and styling
 
-**Configuration**: `features/noctalia/`
-  - `default.nix`: Noctalia module with systemd service configuration
-  - `settings.nix`: Declarative GUI settings (launcher, bar, appearance, wallpaper)
+**Configuration**:
+  - `modules/nixos-modules/noctalia.nix`: Noctalia shell UI service configuration
+  - `modules/nixos-modules/noctalia-data/_settings.nix`: Declarative GUI settings (launcher, bar, appearance, wallpaper)
 
 ### Ly Display Manager
 
@@ -271,7 +272,7 @@ Applications automatically open on their designated workspaces:
 - Session selection
 - Wayland session support
 
-**Location**: `features/core/desktop-services.nix`
+**Location**: `modules/nixos-modules/desktop-services.nix`
 
 ### Theming System
 
@@ -293,7 +294,7 @@ Applications automatically open on their designated workspaces:
 
 **Wallpapers**: Managed by noctalia with 10-minute rotation intervals, wave transitions
 
-**Location**: `features/noctalia/`
+**Location**: `modules/nixos-modules/noctalia.nix` and `modules/nixos-modules/noctalia-data/_settings.nix`
 
 ## Development Tools
 
@@ -321,9 +322,7 @@ cc status       # Show system status
 - Settings: `settings.local.json` (permissions, MCP servers)
 - Commands: `.claude/commands/*.md`
 
-**Implementation**:
-- System: `features/development/claude-code.nix`
-- Module: `features/development/claude-code-enhanced/default.nix`
+**Implementation**: `modules/nixos-modules/claude-code.nix`
 
 ### Editors
 
@@ -333,7 +332,7 @@ cc status       # Show system status
 - Integrated terminal and git
 - Extension support
 
-**Configuration**: `features/editors/zed.nix`
+**Configuration**: `modules/nixos-modules/zed.nix`
 
 ### Terminal & Shell
 
@@ -354,7 +353,7 @@ cc status       # Show system status
 - Directory truncation and navigation
 - Language/tooling version detection (Node, Python, etc.)
 
-**Configuration**: `features/core/oh-my-posh.nix`
+**Configuration**: `modules/nixos-modules/oh-my-posh.nix`
 
 ### File Managers
 
@@ -366,7 +365,7 @@ cc status       # Show system status
 - Launches in floating Ghostty terminal window
 - Configured with custom opener integrations for Zed editor
 
-**Configuration**: `features/core/superfile.nix`
+**Configuration**: `modules/nixos-modules/superfile.nix`
 
 ### Web Browsers
 
@@ -378,7 +377,7 @@ cc status       # Show system status
 - Full opacity override for media playback
 - Keyboard-friendly navigation
 
-**Configuration**: `features/desktop/helium.nix`
+**Configuration**: `modules/nixos-modules/helium.nix`
 
 ### System Monitoring
 
@@ -390,7 +389,7 @@ cc status       # Show system status
 - Mouse-driven interface with vim-like keybindings
 - Quick launch via desktop menu or terminal
 
-**Configuration**: `features/desktop/btop.nix`
+**Configuration**: `modules/nixos-modules/btop.nix`
 
 **LACT (Linux AMDGPU Control Tool)**
 - AMD GPU control and monitoring tool
@@ -406,7 +405,7 @@ cc status       # Show system status
 - Custom AnomalOS logo display (AnomLogo.png)
 - Displays: OS, host, kernel, uptime, packages, shell, display, WM, terminal, CPU, GPU, memory, swap, disk
 
-**Configuration**: `features/desktop/fastfetch.nix`
+**Configuration**: `modules/nixos-modules/fastfetch.nix`
 
 ### Development Languages & Tools
 
@@ -436,7 +435,7 @@ cc status       # Show system status
 - `ns`: Interactive NixOS package search (nix-search-tv wrapper)
 - `uv`: Python package installer and resolver
 
-**Configuration**: `features/development/languages.nix`
+**Configuration**: `modules/nixos-modules/languages.nix`
 
 ## Gaming & Media
 
@@ -454,7 +453,7 @@ cc status       # Show system status
 - Hardware compatibility layers (32-bit support)
 - Controller support (extest enabled)
 
-**Configuration**: `features/gaming/steam.nix`
+**Configuration**: `modules/nixos-modules/steam.nix`
 
 ### Decky Loader Steam Plugin System
 
@@ -475,7 +474,7 @@ cc status       # Show system status
 - Plugin installation and updates via Decky web interface
 - Service managed via systemd: `systemctl --user status decky-loader`
 
-**Configuration**: `features/gaming/decky-loader.nix`
+**Configuration**: `modules/nixos-modules/decky-loader.nix`
 
 ### MangoHud Performance Overlay
 
@@ -500,7 +499,7 @@ cc status       # Show system status
 - Switch presets with Shift+F2 in-game
 - Toggle overlay with Shift+F12
 
-**Configuration**: `features/gaming/mangohud.nix`
+**Configuration**: `modules/nixos-modules/mangohud.nix`
 
 ### Emulators
 
@@ -527,7 +526,7 @@ cc status       # Show system status
 - Automated playlist generation for 16 platforms
 - CRC32 checksums for metadata matching
 
-**Configuration**: `features/gaming/default.nix`
+**Configuration**: `modules/nixos-modules/gaming-packages.nix`
 
 ### Media Tools
 
@@ -557,9 +556,9 @@ cc status       # Show system status
 - YouTube playlist downloader with MP3 conversion (scrapem command)
 
 **Configuration**:
-- MPD service: `features/media/mpd.nix`
-- Desktop media tools: `features/media/creation.nix` (OBS, GIMP, Video2x)
-- Music/playlist tools: `features/development/media.nix` (Beets, yt-dlp, scrapem/scrapev commands)
+- MPD service: `modules/nixos-modules/mpd.nix`
+- Desktop media tools: `modules/nixos-modules/creation.nix` (OBS, GIMP, Video2x)
+- Music/playlist tools: `modules/nixos-modules/scraping.nix` (Beets, yt-dlp, scrapem/scrapev commands)
 
 ### Applications
 
@@ -581,7 +580,7 @@ cc status       # Show system status
 - min-ed-launcher: Minimal CLI launcher for Elite Dangerous
 - ed-odyssey-materials-helper: Materials tracking for Elite Dangerous
 
-**Configuration**: `features/core/desktop-packages.nix` and `features/media/creation.nix`
+**Configuration**: `modules/nixos-modules/desktop-packages.nix` and `modules/nixos-modules/creation.nix`
 
 ## Package Management
 
@@ -672,7 +671,7 @@ cp /persist/.zfs/snapshot/autosnap_2025-12-11_16:00:00_hourly/path/to/file ~/res
 systemctl status sanoid.service
 ```
 
-**Configuration**: `features/core/zfs.nix`
+**Configuration**: `modules/nixos-modules/zfs.nix`
 
 **Note**: See [BACKUP.md](BACKUP.md) for complete snapshot management and recovery guide
 
@@ -693,7 +692,7 @@ sudo nix-collect-garbage -d       # Clean all old generations
 sudo nix-collect-garbage --delete-older-than 30d  # Custom age
 ```
 
-**Configuration**: `features/core/nix-daemon.nix`
+**Configuration**: `modules/nixos-modules/nix-daemon.nix`
 
 ### Bluetooth
 
@@ -730,7 +729,7 @@ systemctl --user status udiskie
 journalctl --user -u udiskie
 ```
 
-**Configuration**: `features/desktop/udiskie.nix`
+**Configuration**: `modules/nixos-modules/udiskie.nix`
 
 ### System Update Workflow
 
@@ -812,7 +811,7 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 - Security hardening via kernel parameters
 - ZFS module support
 
-**Configuration**: `features/core/boot.nix`
+**Configuration**: `modules/nixos-modules/boot.nix`
 
 ### System Tuning
 

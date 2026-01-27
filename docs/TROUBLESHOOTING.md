@@ -219,23 +219,23 @@ This guide helps resolve common issues you may encounter with AnomalOS configura
    wlr-randr --output DP-1 --mode 1920x1080@60
    ```
 
-### SDDM Login Issues
+### Ly Login Issues
 
-**Symptom**: Can't login or SDDM crashes
+**Symptom**: Can't login or Ly crashes
 
 **Solutions:**
 
-1. **Check SDDM logs:**
+1. **Check Ly logs:**
    ```bash
-   sudo journalctl -u display-manager
+   sudo journalctl -u ly
    ```
 
 2. **Try console login:**
    Press Ctrl+Alt+F2 to switch to TTY
 
-3. **Disable SDDM temporarily:**
+3. **Disable Ly temporarily:**
    ```nix
-   services.xserver.displayManager.sddm.enable = false;
+   services.ly.enable = false;
    ```
 
 ### Noctalia Shell Not Showing

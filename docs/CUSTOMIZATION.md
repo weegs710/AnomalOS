@@ -429,29 +429,14 @@ nh os switch .#nixosConfigurations.MyCustom
 
 ### Method 2: Create Separate Configuration File
 
-Create a new file like `my-config.nix`:
+Create a new file like `modules/hosts/my-system.nix`:
 
 ```nix
-{ config, inputs, ... }: let
-  lib = inputs.nixpkgs.lib;
-  # Import all .nix files except those whose name or any parent directory starts with _
-  import-tree = path:
-    let
-      allFiles = lib.filesystem.listFilesRecursive path;
-      nixFiles = builtins.filter (file:
-        lib.hasSuffix ".nix" (toString file)
-        && !(lib.hasInfix "/_" (toString file))
-        && !(lib.hasPrefix "_" (baseNameOf (toString file)))
-      ) allFiles;
-    in
-      nixFiles;
-in {
-  imports =
-    import-tree ./features
-    ++ [
-      ./hardware-modules/hosts/rig.nix
-      inputs.home-manager.nixosModules.default
-    ];
+{ config, ... }: {
+  # Import hardware configuration
+  imports = [
+    ./../../hardware-configuration-zfs.nix
+  ];
 
   mySystem = {
     hostName = "my-system";
@@ -481,16 +466,11 @@ in {
     };
   };
 
-  # Home Manager
-  home-manager = {
-    backupFileExtension = "backup";
-    extraSpecialArgs = { inherit inputs; };
-    users.${config.mySystem.user.name} = import ./my-home.nix;
-  };
-
   system.stateVersion = "24.11";
 }
 ```
+
+**Note**: All nixos-modules are automatically discovered by flake-parts, so you don't need to manually import them.
 
 **Reference in `flake.nix`:**
 ```nix
@@ -608,11 +588,11 @@ mySystem.features.myFeature = true;
 nrt-rig  # Test the configuration
 ```
 
-**No manual imports needed!** The import-tree system automatically discovers and imports all `.nix` files from `modules/nixos-modules/`. If you need helper files that shouldn't be auto-imported, prefix them with underscore (e.g., `_config.nix`).
+**No manual imports needed!** Flake-parts automatic module discovery automatically discovers and imports all `.nix` files from `modules/nixos-modules/`. If you need helper files that shouldn't be auto-imported, prefix them with underscore (e.g., `_config.nix`).
 
 ### Custom Shell Aliases
 
-Add aliases in `modules/nixos-modules/core/nix-daemon.nix` or `modules/hosts/rig.nix`:
+Add aliases in `modules/nixos-modules/nix-daemon.nix` or `modules/hosts/rig.nix`:
 
 ```nix
 environment.shellAliases = {
@@ -636,7 +616,7 @@ environment.shellAliases = {
 
 ### Custom Scripts
 
-Create scripts in `modules/nixos-modules/core/nix-daemon.nix` or a custom feature module:
+Create scripts in `modules/nixos-modules/nix-daemon.nix` or a custom feature module:
 
 ```nix
 environment.systemPackages = with pkgs; [

@@ -95,7 +95,7 @@ mySystem.features = {
 
 **Feature Descriptions:**
 
-- **desktop**: Enables Hyprland compositor, Noctalia shell UI, SDDM, Superfile TUI file manager
+- **desktop**: Enables Hyprland compositor, Noctalia shell UI, Ly display manager, Superfile TUI file manager
 - **security**: Enables firewall, Suricata IDS, kernel hardening, SSH hardening, DNSCrypt-Proxy
 - **yubikey**: Enables YubiKey U2F for login, sudo, and polkit
 - **claudeCode**: Installs Claude Code with project management
@@ -152,7 +152,7 @@ This configuration provides:
 - Development toolchain (Node.js, Python, Rust, Nix)
 - Gaming support with Steam, Decky Loader, MangoHud, and emulators
 - Music system with MPD, Euphonica client, and Beets library manager
-- System monitoring with Mission Center and LACT GPU control
+- System monitoring with btop++ and LACT GPU control
 
 ## Module Configuration
 
@@ -160,20 +160,23 @@ This configuration provides:
 
 Located in `modules/nixos-modules/`:
 
-- **boot.nix**: Boot loader configuration, kernel parameters
+- **boot.nix**: Boot loader configuration, kernel parameters, kernel hardening
 - **networking.nix**: NetworkManager, firewall basics, hostname
-- **nix.nix**: Nix settings, garbage collection, shell aliases, update scripts
+- **nix-daemon.nix**: Nix settings, garbage collection, shell aliases, update scripts
 - **users.nix**: User account creation and group membership
-- **zfs-snapshots.nix**: Automated ZFS snapshot management with sanoid
+- **zfs.nix**: Automated ZFS snapshot management with sanoid
+- **services.nix**: System services configuration including SSH hardening
 
 ### Security Modules
 
 Located in `modules/nixos-modules/`:
 
 - **firewall.nix**: nftables configuration, custom gaming ports (23243-23262), SSH on port 2222
-- **hardening.nix**: Kernel sysctl parameters, SSH hardening, PAM configuration
 - **suricata.nix**: Intrusion detection system, network monitoring
+- **dnscrypt.nix**: DNSCrypt-Proxy for encrypted DNS
 - **yubikey.nix**: YubiKey U2F authentication, auto-login, polkit integration
+
+**Note**: Kernel hardening and SSH hardening are configured in boot.nix and services.nix respectively.
 
 **Security Configuration Options:**
 
@@ -192,17 +195,19 @@ networking.firewall.allowedTCPPortRanges = [
 
 Located in `modules/nixos-modules/`:
 
-- **hyprland.nix**: Hyprland compositor system-level configuration (enables Hyprland, XDG portals, PAM)
+- **hyprland-system.nix**: Hyprland compositor system-level configuration (enables Hyprland, XDG portals, PAM)
+- **hyprland-config.nix**: Hyprland settings (monitor, env, animations, workspace definitions)
+- **hyprland-keybinds.nix**: All keybindings and submap resize mode
+- **hyprland-rules.nix**: Window rules (workspace routing, opacity, float)
+- **hyprland-wallpaper.nix**: swww service and wallpaper systemd services
+- **noctalia.nix**: Noctalia shell UI service configuration
+- **noctalia-data/_settings.nix**: Declarative GUI settings (launcher, bar, appearance, wallpaper)
 - **mpd.nix**: MPD (Music Player Daemon) service configuration
-- **media.nix**: Applications (GIMP, Anki, Vesktop, OBS), media tools
-
-Located in `modules/nixos-modules/`:
-
-- **noctalia/**: Dynamic shell UI with launcher, bar, notifications (settings.nix, default.nix)
-- **hyprland/**: User-level Hyprland configuration (config.nix, keybinds.nix, rules.nix, wallpaper.nix)
-- **helium.nix**: Helium music browser with Widevine CDM support
+- **creation.nix**: Media creation tools (GIMP, OBS, Video2x)
+- **desktop-packages.nix**: Desktop applications (Anki, Vesktop, Okular, Qview, etc.)
+- **helium.nix**: Helium web browser with Widevine CDM support
 - **superfile.nix**: Superfile TUI file manager configuration
-- **mission-center.nix**: System monitor configuration
+- **btop.nix**: btop++ system monitor configuration
 
 **Theme Customization:**
 
@@ -231,14 +236,15 @@ Noctalia theming is managed in `modules/nixos-modules/noctalia-data/settings.nix
 
 Located in `modules/nixos-modules/`:
 
-- **editors.nix**: Zed editor with language servers (nixd, nil, hyprls), tmux
-- **languages.nix**: Node.js, Python3, Rust, development toolchains
-- **claude-code.nix**: Claude Code installation and integration
-- **media.nix**: Beets music manager, yt-dlp, scrapem/scrapev download commands
+- **zed.nix**: Zed editor with language server support
+- **tmux.nix**: tmux terminal multiplexer configuration
+- **languages.nix**: Node.js, Python3, Rust, development toolchains, language servers (nixd, nil, hyprls)
+- **claude-code.nix**: Claude Code installation, integration, and project management
+- **scraping.nix**: Beets music manager, yt-dlp, scrapem/scrapev download commands
 
 **Claude Code Configuration:**
 
-Managed by `modules/nixos-modules/claude-code-enhanced/default.nix`:
+Managed by `modules/nixos-modules/claude-code.nix`:
 - Pre-approved commands for autonomous operation
 - MCP server integration
 - Global project management via `cc` command
@@ -249,7 +255,9 @@ Managed by `modules/nixos-modules/claude-code-enhanced/default.nix`:
 Located in `modules/nixos-modules/`:
 
 - **steam.nix**: Steam with Proton, hardware compatibility
-- **default.nix**: RetroArch cores, PPSSPP, DeSmuME, Ryujinx emulators
+- **decky.nix**: Decky Loader Steam plugin system
+- **mangohud.nix**: MangoHud performance overlay with presets
+- **gaming-packages.nix**: RetroArch cores, PPSSPP, DeSmuME, Ryujinx emulators
 
 ## Home Manager Configuration
 
@@ -301,7 +309,7 @@ programs.git = {
 
 ## Shell Aliases and Functions
 
-Defined in `modules/nixos-modules/nix.nix`:
+Defined in `modules/nixos-modules/nix-daemon.nix`:
 
 ### Quick Rebuild Aliases
 
@@ -353,7 +361,7 @@ nixosConfigurations.MyConfig = nixpkgs.lib.nixosSystem {
 
 ### Adding New Modules
 
-Thanks to the import-tree system, adding new modules is simple - just create a `.nix` file in the appropriate `modules/nixos-modules/` subdirectory:
+Thanks to flake-parts automatic module discovery, adding new modules is simple - just create a `.nix` file in the appropriate `modules/nixos-modules/` subdirectory:
 
 **Example: Adding Lutris Gaming Support**
 
@@ -447,10 +455,12 @@ services.your-service = {
 };
 ```
 
-User services in `home.nix`:
+User services in home-manager modules (within `modules/nixos-modules/`):
 ```nix
-systemd.user.services.your-service = {
-  # service configuration...
+home-manager.users.${config.mySystem.user.name} = {
+  systemd.user.services.your-service = {
+    # service configuration...
+  };
 };
 ```
 

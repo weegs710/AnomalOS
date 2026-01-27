@@ -98,9 +98,9 @@ rig-up         # Update flake + test Rig + prompt to switch
 ### Desktop Environment
 - Hyprland compositor with modular configuration
 - Noctalia shell UI with dynamic theming (matugen + adw-gtk3)
-- SDDM display manager with theme integration
+- Ly display manager with YubiKey U2F authentication
 - Superfile TUI file manager
-- Mission Center system monitor (GTK4/Libadwaita)
+- btop++ terminal-based system monitor with GPU monitoring
 - LACT AMD GPU management and monitoring
 
 ### Development Tools
@@ -323,7 +323,7 @@ This system uses ZFS for the root filesystem with:
 This configuration can be forked and customized:
 
 1. Fork the repository
-2. Customize `configuration.nix` for your needs
+2. Customize `modules/hosts/rig.nix` for your needs
 3. Modify modules as needed
 4. Test thoroughly with `sudo nixos-rebuild test --flake .#nixosConfigurations.Rig`
 5. Share improvements via pull requests
