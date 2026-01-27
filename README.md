@@ -1,342 +1,153 @@
-# AnomalOS Desktop Configuration
+# My NixOS Setup - anomalOS
 
-A modular NixOS configuration using Nix flakes for a desktop system with Hyprland window manager, featuring security hardening, theming, development tools, and optional YubiKey and Claude Code support.
+> **Important**: This config is designed for my machine and my workflow. It might work on your system, it might not. There are no guarantees. You're welcome to use the whole thing or just steal bits and pieces. It's all FOSS, so do whatever you want with it.
 
-> **Important Notice**: This configuration is provided as-is for personal use and educational purposes. It is specifically designed for my personal hardware and workflow. While efforts have been made to enable customization, there are no guarantees this will work on your system without modifications. You are free to adopt the entire configuration or pick and choose components that suit your needs. This is entirely FOSS (Free and Open Source Software).
+## What's in here
 
-## Documentation
+I run Hyprland on NixOS with a bunch of stuff I've cobbled together over time:
 
-For documentation, see the [docs/](docs/) directory:
-- [Installation Guide](docs/INSTALLATION.md)
-- [Configuration Options](docs/CONFIGURATION.md)
-- [Features & Components](docs/FEATURES.md)
-- [Customization Guide](docs/CUSTOMIZATION.md)
-- [Secret Management](docs/SECRETS.md)
-- [ZFS Snapshots & Recovery](docs/BACKUP.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- **Desktop**: Hyprland compositor with Noctalia shell UI
+- **Login**: Ly display manager (works with my YubiKey for login)
+- **Shell**: Fish with Oh My Posh prompt
+- **Editor**: Zed
+- **Terminal**: Ghostty
+- **Filesystem**: ZFS with automated snapshots
+- **Security**: YubiKey for authentication, Suricata IDS, hardened firewall
+- **Gaming**: Steam with Proton, Decky Loader, MangoHud, bunch of emulators
+- **Music**: MPD with Euphonica client, Beets for library management
+- **Dev Tools**: Claude Code, Node/Python/Rust toolchains, language servers
 
-## System Overview
+Everything's managed with Nix flakes and home-manager. I use ZFS because I like snapshots because I'd rather not lose stuff when I inevitably break something or delete something on accident. This just makes sense to pair with git and NixOS.
 
-This configuration targets x86_64 desktop systems, providing:
-
-- **OS**: NixOS (unstable channel) with Linux kernel 6.18+ (xanmod)
-- **Filesystem**: ZFS with dual-drive setup (system + games)
-- **Window Manager**: Hyprland (modular configuration)
-- **Display Manager**: Ly with YubiKey U2F authentication
-- **Shell**: Fish with Oh My Posh prompt (high contrast base16 colors)
-- **Editor**: Zed with language server support
-- **Theme**: Noctalia shell UI with dynamic theming via matugen, SpaceMono Nerd Font
-- **Security**: Hardened with YubiKey U2F for login, sudo, and polkit
-
-## System Configuration
-
-This flake provides the **Rig** configuration - a NixOS system with:
-
-- **YubiKey Security**: Hardware authentication for login, sudo, and polkit
-- **Claude Code**: AI-assisted development
-- **Full Feature Set**: All gaming, development, desktop, and media features enabled
-
-## Quick Start
-
-### Prerequisites
-- Fresh NixOS installation (any x86_64 machine with internet connection)
-- Root or sudo access
-- YubiKey (required for hardware authentication)
-
-### Installation
-
-```bash
-# Clone this repository (GitHub)
-git clone https://github.com/weegs710/AnomalOS.git ~/dotfiles
-cd ~/dotfiles
-
-# Or clone from Codeberg
-git clone https://codeberg.org/weegs710/AnomalOS.git ~/dotfiles
-cd ~/dotfiles
-
-# Generate hardware configuration for your system
-# NOTE: This config uses ZFS - see docs/INSTALLATION.md for ZFS-specific setup
-sudo nixos-generate-config --show-hardware-config > hardware-configuration-zfs.nix
-
-# Test the configuration (IMPORTANT!)
-sudo nixos-rebuild test --flake .#nixosConfigurations.Rig
-
-# If test succeeds, apply the configuration
-sudo nixos-rebuild switch --flake .#nixosConfigurations.Rig
-
-# Reboot
-sudo reboot
-```
-
-For detailed installation instructions, see [docs/INSTALLATION.md](docs/INSTALLATION.md)
-
-## System Management
-
-After initial installation, use `nh` (Nix Helper) for rebuilds:
-
-```bash
-# Test configuration (safe, temporary)
-nrt-rig        # Test Rig configuration (uses nh)
-
-# Switch configuration (permanent)
-nrs-rig        # Switch to Rig configuration (uses nh)
-
-# Interactive update function
-rig-up         # Update flake + test Rig + prompt to switch
-```
-
-## Key Features
-
-### Security
-- YubiKey U2F authentication (optional)
-- Agenix for encrypted secret management
-- Suricata IDS for network monitoring
-- Hardened firewall with nftables
-- Kernel hardening and SSH hardening
-- Secure PAM configuration
-
-### Desktop Environment
-- Hyprland compositor with modular configuration
-- Noctalia shell UI with dynamic theming (matugen + adw-gtk3)
-- Ly display manager with YubiKey U2F authentication
-- Superfile TUI file manager
-- btop++ terminal-based system monitor with GPU monitoring
-- LACT AMD GPU management and monitoring
-
-### Development Tools
-- Claude Code with project management (`cc` command)
-- Zed editor with language server support
-- Fish shell with autocompletions
-- Development toolchains: Node.js, Python, Rust, Nix
-- Language servers: nixd (Nix), hyprls (Hyprland)
-- Git with custom aliases and workflows
-- Ghostty GPU-accelerated terminal emulator
-
-### Gaming & Media
-- Steam with Proton, hardware compatibility, and Decky Loader plugin system
-- MangoHud performance overlay with 5 preset levels (Steam Deck-style)
-- PPSSPP, DeSmuME, Ryujinx emulators
-- RetroArch with automated playlist generation (NES, SNES, N64, GBA, etc.)
-- MPD (Music Player Daemon) with Euphonica GTK4 client for music playback
-- Beets music library manager with declarative configuration
-- Pipewire audio system
-- AMD GPU support with Mesa drivers and LACT control tool
-- Bluetooth stack with Blueman management interface
-
-### Package Management
-- Nix Flakes for reproducible configuration
-- Home Manager for user-space management
-- Declarative Flatpak management via nix-flatpak
-- Multiple binary caches (cache.nixos.org, nix-community, hyprland, ezkea)
-- Automated ZFS snapshots with sanoid (hourly, daily, weekly, monthly retention)
-
-## Dendritic Architecture
-
-The configuration uses a dendritic flake-parts pattern with **automatic module discovery**. All features are self-contained flake-parts modules that are automatically discovered and imported:
+## How it's organized
 
 ```
 dotfiles/
-├── flake.nix                         # Main flake definition with flake-parts
-├── hardware-configuration-zfs.nix    # ZFS hardware configuration
-├── modules/                          # Dendritic module organization
-│   ├── hosts/                       # Host configurations
-│   │   └── rig.nix                 # Rig system configuration and feature toggles
-│   ├── devshell.nix                # Development shell with nh
-│   └── nixos-modules/              # All NixOS feature modules (54 modules)
-│       ├── options.nix             # Configuration schema (mySystem.*)
-│       ├── boot.nix                # Boot configuration
-│       ├── networking.nix          # Network configuration
-│       ├── users.nix               # User account configuration
-│       ├── nix-daemon.nix          # Nix daemon and helper scripts
-│       ├── zfs.nix                 # ZFS snapshots and management
-│       ├── packages.nix            # Core packages
-│       ├── desktop-packages.nix    # Desktop-specific packages
-│       ├── desktop-services.nix    # Desktop services
-│       ├── fish.nix                # Fish shell configuration
-│       ├── oh-my-posh.nix          # Shell prompt configuration
-│       ├── ghostty.nix             # Ghostty terminal emulator
-│       ├── superfile.nix           # Superfile TUI file manager
-│       ├── fastfetch.nix           # System info display
-│       ├── btop.nix                # System monitor
-│       ├── kdeconnect.nix          # KDE Connect integration
-│       ├── flatpak.nix             # Flatpak management
-│       ├── xdg.nix                 # XDG configuration
-│       ├── xdg-apps.nix            # XDG MIME associations
-│       ├── audio.nix               # Audio system configuration
-│       ├── creation.nix            # Media creation tools
-│       ├── scraping.nix            # Media downloading utilities
-│       ├── mpd.nix                 # Music Player Daemon
-│       ├── steam.nix               # Steam platform
-│       ├── mangohud.nix            # Performance overlay
-│       ├── decky.nix               # Decky Loader plugin system
-│       ├── gaming-packages.nix     # Gaming packages and emulators
-│       ├── secrets.nix             # Agenix secret management
-│       ├── dnscrypt.nix            # DNS encryption
-│       ├── firewall.nix            # Firewall configuration
-│       ├── suricata.nix            # IDS monitoring
-│       ├── yubikey.nix             # YubiKey authentication
-│       ├── services.nix            # Security services (SSH, polkit)
-│       ├── claude-code.nix         # Claude Code AI assistant
-│       ├── languages.nix           # Programming language toolchains
-│       ├── vm.nix                  # Virtual machine support
-│       ├── tools.nix               # Development utilities
-│       ├── zed.nix                 # Zed editor
-│       ├── tmux.nix                # Terminal multiplexer
-│       ├── hyprland-system.nix     # Hyprland system configuration
-│       ├── hyprland-config.nix     # Hyprland compositor settings
-│       ├── hyprland-keybinds.nix   # Keyboard shortcuts
-│       ├── hyprland-rules.nix      # Window rules
-│       ├── hyprland-wallpaper.nix  # Wallpaper management
-│       ├── noctalia.nix            # Noctalia shell UI
-│       ├── noctalia-data/          # Noctalia data files
-│       │   ├── _settings.nix      # Shell configuration
-│       │   └── gui-settings.json  # GUI settings
-│       └── ...                     # Other feature modules
-├── docs/                            # Documentation
-└── assets/                          # Assets (wallpapers, configs)
+├── flake.nix                    # Main flake
+├── modules/
+│   ├── hosts/rig.nix            # My system config
+│   └── nixos-modules/           # All the feature modules (55 of them)
+└── docs/                        # Docs if you want more details
 ```
 
-### Automatic Module Discovery
-
-The configuration uses **flake-parts with automatic module discovery**, eliminating manual import lists:
-
-**How It Works:**
-
-1. **Flake-Parts Wrapper**:
-   - Each module is a flake-parts module that exports `flake.nixosModules.<name>`
-   - Example structure:
-   ```nix
-   { inputs, self, ... }:
-   {
-     flake.nixosModules.steam = { config, lib, pkgs, ... }:
-       with lib; {
-         config = mkIf config.mySystem.features.gaming {
-           # module implementation
-         };
-       };
-   }
-   ```
-
-2. **Automatic Discovery**:
-   - Host configuration uses `builtins.attrValues self.nixosModules`
-   - All modules in `nixos-modules/` are automatically discovered and imported
-   - No manual import lists needed anywhere
-
-3. **Module Naming**:
-   - Module files define their own `flake.nixosModules.<name>` attribute
-   - Data directories (e.g., `noctalia-data/`) contain supporting files
-   - Files starting with `_` are data files, not modules
-
-**Adding New Modules:**
-
-To add a new feature module:
+**Fair warning**: This is set up for my AMD GPU, my YubiKey, my dual-drive ZFS setup. You'll probably need to change a bunch of stuff.
 
 ```bash
-# Create the module file
-cat > modules/nixos-modules/lutris.nix << 'EOF'
-{ inputs, self, ... }:
-{
-  flake.nixosModules.lutris = { config, lib, pkgs, ... }:
-    with lib; {
-      config = mkIf config.mySystem.features.gaming {
-        # Lutris implementation
-      };
-    };
-}
-EOF
+# Clone it
+git clone https://github.com/weegs710/AnomalOS.git ~/dotfiles
+cd ~/dotfiles
 
-# That's it - it's automatically discovered!
+# Generate hardware config for your machine
+sudo nixos-generate-config --show-hardware-config > hardware-configuration-zfs.nix
+
+# Test it first (seriously, don't skip this)
+sudo nixos-rebuild test --flake .#nixosConfigurations.Rig
+
+# If that worked, apply it
+sudo nixos-rebuild switch --flake .#nixosConfigurations.Rig
+sudo reboot
 ```
 
-This dendritic pattern allows features to be:
-- **Added** without touching import lists
-- **Removed** by simply deleting the file
-- **Modified** independently without affecting other modules
-- **Discovered** automatically on every rebuild
+The docs in `docs/` have more detailed instructions if you actually want to use this. Those files are primarally for me to reference for later.
+
+## Managing updates
+
+After the initial install, I use these aliases:
+
+```bash
+nrt-rig    # Test changes
+nrs-rig    # Apply changes
+rig-up     # Update everything and prompt to switch
+```
 
 ## Customization
 
-Edit `modules/hosts/rig.nix` to customize your system configuration:
+Everything's controlled from `modules/hosts/rig.nix`. You can turn features on/off there:
 
 ```nix
-mySystem = {
-  hostName = "your-hostname";
-  user = {
-    name = "your-username";
-    description = "Your Name";
-    extraGroups = ["networkmanager" "wheel"];
-  };
+mySystem.features = {
+  desktop = true;
+  gaming = true;
+  yubikey = true;      # You probably don't have a YubiKey
+  claudeCode = true;   # Claude Code integration
+  # ... etc
+};
 
-  features = {
-    desktop = true;
-    security = true;
-    development = true;
-    gaming = true;
-    yubikey = true;         # YubiKey hardware authentication
-    claudeCode = true;      # Claude Code AI-assisted development
-    flatpak = true;         # Declarative Flatpak management
-    media = true;           # Media tools and applications
-    kdeconnect = true;      # KDE Connect for device integration
-    vm = true;              # Virtual machine support
-    androidWebcam = true;   # Android as webcam
-  };
-
-  hardware = {
-    amd = true;             # AMD GPU support
-    bluetooth = true;       # Bluetooth hardware
-    steam = true;           # Steam gaming platform
-  };
-
-  security = {
-    dnscrypt = true;        # DNS encryption
-  };
+mySystem.hardware = {
+  amd = true;          # Set to false if you have Intel/NVIDIA
+  bluetooth = true;
+  steam = true;
 };
 ```
 
-For detailed customization options, see [docs/CUSTOMIZATION.md](docs/CUSTOMIZATION.md)
+## Adding stuff
 
-## System Requirements
+Because of the flake-parts setup, adding new modules ezpz. Just create a file in `modules/nixos-modules/`:
 
-**Target Hardware:**
-- AMD/Intel CPU with integrated graphics
-- AMD/Nvidia GPU (optional/hybrid)
+```nix
+{ inputs, self, ... }:
+{
+  flake.nixosModules.my-new-thing = { config, lib, pkgs, ... }:
+    with lib; {
+      config = mkIf config.mySystem.features.whatever {
+        # your config here
+      };
+    };
+}
+```
+
+## What you probably want to change
+
+If you're actually going to use this:
+
+1. **Hardware config**: Generate your own `hardware-configuration-zfs.nix`
+2. **User settings**: Change username, hostname in `modules/hosts/rig.nix`
+3. **YubiKey stuff**: Disable it unless you have one (`yubikey = false`)
+4. **GPU settings**: Change `amd = true` to whatever GPU you have
+5. **ZFS pools**: Adjust pool names and datasets to match your setup
+6. **Game storage**: The `zgames` pool is optional, remove it if you don't need it
+
+## ZFS setup
+
+- `zroot` pool on NVMe for system/nix/home
+- `zgames` pool on a separate drive for games (optional)
+- Automated hourly/daily/weekly/monthly snapshots via sanoid
+- Compression and auto-trim enabled
+
+Check `docs/BACKUP.md` for snapshot management details.
+
+## Docs
+
+If you want more details:
+- [Installation Guide](docs/INSTALLATION.md) - Full install instructions
+- [Configuration Options](docs/CONFIGURATION.md) - All the knobs you can turn
+- [Features](docs/FEATURES.md) - What's actually in here
+- [Customization](docs/CUSTOMIZATION.md) - How to make it yours
+- [Secrets](docs/SECRETS.md) - Agenix setup for managing secrets
+- [Backups](docs/BACKUP.md) - ZFS snapshot management
+- [Troubleshooting](docs/TROUBLESHOOTING.md) - When things break
+
+## This is what I'm running:
+- AMD CPU + AMD GPU
+- 64GB RAM
+- 1TB NVMe for system (zroot)
+- 2TB SSD for games (zgames)
+- YubiKey for hardware auth
 - Bluetooth 5.0+
-- NVMe SSD (required for ZFS)
-
-**Minimum Requirements:**
-- 16GB RAM (32GB+ recommended for ZFS ARC caching)
-- 100GB storage for system (ZFS pool)
-- Separate drive for games (optional zgames pool)
-- UEFI boot support
-- Internet connection for initial build
-
-**ZFS Configuration:**
-This system uses ZFS for the root filesystem with:
-- `zroot` pool: System, nix store, cache, and persistent data
-- `zgames` pool: Optional dedicated gaming storage (2TB in reference config)
-- Automated snapshots via sanoid (hourly, daily, weekly, monthly retention)
-- Compression: zstd
-- Auto-trim enabled for SSD health
 
 ## Contributing
 
-This configuration can be forked and customized:
-
-1. Fork the repository
-2. Customize `modules/hosts/rig.nix` for your needs
-3. Modify modules as needed
-4. Test thoroughly with `sudo nixos-rebuild test --flake .#nixosConfigurations.Rig`
-5. Share improvements via pull requests
+Feel free to fork this and do whatever. If you find bugs or have improvements, pull requests are welcome. But remember, this is primarily my personal config, and I am still fairly new to this stuff.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License. Do whatever you want with it.
 
-This configuration is provided as-is for educational and personal use. Feel free to adapt it for your own systems, use it whole, or take pieces that work for you.
+## Links
 
-## Resources
+- GitHub: https://github.com/weegs710/AnomalOS
+- Codeberg: https://codeberg.org/weegs710/AnomalOS
 
-- [NixOS Manual](https://nixos.org/manual/nixos/stable/)
-- [Home Manager Manual](https://nix-community.github.io/home-manager/)
-- [Hyprland Wiki](https://wiki.hyprland.org/)
-- [GitHub Repository](https://github.com/weegs710/AnomalOS) | [Codeberg Repository](https://codeberg.org/weegs710/AnomalOS)
+---
+
+This is a hobbyist project. I'm learning as I go. If something's broken or stupid, that's why.
