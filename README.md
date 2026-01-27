@@ -132,139 +132,131 @@ rig-up         # Update flake + test Rig + prompt to switch
 
 ## Dendritic Architecture
 
-The configuration uses a dendritic flake-parts pattern with **automatic module discovery** via import-tree. Features are organized by category and automatically imported without manual import lists:
+The configuration uses a dendritic flake-parts pattern with **automatic module discovery**. All features are self-contained flake-parts modules that are automatically discovered and imported:
 
 ```
 dotfiles/
-├── flake.nix                         # Main flake definition
-├── configuration.nix                 # System configuration and feature toggles
+├── flake.nix                         # Main flake definition with flake-parts
 ├── hardware-configuration-zfs.nix    # ZFS hardware configuration
-├── parts/                            # Flake-parts organization
-│   └── system-rig.nix               # Rig system configuration
-├── features/                         # Dendritic feature modules
-│   ├── core/                        # Core system features
-│   │   ├── options.nix             # Configuration schema
-│   │   ├── _home.nix               # Home Manager user configuration (helper)
-│   │   ├── boot.nix                # Boot configuration
-│   │   ├── networking.nix          # Network configuration
-│   │   ├── nix-daemon.nix          # Nix daemon and helper scripts
-│   │   ├── users.nix               # User account configuration
-│   │   ├── zfs.nix                 # ZFS snapshots and management
-│   │   ├── fish.nix                # Fish shell configuration
-│   │   ├── oh-my-posh.nix          # Shell prompt configuration
-│   │   ├── ghostty.nix             # Ghostty terminal emulator
-│   │   ├── superfile.nix           # Superfile TUI file manager
-│   │   └── ...                     # Other core features
-│   ├── desktop/                     # Desktop applications
-│   │   ├── kdeconnect.nix          # KDE Connect integration
-│   │   ├── flatpak.nix             # Flatpak management
-│   │   ├── btop.nix                # System monitor
-│   │   ├── fastfetch.nix           # System info display
-│   │   └── ...                     # Other desktop apps
-│   ├── editors/                     # Text editors and development
-│   │   ├── zed.nix                 # Zed editor
-│   │   └── tmux.nix                # Terminal multiplexer
-│   ├── media/                       # Media tools and applications
-│   │   ├── audio.nix               # Audio system configuration
-│   │   ├── creation.nix            # Media creation tools
-│   │   ├── scraping.nix            # Media downloading utilities
-│   │   └── mpd.nix                 # Music Player Daemon
-│   ├── gaming/                      # Gaming support
-│   │   ├── steam.nix               # Steam platform
-│   │   ├── mangohud.nix            # Performance overlay
-│   │   ├── decky.nix               # Decky Loader plugin system
-│   │   └── packages.nix            # Gaming packages and emulators
-│   ├── security/                    # Security features
-│   │   ├── secrets.nix             # Agenix secret management
-│   │   ├── dnscrypt.nix            # DNS encryption
-│   │   ├── firewall.nix            # Firewall configuration
-│   │   ├── suricata.nix            # IDS monitoring
-│   │   ├── yubikey.nix             # YubiKey authentication
-│   │   └── services.nix            # Security services (SSH, polkit)
-│   ├── development/                 # Development tools
-│   │   ├── claude-code.nix         # Claude Code AI assistant
-│   │   ├── _claude-code-enhanced/  # Enhanced Claude Code features (helper dir)
-│   │   ├── languages.nix           # Programming language toolchains
-│   │   ├── vm.nix                  # Virtual machine support
-│   │   └── tools.nix               # Development utilities
-│   ├── hyprland/                    # Hyprland compositor
-│   │   ├── default.nix             # Main Hyprland module
-│   │   ├── system.nix              # System-level configuration
-│   │   ├── _config.nix             # Compositor configuration (helper)
-│   │   ├── _keybinds.nix           # Keyboard shortcuts (helper)
-│   │   ├── _rules.nix              # Window rules (helper)
-│   │   └── _wallpaper.nix          # Wallpaper management (helper)
-│   └── noctalia/                    # Noctalia shell UI
-│       ├── default.nix             # Main Noctalia module
-│       ├── _settings.nix           # Shell configuration (helper)
-│       └── gui-settings.json       # GUI settings
+├── modules/                          # Dendritic module organization
+│   ├── hosts/                       # Host configurations
+│   │   └── rig.nix                 # Rig system configuration and feature toggles
+│   ├── devshell.nix                # Development shell with nh
+│   └── nixos-modules/              # All NixOS feature modules (54 modules)
+│       ├── options.nix             # Configuration schema (mySystem.*)
+│       ├── boot.nix                # Boot configuration
+│       ├── networking.nix          # Network configuration
+│       ├── users.nix               # User account configuration
+│       ├── nix-daemon.nix          # Nix daemon and helper scripts
+│       ├── zfs.nix                 # ZFS snapshots and management
+│       ├── packages.nix            # Core packages
+│       ├── desktop-packages.nix    # Desktop-specific packages
+│       ├── desktop-services.nix    # Desktop services
+│       ├── fish.nix                # Fish shell configuration
+│       ├── oh-my-posh.nix          # Shell prompt configuration
+│       ├── ghostty.nix             # Ghostty terminal emulator
+│       ├── superfile.nix           # Superfile TUI file manager
+│       ├── fastfetch.nix           # System info display
+│       ├── btop.nix                # System monitor
+│       ├── kdeconnect.nix          # KDE Connect integration
+│       ├── flatpak.nix             # Flatpak management
+│       ├── xdg.nix                 # XDG configuration
+│       ├── xdg-apps.nix            # XDG MIME associations
+│       ├── audio.nix               # Audio system configuration
+│       ├── creation.nix            # Media creation tools
+│       ├── scraping.nix            # Media downloading utilities
+│       ├── mpd.nix                 # Music Player Daemon
+│       ├── steam.nix               # Steam platform
+│       ├── mangohud.nix            # Performance overlay
+│       ├── decky.nix               # Decky Loader plugin system
+│       ├── gaming-packages.nix     # Gaming packages and emulators
+│       ├── secrets.nix             # Agenix secret management
+│       ├── dnscrypt.nix            # DNS encryption
+│       ├── firewall.nix            # Firewall configuration
+│       ├── suricata.nix            # IDS monitoring
+│       ├── yubikey.nix             # YubiKey authentication
+│       ├── services.nix            # Security services (SSH, polkit)
+│       ├── claude-code.nix         # Claude Code AI assistant
+│       ├── languages.nix           # Programming language toolchains
+│       ├── vm.nix                  # Virtual machine support
+│       ├── tools.nix               # Development utilities
+│       ├── zed.nix                 # Zed editor
+│       ├── tmux.nix                # Terminal multiplexer
+│       ├── hyprland-system.nix     # Hyprland system configuration
+│       ├── hyprland-config.nix     # Hyprland compositor settings
+│       ├── hyprland-keybinds.nix   # Keyboard shortcuts
+│       ├── hyprland-rules.nix      # Window rules
+│       ├── hyprland-wallpaper.nix  # Wallpaper management
+│       ├── noctalia.nix            # Noctalia shell UI
+│       ├── noctalia-data/          # Noctalia data files
+│       │   ├── _settings.nix      # Shell configuration
+│       │   └── gui-settings.json  # GUI settings
+│       └── ...                     # Other feature modules
 ├── docs/                            # Documentation
 └── assets/                          # Assets (wallpapers, configs)
 ```
 
-### Import-Tree Auto-Discovery
+### Automatic Module Discovery
 
-The configuration uses **import-tree** for automatic module discovery, eliminating the need for manual import lists:
+The configuration uses **flake-parts with automatic module discovery**, eliminating manual import lists:
 
 **How It Works:**
 
-1. **Flake Level** (`flake.nix`):
-   - Auto-imports all `.nix` files from `parts/` directory
-   - Discovers flake-parts modules automatically
+1. **Flake-Parts Wrapper**:
+   - Each module is a flake-parts module that exports `flake.nixosModules.<name>`
+   - Example structure:
+   ```nix
+   { inputs, self, ... }:
+   {
+     flake.nixosModules.steam = { config, lib, pkgs, ... }:
+       with lib; {
+         config = mkIf config.mySystem.features.gaming {
+           # module implementation
+         };
+       };
+   }
+   ```
 
-2. **Configuration Level** (`configuration.nix`):
-   - Auto-imports all `.nix` files from `features/` directory
-   - Discovers NixOS feature modules automatically
+2. **Automatic Discovery**:
+   - Host configuration uses `builtins.attrValues self.nixosModules`
+   - All modules in `nixos-modules/` are automatically discovered and imported
+   - No manual import lists needed anywhere
 
-3. **Naming Convention**:
-   - **Normal files** (e.g., `boot.nix`, `steam.nix`) → Auto-imported as modules
-   - **Underscore-prefixed files** (e.g., `_settings.nix`, `_config.nix`) → Excluded from auto-discovery, must be imported manually by parent modules
-   - **Underscore-prefixed directories** (e.g., `_claude-code-enhanced/`) → Entire directory excluded from auto-discovery
+3. **Module Naming**:
+   - Module files define their own `flake.nixosModules.<name>` attribute
+   - Data directories (e.g., `noctalia-data/`) contain supporting files
+   - Files starting with `_` are data files, not modules
 
 **Adding New Modules:**
 
-To add a new feature module, simply create a `.nix` file in the appropriate category:
+To add a new feature module:
 
 ```bash
-# Example: Adding Lutris gaming support
-# Just create the file - no import statements needed!
-touch features/gaming/lutris.nix
-```
-
-The module will be automatically discovered and imported on the next rebuild.
-
-**Multi-File Modules:**
-
-For complex features requiring multiple files:
-
-```
-features/gaming/lutris/
-├── default.nix      # Auto-imported (module entry point)
-├── _config.nix      # Excluded (helper file, imported by default.nix)
-└── _settings.nix    # Excluded (helper file, imported by default.nix)
-```
-
-The `default.nix` explicitly imports helper files:
-```nix
+# Create the module file
+cat > modules/nixos-modules/lutris.nix << 'EOF'
+{ inputs, self, ... }:
 {
-  imports = [
-    ./_config.nix
-    ./_settings.nix
-  ];
-
-  # Module implementation...
+  flake.nixosModules.lutris = { config, lib, pkgs, ... }:
+    with lib; {
+      config = mkIf config.mySystem.features.gaming {
+        # Lutris implementation
+      };
+    };
 }
+EOF
+
+# That's it - it's automatically discovered!
 ```
 
 This dendritic pattern allows features to be:
 - **Added** without touching import lists
-- **Renamed** without updating references
-- **Moved** to different categories seamlessly
 - **Removed** by simply deleting the file
+- **Modified** independently without affecting other modules
+- **Discovered** automatically on every rebuild
 
 ## Customization
 
-Edit `configuration.nix` to customize:
+Edit `modules/hosts/rig.nix` to customize your system configuration:
 
 ```nix
 mySystem = {
@@ -272,6 +264,7 @@ mySystem = {
   user = {
     name = "your-username";
     description = "Your Name";
+    extraGroups = ["networkmanager" "wheel"];
   };
 
   features = {
@@ -284,12 +277,18 @@ mySystem = {
     flatpak = true;         # Declarative Flatpak management
     media = true;           # Media tools and applications
     kdeconnect = true;      # KDE Connect for device integration
+    vm = true;              # Virtual machine support
+    androidWebcam = true;   # Android as webcam
   };
 
   hardware = {
     amd = true;             # AMD GPU support
     bluetooth = true;       # Bluetooth hardware
     steam = true;           # Steam gaming platform
+  };
+
+  security = {
+    dnscrypt = true;        # DNS encryption
   };
 };
 ```

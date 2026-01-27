@@ -218,7 +218,7 @@ sudo zfs destroy zroot/persist@autosnap_2025-12-01_00:00:00_hourly%autosnap_2025
 
 ### Modify Retention Policy
 
-Edit `/home/weegs/dotfiles/features/core/zfs.nix`:
+Edit `/home/weegs/dotfiles/modules/nixos-modules/zfs.nix`:
 
 ```nix
 templates.critical = {
@@ -301,7 +301,7 @@ sudo systemctl start sanoid.service
 zfs list -o space
 
 # If snapshots are using too much space, reduce retention
-# Edit features/core/zfs.nix and rebuild
+# Edit modules/nixos-modules/zfs.nix and rebuild
 ```
 
 ### Cannot Delete Snapshot

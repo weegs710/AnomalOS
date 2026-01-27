@@ -48,7 +48,7 @@ cd ~/dotfiles
 
 # Verify you're in the right directory
 ls -la
-# You should see: flake.nix, configuration.nix, features/, etc.
+# You should see: flake.nix, modules/hosts/rig.nix, modules/nixos-modules/, etc.
 ```
 
 ### Step 3: Understand ZFS Requirements
@@ -61,11 +61,11 @@ ls -la
 - This repository includes `hardware-configuration-zfs.nix` as reference
 
 **If you're NOT using ZFS:**
-You'll need to modify `configuration.nix` to use a standard ext4/btrfs configuration and generate a standard hardware config:
+You'll need to modify `modules/hosts/rig.nix` to use a standard ext4/btrfs configuration and generate a standard hardware config:
 
 ```bash
-sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
-# Then update configuration.nix to import ./hardware-configuration.nix instead
+sudo nixos-generate-config --show-hardware-config > hardware-modules/hosts/rig.nix
+# Then update modules/hosts/rig.nix to import ./hardware-modules/hosts/rig.nix instead
 ```
 
 **If you ARE using ZFS:**
@@ -76,13 +76,13 @@ Review and customize `hardware-configuration-zfs.nix` for your pools and mount p
 
 ### Step 4: Customize Configuration (Optional but Recommended)
 
-Before building, customize `configuration.nix` with your preferences:
+Before building, customize `modules/hosts/rig.nix` with your preferences:
 
 ```bash
-# Edit configuration.nix with your preferred editor
-nano configuration.nix
+# Edit modules/hosts/rig.nix with your preferred editor
+nano modules/hosts/rig.nix
 # or
-vim configuration.nix
+vim modules/hosts/rig.nix
 ```
 
 **Minimum recommended changes:**
@@ -262,10 +262,10 @@ cat hardware-configuration-zfs.nix | grep -A 3 "fileSystems"
 **For non-ZFS systems:**
 ```bash
 # Regenerate hardware configuration
-sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
+sudo nixos-generate-config --show-hardware-config > hardware-modules/hosts/rig.nix
 
 # Verify file contents
-cat hardware-configuration.nix
+cat hardware-modules/hosts/rig.nix
 ```
 
 ### Network Issues During Build

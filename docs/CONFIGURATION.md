@@ -6,38 +6,51 @@ This guide explains the configuration options available in AnomalOS and how to c
 
 ## Configuration Structure
 
-AnomalOS uses a modular configuration structure with **automatic module discovery**:
+AnomalOS uses a dendritic flake-parts structure with **automatic module discovery**:
 
 ```
-configuration.nix          # Main configuration file
+modules/hosts/rig.nix      # Host configuration file
 ├── mySystem              # System-level settings
 │   ├── hostName          # System hostname
 │   ├── user              # User account settings
 │   ├── features          # Feature toggles
-│   └── hardware          # Hardware capabilities
+│   ├── hardware          # Hardware capabilities
+│   └── security          # Security settings
 ├── home-manager          # User environment settings
-└── import-tree           # Automatic module discovery from features/
+└── nixosModules discovery # Automatic module discovery via builtins.attrValues
 ```
 
-### Import-Tree Auto-Discovery
+### Automatic Module Discovery
 
-The configuration uses **import-tree** to automatically discover and import modules from the `features/` directory. This means:
+The configuration uses **flake-parts** with automatic discovery of all modules in `modules/nixos-modules/`. This means:
 
-- **No manual import lists** - modules are discovered automatically
-- **Add modules by creating files** - no need to update import statements
-- **Rename/move modules freely** - changes are picked up automatically
-- **Remove modules by deleting files** - no cleanup needed
+- **No manual import lists** - modules are discovered via `builtins.attrValues self.nixosModules`
+- **Add modules by creating files** - automatically picked up on next rebuild
+- **Remove modules by deleting files** - automatically removed on next rebuild
+- **Each module is self-contained** - defines its own `flake.nixosModules.<name>` attribute
 
-**Naming Convention:**
-- Files without underscore prefix (e.g., `boot.nix`, `steam.nix`) are **auto-imported**
-- Files with underscore prefix (e.g., `_settings.nix`, `_config.nix`) are **excluded** (must be imported manually by parent modules)
-- Directories with underscore prefix (e.g., `_claude-code-enhanced/`) are **entirely excluded**
+**Module Structure:**
+```nix
+{ inputs, self, ... }:
+{
+  flake.nixosModules.myfeature = { config, lib, pkgs, ... }:
+    with lib; {
+      config = mkIf config.mySystem.features.myfeature {
+        # Feature implementation
+      };
+    };
+}
+```
+
+**Data Files:**
+- Subdirectories like `noctalia-data/` contain supporting data files
+- Files starting with `_` (e.g., `_settings.nix`) are data files, not modules
 
 ## Core Configuration Options
 
 ### System Settings
 
-Located in the `mySystem` section of `configuration.nix`:
+Located in the `mySystem` section of `modules/hosts/rig.nix`:
 
 ```nix
 mySystem = {
@@ -145,7 +158,7 @@ This configuration provides:
 
 ### Core Modules
 
-Located in `features/core/`:
+Located in `modules/nixos-modules/`:
 
 - **boot.nix**: Boot loader configuration, kernel parameters
 - **networking.nix**: NetworkManager, firewall basics, hostname
@@ -155,7 +168,7 @@ Located in `features/core/`:
 
 ### Security Modules
 
-Located in `features/security/`:
+Located in `modules/nixos-modules/`:
 
 - **firewall.nix**: nftables configuration, custom gaming ports (23243-23262), SSH on port 2222
 - **hardening.nix**: Kernel sysctl parameters, SSH hardening, PAM configuration
@@ -164,7 +177,7 @@ Located in `features/security/`:
 
 **Security Configuration Options:**
 
-Edit `features/security/firewall.nix` to adjust ports:
+Edit `modules/nixos-modules/firewall.nix` to adjust ports:
 ```nix
 # Open additional TCP ports
 networking.firewall.allowedTCPPorts = [ 2222 ];
@@ -177,13 +190,13 @@ networking.firewall.allowedTCPPortRanges = [
 
 ### Desktop Modules
 
-Located in `features/desktop/`:
+Located in `modules/nixos-modules/`:
 
 - **hyprland.nix**: Hyprland compositor system-level configuration (enables Hyprland, XDG portals, PAM)
 - **mpd.nix**: MPD (Music Player Daemon) service configuration
 - **media.nix**: Applications (GIMP, Anki, Vesktop, OBS), media tools
 
-Located in `features/desktop/`:
+Located in `modules/nixos-modules/`:
 
 - **noctalia/**: Dynamic shell UI with launcher, bar, notifications (settings.nix, default.nix)
 - **hyprland/**: User-level Hyprland configuration (config.nix, keybinds.nix, rules.nix, wallpaper.nix)
@@ -193,7 +206,7 @@ Located in `features/desktop/`:
 
 **Theme Customization:**
 
-Noctalia theming is managed in `features/noctalia/settings.nix`:
+Noctalia theming is managed in `modules/nixos-modules/noctalia-data/settings.nix`:
 ```nix
 # Change matugen color scheme
 "theme" = {
@@ -212,11 +225,11 @@ Noctalia theming is managed in `features/noctalia/settings.nix`:
 - Add images to `~/.local/share/wallpapers/`
 - Wallpapers rotate automatically every 10 minutes via noctalia
 - Wave transitions with 5-second duration
-- Configuration: `features/noctalia/settings.nix` (wallpaper section)
+- Configuration: `modules/nixos-modules/noctalia-data/settings.nix` (wallpaper section)
 
 ### Development Modules
 
-Located in `features/development/`:
+Located in `modules/nixos-modules/`:
 
 - **editors.nix**: Zed editor with language servers (nixd, nil, hyprls), tmux
 - **languages.nix**: Node.js, Python3, Rust, development toolchains
@@ -225,7 +238,7 @@ Located in `features/development/`:
 
 **Claude Code Configuration:**
 
-Managed by `features/development/claude-code-enhanced/default.nix`:
+Managed by `modules/nixos-modules/claude-code-enhanced/default.nix`:
 - Pre-approved commands for autonomous operation
 - MCP server integration
 - Global project management via `cc` command
@@ -233,27 +246,27 @@ Managed by `features/development/claude-code-enhanced/default.nix`:
 
 ### Gaming Modules
 
-Located in `features/gaming/`:
+Located in `modules/nixos-modules/`:
 
 - **steam.nix**: Steam with Proton, hardware compatibility
 - **default.nix**: RetroArch cores, PPSSPP, DeSmuME, Ryujinx emulators
 
 ## Home Manager Configuration
 
-User-level configuration managed in `features/` (integrated with home-manager):
+User-level configuration managed in `modules/nixos-modules/` (integrated with home-manager):
 
 ### Shell Configuration
 
-Configured in `features/editors/`:
+Configured in `modules/nixos-modules/`:
 
 ```nix
-# Fish shell - features/editors/fish.nix
+# Fish shell - modules/nixos-modules/fish.nix
 programs.fish = {
   enable = true;
   # Custom functions, aliases, plugins
 };
 
-# Oh My Posh prompt - features/editors/oh-my-posh.nix
+# Oh My Posh prompt - modules/nixos-modules/oh-my-posh.nix
 programs.oh-my-posh = {
   enable = true;
   # JSON schema configuration with git integration
@@ -262,7 +275,7 @@ programs.oh-my-posh = {
 
 ### Terminal Configuration
 
-Configured in `features/desktop/ghostty.nix`:
+Configured in `modules/nixos-modules/ghostty.nix`:
 
 ```nix
 programs.ghostty = {
@@ -288,7 +301,7 @@ programs.git = {
 
 ## Shell Aliases and Functions
 
-Defined in `features/core/nix.nix`:
+Defined in `modules/nixos-modules/nix.nix`:
 
 ### Quick Rebuild Aliases
 
@@ -323,7 +336,7 @@ nixosConfigurations.MyConfig = nixpkgs.lib.nixosSystem {
   specialArgs = {inherit inputs;};
   modules = [
     # inputs.stylix.nixosModules.stylix  # Disabled, using noctalia
-    ./configuration.nix
+    ./modules/hosts/rig.nix
     {
       mySystem.features = {
         desktop = true;
@@ -340,13 +353,13 @@ nixosConfigurations.MyConfig = nixpkgs.lib.nixosSystem {
 
 ### Adding New Modules
 
-Thanks to the import-tree system, adding new modules is simple - just create a `.nix` file in the appropriate `features/` subdirectory:
+Thanks to the import-tree system, adding new modules is simple - just create a `.nix` file in the appropriate `modules/nixos-modules/` subdirectory:
 
 **Example: Adding Lutris Gaming Support**
 
 1. Create the module file:
 ```bash
-touch features/gaming/lutris.nix
+touch modules/nixos-modules/lutris.nix
 ```
 
 2. Write the module (no import statements needed):
@@ -372,15 +385,15 @@ nrt-rig  # Test the configuration
 For complex features, create a directory with `default.nix` and helper files:
 
 ```bash
-mkdir -p features/gaming/lutris
-touch features/gaming/lutris/default.nix
-touch features/gaming/lutris/_config.nix
-touch features/gaming/lutris/_settings.nix
+mkdir -p modules/nixos-modules/lutris
+touch modules/nixos-modules/lutris/default.nix
+touch modules/nixos-modules/lutris/_config.nix
+touch modules/nixos-modules/lutris/_settings.nix
 ```
 
 Structure:
 ```
-features/gaming/lutris/
+modules/nixos-modules/lutris/
 ├── default.nix      # Auto-imported (entry point)
 ├── _config.nix      # Helper (imported by default.nix)
 └── _settings.nix    # Helper (imported by default.nix)
@@ -405,19 +418,19 @@ In `default.nix`:
 **Key Points:**
 - Module filename determines if it's auto-imported (no underscore = auto-import)
 - Helper files use underscore prefix to exclude from auto-discovery
-- No need to update `configuration.nix` or any import lists
+- No need to update `modules/hosts/rig.nix` or any import lists
 - Module is active when appropriate feature flag is enabled
 
 ### Adding Custom Packages
 
-System-wide packages in `configuration.nix`:
+System-wide packages in `modules/hosts/rig.nix`:
 ```nix
 environment.systemPackages = with pkgs; [
   your-package-here
 ];
 ```
 
-User packages in `features/core/packages.nix`:
+User packages in `modules/nixos-modules/packages.nix`:
 ```nix
 home.packages = with pkgs; [
   your-package-here
@@ -426,7 +439,7 @@ home.packages = with pkgs; [
 
 ### Custom Services
 
-System services in `configuration.nix`:
+System services in `modules/hosts/rig.nix`:
 ```nix
 services.your-service = {
   enable = true;
