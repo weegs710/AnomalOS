@@ -131,7 +131,7 @@ This configuration provides:
 
 ### Core Modules
 
-Located in `modules/system/core/`:
+Located in `features/core/`:
 
 - **boot.nix**: Boot loader configuration, kernel parameters
 - **networking.nix**: NetworkManager, firewall basics, hostname
@@ -141,7 +141,7 @@ Located in `modules/system/core/`:
 
 ### Security Modules
 
-Located in `modules/system/security/`:
+Located in `features/security/`:
 
 - **firewall.nix**: nftables configuration, custom gaming ports (23243-23262), SSH on port 2222
 - **hardening.nix**: Kernel sysctl parameters, SSH hardening, PAM configuration
@@ -150,7 +150,7 @@ Located in `modules/system/security/`:
 
 **Security Configuration Options:**
 
-Edit `modules/system/security/firewall.nix` to adjust ports:
+Edit `features/security/firewall.nix` to adjust ports:
 ```nix
 # Open additional TCP ports
 networking.firewall.allowedTCPPorts = [ 2222 ];
@@ -163,13 +163,13 @@ networking.firewall.allowedTCPPortRanges = [
 
 ### Desktop Modules
 
-Located in `modules/system/desktop/`:
+Located in `features/desktop/`:
 
 - **hyprland.nix**: Hyprland compositor system-level configuration (enables Hyprland, XDG portals, PAM)
 - **mpd.nix**: MPD (Music Player Daemon) service configuration
 - **media.nix**: Applications (GIMP, Anki, Vesktop, OBS), media tools
 
-Located in `modules/home-manager/desktop/`:
+Located in `features/desktop/`:
 
 - **noctalia/**: Dynamic shell UI with launcher, bar, notifications (settings.nix, default.nix)
 - **hyprland/**: User-level Hyprland configuration (config.nix, keybinds.nix, rules.nix, wallpaper.nix)
@@ -179,7 +179,7 @@ Located in `modules/home-manager/desktop/`:
 
 **Theme Customization:**
 
-Noctalia theming is managed in `modules/home-manager/desktop/noctalia/settings.nix`:
+Noctalia theming is managed in `features/noctalia/settings.nix`:
 ```nix
 # Change matugen color scheme
 "theme" = {
@@ -198,11 +198,11 @@ Noctalia theming is managed in `modules/home-manager/desktop/noctalia/settings.n
 - Add images to `~/.local/share/wallpapers/`
 - Wallpapers rotate automatically every 10 minutes via noctalia
 - Wave transitions with 5-second duration
-- Configuration: `modules/home-manager/desktop/noctalia/settings.nix` (wallpaper section)
+- Configuration: `features/noctalia/settings.nix` (wallpaper section)
 
 ### Development Modules
 
-Located in `modules/system/development/`:
+Located in `features/development/`:
 
 - **editors.nix**: Zed editor with language servers (nixd, nil, hyprls), tmux
 - **languages.nix**: Node.js, Python3, Rust, development toolchains
@@ -211,7 +211,7 @@ Located in `modules/system/development/`:
 
 **Claude Code Configuration:**
 
-Managed by `modules/claude-code-enhanced/default.nix`:
+Managed by `features/development/claude-code-enhanced/default.nix`:
 - Pre-approved commands for autonomous operation
 - MCP server integration
 - Global project management via `cc` command
@@ -219,27 +219,27 @@ Managed by `modules/claude-code-enhanced/default.nix`:
 
 ### Gaming Modules
 
-Located in `modules/system/gaming/`:
+Located in `features/gaming/`:
 
 - **steam.nix**: Steam with Proton, hardware compatibility
 - **default.nix**: RetroArch cores, PPSSPP, DeSmuME, Ryujinx emulators
 
 ## Home Manager Configuration
 
-User-level configuration managed in `modules/home-manager/`:
+User-level configuration managed in `features/` (integrated with home-manager):
 
 ### Shell Configuration
 
-Configured in `modules/home-manager/development/`:
+Configured in `features/editors/`:
 
 ```nix
-# Fish shell - modules/home-manager/development/fish.nix
+# Fish shell - features/editors/fish.nix
 programs.fish = {
   enable = true;
   # Custom functions, aliases, plugins
 };
 
-# Oh My Posh prompt - modules/home-manager/development/oh-my-posh.nix
+# Oh My Posh prompt - features/editors/oh-my-posh.nix
 programs.oh-my-posh = {
   enable = true;
   # JSON schema configuration with git integration
@@ -248,7 +248,7 @@ programs.oh-my-posh = {
 
 ### Terminal Configuration
 
-Configured in `modules/home-manager/desktop/ghostty.nix`:
+Configured in `features/desktop/ghostty.nix`:
 
 ```nix
 programs.ghostty = {
@@ -274,7 +274,7 @@ programs.git = {
 
 ## Shell Aliases and Functions
 
-Defined in `modules/system/core/nix.nix`:
+Defined in `features/core/nix.nix`:
 
 ### Quick Rebuild Aliases
 
@@ -333,7 +333,7 @@ environment.systemPackages = with pkgs; [
 ];
 ```
 
-User packages in `modules/home-manager/core/packages.nix`:
+User packages in `features/core/packages.nix`:
 ```nix
 home.packages = with pkgs; [
   your-package-here

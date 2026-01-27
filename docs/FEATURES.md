@@ -45,7 +45,7 @@ sudo journalctl -u yubikey-autologin-init
 sudo journalctl -u yubikey-autologin-monitor
 ```
 
-**Location**: `modules/system/security/yubikey.nix`
+**Location**: `features/security/yubikey.nix`
 
 ### Suricata IDS
 
@@ -71,7 +71,7 @@ sudo tail -f /var/log/suricata/eve.json
 
 **Configuration**: Alert on unusual network activity, logs to `/var/log/suricata/`
 
-**Location**: `modules/system/security/suricata.nix`
+**Location**: `features/security/suricata.nix`
 
 ### Firewall (nftables)
 
@@ -96,7 +96,7 @@ sudo nft list ruleset
 sudo ss -tulpn
 ```
 
-**Location**: `modules/system/security/firewall.nix`
+**Location**: `features/security/firewall.nix`
 
 ### Kernel & System Hardening
 
@@ -117,7 +117,7 @@ sudo ss -tulpn
 - ICMP rate limiting
 - Restricted kernel logs
 
-**Location**: `modules/system/security/hardening.nix`
+**Location**: `features/security/hardening.nix`
 
 ### DNSCrypt-Proxy Encrypted DNS
 
@@ -140,7 +140,7 @@ sudo systemctl status dnscrypt-proxy
 sudo journalctl -u dnscrypt-proxy
 ```
 
-**Location**: `modules/system/security/dnscrypt-proxy.nix`
+**Location**: `features/security/dnscrypt-proxy.nix`
 
 ## Desktop Environment
 
@@ -237,8 +237,8 @@ Applications automatically open on their designated workspaces:
 - `swww`: Animated wallpaper daemon
 
 **Configuration:**
-- System-level: `modules/system/desktop/hyprland.nix` (enables Hyprland, XDG portals, PAM)
-- User-level: `modules/home-manager/desktop/hyprland/` (modular organization):
+- System-level: `features/hyprland/system.nix` (enables Hyprland, XDG portals, PAM)
+- User-level: `features/hyprland/` (modular organization):
   - `config.nix`: Hyprland settings (monitor, env, animations, etc.)
   - `keybinds.nix`: All keybindings and submaps
   - `rules.nix`: Window rules
@@ -257,21 +257,21 @@ Applications automatically open on their designated workspaces:
 - Configurable wallpaper rotation (10-minute intervals with wave transitions)
 - Custom panel layouts and styling
 
-**Configuration**: `modules/home-manager/desktop/noctalia/`
+**Configuration**: `features/noctalia/`
   - `default.nix`: Noctalia module with systemd service configuration
   - `settings.nix`: Declarative GUI settings (launcher, bar, appearance, wallpaper)
 
-### SDDM Display Manager
+### Ly Display Manager
 
 **Available in**: All configurations
 
 **Features:**
-- Graphical login screen
+- TUI login screen with minimal footprint
 - YubiKey authentication integration (when enabled)
 - Session selection
 - Wayland session support
 
-**Location**: `modules/system/desktop/default.nix`
+**Location**: `features/core/desktop-services.nix`
 
 ### Theming System
 
@@ -293,7 +293,7 @@ Applications automatically open on their designated workspaces:
 
 **Wallpapers**: Managed by noctalia with 10-minute rotation intervals, wave transitions
 
-**Location**: `modules/home-manager/desktop/noctalia/`
+**Location**: `features/noctalia/`
 
 ## Development Tools
 
@@ -322,8 +322,8 @@ cc status       # Show system status
 - Commands: `.claude/commands/*.md`
 
 **Implementation**:
-- System: `modules/system/development/claude-code.nix`
-- Module: `modules/claude-code-enhanced/default.nix`
+- System: `features/development/claude-code.nix`
+- Module: `features/development/claude-code-enhanced/default.nix`
 
 ### Editors
 
@@ -333,7 +333,7 @@ cc status       # Show system status
 - Integrated terminal and git
 - Extension support
 
-**Configuration**: `modules/system/development/editors.nix`
+**Configuration**: `features/editors/zed.nix`
 
 ### Terminal & Shell
 
@@ -354,7 +354,7 @@ cc status       # Show system status
 - Directory truncation and navigation
 - Language/tooling version detection (Node, Python, etc.)
 
-**Configuration**: `modules/home-manager/development/oh-my-posh.nix`
+**Configuration**: `features/core/oh-my-posh.nix`
 
 ### File Managers
 
@@ -366,7 +366,7 @@ cc status       # Show system status
 - Launches in floating Ghostty terminal window
 - Configured with custom opener integrations for Zed editor
 
-**Configuration**: `modules/home-manager/desktop/superfile.nix`
+**Configuration**: `features/core/superfile.nix`
 
 ### Web Browsers
 
@@ -378,29 +378,26 @@ cc status       # Show system status
 - Full opacity override for media playback
 - Keyboard-friendly navigation
 
-**Configuration**: `modules/home-manager/desktop/helium.nix`
+**Configuration**: `features/desktop/helium.nix`
 
 ### System Monitoring
 
-**Mission Center**
-- GTK4/Libadwaita system monitor
-- Real-time CPU, GPU, memory, and disk monitoring
+**btop++**
+- Modern terminal-based system monitor
+- Real-time CPU, memory, disk, and network monitoring
 - Process management with detailed resource usage
-- Network traffic visualization
-- GPU monitoring for AMD hardware via LACT integration
-- Quick launch via Super+F6 keybind
-- Opens in control-panel workspace with floating layout
+- GPU monitoring for AMD/NVIDIA hardware
+- Mouse-driven interface with vim-like keybindings
+- Quick launch via desktop menu or terminal
 
-**Configuration**: `modules/home-manager/desktop/mission-center.nix`
+**Configuration**: `features/desktop/btop.nix`
 
 **LACT (Linux AMDGPU Control Tool)**
-- AMD GPU control and monitoring systemd service
+- AMD GPU control and monitoring tool
 - Power management and fan curve configuration
 - GPU overclocking and undervolting support
 - Temperature and power consumption monitoring
-- Hardware.amdgpu.overdrive enabled for performance tuning
-
-**Configuration**: `modules/system/hardware/default.nix`
+- Launched via control-panel workspace (Super+Grave)
 
 ### System Information
 
@@ -409,7 +406,7 @@ cc status       # Show system status
 - Custom AnomalOS logo display (AnomLogo.png)
 - Displays: OS, host, kernel, uptime, packages, shell, display, WM, terminal, CPU, GPU, memory, swap, disk
 
-**Configuration**: `modules/system/desktop/default.nix`
+**Configuration**: `features/desktop/fastfetch.nix`
 
 ### Development Languages & Tools
 
@@ -439,7 +436,7 @@ cc status       # Show system status
 - `ns`: Interactive NixOS package search (nix-search-tv wrapper)
 - `uv`: Python package installer and resolver
 
-**Configuration**: `modules/system/development/languages.nix`
+**Configuration**: `features/development/languages.nix`
 
 ## Gaming & Media
 
@@ -457,7 +454,7 @@ cc status       # Show system status
 - Hardware compatibility layers (32-bit support)
 - Controller support (extest enabled)
 
-**Configuration**: `modules/system/gaming/steam.nix`
+**Configuration**: `features/gaming/steam.nix`
 
 ### Decky Loader Steam Plugin System
 
@@ -478,7 +475,7 @@ cc status       # Show system status
 - Plugin installation and updates via Decky web interface
 - Service managed via systemd: `systemctl --user status decky-loader`
 
-**Configuration**: `modules/system/gaming/decky-loader.nix`
+**Configuration**: `features/gaming/decky-loader.nix`
 
 ### MangoHud Performance Overlay
 
@@ -503,7 +500,7 @@ cc status       # Show system status
 - Switch presets with Shift+F2 in-game
 - Toggle overlay with Shift+F12
 
-**Configuration**: `modules/system/gaming/mangohud.nix`
+**Configuration**: `features/gaming/mangohud.nix`
 
 ### Emulators
 
@@ -530,7 +527,7 @@ cc status       # Show system status
 - Automated playlist generation for 16 platforms
 - CRC32 checksums for metadata matching
 
-**Configuration**: `modules/system/gaming/default.nix`
+**Configuration**: `features/gaming/default.nix`
 
 ### Media Tools
 
@@ -560,9 +557,9 @@ cc status       # Show system status
 - YouTube playlist downloader with MP3 conversion (scrapem command)
 
 **Configuration**:
-- MPD service: `modules/system/desktop/mpd.nix`
-- Desktop media tools: `modules/system/desktop/media.nix` (OBS, GIMP, Video2x)
-- Music/playlist tools: `modules/system/development/media.nix` (Beets, yt-dlp, scrapem/scrapev commands)
+- MPD service: `features/media/mpd.nix`
+- Desktop media tools: `features/media/creation.nix` (OBS, GIMP, Video2x)
+- Music/playlist tools: `features/development/media.nix` (Beets, yt-dlp, scrapem/scrapev commands)
 
 ### Applications
 
@@ -584,7 +581,7 @@ cc status       # Show system status
 - min-ed-launcher: Minimal CLI launcher for Elite Dangerous
 - ed-odyssey-materials-helper: Materials tracking for Elite Dangerous
 
-**Configuration**: `modules/system/desktop/default.nix` and `modules/system/desktop/media.nix`
+**Configuration**: `features/core/desktop-packages.nix` and `features/media/creation.nix`
 
 ## Package Management
 
@@ -626,7 +623,7 @@ home-manager generations  # List generations
 - Permission overrides for Wayland and GPU acceleration
 - Version pinning and multi-app declaration
 
-**Configuration**: Managed declaratively in `modules/system/desktop/flatpak.nix`
+**Configuration**: Managed declaratively in `features/desktop/flatpak.nix`
 
 **Manual Commands:**
 ```bash
@@ -675,7 +672,7 @@ cp /persist/.zfs/snapshot/autosnap_2025-12-11_16:00:00_hourly/path/to/file ~/res
 systemctl status sanoid.service
 ```
 
-**Configuration**: `modules/system/core/zfs-snapshots.nix`
+**Configuration**: `features/core/zfs.nix`
 
 **Note**: See [BACKUP.md](BACKUP.md) for complete snapshot management and recovery guide
 
@@ -696,7 +693,7 @@ sudo nix-collect-garbage -d       # Clean all old generations
 sudo nix-collect-garbage --delete-older-than 30d  # Custom age
 ```
 
-**Configuration**: `modules/system/core/nix.nix`
+**Configuration**: `features/core/nix-daemon.nix`
 
 ### Bluetooth
 
@@ -733,7 +730,7 @@ systemctl --user status udiskie
 journalctl --user -u udiskie
 ```
 
-**Configuration**: `modules/home-manager/desktop/default.nix`
+**Configuration**: `features/desktop/udiskie.nix`
 
 ### System Update Workflow
 
@@ -804,7 +801,7 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 **Configuration:**
 - Root pool: `zroot` (system, nix, cache, persist)
 - Games pool: `zgames` (optional, dedicated gaming storage)
-- Snapshots: Automated via `modules/system/core/zfs-snapshots.nix`
+- Snapshots: Automated via `features/core/zfs.nix`
 - Location: `hardware-configuration-zfs.nix`
 
 ### Kernel Configuration
@@ -815,7 +812,7 @@ sudo nixos-rebuild switch --flake .#Rig # Apply if good
 - Security hardening via kernel parameters
 - ZFS module support
 
-**Configuration**: `modules/system/core/boot.nix`
+**Configuration**: `features/core/boot.nix`
 
 ### System Tuning
 

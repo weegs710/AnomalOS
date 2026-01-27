@@ -82,7 +82,7 @@ nh os switch .#nixosConfigurations.Rig
 
 ### Changing the Color Scheme
 
-The system currently uses the Noctalia shell UI with dynamic theming via matugen. The theme is configured in `modules/home-manager/desktop/noctalia/settings.nix`.
+The system currently uses the Noctalia shell UI with dynamic theming via matugen. The theme is configured in `features/noctalia/settings.nix`.
 
 **Current configuration:**
 ```nix
@@ -105,7 +105,7 @@ The system currently uses the Noctalia shell UI with dynamic theming via matugen
 - `scheme-rainbow`: Full spectrum rainbow colors
 
 **To change the color scheme:**
-1. Edit `modules/home-manager/desktop/noctalia/settings.nix`
+1. Edit `features/noctalia/settings.nix`
 2. Change the `"scheme"` value to one of the schemes above
 3. Rebuild with `nh os switch .#nixosConfigurations.Rig`
 4. Noctalia will regenerate colors on next launch
@@ -114,7 +114,7 @@ The system currently uses the Noctalia shell UI with dynamic theming via matugen
 The system uses `adw-gtk3` dark theme for GTK applications. This integrates with noctalia's color scheme for consistent theming.
 
 **Legacy Theming:**
-Stylix is disabled system-wide but remains available in the repository. Axion custom base16 color scheme files are preserved in `modules/home-manager/desktop/axion.yaml` for potential re-enablement.
+Stylix is disabled system-wide but remains available in the repository if re-enabled in the future.
 
 ### Changing the Wallpaper
 
@@ -126,7 +126,7 @@ The system uses noctalia for wallpaper management with automatic rotation every 
 3. Transitions use wave animation with 5-second duration
 
 **To change rotation interval and transitions:**
-Edit the wallpaper section in `modules/home-manager/desktop/noctalia/settings.nix`:
+Edit the wallpaper section in `features/noctalia/settings.nix`:
 ```nix
 "wallpaper" = {
   "random" = {
@@ -150,7 +150,7 @@ Edit the wallpaper section in `modules/home-manager/desktop/noctalia/settings.ni
 
 ### Font Configuration
 
-Noctalia uses SpaceMono Nerd Font for the shell UI. Font configuration is managed in `modules/home-manager/desktop/noctalia/gui-settings.json`:
+Noctalia uses SpaceMono Nerd Font for the shell UI. Font configuration is managed in `features/noctalia/gui-settings.json`:
 
 **Current configuration:**
 ```nix
@@ -163,7 +163,7 @@ Noctalia uses SpaceMono Nerd Font for the shell UI. Font configuration is manage
 ```
 
 **To change fonts:**
-1. Edit `modules/home-manager/desktop/noctalia/gui-settings.json`
+1. Edit `features/noctalia/gui-settings.json`
 2. Update the `ui.fontDefault` and `ui.fontFixed` values
 3. Rebuild with `nh os switch .#nixosConfigurations.Rig`
 
@@ -172,8 +172,8 @@ Noctalia uses SpaceMono Nerd Font for the shell UI. Font configuration is manage
 ### Hyprland Configuration
 
 Hyprland configuration is split across system and user levels:
-- **System-level**: `modules/system/desktop/hyprland.nix` (enables Hyprland, XDG portals, PAM)
-- **User-level**: `modules/home-manager/desktop/hyprland/` (focused modules for settings, keybinds, rules)
+- **System-level**: `features/hyprland/system.nix` (enables Hyprland, XDG portals, PAM)
+- **User-level**: `features/hyprland/` (focused modules for settings, keybinds, rules)
 
 **Configuration structure:**
 - `config.nix`: Hyprland settings (monitor, env, animations, workspace definitions)
@@ -184,7 +184,7 @@ Hyprland configuration is split across system and user levels:
 
 **Workspace Customization:**
 
-To modify workspace names or properties, edit `modules/home-manager/desktop/hyprland/config.nix`:
+To modify workspace names or properties, edit `features/hyprland/config.nix`:
 
 ```nix
 workspace = [
@@ -199,7 +199,7 @@ workspace = [
 
 **Modifying Keybindings:**
 
-Edit `modules/home-manager/desktop/hyprland/keybinds.nix` to change keybindings:
+Edit `features/hyprland/keybinds.nix` to change keybindings:
 
 ```nix
 bind = [
@@ -212,7 +212,7 @@ bind = [
 
 **Adding Window Routing Rules:**
 
-Edit `modules/home-manager/desktop/hyprland/rules.nix` to route applications:
+Edit `features/hyprland/rules.nix` to route applications:
 
 ```nix
 windowrulev2 = [
@@ -250,7 +250,7 @@ exec-once = [
 
 **Customizing Control-Panel Utilities:**
 
-To add an application to the control-panel workspace, create a desktop entry override in `modules/home-manager/desktop/xdg-apps.nix`:
+To add an application to the control-panel workspace, create a desktop entry override in `features/desktop/xdg-apps.nix`:
 
 ```nix
 xdg.dataFile."applications/myapp.desktop".text = ''
@@ -264,7 +264,7 @@ xdg.dataFile."applications/myapp.desktop".text = ''
 
 **Monitor Configuration:**
 
-For multi-monitor setups, edit the monitor section in `modules/home-manager/desktop/hyprland/config.nix`:
+For multi-monitor setups, edit the monitor section in `features/hyprland/config.nix`:
 
 ```nix
 monitor = [
@@ -276,7 +276,7 @@ monitor = [
 
 **Visual Customization:**
 
-Adjust window appearance in `modules/home-manager/desktop/hyprland/config.nix`:
+Adjust window appearance in `features/hyprland/config.nix`:
 
 ```nix
 decoration = {
@@ -300,7 +300,7 @@ general = {
 
 ### Noctalia Shell Bar Configuration
 
-Noctalia shell bar is configured in `modules/home-manager/desktop/noctalia/settings.nix`.
+Noctalia shell bar is configured in `features/noctalia/settings.nix`.
 
 **Bar Settings:**
 
@@ -436,11 +436,11 @@ Create a new file like `my-config.nix`:
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/options.nix
-    ./modules/core
-    ./modules/security
-    ./modules/desktop
-    ./modules/development
+    ./features/core/options.nix
+    ./features/core
+    ./features/security
+    ./features/desktop
+    ./features/development
     inputs.home-manager.nixosModules.default
   ];
 
@@ -559,7 +559,7 @@ services.openssh = {
 
 ### Creating Custom Modules
 
-Create a new module in `modules/custom/my-feature.nix`:
+Create a new module in `features/custom/my-feature.nix`:
 
 ```nix
 { config, lib, pkgs, ... }:
@@ -584,7 +584,7 @@ with lib;
 ```nix
 imports = [
   # ... existing imports
-  ./modules/custom/my-feature.nix
+  ./features/custom/my-feature.nix
 ];
 
 mySystem.features.myFeature = true;
@@ -592,7 +592,7 @@ mySystem.features.myFeature = true;
 
 ### Custom Shell Aliases
 
-Add aliases in `modules/system/core/nix.nix` or `configuration.nix`:
+Add aliases in `features/core/nix-daemon.nix` or `configuration.nix`:
 
 ```nix
 environment.shellAliases = {
@@ -616,7 +616,7 @@ environment.shellAliases = {
 
 ### Custom Scripts
 
-Create scripts in `modules/system/core/nix.nix`:
+Create scripts in `features/core/nix-daemon.nix` or a custom feature module:
 
 ```nix
 environment.systemPackages = with pkgs; [
@@ -675,7 +675,7 @@ home.sessionVariables = {
 
 ### Firewall Customization
 
-Edit `modules/system/security/firewall.nix`:
+Edit `features/security/firewall.nix`:
 
 ```nix
 # Open specific ports
@@ -699,7 +699,7 @@ networking.firewall.trustedInterfaces = [ "virbr0" ];
 
 ### Boot Configuration
 
-Customize boot options in `modules/system/core/boot.nix`:
+Customize boot options in `features/core/boot.nix`:
 
 ```nix
 boot = {

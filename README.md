@@ -1,7 +1,5 @@
 # AnomalOS Desktop Configuration
 
-![AnomalOS](modules/system/desktop/anomalos.jpg)
-
 A modular NixOS configuration using Nix flakes for a desktop system with Hyprland window manager, featuring security hardening, theming, development tools, and optional YubiKey and Claude Code support.
 
 > **Important Notice**: This configuration is provided as-is for personal use and educational purposes. It is specifically designed for my personal hardware and workflow. While efforts have been made to enable customization, there are no guarantees this will work on your system without modifications. You are free to adopt the entire configuration or pick and choose components that suit your needs. This is entirely FOSS (Free and Open Source Software).
@@ -24,7 +22,7 @@ This configuration targets x86_64 desktop systems, providing:
 - **OS**: NixOS (unstable channel) with Linux kernel 6.18+ (xanmod)
 - **Filesystem**: ZFS with dual-drive setup (system + games)
 - **Window Manager**: Hyprland (modular configuration)
-- **Display Manager**: SDDM with YubiKey U2F authentication
+- **Display Manager**: Ly with YubiKey U2F authentication
 - **Shell**: Fish with Oh My Posh prompt (high contrast base16 colors)
 - **Editor**: Zed with language server support
 - **Theme**: Noctalia shell UI with dynamic theming via matugen, SpaceMono Nerd Font
@@ -132,33 +130,75 @@ rig-up         # Update flake + test Rig + prompt to switch
 - Multiple binary caches (cache.nixos.org, nix-community, hyprland, ezkea)
 - Automated ZFS snapshots with sanoid (hourly, daily, weekly, monthly retention)
 
-## Modular Architecture
+## Dendritic Architecture
 
-The configuration is organized into logical modules:
+The configuration uses a dendritic flake-parts pattern where features are organized by category:
 
 ```
 dotfiles/
 ├── flake.nix                         # Main flake definition
 ├── configuration.nix                 # System configuration and feature toggles
-├── home.nix                          # Home Manager user configuration
 ├── hardware-configuration-zfs.nix    # ZFS hardware configuration
 ├── parts/                            # Flake-parts organization
-│   ├── configurations.nix           # NixOS configuration definitions
-│   ├── profiles.nix                 # Configuration profiles
-│   ├── common.nix                   # Shared module imports
-│   └── shells.nix                   # Development shells
-├── modules/
-│   ├── options.nix                  # Configuration schema
-│   ├── home-manager/                # User-level Home Manager modules
-│   │   ├── core/                   # Core user config (packages, xdg)
-│   │   ├── desktop/                # Desktop apps (hyprland/, noctalia/, helium, etc.)
-│   │   └── development/            # Dev tools (zed, fish, oh-my-posh)
-│   └── system/                      # System-level NixOS modules
-│       ├── core/                   # Essential system components (boot, networking, ZFS)
-│       ├── security/               # Security features and YubiKey
-│       ├── desktop/                # Desktop environment (sddm, mpd, etc.)
-│       ├── development/            # Development tools and AI
-│       └── gaming/                 # Gaming support (steam, mangohud, decky-loader)
+│   └── system-rig.nix               # Rig system configuration
+├── features/                         # Dendritic feature modules
+│   ├── core/                        # Core system features
+│   │   ├── options.nix             # Configuration schema
+│   │   ├── home.nix                # Home Manager user configuration
+│   │   ├── boot.nix                # Boot configuration
+│   │   ├── networking.nix          # Network configuration
+│   │   ├── nix-daemon.nix          # Nix daemon and helper scripts
+│   │   ├── users.nix               # User account configuration
+│   │   ├── zfs.nix                 # ZFS snapshots and management
+│   │   ├── fish.nix                # Fish shell configuration
+│   │   ├── oh-my-posh.nix          # Shell prompt configuration
+│   │   ├── ghostty.nix             # Ghostty terminal emulator
+│   │   ├── superfile.nix           # Superfile TUI file manager
+│   │   └── ...                     # Other core features
+│   ├── desktop/                     # Desktop applications
+│   │   ├── kdeconnect.nix          # KDE Connect integration
+│   │   ├── flatpak.nix             # Flatpak management
+│   │   ├── btop.nix                # System monitor
+│   │   ├── fastfetch.nix           # System info display
+│   │   └── ...                     # Other desktop apps
+│   ├── editors/                     # Text editors and development
+│   │   ├── zed.nix                 # Zed editor
+│   │   └── tmux.nix                # Terminal multiplexer
+│   ├── media/                       # Media tools and applications
+│   │   ├── audio.nix               # Audio system configuration
+│   │   ├── creation.nix            # Media creation tools
+│   │   ├── scraping.nix            # Media downloading utilities
+│   │   └── mpd.nix                 # Music Player Daemon
+│   ├── gaming/                      # Gaming support
+│   │   ├── steam.nix               # Steam platform
+│   │   ├── mangohud.nix            # Performance overlay
+│   │   ├── decky.nix               # Decky Loader plugin system
+│   │   └── packages.nix            # Gaming packages and emulators
+│   ├── security/                    # Security features
+│   │   ├── secrets.nix             # Agenix secret management
+│   │   ├── dnscrypt.nix            # DNS encryption
+│   │   ├── firewall.nix            # Firewall configuration
+│   │   ├── suricata.nix            # IDS monitoring
+│   │   ├── yubikey.nix             # YubiKey authentication
+│   │   └── services.nix            # Security services (SSH, polkit)
+│   ├── development/                 # Development tools
+│   │   ├── claude-code.nix         # Claude Code AI assistant
+│   │   ├── claude-code-enhanced/   # Enhanced Claude Code features
+│   │   ├── languages.nix           # Programming language toolchains
+│   │   ├── vm.nix                  # Virtual machine support
+│   │   ├── tools.nix               # Development utilities
+│   │   └── devshell.nix            # Development shell environment
+│   ├── hyprland/                    # Hyprland compositor
+│   │   ├── default.nix             # Main Hyprland module
+│   │   ├── system.nix              # System-level configuration
+│   │   ├── config.nix              # Compositor configuration
+│   │   ├── keybinds.nix            # Keyboard shortcuts
+│   │   ├── rules.nix               # Window rules
+│   │   └── wallpaper.nix           # Wallpaper management
+│   └── noctalia/                    # Noctalia shell UI
+│       ├── default.nix             # Main Noctalia module
+│       ├── settings.nix            # Shell configuration
+│       └── gui-settings.json       # GUI settings
 ├── docs/                            # Documentation
 └── assets/                          # Assets (wallpapers, configs)
 ```

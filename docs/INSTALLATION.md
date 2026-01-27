@@ -48,7 +48,7 @@ cd ~/dotfiles
 
 # Verify you're in the right directory
 ls -la
-# You should see: flake.nix, configuration.nix, home.nix, modules/, etc.
+# You should see: flake.nix, configuration.nix, features/, etc.
 ```
 
 ### Step 3: Understand ZFS Requirements
