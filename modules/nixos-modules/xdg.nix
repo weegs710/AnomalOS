@@ -142,7 +142,6 @@
           "image/svg+xml" = ["com.interversehq.qView.desktop"];
           "image/tiff" = ["com.interversehq.qView.desktop"];
           "image/webp" = ["com.interversehq.qView.desktop"];
-
           "audio/aac" = ["io.github.htkhiem.Euphonica.desktop"];
           "audio/flac" = ["io.github.htkhiem.Euphonica.desktop"];
           "audio/mp3" = ["io.github.htkhiem.Euphonica.desktop"];

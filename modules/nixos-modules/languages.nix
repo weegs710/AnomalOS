@@ -22,7 +22,7 @@
           jdk21
         ];
 
-        users.users.${config.mySystem.user.name}.packages = with pkgs; [
+        users.users.${config.mySystem.user.name}.packages = [
         ];
 
         programs.nix-index.enable = true;

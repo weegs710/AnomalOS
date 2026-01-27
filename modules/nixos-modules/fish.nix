@@ -1,7 +1,6 @@
 {...}: {
   flake.nixosModules.fish = {
     config,
-    lib,
     pkgs,
     ...
   }: {
