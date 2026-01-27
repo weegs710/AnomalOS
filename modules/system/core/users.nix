@@ -30,7 +30,6 @@ in {
           description = config.mySystem.user.description;
           extraGroups = config.mySystem.user.extraGroups;
           packages = with pkgs; [
-            # Basic user packages - specific features add their own
           ];
         };
       };

@@ -7,7 +7,6 @@
 with lib; let
   cfg = config.programs.claude-code-enhanced;
 
-  # Claude Code global configuration files
   claudeConfigFiles = {
     "settings.local.json" = {
       permissions = {

@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: {
+{config, ...}: {
   networking = {
     hostName = config.mySystem.hostName;
     hostId = "fff29759";
@@ -13,7 +9,6 @@
       enable = true;
       allowPing = false;
       trustedInterfaces = ["virbr0"];
-      # Basic ports - specific applications can add their own
       allowedTCPPorts = [];
       allowedUDPPorts = [];
     };

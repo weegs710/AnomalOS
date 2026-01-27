@@ -16,29 +16,12 @@ with lib; let
   };
 in {
   config = mkIf config.mySystem.features.development {
-    # Development languages and tools
     environment.systemPackages = with pkgs; [
       ns
       jdk21
     ];
 
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      # Development tools
-      fzf
-      gh
-      jq
-      tldr
-      opencode
-
-      # Language servers and formatters
-      alejandra
-      hyprls
-
-      # Programming languages
-      nodejs
-      python3
-      rustc
-      uv
     ];
 
     programs.nix-index.enable = true;

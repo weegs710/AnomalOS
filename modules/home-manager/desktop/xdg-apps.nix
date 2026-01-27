@@ -1,13 +1,10 @@
 {
-  config,
   lib,
-  pkgs,
   osConfig,
   ...
 }:
 with lib; {
   config = mkIf osConfig.mySystem.features.desktop {
-    # XDG MIME type associations
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {

@@ -1,4 +1,3 @@
-# Build profiles for different feature combinations
 {lib, ...}: {
   profiles = {
     full = {};

@@ -7,13 +7,11 @@ with lib; {
   imports = [
     ./yubikey.nix
     ./firewall.nix
-    ./hardening.nix
     ./suricata.nix
     ./dnscrypt-proxy.nix
   ];
 
   config = mkIf config.mySystem.features.security {
-    # Enable basic security features when security module is enabled
     security = {
       polkit.enable = true;
       rtkit.enable = true;

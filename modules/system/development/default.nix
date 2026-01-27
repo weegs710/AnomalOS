@@ -14,7 +14,6 @@ with lib; {
   ];
 
   config = mkIf config.mySystem.features.development {
-    # Enable basic development tools when development module is enabled
     programs = {
       git.enable = true;
       direnv = {

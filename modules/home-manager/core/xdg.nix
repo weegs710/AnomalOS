@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   osConfig,
@@ -8,7 +7,6 @@
   username = osConfig.mySystem.user.name;
   homeDirectory = "/home/${username}";
 
-  # Phinger cursors dark - hyprcursor format (local compiled theme)
   phinger-cursors-dark-hyprcursor = pkgs.stdenvNoCC.mkDerivation {
     pname = "phinger-cursors-dark-hyprcursor";
     version = "2.1";
@@ -120,19 +118,16 @@ in {
     gtk.enable = true;
     x11.enable = true;
 
-    # Enable hyprcursor support (native Wayland cursor format)
     hyprcursor = {
       enable = true;
       size = 32;
     };
   };
 
-  # Install hyprcursor theme package
   home.packages = [
     phinger-cursors-dark-hyprcursor
   ];
 
-  # XDG MIME type associations
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {

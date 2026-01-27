@@ -23,7 +23,6 @@ in {
     home-manager.enable = true;
   };
 
-  # Claude Code project directory (conditional)
   home.file."claude-projects/.keep" = lib.mkIf osConfig.mySystem.features.claudeCode {
     text = "";
   };

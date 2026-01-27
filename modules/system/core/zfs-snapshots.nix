@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: {
+{...}: {
   services.sanoid = {
     enable = true;
     interval = "hourly";

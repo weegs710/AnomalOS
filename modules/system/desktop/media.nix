@@ -23,14 +23,12 @@ with lib; {
 
     programs.gpu-screen-recorder.enable = true;
 
-    # Media applications
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       gimp3-with-plugins
       gpu-screen-recorder
       video2x
     ];
 
-    # AppImage support
     programs.appimage = {
       enable = true;
       binfmt = true;

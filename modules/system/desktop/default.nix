@@ -1,5 +1,3 @@
-# Desktop environment configuration
-# Wayland-based desktop with Hyprland compositor, SDDM, and PipeWire audio
 {
   config,
   lib,
@@ -41,21 +39,15 @@ with lib; {
     };
 
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      # Applications
       file-roller
       kdePackages.okular
       qview
       transmission_4-gtk
       unzipNLS
-      # cavalier
-
-      # Utilities
       bluetui
       fastfetch
       gparted
       piper
-
-      # System libraries and support
       adwaita-icon-theme
       dbus
       dbus-broker
@@ -65,12 +57,8 @@ with lib; {
       lm_sensors
       mesa
       xdg-dbus-proxy
-
-      # Terminal and system utilities
       cliphist
       ueberzugpp
-
-      # X11 compatibility libraries
       xorg.libX11
       xorg.libXcursor
       xorg.libXi
@@ -79,12 +67,10 @@ with lib; {
       xorg.libXxf86vm
     ];
 
-    # Desktop utility aliases
     environment.shellAliases = {
       gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
     };
 
-    # Desktop fonts
     fonts.packages = with pkgs.nerd-fonts; [
       dejavu-sans-mono
       zed-mono

@@ -7,7 +7,6 @@
   ...
 }:
 with lib; {
-  # Import noctalia home-manager module at top level
   imports = [inputs.noctalia.homeModules.default];
 
   config = mkIf osConfig.mySystem.features.desktop {

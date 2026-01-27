@@ -20,9 +20,8 @@
         "flakes"
       ];
 
-      # Build performance
-      cores = 0; # 0 = use all available cores
-      max-jobs = "auto"; # Let Nix decide based on available resources
+      cores = 0;
+      max-jobs = "auto";
     };
   };
 

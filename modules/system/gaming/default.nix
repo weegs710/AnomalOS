@@ -14,17 +14,13 @@ with lib; {
   config = mkIf config.mySystem.features.gaming {
     programs.nix-ld.enable = true;
 
-    # Hardware support for gaming
     hardware.steam-hardware.enable = mkIf config.mySystem.hardware.steam true;
 
-    # Gaming programs
     programs = {
       gamescope.enable = true;
     };
 
-    # Gaming applications
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      # lutris
       openraPackages.engines.bleed
       protonup-qt
       ryubing

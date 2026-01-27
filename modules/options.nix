@@ -1,4 +1,3 @@
-# System option definitions for the mySystem namespace
 {lib, ...}:
 with lib; {
   options.mySystem = {

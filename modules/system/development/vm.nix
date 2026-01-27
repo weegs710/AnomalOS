@@ -1,10 +1,3 @@
-# Virtual Machine Support
-#
-# Note on virtiofsd:
-#   When creating shared filesystems in virt-manager, add this to the
-#   filesystem XML configuration:
-#     <binary path="/run/current-system/sw/bin/virtiofsd"/>
-#   Reference: https://discourse.nixos.org/t/virt-manager-cannot-find-virtiofsd/26752/2
 {
   config,
   lib,
