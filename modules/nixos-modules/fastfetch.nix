@@ -13,11 +13,11 @@
               "logo": {
                 "source": "/home/${config.mySystem.user.name}/dotfiles/assets/nixos.png",
                 "type": "kitty",
-                "width": 30,
-                "height": 15,
+                "width": 38,
+                "height": 19,
                 "padding": {
                   "right": 2,
-                  "top": 3
+                  "top": 2
                 }
               },
               "display": {
@@ -41,38 +41,17 @@
                   "keyColor": "34"
                 },
                 {
-                  "type": "packages",
-                  "key": " ",
-                  "keyColor": "34"
-                },
-                {
-                  "type": "shell",
-                  "key": " ",
-                  "keyColor": "34"
-                },
-                "break",
-                {
-                  "type": "wm",
-                  "key": " ",
-                  "keyColor": "34"
-                },
-                {
-                  "type": "uptime",
-                  "key": "󱦟 ",
-                  "keyColor": "34"
+                  "type": "command",
+                  "key": "󰦛 ",
+                  "keyColor": "34",
+                  "text": "readlink /nix/var/nix/profiles/system | sed -E 's/system-([0-9]+)-link/Generation: \\1/'"
                 },
                 {
                   "type": "command",
-                  "key": " ",
+                  "key": " ",
                   "keyColor": "34",
-                  "text": "birth_install=1765484353; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days"
+                  "text": "nix path-info -S /run/current-system | awk '{printf \"Closure Size: %.2f GB\", $2/1024/1024/1024}'"
                 },
-                {
-                  "type": "media",
-                  "key": "󰝚 ",
-                  "keyColor": "34"
-                },
-                "break",
                 "break",
                 {
                   "type": "cpu",
@@ -81,7 +60,7 @@
                 },
                 {
                   "type": "gpu",
-                  "key": " ",
+                  "key": "󰢮 ",
                   "keyColor": "blue"
                 },
                 {
@@ -91,10 +70,39 @@
                 },
                 "break",
                 {
-                  "type": "custom",
-                  "format": "\u001b[90m \u001b[31m \u001b[32m \u001b[33m \u001b[34m \u001b[35m \u001b[36m \u001b[37m"
+                  "type": "wm",
+                  "key": " ",
+                  "keyColor": "34"
+                },
+                {
+                  "type": "shell",
+                  "key": " ",
+                  "keyColor": "34"
                 },
                 "break",
+                {
+                  "type": "uptime",
+                  "key": " ",
+                  "keyColor": "34",
+                  "text": "Uptime: "
+                },
+                {
+                  "type": "command",
+                  "key": " ",
+                  "keyColor": "34",
+                  "text": "birth_install=1765484353; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days since the last fresh install."
+                },
+                "break",
+                {
+                  "type": "media",
+                  "key": "󰝚 ",
+                  "keyColor": "34"
+                },
+                "break",
+                {
+                  "type": "custom",
+                  "format": "\u001b[90m  \u001b[31m  \u001b[32m  \u001b[33m  \u001b[34m  \u001b[35m  \u001b[36m  \u001b[37m "
+                },
                 "break"
               ]
             }
