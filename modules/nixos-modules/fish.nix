@@ -76,6 +76,11 @@
           }
         ];
 
+        shellAliases = {
+          repl = "nix repl --expr 'import ~/dotfiles/repl.nix {}'";
+          evaltime = "cd ~/dotfiles/ && time nix eval .#nixosConfigurations.Rig.config.system.build.toplevel --substituters ' ' --option eval-cache false --raw --read-only";
+        };
+
         interactiveShellInit = ''
           set -g fish_greeting
           set -g fish_color_param b392f0  # base05 light purple
