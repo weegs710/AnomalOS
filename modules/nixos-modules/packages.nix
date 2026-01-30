@@ -9,6 +9,7 @@
         home.packages = with pkgs; [
           inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
           alejandra
+          # anytype
           cliphist
           fastfetch
           fzf
@@ -19,7 +20,6 @@
           hyprshot
           jq
           nodejs
-          obsidian
           pamixer
           python3
           rustc
