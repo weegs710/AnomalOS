@@ -23,7 +23,7 @@
             cores = with libretro; [
               nestopia
               bsnes
-              # mupen64plus
+              mupen64plus
               gambatte
               mgba
               desmume
