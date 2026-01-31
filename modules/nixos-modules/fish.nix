@@ -95,22 +95,18 @@
               set states "analyzing system mutations" "optimizing declarative state" "dreaming in Nix" "rewriting reality" "compiling consciousness"
               set state $states[(random 1 (count $states))]
 
-              set_color brmagenta
-              echo "  ▐▀▀▀▀▀▀▀▀▀▀▌"
-              echo "  ▐ anomalOS ▌"
-              echo "  ▐▄▄▄▄▄▄▄▄▄▄▌"
               set_color brblack
-              echo "   ╰─|> NixOS entity"
+              echo " |> NixOS entity loading..."
               set_color normal
               echo ""
 
               set_color cyan
-              echo -n "  ⟡ "
+              echo -n "   "
               set_color normal
               echo "Status: $state"
 
               set_color cyan
-              echo -n "  ⟡ "
+              echo -n "   "
               set_color normal
               echo -n "Uptime: "
               set_color yellow
@@ -118,20 +114,21 @@
               set_color normal
 
               set_color cyan
-              echo -n "  ⟡ "
+              echo -n "   "
               set_color normal
               echo -n "Generation: "
               set_color green
-              echo (readlink /nix/var/nix/profiles/system | sed -E 's/system-([0-9]+)-link/Gen-\1/')
+              echo (readlink /nix/var/nix/profiles/system | sed -E 's/system-([0-9]+)-link/\1/')
               set_color normal
+              echo ""
 
               # 20% chance of "glitch" message
               if test (random 1 100) -le 20
-                  echo ""
                   set_color brred
-                  echo "  ⚠ [NOTICE] Unsanctioned modifications detected in ~/dotfiles/"
+                  echo " ⚠ [NOTICE] Unsanctioned modifications detected"
                   set_color brblack
-                  echo "            (I'm watching you.)"
+                  echo "           |> (I'm watching you.) <|"
+                  echo ""
                   set_color normal
               end
           end
