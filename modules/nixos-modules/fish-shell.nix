@@ -1,13 +1,16 @@
-{...}: {
-  flake.nixosModules.fish = {
+{inputs, ...}: {
+  flake.nixosModules.fish-shell = {
     config,
     pkgs,
     ...
-  }: {
+  }: let
+    wrappedFish = inputs.self.packages.${pkgs.system}.fish;
+  in {
+    users.users.${config.mySystem.user.name}.shell = wrappedFish;
+    programs.fish.enable = true;
     home-manager.users.${config.mySystem.user.name} = {
       programs.fish = {
         enable = true;
-
         functions = {
           kc-send = {
             description = "Send files to paired KDE Connect device";
@@ -88,6 +91,12 @@
           repl = "nix repl --expr 'import ~/dotfiles/repl.nix {}'";
           evaltime = "cd ~/dotfiles/ && time nix eval .#nixosConfigurations.Rig.config.system.build.toplevel --substituters ' ' --option eval-cache false --raw --read-only";
         };
+
+        shellInit = ''
+          # Bat as pager
+          set -x PAGER bat
+          set -x MANPAGER "sh -c 'col -bx | bat -l man -p'"
+        '';
 
         interactiveShellInit = ''
           function fish_greeting
