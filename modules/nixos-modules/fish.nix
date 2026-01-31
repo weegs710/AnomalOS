@@ -90,7 +90,51 @@
         };
 
         interactiveShellInit = ''
-          set -g fish_greeting
+          function fish_greeting
+              # Random AI status messages
+              set states "analyzing system mutations" "optimizing declarative state" "dreaming in Nix" "rewriting reality" "compiling consciousness"
+              set state $states[(random 1 (count $states))]
+
+              set_color brmagenta
+              echo "  ▐▀▀▀▀▀▀▀▀▀▀▌"
+              echo "  ▐ anomalOS ▌"
+              echo "  ▐▄▄▄▄▄▄▄▄▄▄▌"
+              set_color brblack
+              echo "   ╰─|> NixOS entity"
+              set_color normal
+              echo ""
+
+              set_color cyan
+              echo -n "  ⟡ "
+              set_color normal
+              echo "Status: $state"
+
+              set_color cyan
+              echo -n "  ⟡ "
+              set_color normal
+              echo -n "Uptime: "
+              set_color yellow
+              uptime | awk '{print $3}' | sed 's/,$//'
+              set_color normal
+
+              set_color cyan
+              echo -n "  ⟡ "
+              set_color normal
+              echo -n "Generation: "
+              set_color green
+              echo (readlink /nix/var/nix/profiles/system | sed -E 's/system-([0-9]+)-link/Gen-\1/')
+              set_color normal
+
+              # 20% chance of "glitch" message
+              if test (random 1 100) -le 20
+                  echo ""
+                  set_color brred
+                  echo "  ⚠ [NOTICE] Unsanctioned modifications detected in ~/dotfiles/"
+                  set_color brblack
+                  echo "            (I'm watching you.)"
+                  set_color normal
+              end
+          end
         '';
       };
     };
