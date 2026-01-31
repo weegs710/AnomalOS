@@ -1,7 +1,16 @@
 # Wrapped RetroArch with all cores and optimized 1440p configs
 # Run with: nix run github:weegs710/AnomalOS#retroarch
 {...}: {
-  perSystem = {pkgs, ...}: let
+  perSystem = {
+    pkgs,
+    system,
+    ...
+  }: let
+    # Use pkgs with unfree packages allowed for genesis-plus-gx
+    pkgsUnfree = import pkgs.path {
+      inherit system;
+      config.allowUnfree = true;
+    };
     # Define all core configurations
     coreConfigs = {
       "Nestopia UE/Nestopia UE.opt" = ''
@@ -373,17 +382,17 @@
     configDir = pkgs.runCommand "retroarch-config" {} ''
       mkdir -p $out/config
       ${pkgs.lib.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (name: content: ''
-          mkdir -p $out/config/$(dirname "${name}")
-          cat > $out/config/${name} << 'EOF'
+          mkdir -p "$out/config/$(dirname "${name}")"
+          cat > "$out/config/${name}" << 'EOF'
           ${content}
           EOF
         '')
         coreConfigs)}
     '';
 
-    # Wrap RetroArch with all cores
-    baseRetroArch = pkgs.wrapRetroArch {
-      cores = with pkgs.libretro; [
+    # Wrap RetroArch with all cores (using unfree-enabled pkgs for genesis-plus-gx)
+    baseRetroArch = pkgsUnfree.wrapRetroArch {
+      cores = with pkgsUnfree.libretro; [
         nestopia
         bsnes
         mupen64plus
