@@ -13,6 +13,7 @@
               scroll-to-bottom = "keystroke";
               copy-on-select = "clipboard";
               window-show-tab-bar = "never";
+              theme = "noctalia";
               keybind = [
                 "shift+enter=text:\\n"
                 "ctrl+v=paste_from_clipboard"
