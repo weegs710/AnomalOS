@@ -79,6 +79,7 @@
         shellAliases = {
           repl = "nix repl --expr 'import ~/dotfiles/repl.nix {}'";
           evaltime = "cd ~/dotfiles/ && time nix eval .#nixosConfigurations.Rig.config.system.build.toplevel --substituters ' ' --option eval-cache false --raw --read-only";
+          noct-r = "pkill quickshell && tmux new -d noctalia-shell &";
         };
 
         interactiveShellInit = ''
