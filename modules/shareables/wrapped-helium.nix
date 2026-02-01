@@ -28,7 +28,8 @@
       nativeBuildInputs = [pkgs.makeWrapper];
       postBuild = ''
         wrapProgram $out/bin/helium \
-          --add-flags "--enable-features=WebUIDarkMode" \
+          --add-flags "--enable-features=WebUIDarkMode,HeliumCatUi,HideCrashedBubble,LinkPreview" \
+          --add-flags "--disable-features=EyeDropper,HeliumCatFixedAddressBar" \
           --add-flags "--policy-dir=${policiesDir}/etc/opt/chrome/policies"
       '';
       meta = {
