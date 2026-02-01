@@ -4,7 +4,7 @@
     pkgs,
     ...
   }: let
-    wrappedFish = inputs.self.packages.${pkgs.system}.fish;
+    wrappedFish = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.fish;
   in {
     users.users.${config.mySystem.user.name}.shell = wrappedFish;
     programs.fish.enable = true;
