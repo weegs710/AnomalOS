@@ -1,6 +1,7 @@
 {
-  "settingsVersion": 44,
+  "settingsVersion": 46,
   "bar": {
+    "barType": "simple",
     "position": "top",
     "monitors": [],
     "density": "spacious",
@@ -12,9 +13,14 @@
     "floating": false,
     "marginVertical": 5,
     "marginHorizontal": 5,
+    "frameThickness": 8,
+    "frameRadius": 12,
     "outerCorners": false,
     "exclusive": true,
     "hideOnOverview": false,
+    "displayMode": "always_visible",
+    "autoHideDelay": 500,
+    "autoShowDelay": 150,
     "widgets": {
       "left": [
         {
@@ -28,14 +34,19 @@
         {
           "characterCount": 10,
           "colorizeIcons": false,
+          "emptyColor": "secondary",
           "enableScrollWheel": true,
+          "focusedColor": "primary",
           "followFocusedScreen": false,
           "groupedBorderOpacity": 1,
           "hideUnoccupied": false,
           "iconScale": 0.8,
           "id": "Workspace",
           "labelMode": "name",
+          "occupiedColor": "secondary",
+          "reverseScroll": false,
           "showApplications": false,
+          "showBadge": true,
           "showLabelsOnlyWhenOccupied": false,
           "unfocusedIconsOpacity": 1
         }
@@ -56,21 +67,6 @@
           "useFixedWidth": false
         },
         {
-          "defaultSettings": {
-            "audioCodec": "opus",
-            "audioSource": "default_output",
-            "colorRange": "limited",
-            "copyToClipboard": false,
-            "directory": "",
-            "filenamePattern": "recording_yyyyMMdd_HHmmss",
-            "frameRate": "60",
-            "hideInactive": false,
-            "quality": "very_high",
-            "resolution": "original",
-            "showCursor": true,
-            "videoCodec": "h264",
-            "videoSource": "portal"
-          },
           "id": "plugin:screen-recorder"
         }
       ],
@@ -131,7 +127,9 @@
     "showChangelogOnStartup": true,
     "telemetryEnabled": false,
     "enableLockScreenCountdown": true,
-    "lockScreenCountdownDuration": 10000
+    "lockScreenCountdownDuration": 10000,
+    "autoStartAuth": false,
+    "allowPasswordWithFprintd": false
   },
   "ui": {
     "fontDefault": "SpaceMono Nerd Font",
@@ -216,6 +214,8 @@
     "autoPasteClipboard": false,
     "enableClipPreview": true,
     "clipboardWrapText": true,
+    "clipboardWatchTextCommand": "wl-paste --type text --watch cliphist store",
+    "clipboardWatchImageCommand": "wl-paste --type image --watch cliphist store",
     "position": "center",
     "pinnedApps": [],
     "useApp2Unit": false,
@@ -228,6 +228,7 @@
     "iconMode": "native",
     "showIconBackground": false,
     "enableSettingsSearch": true,
+    "enableWindowsSearch": true,
     "ignoreMouseInput": false,
     "screenshotAnnotationTool": ""
   },
