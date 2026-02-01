@@ -46,9 +46,6 @@
         "zroot/root" = {
           useTemplate = ["important"];
         };
-        "zgames/games" = {
-          useTemplate = ["games"];
-        };
         "zroot/nix" = {
           useTemplate = ["standard"];
         };
