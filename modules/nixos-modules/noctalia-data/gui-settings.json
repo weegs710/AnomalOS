@@ -221,7 +221,8 @@
     "wallhavenApiKey": "",
     "wallhavenResolutionMode": "atleast",
     "wallhavenResolutionWidth": "2560",
-    "wallhavenResolutionHeight": "1440"
+    "wallhavenResolutionHeight": "1440",
+    "sortOrder": "name"
   },
   "appLauncher": {
     "enableClipboardHistory": true,
@@ -307,7 +308,6 @@
     "diskWarningThreshold": 80,
     "diskCriticalThreshold": 85,
     "cpuPollingInterval": 250,
-    "tempPollingInterval": 250,
     "gpuPollingInterval": 250,
     "enableDgpuMonitoring": true,
     "memPollingInterval": 250,
