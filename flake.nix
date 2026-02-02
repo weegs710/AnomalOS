@@ -21,6 +21,10 @@
       url = "github:FKouhai/helium2nix/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-cachyos-kernel = {
+      url = "github:xddxdd/nix-cachyos-kernel/release";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{flake-parts, ...}: let
