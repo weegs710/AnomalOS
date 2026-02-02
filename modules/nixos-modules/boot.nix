@@ -1,9 +1,15 @@
-{...}: {
-  flake.nixosModules.boot = {pkgs, ...}: {
+{inputs, ...}: {
+  flake.nixosModules.boot = {
+    config,
+    pkgs,
+    ...
+  }: {
+    nixpkgs.overlays = [inputs.nix-cachyos-kernel.overlays.pinned];
+
     boot = {
       initrd.systemd.enable = true;
       plymouth.enable = true;
-      kernelPackages = pkgs.linuxPackages_xanmod_latest;
+      kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-x86_64-v3;
       kernelParams = [
         "quiet"
         "hid_apple.fnmode=2"
@@ -14,7 +20,7 @@
       supportedFilesystems.ntfs = true;
       supportedFilesystems.exfat = true;
       supportedFilesystems.zfs = true;
-      zfs.package = pkgs.zfs_unstable;
+      zfs.package = config.boot.kernelPackages.zfs_cachyos;
       loader = {
         systemd-boot = {
           enable = true;
