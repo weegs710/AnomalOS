@@ -9,7 +9,17 @@
     boot = {
       initrd.systemd.enable = true;
       plymouth.enable = true;
-      kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-x86_64-v3;
+      kernelPackages = let
+        customKernel = pkgs.cachyosKernels.linux-cachyos-latest-x86_64-v3.override {
+          bbr3 = true;
+        };
+        basePackages = pkgs.linuxKernel.packagesFor customKernel;
+      in
+        basePackages.extend (self: super: {
+          zfs_cachyos = pkgs.cachyosKernels.zfs-cachyos.override {
+            kernel = customKernel;
+          };
+        });
       kernelParams = [
         "quiet"
         "hid_apple.fnmode=2"
@@ -20,7 +30,9 @@
       supportedFilesystems.ntfs = true;
       supportedFilesystems.exfat = true;
       supportedFilesystems.zfs = true;
-      zfs.package = config.boot.kernelPackages.zfs_cachyos;
+      zfs.package = pkgs.cachyosKernels.zfs-cachyos.override {
+        kernel = config.boot.kernelPackages.kernel;
+      };
       loader = {
         systemd-boot = {
           enable = true;
@@ -30,6 +42,8 @@
       };
 
       kernel.sysctl = {
+        "net.core.default_qdisc" = "fq";
+        "net.ipv4.tcp_congestion_control" = "bbr";
         "net.ipv4.conf.all.forwarding" = false;
         "net.ipv4.conf.all.rp_filter" = 1;
         "net.ipv4.conf.default.rp_filter" = 1;
