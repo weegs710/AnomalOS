@@ -1,701 +1,198 @@
-# Troubleshooting Guide
+# Troubleshooting
 
-This guide helps resolve common issues you may encounter with AnomalOS configuration.
+When stuff breaks.
 
-> **Important**: This configuration is designed for my specific hardware. Some issues may be related to hardware differences. Solutions provided are general guidance without guarantees.
-
-## Table of Contents
-
-- [Installation Issues](#installation-issues)
-- [Boot Problems](#boot-problems)
-- [Desktop Environment Issues](#desktop-environment-issues)
-- [Hardware Issues](#hardware-issues)
-- [Service Issues](#service-issues)
-- [YubiKey Issues](#yubikey-issues)
-- [Network Issues](#network-issues)
-- [General Debugging](#general-debugging)
-
-## Installation Issues
-
-### Build Failures
-
-**Symptom**: `nixos-rebuild` fails with build errors
-
-**Solutions:**
-
-1. **Clean and retry:**
-   ```bash
-   sudo nix-collect-garbage -d
-   nix flake update
-   nh os test .#nixosConfigurations.Rig
-   ```
-
-2. **Check available disk space:**
-   ```bash
-   df -h
-   # Need at least 10GB free
-   ```
-
-3. **Check internet connectivity:**
-   ```bash
-   ping nixos.org
-   curl -I https://cache.nixos.org
-   ```
-
-4. **Clear Nix store lock:**
-   ```bash
-   sudo rm /nix/var/nix/db/big-lock
-   ```
-
-5. **Rebuild Nix database:**
-   ```bash
-   sudo nix-store --verify --check-contents --repair
-   ```
-
-### Hash Mismatch Errors
-
-**Symptom**: `hash mismatch` errors during build
-
-**Solutions:**
-
-1. **Update flake lock:**
-   ```bash
-   nix flake update
-   ```
-
-2. **Clear specific input:**
-   ```bash
-   nix flake lock --update-input nixpkgs
-   ```
-
-3. **Clear evaluation cache:**
-   ```bash
-   rm -rf ~/.cache/nix
-   ```
-
-### Hardware Configuration Issues
-
-**Symptom**: System fails to recognize hardware
-
-**Solutions:**
-
-1. **Regenerate hardware config:**
-   ```bash
-   sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
-   ```
-
-2. **Check for missing firmware:**
-   ```bash
-   dmesg | grep -i firmware
-   ```
-
-3. **Add firmware packages:**
-   ```nix
-   # In configuration.nix
-   hardware.enableAllFirmware = true;
-   ```
-
-## Boot Problems
-
-### System Won't Boot
-
-**Solutions:**
-
-1. **Boot from NixOS installer and chroot:**
-   ```bash
-   sudo mount /dev/sdXY /mnt
-   sudo mount /dev/sdXZ /mnt/boot
-   sudo nixos-enter --root /mnt
-   ```
-
-2. **Rollback to previous generation:**
-   - At boot, select previous generation from boot menu
-   - Or from running system:
-   ```bash
-   sudo nixos-rebuild switch --rollback
-   ```
-
-3. **Rebuild from installer:**
-   ```bash
-   sudo nixos-rebuild switch --flake /mnt/home/username/dotfiles#nixosConfigurations.Rig
-   ```
-
-### Boot Hangs
-
-**Symptom**: System hangs during boot
-
-**Solutions:**
-
-1. **Add verbose boot:**
-   ```nix
-   # In modules/system/core/boot.nix
-   boot.kernelParams = [ "debug" "verbose" ];
-   ```
-
-2. **Check systemd services:**
-   ```bash
-   systemctl list-jobs
-   systemctl --failed
-   ```
-
-3. **Disable problematic service temporarily:**
-   ```nix
-   systemd.services.problematic-service.enable = false;
-   ```
-
-### Kernel Panic
-
-**Solutions:**
-
-1. **Use different kernel:**
-   ```nix
-   # In configuration.nix, temporarily override
-   boot.kernelPackages = pkgs.linuxPackages;
-   ```
-
-2. **Check kernel logs:**
-   ```bash
-   journalctl -k
-   ```
-
-## Desktop Environment Issues
-
-### Hyprland Won't Start
-
-**Symptom**: Black screen or Hyprland crashes
-
-**Solutions:**
-
-1. **Check Hyprland logs:**
-   ```bash
-   cat /tmp/hypr/$(ls -t /tmp/hypr/ | head -1)/hyprland.log
-   ```
-
-2. **Try starting Hyprland manually:**
-   ```bash
-   Hyprland
-   ```
-
-3. **Check if Wayland is available:**
-   ```bash
-   echo $XDG_SESSION_TYPE
-   ls -la /run/user/1000/wayland-*
-   ```
-
-4. **Verify GPU drivers:**
-   ```bash
-   lspci -k | grep -A 3 -i vga
-   ```
-
-5. **Disable Hyprland temporarily and use fallback:**
-   ```nix
-   # In configuration.nix
-   mySystem.features.desktop = false;
-   # And enable basic X11
-   services.xserver.enable = true;
-   ```
-
-### Display Issues
-
-**Symptom**: Wrong resolution, black screen, or flickering
-
-**Solutions:**
-
-1. **Check connected monitors:**
-   ```bash
-   hyprctl monitors
-   ```
-
-2. **Configure monitors in home.nix:**
-   ```nix
-   wayland.windowManager.hyprland.settings.monitor = [
-     "DP-1,1920x1080@60,0x0,1"
-     "HDMI-A-1,disable"
-   ];
-   ```
-
-3. **Force a resolution:**
-   ```bash
-   wlr-randr --output DP-1 --mode 1920x1080@60
-   ```
-
-### Ly Login Issues
-
-**Symptom**: Can't login or Ly crashes
-
-**Solutions:**
-
-1. **Check Ly logs:**
-   ```bash
-   sudo journalctl -u ly
-   ```
-
-2. **Try console login:**
-   Press Ctrl+Alt+F2 to switch to TTY
-
-3. **Disable Ly temporarily:**
-   ```nix
-   services.ly.enable = false;
-   ```
-
-### Noctalia Shell Not Showing
-
-**Symptom**: Noctalia bar/launcher missing or crashes
-
-**Solutions:**
-
-1. **Check noctalia service:**
-   ```bash
-   systemctl --user status noctalia
-   ```
-
-2. **Check configuration:**
-   ```bash
-   # Verify settings file exists
-   cat ~/.config/noctalia/settings.json
-
-   # Check NOCTALIA_SETTINGS_FALLBACK environment variable
-   echo $NOCTALIA_SETTINGS_FALLBACK
-   ```
-
-3. **View errors:**
-   ```bash
-   journalctl --user -u noctalia
-   ```
-
-4. **Restart noctalia:**
-   ```bash
-   systemctl --user restart noctalia
-   ```
-
-## Hardware Issues
-
-### Audio Not Working
-
-**Symptom**: No sound output
-
-**Solutions:**
-
-1. **Check Pipewire status:**
-   ```bash
-   systemctl --user status pipewire pipewire-pulse wireplumber
-   ```
-
-2. **Restart audio services:**
-   ```bash
-   systemctl --user restart pipewire pipewire-pulse wireplumber
-   ```
-
-3. **Check audio devices:**
-   ```bash
-   pactl list sinks
-   wpctl status
-   ```
-
-4. **Select correct output:**
-   ```bash
-   wpctl set-default SINK_ID
-   ```
-
-5. **Test audio:**
-   ```bash
-   speaker-test -c 2
-   ```
-
-### GPU Not Recognized
-
-**Symptom**: Graphics performance poor or GPU not detected
-
-**AMD Solutions:**
-
-1. **Check AMD GPU:**
-   ```bash
-   lspci | grep -i vga
-   rocminfo
-   rocm-smi
-   ```
-
-2. **Verify ROCm loaded:**
-   ```bash
-   lsmod | grep amdgpu
-   ```
-
-3. **Check GPU access:**
-   ```bash
-   groups | grep -E 'render|video'
-   ```
-
-**NVIDIA Solutions:**
-
-1. **Check NVIDIA driver:**
-   ```bash
-   nvidia-smi
-   ```
-
-2. **Rebuild with NVIDIA enabled:**
-   ```nix
-   mySystem.hardware.nvidia = true;
-   mySystem.hardware.amd = false;
-   ```
-
-### Bluetooth Not Working
-
-**Symptom**: Can't connect Bluetooth devices
-
-**Solutions:**
-
-1. **Check Bluetooth service:**
-   ```bash
-   systemctl status bluetooth
-   ```
-
-2. **Enable Bluetooth:**
-   ```bash
-   sudo systemctl start bluetooth
-   sudo systemctl enable bluetooth
-   ```
-
-3. **Check Bluetooth hardware:**
-   ```bash
-   lsusb | grep -i bluetooth
-   rfkill list
-   ```
-
-4. **Unblock if blocked:**
-   ```bash
-   rfkill unblock bluetooth
-   ```
-
-5. **Use bluetui:**
-   ```bash
-   bluetui
-   ```
-
-## Service Issues
-
-### Service Fails to Start
-
-**Symptom**: Service in failed state
-
-**Solutions:**
-
-1. **Check service status:**
-   ```bash
-   systemctl status service-name
-   sudo systemctl status service-name  # For system services
-   systemctl --user status service-name  # For user services
-   ```
-
-2. **View service logs:**
-   ```bash
-   journalctl -u service-name -n 50
-   sudo journalctl -u service-name --since "1 hour ago"
-   ```
-
-3. **Restart service:**
-   ```bash
-   sudo systemctl restart service-name
-   systemctl --user restart service-name
-   ```
-
-4. **Check service dependencies:**
-   ```bash
-   systemctl list-dependencies service-name
-   ```
-
-### Permission Denied Errors
-
-**Symptom**: Service can't access files or resources
-
-**Solutions:**
-
-1. **Check file permissions:**
-   ```bash
-   ls -la /path/to/file
-   ```
-
-2. **Add user to required groups:**
-   ```nix
-   mySystem.user.extraGroups = [
-     "wheel"
-     "networkmanager"
-     "docker"
-     "libvirtd"
-     # Add necessary groups
-   ];
-   ```
-
-3. **Rebuild and relogin:**
-   ```bash
-   nh os switch .#nixosConfigurations.Rig
-   # Then logout and login
-   ```
-
-## YubiKey Issues
-
-### YubiKey Not Detected
-
-**Symptom**: System doesn't recognize YubiKey
-
-**Solutions:**
-
-1. **Check USB connection:**
-   ```bash
-   lsusb | grep Yubikey
-   ```
-
-2. **Check pcscd service:**
-   ```bash
-   systemctl status pcscd
-   sudo systemctl start pcscd
-   ```
-
-3. **Test YubiKey:**
-   ```bash
-   ykman list
-   ykman info
-   ```
-
-### YubiKey Authentication Not Working
-
-**Symptom**: Can't authenticate with YubiKey
-
-**Solutions:**
-
-1. **Register YubiKey:**
-   ```bash
-   mkdir -p ~/.config/Yubico
-   pamu2fcfg > ~/.config/Yubico/u2f_keys
-   ```
-
-2. **Check key file permissions:**
-   ```bash
-   chmod 600 ~/.config/Yubico/u2f_keys
-   ls -la ~/.config/Yubico/u2f_keys
-   ```
-
-3. **Test authentication:**
-   ```bash
-   sudo echo "test"  # Should require YubiKey touch
-   ```
-
-4. **Check PAM configuration:**
-   ```bash
-   cat /etc/pam.d/sudo
-   cat /etc/pam.d/login
-   ```
-
-### YubiKey Auto-login Not Working
-
-**Symptom**: System doesn't auto-login with YubiKey
-
-**Solutions:**
-
-1. **Check auto-login services:**
-   ```bash
-   sudo systemctl status yubikey-autologin-init
-   sudo systemctl status yubikey-autologin-monitor
-   ```
-
-2. **View logs:**
-   ```bash
-   sudo journalctl -u yubikey-autologin-init
-   sudo journalctl -u yubikey-autologin-monitor
-   ```
-
-3. **Restart services:**
-   ```bash
-   sudo systemctl restart yubikey-autologin-init
-   sudo systemctl restart yubikey-autologin-monitor
-   ```
-
-## Network Issues
-
-### No Internet Connection
-
-**Symptom**: Can't connect to internet
-
-**Solutions:**
-
-1. **Check network status:**
-   ```bash
-   nmcli device status
-   ip addr show
-   ```
-
-2. **Restart NetworkManager:**
-   ```bash
-   sudo systemctl restart NetworkManager
-   ```
-
-3. **Check DNS:**
-   ```bash
-   cat /etc/resolv.conf
-   ping 8.8.8.8
-   ```
-
-4. **Test connectivity:**
-   ```bash
-   ping nixos.org
-   curl -I https://google.com
-   ```
-
-### Firewall Blocking Connection
-
-**Symptom**: Can't access services or ports
-
-**Solutions:**
-
-1. **Check firewall:**
-   ```bash
-   sudo nft list ruleset
-   ```
-
-2. **Temporarily disable firewall for testing:**
-   ```bash
-   sudo systemctl stop nftables
-   # Test your connection
-   sudo systemctl start nftables
-   ```
-
-3. **Open required ports in configuration:**
-   ```nix
-   # In modules/system/security/firewall.nix
-   networking.firewall.allowedTCPPorts = [ your-port ];
-   ```
-
-### SSH Connection Refused
-
-**Symptom**: Can't SSH into system
-
-**Solutions:**
-
-1. **Check SSH service:**
-   ```bash
-   sudo systemctl status sshd
-   ```
-
-2. **Remember custom port:**
-   ```bash
-   ssh -p 2222 user@host
-   ```
-
-3. **Check firewall:**
-   ```bash
-   sudo ss -tulpn | grep 2222
-   ```
-
-## General Debugging
-
-### View System Logs
+## Build failures
 
 ```bash
-# All logs
-journalctl -xe
+# Clean and retry
+sudo nix-collect-garbage -d
+nix flake update
+nrt-rig
 
-# Since last boot
-journalctl -b
+# Hash mismatch? Update the specific input:
+nix flake lock --update-input nixpkgs
 
-# Specific service
-journalctl -u service-name
+# Clear eval cache:
+rm -rf ~/.cache/nix
 
-# Follow logs in real-time
-journalctl -f
-
-# User services
-journalctl --user -u service-name
-```
-
-### Check System Status
-
-```bash
-# Failed services
-systemctl --failed
-systemctl --user --failed
-
-# System load
-htop
-top
-
-# Disk usage
+# Check disk space (need at least 10GB free):
 df -h
-du -sh /*
 
-# Memory usage
-free -h
+# Check internet:
+ping nixos.org
+curl -I https://cache.nixos.org
 ```
 
-### Rebuild With Verbose Output
+## Boot problems
+
+**Won't boot:** Select previous generation from boot menu. That's what they're there for.
+
+**Hangs during boot:**
+```nix
+# Add to boot.nix temporarily:
+boot.kernelParams = [ "debug" "verbose" ];
+```
+Then check `systemctl list-jobs` and `systemctl --failed`.
+
+**Kernel panic:** Try the generic kernel temporarily:
+```nix
+boot.kernelPackages = pkgs.linuxPackages;
+```
+Check kernel logs with `journalctl -k`.
+
+## Desktop
+
+**Hyprland won't start:**
+```bash
+cat /tmp/hypr/$(ls -t /tmp/hypr/ | head -1)/hyprland.log
+echo $XDG_SESSION_TYPE          # Should be "wayland"
+lspci -k | grep -A 3 -i vga    # GPU drivers loaded?
+```
+
+**Wrong resolution:**
+```bash
+hyprctl monitors    # See what Hyprland sees
+```
+Edit the monitor line in `modules/hjem/hyprland.nix`.
+
+**Ly won't log in:**
+```bash
+sudo journalctl -u ly
+# Ctrl+Alt+F2 gets you to a TTY as fallback
+```
+
+**Noctalia missing:**
+```bash
+systemctl --user status noctalia
+journalctl --user -u noctalia
+systemctl --user restart noctalia
+```
+
+## Audio
 
 ```bash
-# Show detailed build info
-sudo nixos-rebuild switch --flake .#YourConfig --show-trace --verbose
+systemctl --user status pipewire pipewire-pulse wireplumber
+systemctl --user restart pipewire pipewire-pulse wireplumber
+
+pactl list sinks          # See audio outputs
+wpctl status              # WirePlumber status
+wpctl set-default SINK_ID # Pick an output
 ```
 
-### Rollback Changes
+## GPU
+
+**AMD:**
+```bash
+lspci | grep -i vga
+lsmod | grep amdgpu
+rocm-smi                            # ROCm status
+groups | grep -E 'render|video'     # GPU group access
+```
+
+## Bluetooth
 
 ```bash
-# Rollback to previous generation
-sudo nixos-rebuild switch --rollback
-
-# List generations
-nix-env --list-generations --profile /nix/var/nix/profiles/system
-
-# Boot into specific generation
-sudo nixos-rebuild switch --rollback --to 123
+systemctl status bluetooth
+rfkill list               # Blocked?
+rfkill unblock bluetooth  # Unblock if needed
+lsusb | grep -i bluetooth
 ```
 
-### Recovery Mode
+## YubiKey
 
-If system is completely broken:
+**Not detected:**
+```bash
+lsusb | grep -i yubico
+systemctl status pcscd
+ykman list
+```
 
-1. **Boot from NixOS installer USB**
+**Auth not working:**
+```bash
+# Re-register:
+mkdir -p ~/.config/Yubico
+pamu2fcfg > ~/.config/Yubico/u2f_keys
+chmod 600 ~/.config/Yubico/u2f_keys
 
-2. **Mount your system:**
-   ```bash
-   sudo mount /dev/sdXY /mnt
-   sudo mount /dev/sdXZ /mnt/boot  # if separate
-   ```
+# Test:
+sudo echo "test"    # Should require touch
+```
 
-3. **Enter chroot:**
-   ```bash
-   sudo nixos-enter --root /mnt
-   ```
+**Auto-login not working:**
+```bash
+sudo systemctl status yubikey-autologin-init
+sudo systemctl status yubikey-autologin-monitor
+sudo journalctl -u yubikey-autologin-init
+```
 
-4. **Fix and rebuild:**
-   ```bash
-   cd /home/username/dotfiles
-   sudo nixos-rebuild switch --flake .#nixosConfigurations.Rig
-   ```
+## Network
 
-5. **Reboot:**
-   ```bash
-   exit
-   sudo reboot
-   ```
+```bash
+nmcli device status
+ip addr show
 
-## Getting More Help
+# DNS issues:
+cat /etc/resolv.conf
+ping 8.8.8.8    # Bypasses DNS
 
-If issues persist:
+# Restart NetworkManager:
+sudo systemctl restart NetworkManager
+```
 
-1. **Check NixOS Manual**: https://nixos.org/manual/nixos/stable/
-2. **Search NixOS Discourse**: https://discourse.nixos.org/
-3. **NixOS Wiki**: https://nixos.wiki/
-4. **GitHub Issues**: https://github.com/weegs710/AnomalOS/issues
-5. **Codeberg Issues**: https://codeberg.org/weegs710/AnomalOS/issues
-6. **NixOS Matrix Chat**: https://matrix.to/#/#community:nixos.org
+**SSH refused:** SSH is on port 2222.
+```bash
+ssh -p 2222 user@host
+sudo ss -tulpn | grep 2222
+```
 
-### Reporting Issues
+**Firewall blocking something:**
+```bash
+sudo nft list ruleset
+# To test without firewall temporarily:
+sudo systemctl stop nftables
+# ... test ...
+sudo systemctl start nftables
+```
 
-When reporting issues, include:
+## General debugging
 
-- Configuration name (Rig)
-- Hardware details (CPU, GPU, etc.)
-- Relevant logs (`journalctl` output)
-- Steps to reproduce
-- Error messages
-- What you've already tried
+```bash
+journalctl -xe                    # Recent system logs
+journalctl -b                     # Since last boot
+journalctl -u service-name        # Specific service
+journalctl --user -u service-name # User service
+systemctl --failed                # Failed services
+systemctl --user --failed         # Failed user services
+```
 
----
+**Verbose rebuild:**
+```bash
+nrt-rig -- --show-trace
+```
 
-**Remember**: Always test configuration changes before applying permanently, and keep backups of working configurations.
+## Recovery from USB
+
+1. Boot NixOS installer USB
+2. Mount your system:
+```bash
+sudo zpool import -f zroot
+sudo mount -t zfs zroot/root /mnt
+sudo mount /dev/nvme1n1p3 /mnt/boot   # adjust device
+sudo mount -t zfs zroot/nix /mnt/nix
+sudo mount -t zfs zroot/persist /mnt/persist
+sudo mount -t zfs zroot/cache /mnt/cache
+```
+3. Fix and rebuild:
+```bash
+sudo nixos-rebuild switch --flake /mnt/home/weegs/dotfiles#nixosConfigurations.Rig
+```
+4. Reboot.
+
+## Getting help
+
+- [NixOS Manual](https://nixos.org/manual/nixos/stable/)
+- [NixOS Discourse](https://discourse.nixos.org/)
+- [NixOS Wiki](https://nixos.wiki/)
+- [GitHub Issues](https://github.com/weegs710/AnomalOS/issues)
+- [Codeberg Issues](https://codeberg.org/weegs710/AnomalOS/issues)

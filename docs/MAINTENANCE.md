@@ -1,509 +1,119 @@
-# Maintenance Guide
+# Maintenance
 
-## Overview
+Routine upkeep for keeping things running.
 
-This guide covers routine maintenance tasks, update procedures, and best practices for keeping your NixOS system healthy and up-to-date.
+## Updates
 
-## Update Schedule
-
-### Recommended Update Frequency
-
-| Component | Frequency | Command | Notes |
-|-----------|-----------|---------|-------|
-| **System Packages** | Weekly | `update && nrs-rig` | Updates flake inputs |
-| **Backup Verification** | Monthly | See [BACKUP.md](BACKUP.md) | Verify backups work |
-| **Security Updates** | As needed | Check [NixOS Security](https://nixos.org/manual/nixos/stable/index.html#sec-security-updates) | Critical patches |
-| **Full System Upgrade** | Monthly | `nix flake update` | Major package updates |
-
-### Automated Maintenance
-
-Some maintenance tasks run automatically:
-
-- **Backups**: Daily at midnight (`restic-backups-localbackup.timer`)
-- **Garbage Collection**: Daily, removes >90 day old generations
-- **Store Optimization**: Automatic during garbage collection
-
-## Update Procedures
-
-### Quick Update (Recommended)
-
-Use the convenient update script that tests before switching:
+### Quick update (use this)
 
 ```bash
-# For Rig configuration
-rig-up
+rig-up    # Updates flake inputs, tests, prompts to switch
 ```
 
-This script:
-1. Updates flake inputs
-2. Tests the new configuration
-3. Prompts for confirmation before switching
-4. Only switches if test succeeds
-
-### Manual Update Process
-
-If you prefer manual control:
+### Manual if you need more control
 
 ```bash
-# 1. Update flake inputs
 cd ~/dotfiles
-nix flake update
-
-# 2. Review changes (optional)
-nix flake metadata
-
-# 3. Test new configuration (uses nh)
-nh os test .#nixosConfigurations.Rig
-
-# 4. If test succeeds, switch (uses nh)
-nh os switch .#nixosConfigurations.Rig
+nix flake update           # Update all inputs
+nrt-rig                    # Test
+nrs-rig                    # Apply if good
 ```
 
-### Selective Updates
-
-Update specific inputs only:
+### Update a single input
 
 ```bash
-# Update single input
 nix flake lock --update-input nixpkgs
-
-# Update home-manager only
-nix flake lock --update-input home-manager
-
-# Update specific flake inputs
-nix flake lock --update-input nixpkgs
-nix flake lock --update-input home-manager
 ```
 
-## Garbage Collection
+## Garbage collection
 
-### Automatic Garbage Collection
-
-The system automatically removes old generations daily:
-
-```nix
-# In features/core/nix-daemon.nix
-nix.gc = {
-  automatic = true;
-  dates = "daily";
-  options = "--delete-older-than 90d";
-};
-```
-
-### Manual Garbage Collection
-
-**Emergency cleanup** (if boot menu gets too full):
-```bash
-recycle  # Keep last 10 generations, remove older
-```
-
-**Note**: `recycle` is for emergency use only. The system automatically removes generations older than 90 days daily, and the boot menu shows only the 10 most recent entries.
-
-**Manual cleanup with custom age**:
-```bash
-sudo nix-collect-garbage --delete-older-than 14d
-
-# Aggressive cleanup (removes everything except current)
-sudo nix-collect-garbage -d
-
-# Check space savings
-df -h /nix
-```
-
-### Cleaning User Profiles
+Runs automatically daily — removes generations older than 90 days. If the boot menu gets bloated:
 
 ```bash
-# List generations
-nix profile history
-
-# Remove specific generation
-nix profile remove <generation-number>
-
-# Remove all old generations
-nix profile wipe-history
+recycle    # Keep last 10 generations, GC everything else
 ```
 
-## System Health Monitoring
-
-### Check System Status
-
+Manual options:
 ```bash
-# View recent system logs
-sudo journalctl -xe
-
-# Check failed services
-systemctl --failed
-
-# View specific service status
-systemctl status <service-name>
-
-# Check user services
-systemctl --user status
+sudo nix-collect-garbage -d                       # Nuke everything except current
+sudo nix-collect-garbage --delete-older-than 14d  # Custom age
+df -h /nix                                        # Check how much space you freed
 ```
 
-### Disk Space Management
+## Health checks
 
 ```bash
-# Check overall disk usage
-df -h
-
-# Check Nix store size
-du -sh /nix/store
-
-# Find largest store paths
-nix path-info --recursive --size --store auto --all |
-  sort -nk2 | tail -20
-
-# Check specific configuration size
-nix path-info --size --closure-size --store auto /run/current-system
+systemctl --failed              # Any broken services?
+sudo journalctl -xe             # Recent logs
+df -h                           # Disk space
+du -sh /nix/store               # Nix store size
 ```
 
-### Package Information
+## Rolling back
 
 ```bash
-# List installed packages
-nix-env -qa
+sudo nixos-rebuild switch --rollback
 
-# Search for package
-nix search nixpkgs <package-name>
+# Or just reboot — test configs revert automatically
 
-# Get package info
-nix search nixpkgs <package-name> --json | jq
-
-# Check why package is in system
-nix why-depends /run/current-system /nix/store/<package-hash>
-```
-
-## Configuration Management
-
-### Version Control Best Practices
-
-```bash
-# Always commit changes
-cd ~/dotfiles
-git status
-git diff
-git add <files>
-git commit -m "Description of changes"
-git push
-
-# Create backup branch before major changes
-git checkout -b backup-$(date +%Y%m%d)
-git checkout main
-```
-
-### Testing Changes
-
-```bash
-# Always test before switching (uses nh)
-nh os test .#nixosConfigurations.Rig
-
-# Test will:
-# - Build new configuration
-# - Activate it temporarily
-# - NOT update bootloader
-# - Revert on reboot if system crashes
-```
-
-### Rolling Back
-
-```bash
-# List generations
+# List generations:
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-
-# Switch to previous generation (from bootloader)
-# - Reboot
-# - Select previous generation in boot menu
-
-# Or rollback programmatically
-sudo nixos-rebuild switch --rollback
-
-# Switch to specific generation
-sudo nixos-rebuild switch --rollback
 ```
 
-## Troubleshooting Common Issues
+You can also select a previous generation from the boot menu at startup.
 
-### Build Failures After Update
+## Security maintenance
 
 ```bash
-# Clear build cache
-sudo nix-collect-garbage -d
+# Check for security advisories at:
+# https://nixos.org/manual/nixos/stable/index.html#sec-security-updates
 
-# Update flake inputs
-nix flake update
-
-# Retry build (uses nh)
-nh os test .#nixosConfigurations.Rig
-
-# If still failing, check build logs
-nix log /nix/store/<failed-derivation>
-```
-
-### Service Failures
-
-```bash
-# Check service status
-systemctl status <service-name>
-
-# View service logs
-sudo journalctl -u <service-name> -n 50
-
-# Restart service
-sudo systemctl restart <service-name>
-
-# Check service configuration
-systemctl cat <service-name>
-```
-
-### Disk Space Issues
-
-```bash
-# Emergency cleanup
-sudo nix-collect-garbage -d
-sudo nix-store --optimize
-
-# Check what's using space
-ncdu /nix/store
-
-# Clear system logs
-sudo journalctl --vacuum-time=7d
-```
-
-## Changelog Tracking
-
-### Viewing System Changes
-
-```bash
-# Compare current vs previous generation
-nix store diff-closures \
-  /nix/var/nix/profiles/system-{$(($(readlink /nix/var/nix/profiles/system | grep -oP '\d+')-1)),$(readlink /nix/var/nix/profiles/system | grep -oP '\d+')}-link
-
-# View flake inputs changes
-nix flake metadata --json | jq '.locks.nodes'
-
-# Git log for configuration changes
-cd ~/dotfiles
-git log --oneline -n 20
-```
-
-### Keeping a Manual Changelog
-
-Create `CHANGELOG.md` in your dotfiles:
-
-```markdown
-# Changelog
-
-## 2025-01-13
-- Added hyprland configuration consolidation
-- Updated backup documentation
-- Updated profiles with comments
-
-## 2025-01-12
-- Integrated agenix for secret management
-- Updated .gitignore for security
-- Moved binary files out of repo
-```
-
-## Security Maintenance
-
-### Security Updates
-
-```bash
-# Check for security advisories
-# Visit: https://nixos.org/manual/nixos/stable/index.html#sec-security-updates
-
-# Update immediately for security patches
+# Update immediately for security patches:
 nix flake lock --update-input nixpkgs
-nh os switch .#nixosConfigurations.Rig
+nrs-rig
 ```
 
-### YubiKey Maintenance
-
+YubiKey:
 ```bash
-# Test YubiKey authentication
-sudo echo "Testing YubiKey"
-# Should require YubiKey touch
-
-# Re-register YubiKey if needed
+# Re-register if needed:
 pamu2fcfg > ~/.config/Yubico/u2f_keys
 
-# Check YubiKey services
-systemctl status yubikey-autologin-init
-sudo journalctl -u yubikey-autologin-init
+# Check services:
+sudo systemctl status yubikey-autologin-init
 ```
 
-### Secret Management
+## Store optimization
 
 ```bash
-# Rotate secrets periodically
-cd ~/dotfiles
-agenix -e secrets/restic-password.age
-
-# Verify secret decryption
-cat /run/agenix/restic-password
-
-# Re-encrypt secrets with new keys
-agenix -r
+sudo nix-store --optimize    # Deduplicates files in store
 ```
 
-## Performance Optimization
+Already running automatically — `auto-optimise-store = true` in nix-daemon.nix.
 
-### Store Optimization
+## Monthly checklist
 
-```bash
-# Optimize Nix store (deduplicates files)
-sudo nix-store --optimize
-
-# Check optimization results
-nix store optimise --dry-run
-```
-
-### Build Optimization
-
-Already configured in `features/core/nix-daemon.nix`:
-
-```nix
-nix.settings = {
-  cores = 0;              # Use all cores
-  max-jobs = "auto";      # Parallel builds
-  auto-optimise-store = true;
-};
-```
-
-### Cache Configuration
-
-Binary caches are pre-configured:
-
-```nix
-substituters = [
-  "https://cache.nixos.org"
-  "https://ezkea.cachix.org"
-  "https://cache.flakehub.com"
-  "https://nix-community.cachix.org"
-  "https://chaotic-nyx.cachix.org"
-  "https://hyprland.cachix.org"
-];
-```
-
-## Backup Maintenance
-
-See [BACKUP.md](BACKUP.md) for backup procedures.
-
-### Quick Backup Check
-
-```bash
-# Verify backup service is running
-systemctl status restic-backups-localbackup.timer
-
-# View recent backup logs
-sudo journalctl -u restic-backups-localbackup.service -n 50
-
-# List recent snapshots
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password snapshots
-
-# Test restore (monthly recommended)
-sudo restic -r /backup/restic-repo --password-file /run/agenix/restic-password restore latest \
-  --target /tmp/restore-test --include /home/weegs/dotfiles/README.md
-```
-
-## Monthly Maintenance Checklist
-
-**Day 1 of each month:**
-
-- [ ] Update system: `rig-up`
-- [ ] Test backups: Restore a few files to verify
-- [ ] Check disk space: `df -h`
-- [ ] Review failed services: `systemctl --failed`
+- [ ] `rig-up` — update system
+- [ ] `df -h` — check disk space
+- [ ] `systemctl --failed` — any broken services?
+- [ ] Test a ZFS snapshot restore (see [Backups](BACKUP.md))
 - [ ] Check security advisories
-- [ ] Rotate any sensitive secrets (if policy requires)
-- [ ] Review system logs for anomalies
-- [ ] Update documentation if configuration changed
-- [ ] Commit and push dotfiles changes
+- [ ] Commit and push any dotfiles changes
 
-**Optional (quarterly):**
+## Emergency
 
-- [ ] Review and update `.gitignore`
-- [ ] Audit installed packages for unused ones
-- [ ] Review and optimize startup services
-- [ ] Check for deprecated NixOS options
-- [ ] Update hardware configuration if hardware changed
+### System won't boot
 
-## Emergency Procedures
+Select previous generation from boot menu. If that doesn't work, see the USB recovery steps in [Installation](INSTALLATION.md).
 
-### System Won't Boot
-
-1. **Select previous generation** from bootloader menu
-2. **Boot into recovery** and rollback:
-   ```bash
-   sudo nixos-rebuild switch --rollback
-   ```
-3. **Boot from USB** and repair (see INSTALLATION.md)
-
-### Configuration Broke System
+### Config broke everything
 
 ```bash
-# Revert to last working configuration
 cd ~/dotfiles
 git log --oneline
 git checkout <last-working-commit>
-nh os switch .#nixosConfigurations.Rig
+nrs-rig
 ```
 
-### Lost SSH Access (YubiKey Issues)
+### Lost access (YubiKey issues)
 
-1. Boot into single-user mode (bootloader)
-2. Disable YubiKey in configuration.nix:
-   ```nix
-   mySystem.features.yubikey = false;
-   ```
-3. Rebuild and reboot
-
-## Best Practices
-
-1. **Always test before switching**: Use `nh os test` first
-2. **Keep git history clean**: Meaningful commit messages
-3. **Regular backups**: Verify backups work monthly
-4. **Update regularly**: Weekly updates prevent massive changes
-5. **Document changes**: Update docs when modifying configuration
-6. **Use version control**: Commit before major changes
-7. **Monitor disk space**: Clean up old generations regularly
-8. **Check logs**: Review system logs for issues
-9. **Security first**: Update promptly for security patches
-10. **Test restores**: Monthly backup restore tests
-
-## Resources
-
-- [NixOS Manual](https://nixos.org/manual/nixos/stable/)
-- [Home Manager Manual](https://nix-community.github.io/home-manager/)
-- [NixOS Wiki](https://nixos.wiki/)
-- [NixOS Discourse](https://discourse.nixos.org/)
-- [Nix Package Search](https://search.nixos.org/)
-
-## Quick Reference
-
-```bash
-# Update system
-rig-up
-
-# Test configuration
-nh os test .#nixosConfigurations.Rig
-
-# Switch configuration
-nh os switch .#nixosConfigurations.Rig
-
-# Check system status
-systemctl --failed
-
-# View logs
-sudo journalctl -xe
-
-# List generations
-sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-
-# Optimize store
-sudo nix-store --optimize
-
-# Check disk usage
-df -h /nix
-```
+Boot into single-user mode, set `mySystem.features.yubikey = false` in rig.nix, rebuild.

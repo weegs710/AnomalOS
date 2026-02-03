@@ -17,16 +17,21 @@ I run Hyprland on NixOS with a bunch of stuff I've cobbled together over time:
 - **Music**: MPD with Euphonica client, Beets for library management
 - **Dev Tools**: Claude Code, Node/Python/Rust toolchains, language servers
 
-Everything's managed with Nix flakes and home-manager. I use ZFS because I like snapshots because I'd rather not lose stuff when I inevitably break something or delete something on accident. This just makes sense to pair with git and NixOS.
+Everything's managed with Nix flakes and Hjem. I use ZFS because I like snapshots because I'd rather not lose stuff when I inevitably break something or delete something on accident. This just makes sense to pair with git and NixOS.
 
 ## How it's organized
 
 ```
 dotfiles/
 ├── flake.nix                    # Main flake
+├── install.sh                   # ZFS install script
+├── repl.nix                     # Nix REPL helper
 ├── modules/
-│   ├── hosts/rig.nix            # My system config
-│   └── nixos-modules/           # All the feature modules (55 of them)
+│   ├── hosts/                   # Host configs + hardware
+│   ├── nixos-modules/           # System-level modules
+│   ├── hjem/                    # User config file deployments
+│   ├── shareables/              # Wrapped app packages
+│   └── devshell.nix             # Dev shell
 └── docs/                        # Docs if you want more details
 ```
 
@@ -37,8 +42,11 @@ dotfiles/
 git clone https://github.com/weegs710/AnomalOS.git ~/dotfiles
 cd ~/dotfiles
 
-# Generate hardware config for your machine
-sudo nixos-generate-config --show-hardware-config > hardware-configuration-zfs.nix
+# install.sh wipes the whole disk (1GB boot, 16GB swap, rest ZFS). Before you
+# run it your NixOS config needs the ZFS fileSystems already declared or it
+# won't boot. networking.hostId also needs to be set. See modules/zfs.nix for
+# the dataset layout. Read the comments in install.sh for the full rundown.
+./install.sh
 
 # Test it first (seriously, don't skip this)
 sudo nixos-rebuild test --flake .#nixosConfigurations.Rig
@@ -82,7 +90,9 @@ mySystem.hardware = {
 
 ## Adding stuff
 
-Because of the flake-parts setup, adding new modules ezpz. Just create a file in `modules/nixos-modules/`:
+Because of the flake-parts setup, adding new modules is ezpz. Everything in `modules/` gets auto-imported, just drop a file and it's in.
+
+System-level stuff goes in `modules/nixos-modules/`:
 
 ```nix
 { inputs, self, ... }:
@@ -96,11 +106,31 @@ Because of the flake-parts setup, adding new modules ezpz. Just create a file in
 }
 ```
 
+User config files (anything that ends up in `~/.config` or `~/.local/share`) go in `modules/hjem/`:
+
+```nix
+{...}: {
+  flake.nixosModules.my-app = { config, lib, pkgs, ... }: let
+    username = config.mySystem.user.name;
+  in with lib; {
+    config = mkIf config.mySystem.features.whatever {
+      hjem.users.${username}.xdg.config.files = {
+        "my-app/config".text = ''
+          # your config here
+        '';
+      };
+    };
+  };
+}
+```
+
+Files prefixed with `_` are excluded from auto-import — that's how `_hardware-configuration.nix` stays out of the way.
+
 ## What you probably want to change
 
 If you're actually going to use this:
 
-1. **Hardware config**: Generate your own `hardware-configuration-zfs.nix`
+1. **Hardware config**: Generate your own and drop it in `modules/hosts/_hardware-configuration.nix`
 2. **User settings**: Change username, hostname in `modules/hosts/rig.nix`
 3. **YubiKey stuff**: Disable it unless you have one (`yubikey = false`)
 4. **GPU settings**: Change `amd = true` to whatever GPU you have
@@ -122,7 +152,7 @@ If you want more details:
 - [Installation Guide](docs/INSTALLATION.md) - Full install instructions
 - [Configuration Options](docs/CONFIGURATION.md) - All the knobs you can turn
 - [Features](docs/FEATURES.md) - What's actually in here
-- [Customization](docs/CUSTOMIZATION.md) - How to make it yours
+- [Maintenance](docs/MAINTENANCE.md) - Routine maintenance and updates
 - [Secrets](docs/SECRETS.md) - Agenix setup for managing secrets
 - [Backups](docs/BACKUP.md) - ZFS snapshot management
 - [Troubleshooting](docs/TROUBLESHOOTING.md) - When things break
