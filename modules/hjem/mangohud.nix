@@ -4,10 +4,12 @@
     lib,
     ...
   }:
-    with lib; {
+    with lib; let
+      username = config.mySystem.user.name;
+    in {
       config = mkIf config.mySystem.features.gaming {
-        home-manager.users.${config.mySystem.user.name} = {
-          xdg.configFile."MangoHud/MangoHud.conf".text = ''
+        hjem.users.${username} = {
+          xdg.config.files."MangoHud/MangoHud.conf".text = ''
             legacy_layout=0
             hud_no_margin
             font_size=24
@@ -15,7 +17,7 @@
             position=top-left
           '';
 
-          xdg.configFile."MangoHud/presets.conf".text = ''
+          xdg.config.files."MangoHud/presets.conf".text = ''
             [preset 0]
             no_display
 

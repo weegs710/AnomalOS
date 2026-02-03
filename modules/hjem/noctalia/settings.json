@@ -16,10 +16,8 @@
     "frameThickness": 8,
     "frameRadius": 12,
     "outerCorners": false,
+    "exclusive": true,
     "hideOnOverview": false,
-    "displayMode": "always_visible",
-    "autoHideDelay": 500,
-    "autoShowDelay": 150,
     "widgets": {
       "left": [
         {
@@ -221,8 +219,7 @@
     "wallhavenApiKey": "",
     "wallhavenResolutionMode": "atleast",
     "wallhavenResolutionWidth": "2560",
-    "wallhavenResolutionHeight": "1440",
-    "sortOrder": "name"
+    "wallhavenResolutionHeight": "1440"
   },
   "appLauncher": {
     "enableClipboardHistory": true,
@@ -243,7 +240,6 @@
     "iconMode": "native",
     "showIconBackground": false,
     "enableSettingsSearch": true,
-    "enableWindowsSearch": true,
     "ignoreMouseInput": false,
     "screenshotAnnotationTool": ""
   },
@@ -308,6 +304,7 @@
     "diskWarningThreshold": 80,
     "diskCriticalThreshold": 85,
     "cpuPollingInterval": 250,
+    "tempPollingInterval": 3000,
     "gpuPollingInterval": 250,
     "enableDgpuMonitoring": true,
     "memPollingInterval": 250,

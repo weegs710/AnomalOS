@@ -1,6 +1,6 @@
 {...}: {
   perSystem = {pkgs, ...}: let
-    logo = ../../assets/nixos.png;
+    logo = ../hjem/fastfetch/nixos.png;
     configFile = pkgs.writeText "fastfetch-config.jsonc" ''
       {
         "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",

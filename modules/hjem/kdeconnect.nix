@@ -22,8 +22,16 @@
           kdePackages.kdeconnect-kde
         ];
 
-        home-manager.users.${config.mySystem.user.name} = {
-          services.kdeconnect.enable = true;
+        systemd.user.services.kdeconnect = {
+          description = "KDE Connect";
+          after = ["graphical-session.target"];
+          wantedBy = ["graphical-session.target"];
+
+          serviceConfig = {
+            Type = "simple";
+            ExecStart = "${pkgs.kdePackages.kdeconnect-kde}/bin/kdeconnectd";
+            Restart = "on-failure";
+          };
         };
       };
     };

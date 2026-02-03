@@ -31,7 +31,4 @@ in
     c = flake.nixosConfigurations.${host}.config;
     config = c;
     opts = c.mySystem;
-
-    # home-manager config for the user
-    hm = c.home-manager.users.${user};
   }

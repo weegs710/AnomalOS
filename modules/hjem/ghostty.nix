@@ -2,26 +2,25 @@
   flake.nixosModules.ghostty = {
     config,
     lib,
+    pkgs,
     ...
   }:
     with lib; {
       config = mkIf config.mySystem.features.desktop {
-        home-manager.users.${config.mySystem.user.name} = {
-          programs.ghostty = {
-            enable = true;
-            settings = {
-              scroll-to-bottom = "keystroke";
-              copy-on-select = "clipboard";
-              window-show-tab-bar = "never";
-              theme = "noctalia";
-              keybind = [
-                "shift+enter=text:\\n"
-                "ctrl+v=paste_from_clipboard"
-              ];
-            };
-          };
+        users.users.${config.mySystem.user.name}.packages = [pkgs.ghostty];
 
-          xdg.dataFile."applications/com.mitchellh.ghostty.desktop".text = ''
+        hjem.users.${config.mySystem.user.name} = {
+          xdg.config.files."ghostty/config".text = ''
+            scroll-to-bottom = keystroke
+            copy-on-select = clipboard
+            window-show-tab-bar = never
+            theme = noctalia
+
+            keybind = shift+enter=text:\n
+            keybind = ctrl+v=paste_from_clipboard
+          '';
+
+          xdg.data.files."applications/com.mitchellh.ghostty.desktop".text = ''
             [Desktop Entry]
             Name=Ghostty
             Comment=Fast, feature-rich terminal emulator

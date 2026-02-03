@@ -37,7 +37,7 @@ proceeding or your install WILL NOT BOOT.
 
 Introduction
 
-# ZFS "fileSystems" declarations can be referenced from hardware-configuration-zfs.nix
+# ZFS "fileSystems" declarations can be referenced from modules/zfs.nix
 # ZFS also requires the following options to be set within host config:
 #   networking.hostId (can be generated using: head -c 8 /etc/machine-id)
 #   zfs.devNodes
@@ -49,19 +49,14 @@ Introduction
 # as a fallback so you will always be able to login / sudo using that initialPassword, e.g.
 #
 # users = {
-#     mutableUsers = false;
+#     mutableUsers = false;   # set to true if *NOT* using impermanence
 #     users.root.initialPassword = "password";
-#     users.<USERNAME>.initialPassword = "password";
+#     users.YOUR_USERNAME.initialPassword = "password";
 # }
 #
-# ** CRITICAL WARNING **
-# Setting mutableUsers = false REQUIRES impermanence to be properly configured.
-# If you are not using impermanence, you MUST set mutableUsers = true or your
-# users will be wiped on every reboot and you will be locked out of your system.
-#
 # After initial login, you can then set new passwords for root and your user(s)
-# using `users.<USERNAME>.hashedPasswordFile = /persist/PATH_TO_HASHED_PASSWORD_FILE`
-# read -s -p "" PASSWORD && mkpasswd -m sha-512 "$PASSWORD" | sudo tee -a /persist/PATH_TO_HASHED_PASSWORD_FILE
+# using `users.YOUR_USERNAME.hashedPasswordFile = /persist/PATH_TO_HASHED_PASSWORD_FILE`
+# read -s -p "" PASSWORD && mkpasswd -m sha-512 "$PASSWORD" | sudo tee /persist/PATH_TO_HASHED_PASSWORD_FILE
 
 # NOTE: during rebuild, there will be warnings about setting multiple password options, this is expected :(
 # (https://github.com/NixOS/nixpkgs/pull/287506#issuecomment-1950958990)
@@ -120,7 +115,7 @@ fi
 
 echo "Creating partitions"
 sudo blkdiscard -f "$DISK"
-sudo sgdisk --clear"$DISK"
+sudo sgdisk --clear "$DISK"
 
 sudo sgdisk -n3:1M:+1G -t3:EF00 "$DISK"
 sudo sgdisk -n2:0:+16G -t2:8200 "$DISK"
@@ -210,7 +205,23 @@ repo="${repo:-github:weegs710/AnomalOS}"
 
 # only relevant for AnomalOS
 if [[ $repo == "github:weegs710/AnomalOS" ]]; then
-    host="Rig"
+    hosts=("Rig")
+
+    echo "Available hosts:"
+    for i in "${!hosts[@]}"; do
+        printf "%d) %s\n" $((i+1)) "${hosts[i]}"
+    done
+
+    while true; do
+        echo ""
+        read -rp "Enter the number of the host to install: " selection
+        if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 1 ] && [ "$selection" -le ${#hosts[@]} ]; then
+            host="${hosts[$selection-1]}"
+            break
+        else
+            echo "Invalid selection. Please enter a number between 1 and ${#hosts[@]}."
+        fi
+    done
 else
     # non AnomalOS, prompt for host
     read -rp "Which host to install?" host
@@ -219,6 +230,11 @@ fi
 read -rp "Enter git rev for flake (default: main): " git_rev
 
 echo "Installing NixOS"
-sudo nixos-install --flake "$repo/${git_rev:-main}#$host" --option tarball-ttl 0
+if [[ $repo == "github:weegs710/AnomalOS" ]]; then
+    # root password is irrelevant if initialPassword is set in the config
+    sudo nixos-install --no-root-password --flake "$repo/${git_rev:-main}#$host" --option tarball-ttl 0
+else
+    sudo nixos-install --flake "$repo/${git_rev:-main}#$host" --option tarball-ttl 0
+fi
 
 echo "Installation complete. It is now safe to reboot."

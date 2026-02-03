@@ -11,10 +11,7 @@
       (builtins.attrValues self.nixosModules)
       ++ [
         # Hardware configuration
-        ../../hardware-configuration-zfs.nix
-
-        # Home Manager
-        inputs.home-manager.nixosModules.default
+        ./_hardware-configuration.nix
 
         # Host-specific configuration
         ({config, ...}: {
@@ -51,18 +48,6 @@
 
             security = {
               dnscrypt = true;
-            };
-          };
-
-          home-manager = {
-            useGlobalPkgs = true;
-            backupFileExtension = "backup";
-            extraSpecialArgs = {inherit inputs;};
-            users.${config.mySystem.user.name} = {
-              home.username = config.mySystem.user.name;
-              home.homeDirectory = "/home/${config.mySystem.user.name}";
-              home.stateVersion = "25.05";
-              programs.home-manager.enable = true;
             };
           };
 

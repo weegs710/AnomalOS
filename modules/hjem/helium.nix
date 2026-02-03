@@ -5,16 +5,15 @@
     pkgs,
     ...
   }: let
+    username = config.mySystem.user.name;
     wrappedHelium = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.helium;
   in
     with lib; {
       config = mkIf config.mySystem.features.desktop {
-        home-manager.users.${config.mySystem.user.name} = {
-          home.packages = [
-            wrappedHelium
-          ];
+        users.users.${username}.packages = [ wrappedHelium ];
 
-          xdg.configFile."net.imput.helium/WidevineCdm/latest-component-updated-widevine-cdm".text = ''
+        hjem.users.${username} = {
+          xdg.config.files."net.imput.helium/WidevineCdm/latest-component-updated-widevine-cdm".text = ''
             {"Path":"${pkgs.widevine-cdm}/share/google/chrome/WidevineCdm"}
           '';
         };

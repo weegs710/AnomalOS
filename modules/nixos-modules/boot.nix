@@ -3,20 +3,23 @@
     config,
     pkgs,
     ...
-  }: {
-    nixpkgs.overlays = [inputs.nix-cachyos-kernel.overlays.pinned];
-
+  }: let
+    kernelPkgs = import inputs.nixpkgs-kernel {
+      system = pkgs.stdenv.system;
+      overlays = [inputs.nix-cachyos-kernel.overlays.pinned];
+    };
+  in {
     boot = {
       initrd.systemd.enable = true;
       plymouth.enable = true;
       kernelPackages = let
-        customKernel = pkgs.cachyosKernels.linux-cachyos-latest-x86_64-v3.override {
+        customKernel = kernelPkgs.cachyosKernels.linux-cachyos-latest-x86_64-v3.override {
           bbr3 = true;
         };
-        basePackages = pkgs.linuxKernel.packagesFor customKernel;
+        basePackages = kernelPkgs.linuxKernel.packagesFor customKernel;
       in
         basePackages.extend (self: super: {
-          zfs_cachyos = pkgs.cachyosKernels.zfs-cachyos.override {
+          zfs_cachyos = kernelPkgs.cachyosKernels.zfs-cachyos.override {
             kernel = customKernel;
           };
         });
@@ -30,7 +33,7 @@
       supportedFilesystems.ntfs = true;
       supportedFilesystems.exfat = true;
       supportedFilesystems.zfs = true;
-      zfs.package = pkgs.cachyosKernels.zfs-cachyos.override {
+      zfs.package = kernelPkgs.cachyosKernels.zfs-cachyos.override {
         kernel = config.boot.kernelPackages.kernel;
       };
       loader = {

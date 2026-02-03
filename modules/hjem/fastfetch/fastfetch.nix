@@ -6,12 +6,12 @@
   }:
     with lib; {
       config = mkIf config.mySystem.features.desktop {
-        home-manager.users.${config.mySystem.user.name} = {
-          xdg.configFile."fastfetch/config.jsonc".text = ''
+        hjem.users.${config.mySystem.user.name} = {
+          xdg.config.files."fastfetch/config.jsonc".text = ''
             {
               "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
               "logo": {
-                "source": "/home/${config.mySystem.user.name}/dotfiles/assets/nixos.png",
+                "source": "/home/${config.mySystem.user.name}/dotfiles/modules/hjem/fastfetch/nixos.png",
                 "type": "kitty",
                 "width": 38,
                 "height": 19,

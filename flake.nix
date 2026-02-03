@@ -8,10 +8,6 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -23,6 +19,13 @@
     };
     nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel/release";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixpkgs-kernel = {
+      url = "github:NixOS/nixpkgs/cb369ef2efd432b3cdf8622b0ffc0a97a02f3137";
+    };
+    hjem = {
+      url = "github:feel-co/hjem";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
