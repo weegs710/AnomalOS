@@ -15,7 +15,7 @@
 
     config = {
       users = {
-        mutableUsers = true;
+        mutableUsers = false;
         defaultUserShell = pkgs.fish;
 
         users = {
