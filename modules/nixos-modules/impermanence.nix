@@ -38,7 +38,7 @@
     fileSystems."/" = lib.mkForce {
       device = "tmpfs";
       fsType = "tmpfs";
-      options = ["defaults" "size=1G" "mode=755"];
+      options = ["defaults" "size=256M" "mode=755"];
     };
 
     environment.persistence = {
@@ -47,11 +47,13 @@
         directories = [
           "/var/log"
           "/var/lib/nixos"
+          "/var/db/sudo"
           "/etc/NetworkManager/system-connections"
         ];
         files = [
           "/etc/ssh/ssh_host_ed25519_key"
           "/etc/ssh/ssh_host_ed25519_key.pub"
+          "/etc/ly/save.txt"
         ];
         users.${username} = {
           directories = [
@@ -67,6 +69,11 @@
             "dotfiles"
             "homebrew"
             "claude-projects"
+          ];
+          files = [
+            ".claude.json"
+            ".steam/registry.vdf"
+            ".steam/exportedsettings.json"
           ];
         };
       };
