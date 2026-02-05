@@ -16,8 +16,10 @@
     "frameThickness": 8,
     "frameRadius": 12,
     "outerCorners": false,
-    "exclusive": true,
     "hideOnOverview": false,
+    "displayMode": "always_visible",
+    "autoHideDelay": 500,
+    "autoShowDelay": 150,
     "widgets": {
       "left": [
         {
@@ -195,7 +197,7 @@
     "monitorDirectories": [],
     "enableMultiMonitorDirectories": false,
     "showHiddenFiles": true,
-    "viewMode": "single",
+    "viewMode": "recursive",
     "setWallpaperOnAllMonitors": true,
     "fillMode": "crop",
     "fillColor": "#000000",
@@ -219,7 +221,8 @@
     "wallhavenApiKey": "",
     "wallhavenResolutionMode": "atleast",
     "wallhavenResolutionWidth": "2560",
-    "wallhavenResolutionHeight": "1440"
+    "wallhavenResolutionHeight": "1440",
+    "sortOrder": "name"
   },
   "appLauncher": {
     "enableClipboardHistory": true,
@@ -240,6 +243,7 @@
     "iconMode": "native",
     "showIconBackground": false,
     "enableSettingsSearch": true,
+    "enableWindowsSearch": true,
     "ignoreMouseInput": false,
     "screenshotAnnotationTool": ""
   },
@@ -444,7 +448,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "faithful",
+    "generationMethod": "content",
     "monitorForColors": ""
   },
   "templates": {
