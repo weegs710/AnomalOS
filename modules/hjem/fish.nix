@@ -104,7 +104,7 @@
 
                 "fish/conf.d/aliases.fish".text = ''
                   alias repl "nix repl --expr 'import ~/dotfiles/repl.nix {}'"
-                  alias evaltime "cd ~/dotfiles/ && time nix eval .#nixosConfigurations.Rig.config.system.build.toplevel --substituters ' ' --option eval-cache false --raw --read-only"
+                  alias evaltime "cd ~/dotfiles/ && hyperfine 'nix eval .#nixosConfigurations.Rig.config.system.build.toplevel --substituters \" \" --option eval-cache false --raw --read-only'"
                 '';
 
                 "fish/conf.d/greeting.fish".text = ''

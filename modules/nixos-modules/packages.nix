@@ -8,7 +8,7 @@
       users.users.${config.mySystem.user.name}.packages = with pkgs; [
         inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
         alejandra
-        anytype
+        # anytype
         cliphist
         fastfetch
         fzf
@@ -17,6 +17,7 @@
         grim
         hyprls
         hyprshot
+        hyperfine
         jq
         nodejs
         pamixer
