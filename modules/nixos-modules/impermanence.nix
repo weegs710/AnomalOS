@@ -95,6 +95,19 @@
 
     users.users.${username}.packages = [showTmpfs];
 
+    # Create persistent installation date marker if it doesn't exist
+    system.activationScripts.persistInstallDate = lib.stringAfter ["var"] ''
+      if [ ! -f /persist/.system-install-date ]; then
+        if [ -e /nix/var/nix/profiles/system-1-link ]; then
+          install_date=$(stat -c '%Y' /nix/var/nix/profiles/system-1-link)
+        else
+          install_date=$(date +%s)
+        fi
+        echo "$install_date" > /persist/.system-install-date
+        chmod 644 /persist/.system-install-date
+      fi
+    '';
+
     # Steam symlinks must exist before Decky Loader starts, otherwise Decky creates .steam/steam as a directory which ln can't replace.
     systemd.user.tmpfiles.rules = [
       "d %h/.steam 0755 - - -"

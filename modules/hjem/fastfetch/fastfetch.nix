@@ -90,7 +90,7 @@
                   "type": "command",
                   "key": " ",
                   "keyColor": "34",
-                  "text": "birth_install=$(stat -c %W /); current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days since the last fresh install."
+                  "text": "if [ -f /persist/.system-install-date ]; then birth_install=$(cat /persist/.system-install-date); else birth_install=$(date +%s); fi; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days since the last fresh install."
                 },
                 "break",
                 {
