@@ -66,9 +66,14 @@
     neededForBoot = true;
   };
 
-  # Games storage on WD Black 2TB
-  fileSystems."/mnt/games" = {
-    device = "zgames/games";
+  # Games storage on WD Black 2TB - separate mounts for roms and steam
+  fileSystems."/mnt/games/1g1r" = {
+    device = "zgames/games/roms";
+    fsType = "zfs";
+  };
+
+  fileSystems."/mnt/games/SteamLibrary" = {
+    device = "zgames/games/steam";
     fsType = "zfs";
   };
 
