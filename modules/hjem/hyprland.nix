@@ -43,12 +43,12 @@
             ###############
             ### EXEC-ONCE ##
             ###############
-            exec-once = steam
-            exec-once = noctalia-shell
-            exec-once = $webBrowser
-            exec-once = zeditor
-            exec-once = euphonica
-            exec-once = vesktop
+            # exec-once = steam
+            # exec-once = noctalia-shell
+            # exec-once = $webBrowser
+            # exec-once = zeditor
+            # exec-once = euphonica
+            # exec-once = vesktop
 
             ###############
             ### GENERAL ###
