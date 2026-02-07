@@ -48,6 +48,7 @@
           "/var/log"
           "/var/lib/nixos"
           "/var/db/sudo"
+          "/var/lib/pinchflat"
           "/etc/NetworkManager/system-connections"
         ];
         files = [
@@ -60,6 +61,7 @@
             ".ssh"
             ".config"
             ".local"
+            ".var"
             ".claude"
             "Documents"
             "Downloads"

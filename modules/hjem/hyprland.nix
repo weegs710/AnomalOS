@@ -10,24 +10,18 @@
       config = mkIf config.mySystem.features.desktop {
         hjem.users.${username} = {
           xdg.config.files."hypr/hyprland.conf".text = ''
-            #################
-            ### VARIABLES ###
-            #################
+            # Variables
             $fileManager = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'
             $terminal = ghostty --title=ghostty
             $webBrowser = helium
             $mainMod = SUPER
             $sysMon = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'
 
-            ###############
-            ### MONITORS ##
-            ###############
+            # Monitors
             monitor = HDMI-A-2, 2560x1440@144, 0x0, 1
             monitor = , preferred, auto, 1
 
-            ###########
-            ### ENV ###
-            ###########
+            # Environment
             env = HYPRCURSOR_THEME,phinger-cursors-dark-hyprcursor
             env = HYPRCURSOR_SIZE,32
             env = XCURSOR_THEME,phinger-cursors-dark
@@ -35,24 +29,13 @@
             env = TERMINAL,ghostty
             env = XDG_TERMINAL_EDITOR,ghostty
 
-            ##############
-            ### SOURCE ###
-            ##############
+            # Source
             source = ~/.config/hypr/noctalia/noctalia-colors.conf
 
-            ###############
-            ### EXEC-ONCE ##
-            ###############
-            # exec-once = steam
-            # exec-once = noctalia-shell
-            # exec-once = $webBrowser
-            # exec-once = zeditor
-            # exec-once = euphonica
-            # exec-once = vesktop
+            # Autostart
+            exec-once = noctalia-shell
 
-            ###############
-            ### GENERAL ###
-            ###############
+            # General
             general {
                 gaps_in = 3
                 gaps_out = 6
@@ -62,17 +45,13 @@
                 layout = dwindle
             }
 
-            ###############
-            ### DWINDLE ###
-            ###############
+            # Dwindle Layout
             dwindle {
                 pseudotile = true
                 preserve_split = true
             }
 
-            ##################
-            ### WORKSPACES ###
-            ##################
+            # Workspaces
             workspace = 1, defaultName:comms, gapsin:3, gapsout:6, persistent:true
             workspace = 2, defaultName:dev, gapsin:3, gapsout:6, persistent:true
             workspace = 3, defaultName:games, gapsin:0, gapsout:0, rounding:false, persistent:true
@@ -80,9 +59,7 @@
             workspace = 5, defaultName:web, gapsin:3, gapsout:6, persistent:true
             workspace = special:control-panel, gapsin:2, gapsout:5
 
-            ############
-            ### MASTER ##
-            ############
+            # Master Layout
             master {
                 always_keep_position = false
                 new_status = master
@@ -91,18 +68,14 @@
                 new_on_top = true
             }
 
-            ###########
-            ### MISC ##
-            ###########
+            # Misc
             misc {
                 force_default_wallpaper = -1
                 disable_hyprland_logo = false
                 vrr = 1
             }
 
-            ##################
-            ### DECORATION ###
-            ##################
+            # Decoration
             decoration {
                 rounding = 10
                 active_opacity = 0.94
@@ -122,26 +95,20 @@
                 }
             }
 
-            ###########
-            ### INPUT ##
-            ###########
+            # Input
             input {
                 kb_layout = us
                 follow_mouse = 1
                 sensitivity = 0
             }
 
-            ############
-            ### DEVICE ##
-            ############
+            # Device
             device {
                 name = epic-mouse-v1
                 sensitivity = -0.5
             }
 
-            ###############
-            ### ANIMATIONS ##
-            ###############
+            # Animations
             animations {
                 enabled = 1
                 bezier = zoom, 0.1, 0.9, 0.1, 1.2
@@ -158,9 +125,7 @@
                 animation = workspaces, 1, 3, overshot, slide
             }
 
-            #################
-            ### KEYBINDS ###
-            #################
+            # Keybinds
             bind = $mainMod, escape, killactive
             bind = $mainMod, F, fullscreen
             bind = $mainMod, G, togglefloating
@@ -196,10 +161,8 @@
             bind = , PRINT, exec, hyprshot -m region --clipboard-only
             bind = SHIFT, PRINT, exec, hyprshot -m region -o ~/Pictures
             bind = CTRL, PRINT, exec, hyprshot -m window --clipboard-only
-
             bindel = $mainMod, home, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
             bindel = $mainMod, end, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-
             binde = $mainMod, left, movefocus, l
             binde = $mainMod, right, movefocus, r
             binde = $mainMod, up, movefocus, u
@@ -208,17 +171,13 @@
             binde = $mainMod SHIFT, right, movewindow, r
             binde = $mainMod SHIFT, up, movewindow, u
             binde = $mainMod SHIFT, down, movewindow, d
-
             bindr = SUPER, Super_L, exec, noctalia-shell ipc call launcher toggle
             bindr = CTRL_ALT, L, exec, noctalia-shell ipc call lockScreen lock
             bindr = $mainMod, tab, exec, noctalia-shell ipc call controlCenter toggle
-
             bindm = $mainMod, mouse:272, movewindow
             bindm = $mainMod, mouse:273, resizewindow
 
-            ##############
-            ### SUBMAPS ##
-            ##############
+            # Submaps
             submap = resize
             binde = , right, resizeactive, 100 0
             binde = , left, resizeactive, -100 0
@@ -228,9 +187,7 @@
             bind = , return, submap, reset
             submap = reset
 
-            ################
-            ### WINDOWRULE ##
-            ################
+            # Window Rules
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:float yes
             windowrule = float on, match:title ^(Open)(.*)$
             windowrule = float on, match:title ^(Save)(.*)$

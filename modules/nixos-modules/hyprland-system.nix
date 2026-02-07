@@ -47,11 +47,8 @@
           grim
           hyprshot
           slurp
-          swww
           wl-clipboard
           wl-clip-persist
-          wlogout
-          wlsunset
         ];
 
         environment.sessionVariables = {

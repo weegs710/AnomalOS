@@ -5,12 +5,6 @@
     ...
   }: {
     nix = {
-      gc = {
-        automatic = true;
-        dates = "daily";
-        options = "--delete-older-than 90d";
-      };
-
       settings = {
         auto-optimise-store = true;
         warn-dirty = false;
