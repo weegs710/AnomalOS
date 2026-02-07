@@ -2,6 +2,7 @@
   flake.nixosModules.tools = {
     config,
     lib,
+    pkgs,
     ...
   }:
     with lib; {
@@ -18,6 +19,10 @@
             '';
           };
         };
+
+        environment.systemPackages = with pkgs; [
+          jujutsu
+        ];
       };
     };
 }
