@@ -81,8 +81,24 @@
                 "fetch_status" = true;
                 "fetch_upstream_icon" = true;
                 "fetch_worktree_count" = true;
+                "disable_with_jj" = true;
               };
               "template" = " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#${colors.base05}>  {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} ";
+            }
+            {
+              "type" = "jujutsu";
+              "style" = "powerline";
+              "powerline_symbol" = "";
+              "background" = "#6cc644";
+              "foreground" = "#${colors.base00}";
+              "background_templates" = [
+                "{{ if .Working.Changed }}#FFEB3B{{ end }}"
+              ];
+              "properties" = {
+                "fetch_status" = true;
+                "ignore_working_copy" = false;
+              };
+              "template" = " {{ if .ClosestBookmarks }}{{ .ClosestBookmarks }}{{ else }}{{ .ChangeID }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }} ";
             }
           ];
         }
