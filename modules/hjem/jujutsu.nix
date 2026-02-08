@@ -19,7 +19,7 @@
 
           [ui]
             default-command = "log"
-            pager = "bat"
+            pager = ":builtin"
 
           [git]
             auto-local-branch = true
