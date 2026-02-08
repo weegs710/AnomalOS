@@ -26,6 +26,13 @@
 
           [remotes.origin]
             auto-track-bookmarks = "*"
+
+          [aliases]
+          l = ["log"]
+          d = ["diff"]
+          bm = ["bookmark", "move", "main", "--to", "@"]
+          push = ["git", "push", "--branch", "main"]
+          fetch = ["git", "fetch"]
         '';
       };
     };
