@@ -26,7 +26,6 @@
       kernelParams = [
         "quiet"
         "hid_apple.fnmode=2"
-        "amdgpu.dcdebugmask=0x610"
       ];
       consoleLogLevel = 0;
       initrd.verbose = false;
@@ -57,7 +56,6 @@
         "net.ipv6.conf.all.accept_redirects" = false;
         "net.ipv6.conf.default.accept_redirects" = false;
         "net.ipv4.conf.all.send_redirects" = false;
-        "net.ipv4.ip_forward" = false;
         "net.ipv6.conf.all.forwarding" = false;
         "net.ipv4.tcp_syncookies" = true;
         "net.ipv4.tcp_rfc1337" = 1;
