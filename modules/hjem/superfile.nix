@@ -10,7 +10,7 @@
   in
     with lib; {
       config = mkIf config.mySystem.features.desktop {
-        users.users.${username}.packages = [ wrappedSuperfile ];
+        users.users.${username}.packages = [wrappedSuperfile];
 
         hjem.users.${username} = {
           xdg.config.files."superfile/config.toml".text = ''
@@ -32,17 +32,22 @@
             default_directory = "."
             default_open_file_preview = true
             default_sort_type = 0
-            dir_editor = ""
-            editor = ""
+            dir_editor = "zed"
+            editor = "zed"
             enable_md5_checksum = true
-            file_preview_width = 0
+            enable_file_preview_border = true
+            file_panel_extra_columns = 2
+            file_panel_name_percent = 50
+            file_preview_width = 3
             file_size_use_si = false
             ignore_missing_fields = false
             metadata = true
             nerdfont = true
+            page_scroll_size = 10
             shell_close_on_success = false
             show_image_preview = true
             show_panel_footer_info = true
+            show_select_icons = true
             sidebar_width = 20
             sort_order_reversed = false
             theme = ""
