@@ -49,6 +49,7 @@
           "/var/lib/nixos"
           "/var/db/sudo"
           "/var/lib/pinchflat"
+          "/var/lib/flatpak"
           "/etc/NetworkManager/system-connections"
         ];
         files = [
