@@ -18,6 +18,12 @@
 
             keybind = shift+enter=text:\n
             keybind = ctrl+v=paste_from_clipboard
+
+            # Unbind terminal shortcuts that conflict with flow-control editor
+            keybind = ctrl+q=unbind
+            keybind = ctrl+w=unbind
+            keybind = ctrl+tab=unbind
+            keybind = ctrl+shift+tab=unbind
           '';
 
           xdg.data.files."applications/com.mitchellh.ghostty.desktop".text = ''
