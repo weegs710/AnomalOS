@@ -1,6 +1,7 @@
 {...}: {
   perSystem = {pkgs, ...}: let
     lspTools = with pkgs; [
+      nil
       nixd
       alejandra
       basedpyright
