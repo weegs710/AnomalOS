@@ -16,6 +16,8 @@
             $webBrowser = helium
             $mainMod = SUPER
             $sysMon = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'
+            $music = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] euphonica'
+
 
             # Monitors
             monitor = HDMI-A-2, 2560x1440@144, 0x0, 1
@@ -134,7 +136,7 @@
             bind = $mainMod, F1, exec, vesktop
             bind = $mainMod, F2, exec, zeditor
             bind = $mainMod, F3, exec, steam
-            bind = $mainMod, F4, exec, euphonica
+            bind = $mainMod, F4, exec, $music
             bind = $mainMod SHIFT, F4, exec, flatpak run com.stremio.Stremio
             bind = $mainMod, F5, exec, $webBrowser
             bind = $mainMod, F6, exec, $sysMon
@@ -217,7 +219,6 @@
             windowrule = workspace 3, match:class ^(steam_app_.*)$
             windowrule = fullscreen on, match:class ^(steam_app_3564740)$
             windowrule = suppress_event fullscreen, match:class ^(steam_app_3564740)$
-            windowrule = workspace 4, match:class ^(io\.github\.htkhiem\.Euphonica)$
             windowrule = workspace 4, match:class ^(com\.stremio\.stremio)$
             windowrule = workspace 4, match:class ^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$
             windowrule = workspace 5, match:class ^(helium)$
@@ -247,7 +248,6 @@
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(helium)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$
-            windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(io\.github\.htkhiem\.Euphonica)$
           '';
         };
       };
