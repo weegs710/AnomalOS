@@ -3,7 +3,7 @@
 # Documentation: https://flow-control.dev/docs/
 
 frame_rate 120
-theme "dark_plus"
+theme "dark_modern"
 gutter_line_numbers_mode "absolute"
 highlight_columns_enabled true
 enable_format_on_save true

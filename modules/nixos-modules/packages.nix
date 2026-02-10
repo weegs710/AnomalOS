@@ -15,6 +15,7 @@
         jq
         nodejs
         python3
+        ripgrep
         rustc
         tldr
         uv
