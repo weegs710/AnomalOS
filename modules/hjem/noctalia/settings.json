@@ -197,7 +197,7 @@
     "monitorDirectories": [],
     "enableMultiMonitorDirectories": false,
     "showHiddenFiles": true,
-    "viewMode": "recursive",
+    "viewMode": "browse",
     "setWallpaperOnAllMonitors": true,
     "fillMode": "crop",
     "fillColor": "#000000",
@@ -448,7 +448,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "content",
+    "generationMethod": "fruit-salad",
     "monitorForColors": ""
   },
   "templates": {
