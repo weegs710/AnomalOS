@@ -1,0 +1,21 @@
+# Flow Control Custom Configuration
+# Referenced via include_files - never modified by flow
+# Documentation: https://flow-control.dev/docs/
+
+frame_rate 120
+theme "dark_plus"
+gutter_line_numbers_mode "absolute"
+highlight_columns_enabled true
+enable_format_on_save true
+indent_size 2
+enable_terminal_color_scheme true
+enable_terminal_cursor true
+highlight_current_line true
+highlight_current_line_gutter true
+gutter_symbols true
+inline_diagnostics true
+lsp_output "quiet"
+restore_last_cursor_position true
+indent_mode "auto"
+show_scrollbars true
+show_fileicons true
