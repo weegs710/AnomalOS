@@ -486,7 +486,7 @@
         "id": "btop"
       }
     ],
-    "enableUserTheming": false
+    "enableUserTheming": true
   },
   "nightLight": {
     "enabled": true,
