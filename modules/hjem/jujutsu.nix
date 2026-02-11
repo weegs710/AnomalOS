@@ -109,7 +109,7 @@
           fc = ["git", "fetch", "--remote", "codeberg"]
           p = ["git", "push"]
           pc = ["git", "push", "--remote", "codeberg"]
-          push = ["git", "push", "--branch", "main"]
+          push = ["git", "push", "--remote", "origin", "--branch", "main"]
           fetch = ["git", "fetch"]
 
           # History Exploration & Cleanup
