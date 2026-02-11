@@ -25,9 +25,6 @@
       mkdir -p "$FLOW_CONFIG_DIR"
       mkdir -p "$FLOW_STATE_DIR/projects"
 
-      # Clear all project caches on launch (flow doesn't auto-update when files change externally)
-      rm -f "$FLOW_STATE_DIR/projects/"* 2>/dev/null || true
-
       if [ ! -f "$FLOW_CUSTOM_CONFIG" ]; then
         cp ${customConfig} "$FLOW_CUSTOM_CONFIG"
       fi
