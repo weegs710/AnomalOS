@@ -33,7 +33,7 @@ nrt-rig
 jj sq
 
 # Push when done
-jj pa
+jj push
 ```
 
 ## File tracking
@@ -120,8 +120,7 @@ jj fo         # Fetch origin
 jj fc         # Fetch codeberg
 
 # Push to both (origin has multiple push URLs)
-jj pa         # Push to origin (pushes to GitHub + Codeberg)
-jj po         # Same as pa
+jj push       # Push main branch (pushes to GitHub + Codeberg)
 jj pc         # Push to codeberg only
 ```
 
@@ -198,7 +197,7 @@ Organized by frequency of use.
 - `dm "msg"` — describe change
 - `n` — new empty change
 - `sq` — squash into parent
-- `pa` — push to origin (GitHub + Codeberg)
+- `push` — push main branch (GitHub + Codeberg)
 - `fo` — fetch origin
 - `fc` — fetch codeberg
 
@@ -245,7 +244,6 @@ Organized by frequency of use.
 - `bd` — delete bookmark
 - `f` — fetch default remote
 - `p` — push default remote
-- `po` — push origin (same as pa)
 - `pc` — push codeberg only
 - `opl` — last 20 operations
 - `sh` — show commit
@@ -259,7 +257,7 @@ Organized by frequency of use.
 |-----|-----|-------|
 | `git add .` | `jj ta` | Track all files |
 | `git commit -m` | `jj dm "msg"` then `jj n` | Describe then create new empty |
-| `git push` | `jj pa` | Push all remotes |
+| `git push` | `jj push` | Push main branch |
 | `git pull` | `jj fa` | Fetch all (no auto-merge) |
 | `git branch` | `jj bl` | List bookmarks |
 | `git checkout` | `jj e` | Edit revision |

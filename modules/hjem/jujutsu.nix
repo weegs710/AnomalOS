@@ -108,8 +108,6 @@
           fo = ["git", "fetch", "--remote", "origin"]
           fc = ["git", "fetch", "--remote", "codeberg"]
           p = ["git", "push"]
-          pa = ["git", "push", "--remote", "origin"]
-          po = ["git", "push", "--remote", "origin"]
           pc = ["git", "push", "--remote", "codeberg"]
           push = ["git", "push", "--branch", "main"]
           fetch = ["git", "fetch"]
