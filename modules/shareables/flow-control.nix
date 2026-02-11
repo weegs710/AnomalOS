@@ -8,6 +8,7 @@
       ruff
       vscode-langservers-extracted
       hyprls
+      marksman
     ];
 
     customConfig = ../hjem/flow-control/custom_config;
@@ -15,12 +16,17 @@
 
     flowWrapper = pkgs.writeShellScript "flow-wrapper" ''
       FLOW_CONFIG_DIR="''${XDG_CONFIG_HOME:-$HOME/.config}/flow"
+      FLOW_STATE_DIR="''${XDG_STATE_HOME:-$HOME/.local/state}/flow"
       FLOW_CUSTOM_CONFIG="$FLOW_CONFIG_DIR/custom_config"
       FLOW_CUSTOM_HOME="$FLOW_CONFIG_DIR/custom_home"
       FLOW_MAIN_CONFIG="$FLOW_CONFIG_DIR/config"
       FLOW_HOME_STYLE="$FLOW_CONFIG_DIR/home.style"
 
       mkdir -p "$FLOW_CONFIG_DIR"
+      mkdir -p "$FLOW_STATE_DIR/projects"
+
+      # Clear all project caches on launch (flow doesn't auto-update when files change externally)
+      rm -f "$FLOW_STATE_DIR/projects/"* 2>/dev/null || true
 
       if [ ! -f "$FLOW_CUSTOM_CONFIG" ]; then
         cp ${customConfig} "$FLOW_CUSTOM_CONFIG"
