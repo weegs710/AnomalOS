@@ -13,6 +13,7 @@
             # Variables
             $fileManager = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'
             $terminal = ghostty --title=ghostty
+            $editor = ghostty --title=flow -e fish -c "cd ~/dotfiles && exec flow"
             $webBrowser = helium
             $mainMod = SUPER
             $sysMon = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'
@@ -134,7 +135,7 @@
             bind = $mainMod, P, pseudo,
             bind = $mainMod, O, togglesplit,
             bind = $mainMod, F1, exec, vesktop
-            bind = $mainMod, F2, exec, zeditor
+            bind = $mainMod, F2, exec, $editor
             bind = $mainMod, F3, exec, steam
             bind = $mainMod, F4, exec, $music
             bind = $mainMod SHIFT, F4, exec, flatpak run com.stremio.Stremio
@@ -241,6 +242,7 @@
             windowrule = workspace special:stash, match:class ^(com\.github\.jkotra\.eovpn)$
             windowrule = float on, match:title ^(btop)$
             windowrule = workspace special:stash, match:title ^(btop)$
+            windowrule = workspace 2, match:title ^(flow)$
             windowrule = tile on, match:title ^(pulsemixer)$
             windowrule = workspace special:stash, match:title ^(pulsemixer)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(vesktop)$
