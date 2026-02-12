@@ -91,6 +91,7 @@
       nrs-rig = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.Rig";
       nrt-rig = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.Rig";
       jjfix = "cd ~/dotfiles/ && jj new main";
+      jjpush = "cd ~/dotfiles/ && jj push && jj new main";
     };
   };
 }
