@@ -146,8 +146,8 @@
     "allowPasswordWithFprintd": false
   },
   "ui": {
-    "fontDefault": "SpaceMono Nerd Font",
-    "fontFixed": "SpaceMono Nerd Font Mono",
+    "fontDefault": "Terminess Nerd Font",
+    "fontFixed": "JetBrainsMono NFM",
     "fontDefaultScale": 1,
     "fontFixedScale": 1,
     "tooltipsEnabled": true,
@@ -424,7 +424,12 @@
     "autoHideMs": 2000,
     "overlayLayer": false,
     "backgroundOpacity": 1,
-    "enabledTypes": [0, 1, 4, 3],
+    "enabledTypes": [
+      0,
+      1,
+      4,
+      3
+    ],
     "monitors": []
   },
   "audio": {
