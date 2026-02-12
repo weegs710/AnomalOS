@@ -10,10 +10,11 @@
 
     extensionPolicy = pkgs.writeText "policy.json" (builtins.toJSON {
       ExtensionInstallForcelist = [
-        "agleiimpggapjekcdhdjbmegjbbkleie;https://clients2.google.com/service/update2/crx" # Ground News
-        "bkcghongfpfngpdobomhdehbffibkjlh;https://clients2.google.com/service/update2/crx" # Windowed Fullscreen
-        "neebplgakaahbhdphmkckjjcegoiijjo;https://clients2.google.com/service/update2/crx" # Keepa
         "nngceckbapebfimnlniiiahkandclblb;https://clients2.google.com/service/update2/crx" # Bitwarden
+        "agleiimpggapjekcdhdjbmegjbbkleie;https://clients2.google.com/service/update2/crx" # Ground News
+        "odibgflepadohfmpcemnjbhkionjkapk;https://clients2.google.com/service/update2/crx" # Helium Translator Inline
+        "neebplgakaahbhdphmkckjjcegoiijjo;https://clients2.google.com/service/update2/crx" # Keepa
+        "bkcghongfpfngpdobomhdehbffibkjlh;https://clients2.google.com/service/update2/crx" # Windowed Fullscreen
       ];
     });
 
