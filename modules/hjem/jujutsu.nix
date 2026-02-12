@@ -20,7 +20,7 @@
           [ui]
             default-command = "log"
             pager = ":builtin"
-            editor = "zeditor"
+            editor = "flow"
 
           [git]
             auto-local-branch = true

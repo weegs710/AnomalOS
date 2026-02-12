@@ -32,8 +32,8 @@
             default_directory = "."
             default_open_file_preview = true
             default_sort_type = 0
-            dir_editor = "zed"
-            editor = "zed"
+            dir_editor = "flow"
+            editor = "flow"
             enable_md5_checksum = true
             enable_file_preview_border = true
             file_panel_extra_columns = 2
