@@ -19,6 +19,7 @@
         rustc
         tldr
         uv
+        zathura
       ];
     };
   };

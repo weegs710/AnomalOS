@@ -86,7 +86,7 @@
 
               [Default Applications]
               application/gzip=org.gnome.FileRoller.desktop
-              application/pdf=org.kde.okular.desktop
+              application/pdf=org.pwmt.zathura.desktop
               application/vnd.apple.mpegurl=io.github.htkhiem.Euphonica.desktop
               application/x-7z-compressed=org.gnome.FileRoller.desktop
               application/x-bittorrent=transmission-gtk.desktop
