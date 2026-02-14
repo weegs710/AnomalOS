@@ -360,11 +360,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1770757353,
-        "narHash": "sha256-u8lSQe2z961yTbzm9K/nHV5AvjUps8Y8k+ZYvJ6qaWg=",
+        "lastModified": 1771074527,
+        "narHash": "sha256-Buabxhaq9P1u2zqRMGnFnCZczrxENa/Ux//F5wHkb1U=",
         "owner": "daskladas",
         "repo": "nixmate",
-        "rev": "7bb722d3a4d198d3b9403dea2ed7e953b5b82663",
+        "rev": "211b57dfa4d4faf1e37b19f9ac9df0a4bc528655",
         "type": "github"
       },
       "original": {
