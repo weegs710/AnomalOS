@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.fastfetch = {
     config,
     lib,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  }: {
+    config = lib.mkIf config.mySystem.features.desktop {
         hjem.users.${config.mySystem.user.name} = {
           xdg.config.files."fastfetch/config.jsonc".text = ''
             {

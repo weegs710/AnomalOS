@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.writing-tools = {
     config,
     pkgs,

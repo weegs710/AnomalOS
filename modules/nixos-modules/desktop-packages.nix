@@ -1,12 +1,11 @@
-{...}: {
+{
   flake.nixosModules.desktop-packages = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  }: {
+    config = lib.mkIf config.mySystem.features.desktop {
         users.users.${config.mySystem.user.name}.packages = with pkgs; [
           file-roller
           qview

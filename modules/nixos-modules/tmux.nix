@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.tmux = {
     config,
     lib,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.development {
+  }: {
+      config = lib.mkIf config.mySystem.features.development {
         programs.tmux.enable = true;
       };
     };

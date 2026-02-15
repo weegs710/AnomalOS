@@ -1,7 +1,7 @@
 # Wrapped fish shell with bundled tools in PATH
 # Configuration is handled by Home Manager (modules/nixos-modules/fish.nix)
 # This wrapper only ensures essential tools are always available in PATH
-{...}: {
+{
   perSystem = {pkgs, ...}: let
     fishTools = with pkgs; [
       bat

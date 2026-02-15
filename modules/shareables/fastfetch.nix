@@ -1,4 +1,4 @@
-{...}: {
+{
   perSystem = {pkgs, ...}: let
     logo = ../hjem/fastfetch/nixos.png;
     configFile = pkgs.writeText "fastfetch-config.jsonc" ''

@@ -1,12 +1,11 @@
-{...}: {
+{
   flake.nixosModules.hyprland-system = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  }: {
+    config = lib.mkIf config.mySystem.features.desktop {
         programs = {
           hyprland = {
             enable = true;

@@ -1,12 +1,11 @@
-{...}: {
+{
   flake.nixosModules.decky = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; let
-      username = config.mySystem.user.name;
+  }: let
+    username = config.mySystem.user.name;
       deckyVersion = "3.2.1";
 
       decky-loader = pkgs.stdenv.mkDerivation {
@@ -56,8 +55,8 @@
           echo "Updated Decky Loader to version $LATEST_VERSION with hash $HASH"
         '';
       };
-    in {
-      config = mkIf config.mySystem.features.gaming {
+  in {
+    config = lib.mkIf config.mySystem.features.gaming {
         users.users.${username}.packages = [decky-loader];
 
         # Create directories for decky

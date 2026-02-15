@@ -7,9 +7,8 @@
   }: let
     username = config.mySystem.user.name;
     wrappedSuperfile = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.superfile;
-  in
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  in {
+      config = lib.mkIf config.mySystem.features.desktop {
         users.users.${username}.packages = [wrappedSuperfile];
 
         hjem.users.${username} = {

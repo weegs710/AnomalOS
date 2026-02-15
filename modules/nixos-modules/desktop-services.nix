@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.desktop-services = {
     config,
     lib,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  }: {
+    config = lib.mkIf config.mySystem.features.desktop {
         services = {
           displayManager = {
             defaultSession = "hyprland";

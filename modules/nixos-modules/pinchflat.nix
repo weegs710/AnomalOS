@@ -1,14 +1,13 @@
-{...}: {
+{
   flake.nixosModules.pinchflat = {
     config,
     lib,
     ...
-  }:
-    with lib; let
+  }: let
       cfg = config.mySystem;
       user = cfg.user.name;
     in {
-      config = mkIf cfg.features.media {
+      config = lib.mkIf cfg.features.media {
         services.pinchflat = {
           enable = true;
           port = 8945; # Default port, accessible at http://localhost:8945

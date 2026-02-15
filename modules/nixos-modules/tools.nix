@@ -1,12 +1,11 @@
-{...}: {
+{
   flake.nixosModules.tools = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.development {
+  }: {
+      config = lib.mkIf config.mySystem.features.development {
         programs = {
           git.enable = true;
           direnv = {

@@ -1,14 +1,13 @@
-{...}: {
+{
   flake.nixosModules.udiskie = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; let
-      username = config.mySystem.user.name;
-    in {
-      config = mkIf config.mySystem.features.desktop {
+  }: let
+    username = config.mySystem.user.name;
+  in {
+    config = lib.mkIf config.mySystem.features.desktop {
         users.users.${username}.packages = [pkgs.udiskie];
 
         systemd.user.targets.tray = {

@@ -1,23 +1,22 @@
-{...}: {
+{
   flake.nixosModules.creation = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  }: {
+    config = lib.mkIf config.mySystem.features.desktop {
         hardware = {
-          amdgpu.opencl.enable = mkIf config.mySystem.hardware.amd true;
-          amdgpu.overdrive.enable = mkIf config.mySystem.hardware.amd true;
-          graphics = mkIf config.mySystem.hardware.amd {
+          amdgpu.opencl.enable = lib.mkIf config.mySystem.hardware.amd true;
+          amdgpu.overdrive.enable = lib.mkIf config.mySystem.hardware.amd true;
+          graphics = lib.mkIf config.mySystem.hardware.amd {
             enable = true;
             enable32Bit = true;
           };
-          bluetooth.enable = mkIf config.mySystem.hardware.bluetooth true;
+          bluetooth.enable = lib.mkIf config.mySystem.hardware.bluetooth true;
         };
 
-        services.lact = mkIf config.mySystem.hardware.amd {
+        services.lact = lib.mkIf config.mySystem.hardware.amd {
           enable = true;
         };
 

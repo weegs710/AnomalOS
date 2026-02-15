@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.zfs = {
     services.sanoid = {
       enable = true;

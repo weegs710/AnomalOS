@@ -7,9 +7,8 @@
   }: let
     username = config.mySystem.user.name;
     wrappedRetroArch = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.retroarch;
-  in
-    with lib; {
-      config = mkIf config.mySystem.features.gaming {
+  in {
+      config = lib.mkIf config.mySystem.features.gaming {
         users.users.${username}.packages = [ wrappedRetroArch ];
 
         hjem.users.${username} = {

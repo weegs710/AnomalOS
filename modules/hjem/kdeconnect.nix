@@ -1,12 +1,11 @@
-{...}: {
+{
   flake.nixosModules.kdeconnect = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.kdeconnect {
+  }: {
+    config = lib.mkIf config.mySystem.features.kdeconnect {
         programs.kdeconnect.enable = true;
         networking.firewall = rec {
           allowedTCPPortRanges = [

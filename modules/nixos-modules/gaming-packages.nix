@@ -1,15 +1,14 @@
-{...}: {
+{
   flake.nixosModules.gaming-packages = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.gaming {
+  }: {
+    config = lib.mkIf config.mySystem.features.gaming {
         programs.nix-ld.enable = true;
 
-        hardware.steam-hardware.enable = mkIf config.mySystem.hardware.steam true;
+        hardware.steam-hardware.enable = lib.mkIf config.mySystem.hardware.steam true;
 
         programs = {
           gamescope.enable = true;

@@ -1,4 +1,4 @@
-{...}: {
+{
   perSystem = {pkgs, ...}: let
     lspTools = with pkgs; [
       nil

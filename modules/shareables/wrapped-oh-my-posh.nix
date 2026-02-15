@@ -1,4 +1,4 @@
-{...}: {
+{
   perSystem = {pkgs, ...}: let
     colors = {
       base00 = "000000";

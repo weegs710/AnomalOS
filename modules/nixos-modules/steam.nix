@@ -1,12 +1,11 @@
-{...}: {
+{
   flake.nixosModules.steam = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.gaming {
+  }: {
+      config = lib.mkIf config.mySystem.features.gaming {
         programs.steam = {
           enable = true;
           protontricks.enable = true;

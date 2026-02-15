@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.oh-my-posh = {
     config,
     pkgs,

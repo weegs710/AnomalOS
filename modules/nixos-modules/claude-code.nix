@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.claude-code = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; let
+  }: let
       claudeLauncher = pkgs.writeShellScriptBin "claude-launcher" ''
         #!/usr/bin/env bash
 
@@ -28,8 +27,8 @@
         cd "$PROJECT_DIR" || exit 1
         exec claude
       '';
-    in {
-      config = mkIf config.mySystem.features.claudeCode {
+  in {
+    config = lib.mkIf config.mySystem.features.claudeCode {
         users.users.${config.mySystem.user.name}.packages = with pkgs; [
           claude-code
           claudeLauncher

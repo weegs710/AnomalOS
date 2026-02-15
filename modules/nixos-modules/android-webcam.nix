@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.android-webcam = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; let
+  }: let
       startAndroidCam = pkgs.writers.writePython3Bin "andcam-start" {} ''
         import subprocess
         import sys
@@ -245,8 +244,8 @@
         if __name__ == "__main__":
             main()
       '';
-    in {
-      config = mkIf config.mySystem.features.androidWebcam {
+  in {
+    config = lib.mkIf config.mySystem.features.androidWebcam {
         boot = {
           kernelModules = ["v4l2loopback"];
           extraModulePackages = [config.boot.kernelPackages.v4l2loopback];

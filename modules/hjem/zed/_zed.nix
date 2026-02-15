@@ -53,9 +53,8 @@
         };
       };
     });
-  in
-    with lib; {
-      config = mkIf config.mySystem.features.development {
+  in {
+      config = lib.mkIf config.mySystem.features.development {
         users.users.${username}.packages = [ wrappedZed ];
 
         hjem.users.${username} = {

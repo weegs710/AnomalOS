@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.scraping = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; let
+  }: let
       downloadPlaylist = pkgs.writeShellScriptBin "download-playlist" ''
         #!/usr/bin/env bash
 
@@ -132,7 +131,7 @@
         echo -e "''${GREEN}Videos saved to: ''$VIDEO_DIR''${NC}"
       '';
     in {
-      config = mkIf config.mySystem.features.media {
+      config = lib.mkIf config.mySystem.features.media {
         environment.systemPackages = with pkgs; [
           yt-dlp
           downloadPlaylist

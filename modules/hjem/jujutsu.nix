@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.jujutsu = {
     config,
     pkgs,

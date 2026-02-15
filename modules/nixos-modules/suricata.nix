@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.suricata = {
     config,
     lib,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.security {
+  }: {
+      config = lib.mkIf config.mySystem.features.security {
         services.suricata = {
           enable = true;
           disabledRules = [

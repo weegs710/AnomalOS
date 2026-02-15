@@ -1,13 +1,12 @@
-{...}: {
+{
   flake.nixosModules.mangohud = {
     config,
     lib,
     ...
-  }:
-    with lib; let
-      username = config.mySystem.user.name;
-    in {
-      config = mkIf config.mySystem.features.gaming {
+  }: let
+    username = config.mySystem.user.name;
+  in {
+    config = lib.mkIf config.mySystem.features.gaming {
         hjem.users.${username} = {
           xdg.config.files."MangoHud/MangoHud.conf".text = ''
             legacy_layout=0

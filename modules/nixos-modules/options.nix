@@ -1,22 +1,21 @@
-{...}: {
-  flake.nixosModules.options = {lib, ...}:
-    with lib; {
+{
+  flake.nixosModules.options = {lib, ...}: {
       options.mySystem = {
         user = {
-          name = mkOption {
-            type = types.str;
+          name = lib.mkOption {
+            type = lib.types.str;
             default = "anomalos";
             description = "Primary username for the system";
           };
 
-          description = mkOption {
-            type = types.str;
+          description = lib.mkOption {
+            type = lib.types.str;
             default = "AnomalOS User";
             description = "User description";
           };
 
-          extraGroups = mkOption {
-            type = types.listOf types.str;
+          extraGroups = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
             default = [
               "networkmanager"
               "wheel"
@@ -25,41 +24,41 @@
           };
         };
 
-        hostName = mkOption {
-          type = types.str;
+        hostName = lib.mkOption {
+          type = lib.types.str;
           default = "anomalos";
           description = "System hostname";
         };
 
-        timeZone = mkOption {
-          type = types.str;
+        timeZone = lib.mkOption {
+          type = lib.types.str;
           default = "America/New_York";
           description = "System timezone";
         };
 
         features = {
-          yubikey = mkEnableOption "YubiKey U2F authentication support";
-          claudeCode = mkEnableOption "Claude Code development environment";
-          gaming = mkEnableOption "Gaming support (Steam, emulators)";
-          desktop = mkEnableOption "Desktop environment (Hyprland)";
-          development = mkEnableOption "Development tools and languages";
-          security = mkEnableOption "Enhanced security features";
-          flatpak = mkEnableOption "Declarative Flatpak package management";
-          media = mkEnableOption "Media tools (audio, video, creation)";
-          kdeconnect = mkEnableOption "KDE Connect for device integration and file transfer";
-          vm = mkEnableOption "Virtual machine support (libvirtd, virt-manager)";
-          androidWebcam = mkEnableOption "Android phone as USB webcam via scrcpy";
+          yubikey = lib.mkEnableOption "YubiKey U2F authentication support";
+          claudeCode = lib.mkEnableOption "Claude Code development environment";
+          gaming = lib.mkEnableOption "Gaming support (Steam, emulators)";
+          desktop = lib.mkEnableOption "Desktop environment (Hyprland)";
+          development = lib.mkEnableOption "Development tools and languages";
+          security = lib.mkEnableOption "Enhanced security features";
+          flatpak = lib.mkEnableOption "Declarative Flatpak package management";
+          media = lib.mkEnableOption "Media tools (audio, video, creation)";
+          kdeconnect = lib.mkEnableOption "KDE Connect for device integration and file transfer";
+          vm = lib.mkEnableOption "Virtual machine support (libvirtd, virt-manager)";
+          androidWebcam = lib.mkEnableOption "Android phone as USB webcam via scrcpy";
         };
 
         security = {
-          dnscrypt = mkEnableOption "DNSCrypt-Proxy with encrypted DNS (Quad9 + Cloudflare)";
+          dnscrypt = lib.mkEnableOption "DNSCrypt-Proxy with encrypted DNS (Quad9 + Cloudflare)";
         };
 
         hardware = {
-          amd = mkEnableOption "AMD GPU support";
-          nvidia = mkEnableOption "NVIDIA GPU support";
-          bluetooth = mkEnableOption "Bluetooth support";
-          steam = mkEnableOption "Steam hardware support";
+          amd = lib.mkEnableOption "AMD GPU support";
+          nvidia = lib.mkEnableOption "NVIDIA GPU support";
+          bluetooth = lib.mkEnableOption "Bluetooth support";
+          steam = lib.mkEnableOption "Steam hardware support";
         };
       };
     };

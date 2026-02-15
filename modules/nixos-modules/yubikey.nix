@@ -1,15 +1,14 @@
-{...}: {
+{
   flake.nixosModules.yubikey = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; let
+  }: let
       username = config.mySystem.user.name;
       u2fKeys = "/home/${username}/.config/Yubico/u2f_keys";
     in {
-      config = mkIf config.mySystem.features.yubikey {
+      config = lib.mkIf config.mySystem.features.yubikey {
         security.pam.u2f = {
           enable = true;
           control = "sufficient";

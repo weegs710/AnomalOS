@@ -1,12 +1,11 @@
-{...}: {
+{
   flake.nixosModules.audio = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  }: {
+    config = lib.mkIf config.mySystem.features.desktop {
         security.rtkit.enable = true;
 
         services.pipewire = {

@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.services = {
     config,
     lib,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.security {
+  }: {
+      config = lib.mkIf config.mySystem.features.security {
         security = {
           polkit.enable = true;
           rtkit.enable = true;

@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.xdg = {
     config,
     lib,
@@ -27,9 +27,8 @@
         platforms = platforms.linux;
       };
     };
-  in
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  in {
+    config = lib.mkIf config.mySystem.features.desktop {
         users.users.${username}.packages = [
           pkgs.phinger-cursors
           pkgs.adw-gtk3

@@ -1,13 +1,12 @@
-{...}: {
+{
   flake.nixosModules.dnscrypt = {
     config,
     lib,
     ...
-  }:
-    with lib; let
-      dnsDir = "/var/lib/dnscrypt-proxy";
-    in {
-      config = mkIf config.mySystem.security.dnscrypt {
+  }: let
+    dnsDir = "/var/lib/dnscrypt-proxy";
+  in {
+    config = lib.mkIf config.mySystem.security.dnscrypt {
         networking.nameservers = ["127.0.0.1" "::1"];
 
         services = {

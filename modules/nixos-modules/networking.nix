@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.networking = {config, ...}: {
     networking = {
       hostName = config.mySystem.hostName;

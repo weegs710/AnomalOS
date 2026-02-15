@@ -1,12 +1,11 @@
-{...}: {
+{
   flake.nixosModules.vm = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; {
-      config = mkIf config.mySystem.features.vm {
+  }: {
+      config = lib.mkIf config.mySystem.features.vm {
         virtualisation = {
           libvirtd.enable = true;
 

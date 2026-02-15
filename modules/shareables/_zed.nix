@@ -1,6 +1,6 @@
 # Wrapped zed-editor with LSP tools and config
 # Run with: nix run github:weegs710/AnomalOS#zed
-{ ... }: {
+{
   perSystem = { pkgs, lib, ... }:
     let
       lspTools = with pkgs; [

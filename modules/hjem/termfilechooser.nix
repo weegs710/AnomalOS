@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.termfilechooser = {
     config,
     lib,
@@ -63,9 +63,8 @@
           ghostty --title=termfilechooser -e superfile --chooser-file="$out" "$path"
       fi
     '';
-  in
-    with lib; {
-      config = mkIf config.mySystem.features.desktop {
+  in {
+    config = lib.mkIf config.mySystem.features.desktop {
         hjem.users.${username} = {
           xdg.config.files = {
             "xdg-desktop-portal-termfilechooser/config".text = ''

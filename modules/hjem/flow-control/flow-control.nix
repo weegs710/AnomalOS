@@ -9,9 +9,8 @@
     wrappedFlow = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.flow-control;
     customConfigFile = ./custom_config;
     customHomeFile = ./custom_home;
-  in
-    with lib; {
-      config = mkIf config.mySystem.features.development {
+  in {
+      config = lib.mkIf config.mySystem.features.development {
         users.users.${username}.packages = [wrappedFlow];
 
         hjem.users.${username} = {

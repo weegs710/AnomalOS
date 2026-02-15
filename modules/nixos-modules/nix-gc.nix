@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.nix-gc = {pkgs, ...}: {
     systemd.services.nix-gc-custom = {
       description = "Nix Garbage Collector (preserves generation 1)";

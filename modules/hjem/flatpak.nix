@@ -3,13 +3,12 @@
     config,
     lib,
     ...
-  }:
-    with lib; let
+  }: let
       username = config.mySystem.user.name;
     in {
       imports = [inputs.nix-flatpak.nixosModules.nix-flatpak];
 
-      config = mkIf config.mySystem.features.flatpak {
+      config = lib.mkIf config.mySystem.features.flatpak {
         services.flatpak = {
           enable = true;
 

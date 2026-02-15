@@ -1,4 +1,4 @@
-{...}: {
+{
   flake.nixosModules.nix-daemon = {
     config,
     pkgs,

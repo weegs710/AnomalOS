@@ -1,13 +1,12 @@
-{...}: {
+{
   flake.nixosModules.hyprland = {
     config,
     lib,
     ...
-  }:
-    with lib; let
-      username = config.mySystem.user.name;
-    in {
-      config = mkIf config.mySystem.features.desktop {
+  }: let
+    username = config.mySystem.user.name;
+  in {
+    config = lib.mkIf config.mySystem.features.desktop {
         hjem.users.${username} = {
           xdg.config.files."hypr/hyprland.conf".text = ''
             # Variables

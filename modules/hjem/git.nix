@@ -1,14 +1,13 @@
-{...}: {
+{
   flake.nixosModules.git = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; let
-      username = config.mySystem.user.name;
-    in {
-      config = {
+  }: let
+    username = config.mySystem.user.name;
+  in {
+    config = {
         users.users.${username}.packages = [pkgs.git];
 
         hjem.users.${username} = {

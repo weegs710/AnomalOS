@@ -1,11 +1,10 @@
-{...}: {
+{
   flake.nixosModules.languages = {
     config,
     lib,
     pkgs,
     ...
-  }:
-    with lib; let
+  }: let
       ns = pkgs.writeShellApplication {
         name = "ns";
         runtimeInputs = with pkgs; [
@@ -16,7 +15,7 @@
         text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
       };
     in {
-      config = mkIf config.mySystem.features.development {
+      config = lib.mkIf config.mySystem.features.development {
         environment.systemPackages = with pkgs; [
           ns
           jdk21

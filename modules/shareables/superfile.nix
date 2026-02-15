@@ -1,6 +1,6 @@
 # Wrapped superfile with config and tools
 # Run with: nix run github:weegs710/AnomalOS#superfile
-{...}: {
+{
   perSystem = {pkgs, ...}: let
     # Pinned version
     superfilePkg = pkgs.superfile.overrideAttrs (old: {
