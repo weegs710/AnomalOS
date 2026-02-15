@@ -23,6 +23,11 @@
             type = "copy";
             permissions = "0644";
           };
+          xdg.config.files."noctalia/templates/flow-control-theme.json" = {
+            source = ./flow-control-theme.json;
+            type = "copy";
+            permissions = "0644";
+          };
         };
       };
     };

@@ -1,5 +1,47 @@
 {
   perSystem = {pkgs, ...}: let
+    # Build dependencies package for flow-control 0.7.2
+    zigPackagesRaw = import ../../deps/flow-control-build.zig.zon.nix {
+      inherit (pkgs) lib linkFarm fetchurl fetchgit runCommandLocal;
+      zig = pkgs.zig_0_15;
+    };
+
+    # Patch uucode to remove problematic setCwd that breaks in Nix sandbox
+    zigPackages = pkgs.runCommand "zig-packages-patched" {} ''
+      mkdir -p $out
+      cp -rL ${zigPackagesRaw}/. $out
+      chmod -R +w $out
+
+      substituteInPlace $out/uucode-0.1.0-ZZjBPj96QADXyt5sqwBJUnhaDYs_qBeeKijZvlRa0eqM/build.zig \
+        --replace-fail 'run_build_tables_exe.setCwd(b.path(""));' '// setCwd removed - UCD files symlinked to build dir instead'
+    '';
+
+    # Override flow-control to use latest upstream version
+    flow-control = pkgs.flow-control.overrideAttrs (oldAttrs: rec {
+      version = "0.7.2";
+      src = pkgs.fetchFromGitHub {
+        owner = "neurocyte";
+        repo = "flow";
+        rev = "v${version}";
+        hash = "sha256-5+F0DKb4LXtcMXNutUSJuIe7cdBoFUoJhCs8vbm20jg=";
+      };
+
+      # Use updated build.zig.zon.nix with 0.7.2 dependencies (pre-patched)
+      postConfigure = ''
+        ln -s ${zigPackages} $ZIG_GLOBAL_CACHE_DIR/p
+      '';
+
+      # Symlink UCD files so uucode_build_tables can find them without setCwd
+      preBuild = ''
+        ln -s ${zigPackages}/uucode-0.1.0-ZZjBPj96QADXyt5sqwBJUnhaDYs_qBeeKijZvlRa0eqM/ucd ./ucd
+      '';
+
+      # Ensure VERSION env var is set for build.zig
+      env = oldAttrs.env // {
+        VERSION = version;
+      };
+    });
+
     lspTools = with pkgs; [
       nil
       nixd
@@ -45,12 +87,12 @@
         echo 'include_files "'"$FLOW_CUSTOM_HOME"'"' >> "$FLOW_HOME_STYLE"
       fi
 
-      exec ${pkgs.flow-control}/bin/flow "$@"
+      exec ${flow-control}/bin/flow "$@"
     '';
 
     wrappedFlow = pkgs.symlinkJoin {
       name = "flow-control-wrapped";
-      paths = [pkgs.flow-control];
+      paths = [flow-control];
       buildInputs = lspTools;
       nativeBuildInputs = [pkgs.makeWrapper];
       postBuild = ''

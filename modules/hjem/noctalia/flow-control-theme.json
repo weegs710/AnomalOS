@@ -376,6 +376,28 @@
     },
     "fs": null
   },
+  "tab_unfocused_active": {
+    "fg": {
+      "color": "{{colors.on_surface.default.hex}}",
+      "alpha": 128
+    },
+    "bg": {
+      "color": "{{colors.surface_container_low.default.hex}}",
+      "alpha": 255
+    },
+    "fs": null
+  },
+  "tab_unfocused_inactive": {
+    "fg": {
+      "color": "{{colors.on_surface.default.hex}}",
+      "alpha": 128
+    },
+    "bg": {
+      "color": "{{colors.surface_container_low.default.hex}}",
+      "alpha": 255
+    },
+    "fs": null
+  },
   "tokens": [
     {
       "id": 1,
