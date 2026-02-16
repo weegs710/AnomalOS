@@ -115,7 +115,7 @@
                   alias evaltime "cd ~/dotfiles/ && hyperfine 'nix eval .#nixosConfigurations.Rig.config.system.build.toplevel --substituters \" \" --option eval-cache false --raw --read-only'"
                   alias jj-fetch "jj git fetch --all-remotes"
                   alias jj-pull "jj git fetch --all-remotes && jj bookmark move main --to main@origin"
-                  alias jj-push "jj git fetch --all-remotes && jj git push --all-remotes && jj git fetch --all-remotes"
+                  alias jj-push "jj git fetch --all-remotes && jj git push && jj git fetch --all-remotes"
                 '';
 
                 "fish/conf.d/greeting.fish".text = ''
