@@ -90,8 +90,6 @@
       noct-up = "cd ~/dotfiles/ && nix flake update noctalia";
       nrs-rig = "cd ~/dotfiles/ && nh os switch .#nixosConfigurations.Rig";
       nrt-rig = "cd ~/dotfiles/ && nh os test .#nixosConfigurations.Rig";
-      # jj workflow: create new commit and move bookmark to keep git in sync
-      jjn = "jj new && jj bookmark move --from 'closest_bookmark(@-)' --to @-";
     };
   };
 }
