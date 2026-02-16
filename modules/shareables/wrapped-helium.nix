@@ -127,7 +127,7 @@
       done
 
       if [ -z "$USER_DATA_DIR" ]; then
-        USER_DATA_DIR="$HOME/.config/helium"
+        USER_DATA_DIR="$HOME/.config/net.imput.helium"
       fi
 
       mkdir -p "$USER_DATA_DIR/WidevineCdm"

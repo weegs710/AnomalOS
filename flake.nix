@@ -17,10 +17,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.6.0";
-    helium = {
-      url = "github:FKouhai/helium2nix/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-cachyos-kernel = {
       url = "github:xddxdd/nix-cachyos-kernel/release";
       inputs.nixpkgs.follows = "nixpkgs";
