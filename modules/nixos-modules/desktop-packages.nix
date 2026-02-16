@@ -26,12 +26,12 @@
           xdg-dbus-proxy
           cliphist
           ueberzugpp
-          xorg.libX11
-          xorg.libXcursor
-          xorg.libXi
-          xorg.libXinerama
-          xorg.libXrandr
-          xorg.libXxf86vm
+          libx11
+          libxcursor
+          libxi
+          libxinerama
+          libxrandr
+          libxxf86vm
         ];
 
         environment.shellAliases = {
