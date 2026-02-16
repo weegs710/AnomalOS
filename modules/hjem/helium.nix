@@ -10,12 +10,6 @@
   in {
       config = lib.mkIf config.mySystem.features.desktop {
         users.users.${username}.packages = [ wrappedHelium ];
-
-        hjem.users.${username} = {
-          xdg.config.files."net.imput.helium/WidevineCdm/latest-component-updated-widevine-cdm".text = ''
-            {"Path":"${pkgs.widevine-cdm}/share/google/chrome/WidevineCdm"}
-          '';
-        };
       };
     };
 }
