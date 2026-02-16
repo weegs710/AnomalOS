@@ -64,6 +64,7 @@
             ".local"
             ".var"
             ".claude"
+            "cloud"
             "Documents"
             "Downloads"
             "Music"
