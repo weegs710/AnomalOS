@@ -1,6 +1,6 @@
 # My NixOS Setup - anomalOS
 
-> **Important**: This config is designed for my machine and my workflow. It might work on your system, it might not. There are no guarantees. You're welcome to use the whole thing or just steal bits and pieces. It's all FOSS, so do whatever you want with it.
+> **Important**: This is a hobbyist project. I'm learning as I go. If something's broken or stupid, that's why. This config is designed for my machine and my workflow. It might work on your system, it might not. There are no guarantees. You're welcome to use the whole thing or just steal bits and pieces. It's all FOSS, so do whatever you want with it.
 
 ## What's in here
 
@@ -9,84 +9,17 @@ I run Hyprland on NixOS with a bunch of stuff I've cobbled together over time:
 - **Desktop**: Hyprland compositor with Noctalia shell UI
 - **Login**: Ly display manager (works with my YubiKey for login)
 - **Shell**: Fish with Oh My Posh prompt
-- **Editor**: Zed
+- **Editor**: Flow Control
 - **Terminal**: Ghostty
 - **Filesystem**: ZFS with automated snapshots
 - **Security**: YubiKey for authentication, Suricata IDS, hardened firewall
 - **Gaming**: Steam with Proton, Decky Loader, MangoHud, bunch of emulators
-- **Music**: MPD with Euphonica client, Beets for library management
-- **Dev Tools**: Claude Code, Node/Python/Rust toolchains, language servers
+- **Music**: MPD with Euphonica client
+- **Dev Tools**: Claude Code, Node/Python/Rust toolchains and LSPs
 
 Everything's managed with Nix flakes and Hjem. I use ZFS because I like snapshots because I'd rather not lose stuff when I inevitably break something or delete something on accident. This just makes sense to pair with git and NixOS.
 
-## How it's organized
-
-```
-dotfiles/
-├── flake.nix                    # Main flake
-├── install.sh                   # ZFS install script
-├── repl.nix                     # Nix REPL helper
-├── modules/
-│   ├── hosts/                   # Host configs + hardware
-│   ├── nixos-modules/           # System-level modules
-│   ├── hjem/                    # User config file deployments
-│   ├── shareables/              # Wrapped app packages
-│   └── devshell.nix             # Dev shell
-└── docs/                        # Docs if you want more details
-```
-
-**Fair warning**: This is set up for my AMD GPU, my YubiKey, my dual-drive ZFS setup. You'll probably need to change a bunch of stuff.
-
-```bash
-# Clone it
-git clone https://github.com/weegs710/AnomalOS.git ~/dotfiles
-cd ~/dotfiles
-
-# install.sh wipes the whole disk (1GB boot, 16GB swap, rest ZFS). Before you
-# run it your NixOS config needs the ZFS fileSystems already declared or it
-# won't boot. networking.hostId also needs to be set. See modules/zfs.nix for
-# the dataset layout. Read the comments in install.sh for the full rundown.
-./install.sh
-
-# Test it first (seriously, don't skip this)
-sudo nixos-rebuild test --flake .#nixosConfigurations.Rig
-
-# If that worked, apply it
-sudo nixos-rebuild switch --flake .#nixosConfigurations.Rig
-sudo reboot
-```
-
-The docs in `docs/` have more detailed instructions if you actually want to use this. Those files are primarally for me to reference for later.
-
-## Managing updates
-
-After the initial install, I use these aliases:
-
-```bash
-nrt-rig    # Test changes
-nrs-rig    # Apply changes
-rig-up     # Update everything and prompt to switch
-```
-
-## Customization
-
-Everything's controlled from `modules/hosts/rig.nix`. You can turn features on/off there:
-
-```nix
-mySystem.features = {
-  desktop = true;
-  gaming = true;
-  yubikey = true;      # You probably don't have a YubiKey
-  claudeCode = true;   # Claude Code integration
-  # ... etc
-};
-
-mySystem.hardware = {
-  amd = true;          # Set to false if you have Intel/NVIDIA
-  bluetooth = true;
-  steam = true;
-};
-```
+The files in `docs/` have more detailed instructions if you actually want to use this. Those files are primarally for me to reference for later.
 
 ## Adding stuff
 
@@ -144,8 +77,6 @@ If you're actually going to use this:
 - Automated hourly/daily/weekly/monthly snapshots via sanoid
 - Compression and auto-trim enabled
 
-Check `docs/BACKUP.md` for snapshot management details.
-
 ## Docs
 
 If you want more details:
@@ -177,7 +108,3 @@ MIT License. Do whatever you want with it.
 
 - GitHub: https://github.com/weegs710/AnomalOS
 - Codeberg: https://codeberg.org/weegs710/AnomalOS
-
----
-
-This is a hobbyist project. I'm learning as I go. If something's broken or stupid, that's why.
