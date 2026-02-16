@@ -206,8 +206,6 @@
             windowrule = size 1600 900, match:title ^(termfilechooser)$
             windowrule = move 531 262, match:title ^(termfilechooser)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:title ^(termfilechooser)$
-            windowrule = float on, match:title ^(Picture-in-Picture)(.*)$
-            windowrule = pin on, match:title ^(Picture-in-Picture)(.*)$
             windowrule = float on, match:title ^(.*[Dd]ialog.*)$
             windowrule = float on, match:title ^(.*[Pp]opup.*)$
             windowrule = workspace 1, match:class ^(vesktop)$
@@ -249,6 +247,10 @@
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(helium)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$
+            windowrule = float on, match:initial_title Picture in picture
+            windowrule = pin on, match:initial_title Picture in picture
+            windowrule = size 512 288, match:initial_title Picture in picture
+            windowrule = move 2034 62, match:initial_title Picture in picture
           '';
         };
       };
