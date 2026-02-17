@@ -209,7 +209,7 @@
             windowrule = float on, match:title ^(.*[Dd]ialog.*)$
             windowrule = float on, match:title ^(.*[Pp]opup.*)$
             windowrule = workspace 1, match:class ^(vesktop)$
-            windowrule = workspace 1, match:class ^(discord)$
+            windowrule = workspace 1, match:class ^(im.dino.Dino)$
             windowrule = workspace 2, match:class ^(dev\.zed\.Zed)$
             windowrule = workspace 2, match:class ^(Zed)$
             windowrule = workspace 2, match:title ^(ghostty)$
