@@ -17,7 +17,7 @@ I run Hyprland on NixOS with a bunch of stuff I've cobbled together over time:
 - **Music**: MPD with Euphonica client
 - **Dev Tools**: Claude Code, Node/Python/Rust toolchains and LSPs
 
-Everything's managed with Nix flakes and Hjem. I use ZFS because I like snapshots because I'd rather not lose stuff when I inevitably break something or delete something on accident. This just makes sense to pair with git and NixOS.
+Everything's managed with Nix flakes and Hjem. I also include fully portable preconfigured pkgs in shareables. I use ZFS because I like snapshots, I'd rather not lose stuff when I inevitably break or delete something on accident. This just makes sense to pair with git and NixOS. I am also using tmpfs for impermanence with a small size as a tripwire to remind me when I forgot to persist something.
 
 The files in `docs/` have more detailed instructions if you actually want to use this. Those files are primarally for me to reference for later.
 
@@ -59,17 +59,6 @@ User config files (anything that ends up in `~/.config` or `~/.local/share`) go 
 
 Files prefixed with `_` are excluded from auto-import — that's how `_hardware-configuration.nix` stays out of the way.
 
-## What you probably want to change
-
-If you're actually going to use this:
-
-1. **Hardware config**: Generate your own and drop it in `modules/hosts/_hardware-configuration.nix`
-2. **User settings**: Change username, hostname in `modules/hosts/rig.nix`
-3. **YubiKey stuff**: Disable it unless you have one (`yubikey = false`)
-4. **GPU settings**: Change `amd = true` to whatever GPU you have
-5. **ZFS pools**: Adjust pool names and datasets to match your setup
-6. **Game storage**: The `zgames` pool is optional, remove it if you don't need it
-
 ## ZFS setup
 
 - `zroot` pool on NVMe for system/nix/home
@@ -88,17 +77,9 @@ If you want more details:
 - [Backups](docs/BACKUP.md) - ZFS snapshot management
 - [Troubleshooting](docs/TROUBLESHOOTING.md) - When things break
 
-## This is what I'm running:
-- AMD CPU + AMD GPU
-- 64GB RAM
-- 1TB NVMe for system (zroot)
-- 2TB SSD for games (zgames)
-- YubiKey for hardware auth
-- Bluetooth 5.0+
-
 ## Contributing
 
-Feel free to fork this and do whatever. If you find bugs or have improvements, pull requests are welcome. But remember, this is primarily my personal config, and I am still fairly new to this stuff.
+Feel free to fork this and do whatever. If you find bugs or have improvements, pull requests are welcome -- I would prefer that you utilize the devshell to ensure that you use the same tooling and formatter I do. But remember, this is primarily my personal config, and I am still fairly new to this stuff.
 
 ## License
 
