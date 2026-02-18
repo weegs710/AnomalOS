@@ -88,7 +88,7 @@ sudo systemctl status yubikey-autologin-init
 sudo nix-store --optimize    # Deduplicates files in store
 ```
 
-Already running automatically — `auto-optimise-store = true` in nix-daemon.nix.
+Already running automatically — `nix.optimise.automatic = true` runs daily at midnight via systemd timer (configured in nix-daemon.nix).
 
 ## Monthly checklist
 

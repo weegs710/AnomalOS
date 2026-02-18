@@ -6,7 +6,6 @@
   }: {
     nix = {
       settings = {
-        auto-optimise-store = true;
         warn-dirty = false;
         download-buffer-size = 268435456; # 256MB
         trusted-users = [config.mySystem.user.name];
@@ -17,6 +16,11 @@
 
         cores = 0;
         max-jobs = "auto";
+      };
+
+      optimise = {
+        automatic = true;
+        dates = [ "00:00" ];
       };
     };
 
