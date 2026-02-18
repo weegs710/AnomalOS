@@ -217,7 +217,6 @@
             windowrule = workspace 3, match:class ^(steam_app_.*)$
             windowrule = fullscreen on, match:class ^(steam_app_3564740)$
             windowrule = suppress_event fullscreen, match:class ^(steam_app_3564740)$
-            windowrule = workspace 4, match:class ^(com\.stremio\.stremio)$
             windowrule = workspace 4, match:class ^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$
             windowrule = workspace 5, match:class ^(helium)$
             windowrule = focus_on_activate on, match:class ^(helium)$
@@ -243,7 +242,6 @@
             windowrule = tile on, match:title ^(pulsemixer)$
             windowrule = workspace special:stash, match:title ^(pulsemixer)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(vesktop)$
-            windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(com\.stremio\.stremio)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(helium)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$
@@ -251,6 +249,10 @@
             windowrule = pin on, match:initial_title Picture in picture
             windowrule = size 512 288, match:initial_title Picture in picture
             windowrule = move 2034 62, match:initial_title Picture in picture
+            windowrule = float on, match:class ^(com\.stremio\.stremio)$
+            windowrule = pin on, match:class ^(com\.stremio\.stremio)$
+            windowrule = size 1170 666, match:class ^(com\.stremio\.stremio)$
+            windowrule = move 1375 60, match:class ^(com\.stremio\.stremio)$
           '';
         };
       };
