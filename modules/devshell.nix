@@ -2,9 +2,12 @@
   perSystem = {pkgs, ...}: {
     devShells.default = pkgs.mkShell {
       buildInputs = with pkgs; [
-        nixfmt-rfc-style
+        nil
         nixd
+        alejandra
         git
+        marksman
+        vscode-langservers-extracted
       ];
     };
   };
