@@ -22,12 +22,21 @@
 
 The files in `docs/` have more detailed instructions if you actually want to use this. Those files are primarally for me to reference for later.
 
+- [Installation Guide](docs/INSTALLATION.md) - Full install instructions
+- [Configuration Options](docs/CONFIGURATION.md) - All the knobs you can turn
+- [Features](docs/FEATURES.md) - What's actually in here
+- [Maintenance](docs/MAINTENANCE.md) - Routine maintenance and updates
+- [Secrets](docs/SECRETS.md) - Agenix setup for managing secrets
+- [Backups](docs/BACKUP.md) - ZFS snapshot management
+- [Troubleshooting](docs/TROUBLESHOOTING.md) - When things break
 
 ## Adding stuff
 
 Everything is managed with flake parts and hjem. I also include fully portable preconfigured pkgs in shareables. I use ZFS because I like the compression and snapshot saftey net, I'd rather not lose stuff when I inevitably break or delete something on accident. This just makes sense to pair with jujutsu and NixOS. I am also using tmpfs for impermanence with a small size as a tripwire to remind me when I forgot to persist something.
-Because of the flake-parts setup, adding new modules is ezpz. Everything in `modules/` gets auto-imported, just drop a file and it's in.
-Files prefixed with `_` are excluded from auto-import with file filtering — that's how `_hardware-configuration.nix` stays out of the way.
+
+- Because of the flake-parts setup, adding new modules is ezpz. Everything in `modules/` gets auto-imported, just drop a file and it's in.
+
+> **Important**: Files prefixed with `_` are excluded from auto-import with file filtering — that's how `_hardware-configuration.nix` stays out of the way.
 
 System-level stuff goes in `modules/nixos-modules/`:
 
@@ -60,17 +69,6 @@ User config files (anything that ends up in `~/.config` or `~/.local/share`) go 
   };
 }
 ```
-
-## Docs
-
-If you want more details:
-- [Installation Guide](docs/INSTALLATION.md) - Full install instructions
-- [Configuration Options](docs/CONFIGURATION.md) - All the knobs you can turn
-- [Features](docs/FEATURES.md) - What's actually in here
-- [Maintenance](docs/MAINTENANCE.md) - Routine maintenance and updates
-- [Secrets](docs/SECRETS.md) - Agenix setup for managing secrets
-- [Backups](docs/BACKUP.md) - ZFS snapshot management
-- [Troubleshooting](docs/TROUBLESHOOTING.md) - When things break
 
 ## Contributing
 
