@@ -4,26 +4,30 @@
 
 ## What's in here
 
-I run Hyprland on NixOS with a bunch of stuff I've cobbled together over time:
-
-- **Desktop**: Hyprland compositor with Noctalia shell UI
-- **Login**: Ly display manager (works with my YubiKey for login)
+- **Custom Kernel:** CachyOS Linux 6.19.2 with x86-64-v3 optimizations (PGO/AutoFDO/LTO), BBR3 congestion control, hardened security sysctls, and ZFS support.
+- **Window Manager**: Hyprland compositor with Noctalia shell UI
+- **Display Manager**: Ly
 - **Shell**: Fish with Oh My Posh prompt
 - **Editor**: Flow Control
 - **Terminal**: Ghostty
 - **Filesystem**: ZFS with automated snapshots
-- **Security**: YubiKey for authentication, Suricata IDS, hardened firewall
 - **Gaming**: Steam with Proton, Decky Loader, MangoHud, bunch of emulators
-- **Music**: MPD with Euphonica client
-- **Dev Tools**: Claude Code, Node/Python/Rust toolchains and LSPs
 
-Everything's managed with Nix flakes and Hjem. I also include fully portable preconfigured pkgs in shareables. I use ZFS because I like snapshots, I'd rather not lose stuff when I inevitably break or delete something on accident. This just makes sense to pair with git and NixOS. I am also using tmpfs for impermanence with a small size as a tripwire to remind me when I forgot to persist something.
+## My ZFS setup
+
+- `zroot` pool on NVMe for system/nix/home
+- `zgames` pool on a separate drive for games (optional)
+- Automated hourly/daily/weekly/monthly snapshots via sanoid
+- Compression and auto-trim enabled
 
 The files in `docs/` have more detailed instructions if you actually want to use this. Those files are primarally for me to reference for later.
 
+
 ## Adding stuff
 
+Everything is managed with flake parts and hjem. I also include fully portable preconfigured pkgs in shareables. I use ZFS because I like the compression and snapshot saftey net, I'd rather not lose stuff when I inevitably break or delete something on accident. This just makes sense to pair with jujutsu and NixOS. I am also using tmpfs for impermanence with a small size as a tripwire to remind me when I forgot to persist something.
 Because of the flake-parts setup, adding new modules is ezpz. Everything in `modules/` gets auto-imported, just drop a file and it's in.
+Files prefixed with `_` are excluded from auto-import with file filtering — that's how `_hardware-configuration.nix` stays out of the way.
 
 System-level stuff goes in `modules/nixos-modules/`:
 
@@ -56,15 +60,6 @@ User config files (anything that ends up in `~/.config` or `~/.local/share`) go 
   };
 }
 ```
-
-Files prefixed with `_` are excluded from auto-import — that's how `_hardware-configuration.nix` stays out of the way.
-
-## ZFS setup
-
-- `zroot` pool on NVMe for system/nix/home
-- `zgames` pool on a separate drive for games (optional)
-- Automated hourly/daily/weekly/monthly snapshots via sanoid
-- Compression and auto-trim enabled
 
 ## Docs
 
