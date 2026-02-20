@@ -134,6 +134,7 @@
             bind = $mainMod, P, pseudo,
             bind = $mainMod, O, togglesplit,
             bind = $mainMod, F1, exec, vesktop
+            bind = $mainMod SHIFT, F1, exec, ghostty --title=endcord -e endcord
             bind = $mainMod, F2, exec, $editor
             bind = $mainMod, F3, exec, steam
             bind = $mainMod, F4, exec, $music
@@ -210,6 +211,7 @@
             windowrule = float on, match:title ^(.*[Pp]opup.*)$
             windowrule = workspace 1, match:class ^(vesktop)$
             windowrule = workspace 1, match:class ^(im.dino.Dino)$
+            windowrule = workspace 1, match:title ^(endcord)$
             windowrule = workspace 2, match:class ^(dev\.zed\.Zed)$
             windowrule = workspace 2, match:class ^(Zed)$
             windowrule = workspace 2, match:title ^(ghostty)$
