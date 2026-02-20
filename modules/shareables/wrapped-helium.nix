@@ -95,7 +95,6 @@
         makeWrapper $out/opt/helium/helium $out/bin/helium \
           --add-flags "--enable-features=VaapiVideoDecoder,WebUIDarkMode,HeliumCatUi,HideCrashedBubble,LinkPreview" \
           --add-flags "--disable-features=EyeDropper,HeliumCatFixedAddressBar"
-
         mkdir -p $out/share/applications
         cp $out/opt/helium/helium.desktop $out/share/applications/
         substituteInPlace $out/share/applications/helium.desktop \
@@ -132,8 +131,9 @@
 
       mkdir -p "$USER_DATA_DIR/WidevineCdm"
       cp ${widevineConfig} "$USER_DATA_DIR/WidevineCdm/latest-component-updated-widevine-cdm"
+      chmod u+w "$USER_DATA_DIR/WidevineCdm/latest-component-updated-widevine-cdm"
 
-      exec ${heliumPkg}/bin/helium "$@"
+      exec ${heliumPkg}/bin/helium "$@" >/dev/null 2>&1
     '';
 
     wrappedHelium = pkgs.buildFHSEnv {
