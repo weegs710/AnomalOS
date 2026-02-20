@@ -17,7 +17,10 @@
           ratbagd.enable = true;
           udisks2.enable = true;
           locate.enable = true;
+          gnome.gnome-keyring.enable = true;
         };
+
+        security.pam.services.ly.enableGnomeKeyring = true;
 
         programs = {
           partition-manager.enable = true;

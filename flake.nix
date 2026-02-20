@@ -32,6 +32,10 @@
       url = "github:daskladas/nixmate";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    oxicord = {
+      url = "github:linuxmobile/oxicord";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{flake-parts, ...}: let
