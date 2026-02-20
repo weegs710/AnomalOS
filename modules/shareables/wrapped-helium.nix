@@ -133,7 +133,7 @@
       cp ${widevineConfig} "$USER_DATA_DIR/WidevineCdm/latest-component-updated-widevine-cdm"
       chmod u+w "$USER_DATA_DIR/WidevineCdm/latest-component-updated-widevine-cdm"
 
-      exec ${heliumPkg}/bin/helium "$@" >/dev/null 2>&1
+      exec ${heliumPkg}/bin/helium "$@" >>/tmp/helium.log 2>&1
     '';
 
     wrappedHelium = pkgs.buildFHSEnv {
