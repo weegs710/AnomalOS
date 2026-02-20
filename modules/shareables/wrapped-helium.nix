@@ -21,15 +21,6 @@
       ];
     });
 
-    initialPreferences = pkgs.writeText "initial_preferences" (builtins.toJSON {
-      helium = {
-        services = {
-          enabled = true;
-          user_consented = true;
-        };
-      };
-    });
-
     policiesDir = pkgs.runCommand "helium-policies" {} ''
       mkdir -p $out/etc/opt/chrome/policies/managed
       cp ${extensionPolicy} $out/etc/opt/chrome/policies/managed/extensions.json
@@ -92,9 +83,7 @@
         cp -r . $out/opt/helium/
         chmod +x $out/opt/helium/helium
 
-        makeWrapper $out/opt/helium/helium $out/bin/helium \
-          --add-flags "--enable-features=VaapiVideoDecoder,WebUIDarkMode,HeliumCatUi,HideCrashedBubble,LinkPreview" \
-          --add-flags "--disable-features=EyeDropper,HeliumCatFixedAddressBar"
+        makeWrapper $out/opt/helium/helium $out/bin/helium
         mkdir -p $out/share/applications
         cp $out/opt/helium/helium.desktop $out/share/applications/
         substituteInPlace $out/share/applications/helium.desktop \
@@ -133,6 +122,18 @@
       cp ${widevineConfig} "$USER_DATA_DIR/WidevineCdm/latest-component-updated-widevine-cdm"
       chmod u+w "$USER_DATA_DIR/WidevineCdm/latest-component-updated-widevine-cdm"
 
+      {
+        echo "[$(date)] Wrapper called with args: $@"
+        echo "[$(date)] About to exec: ${heliumPkg}/bin/helium"
+        echo "[$(date)] heliumPkg path: ${heliumPkg}"
+        echo "[$(date)] Contents of makeWrapper script:"
+        head -50 ${heliumPkg}/bin/helium 2>&1
+        echo "[$(date)] Checking policies mount at /etc/chromium/policies/managed:"
+        ls -la /etc/chromium/policies/managed/ 2>&1 || echo "NOT FOUND"
+        echo "[$(date)] Checking policies mount at /etc/opt/chrome/policies/managed:"
+        ls -la /etc/opt/chrome/policies/managed/ 2>&1 || echo "NOT FOUND"
+      } >>/tmp/helium-wrapper.log
+
       exec ${heliumPkg}/bin/helium "$@" >>/tmp/helium.log 2>&1
     '';
 
@@ -140,6 +141,10 @@
       name = "helium";
       targetPkgs = pkgs: [
         heliumPkg
+        pkgs.mesa
+        pkgs.libGL
+        pkgs.libdrm
+        pkgs.libva
       ];
       extraBwrapArgs = [
         "--ro-bind ${policiesDir}/etc/opt/chrome/policies/managed /etc/chromium/policies/managed"
