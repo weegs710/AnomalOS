@@ -15,7 +15,7 @@
       doCheck = false;
     });
 
-    extraTools = with pkgs; [exiftool zoxide ffmpeg poppler-utils];
+    extraTools = with pkgs; [exiftool glib zoxide ffmpeg poppler-utils];
 
     wrappedSuperfile = pkgs.symlinkJoin {
       name = "superfile-wrapped";

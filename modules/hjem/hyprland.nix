@@ -256,6 +256,8 @@
             windowrule = pin on, match:class ^(com\.stremio\.stremio)$
             windowrule = size 1170 666, match:class ^(com\.stremio\.stremio)$
             windowrule = move 1375 60, match:class ^(com\.stremio\.stremio)$
+            windowrule = match:class ^(gcr-prompter)$, stay_focused on
+            windowrule = match:class ^(gcr-prompter)$, focus_on_activate on
           '';
         };
       };
