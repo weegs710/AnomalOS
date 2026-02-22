@@ -16,7 +16,8 @@
     config = {
       users = {
         mutableUsers = false;
-        defaultUserShell = pkgs.fish;
+        # Keep bash as login shell (POSIX-compliant, proper env setup)
+        # Auto-exec into nushell for interactive sessions (see programs.bash below)
 
         users = {
           root = {
@@ -37,6 +38,9 @@
       };
 
       programs.fish.enable = true;
+
+      # Bash auto-exec to nushell is handled via ~/.bashrc (see modules/hjem/bash/)
+      # Keeps bash as login shell for POSIX compliance and proper env setup
     };
   };
 }
