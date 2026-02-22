@@ -28,10 +28,10 @@
       url = "github:feel-co/hjem";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixmate = {
-      url = "github:daskladas/nixmate";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+   #  nixmate = {
+   #    url = "github:daskladas/nixmate";
+   #    inputs.nixpkgs.follows = "nixpkgs";
+   #  };
     oxicord = {
       url = "github:linuxmobile/oxicord";
       inputs.nixpkgs.follows = "nixpkgs";

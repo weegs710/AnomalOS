@@ -129,24 +129,6 @@
         "type": "github"
       }
     },
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems_3"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "hjem": {
       "inputs": {
         "nix-darwin": "nix-darwin",
@@ -293,28 +275,6 @@
         "type": "github"
       }
     },
-    "nixmate": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay_2"
-      },
-      "locked": {
-        "lastModified": 1771085058,
-        "narHash": "sha256-w9qE5zZ8mEHPbR84OuJoFWFvmMuKpvq/ANwyDUEvbPo=",
-        "owner": "daskladas",
-        "repo": "nixmate",
-        "rev": "9030841d4c3ec72359643d7af68bfdac428f1636",
-        "type": "github"
-      },
-      "original": {
-        "owner": "daskladas",
-        "repo": "nixmate",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1771369470,
@@ -384,11 +344,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771444048,
-        "narHash": "sha256-li7Pd9wOtiYuFq+u+lMbbaoNySBz7fVTeYTxOSLcBTI=",
+        "lastModified": 1771815636,
+        "narHash": "sha256-PxnhvaAKfqWc7jRaGHBTfLaEeqqWbCR/pPB1vTcsfB8=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "cb77a08243a5956ebed2d0960f161d0644295f83",
+        "rev": "bceeb98941455d3170e59d5f0d72d8ff5ce25a4f",
         "type": "github"
       },
       "original": {
@@ -402,15 +362,15 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "rust-overlay": "rust-overlay_3",
-        "systems": "systems_4"
+        "rust-overlay": "rust-overlay_2",
+        "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1771599980,
-        "narHash": "sha256-7lDxV9F1wvgycCSoJcsrll5YLe5um4Iq36NnLvX2bwg=",
+        "lastModified": 1771792403,
+        "narHash": "sha256-URYNf9ZP6joZtI7qLLhEH9s+HrdbXiFVrCXoHpYPtGs=",
         "owner": "linuxmobile",
         "repo": "oxicord",
-        "rev": "e126d4a34e47d181c684f2567419e106256eed42",
+        "rev": "0dbc62e52830aceb5934822c6fe0aa2124a19fc6",
         "type": "github"
       },
       "original": {
@@ -427,7 +387,6 @@
         "impermanence": "impermanence",
         "nix-cachyos-kernel": "nix-cachyos-kernel",
         "nix-flatpak": "nix-flatpak",
-        "nixmate": "nixmate",
         "nixpkgs": "nixpkgs",
         "nixpkgs-kernel": "nixpkgs-kernel",
         "noctalia": "noctalia",
@@ -457,27 +416,6 @@
       }
     },
     "rust-overlay_2": {
-      "inputs": {
-        "nixpkgs": [
-          "nixmate",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1770606655,
-        "narHash": "sha256-rpJf+kxvLWv32ivcgu8d+JeJooog3boJCT8J3joJvvM=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "11a396520bf911e4ed01e78e11633d3fc63b350e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
-      }
-    },
-    "rust-overlay_3": {
       "inputs": {
         "nixpkgs": [
           "oxicord",
@@ -552,21 +490,6 @@
       }
     },
     "systems_3": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_4": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
