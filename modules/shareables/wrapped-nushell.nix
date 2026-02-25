@@ -9,6 +9,7 @@
       fd
       fzf
       ripgrep
+      carapace
       oh-my-posh
       git
       delta
