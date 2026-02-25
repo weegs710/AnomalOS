@@ -4,10 +4,10 @@
 
 ## What's in here
 
-- **Custom Kernel:** CachyOS Linux 6.19.2 with v3 microcode updates, BBR3 congestion control, hardened security sysctls, and ZFS support.
+- **Custom Kernel:** CachyOS Linux 6.19.2 with v3 microcode, BBR3 network control, and ZFS support patches.
 - **Window Manager**: Hyprland compositor with Noctalia shell UI
 - **Display Manager**: Ly
-- **Shell**: Fish with Oh My Posh prompt
+- **Shell**: Nushell with Oh My Posh prompt
 - **Editor**: Flow Control
 - **Terminal**: Ghostty
 - **Filesystem**: ZFS with automated snapshots
