@@ -1,6 +1,5 @@
 {
   perSystem = {pkgs, ...}: let
-    # Build dependencies package for flow-control 0.7.2
     zigPackagesRaw = import ../../deps/flow-control-build.zig.zon.nix {
       inherit (pkgs) lib linkFarm fetchurl fetchgit runCommandLocal;
       zig = pkgs.zig_0_15;
@@ -11,12 +10,10 @@
       mkdir -p $out
       cp -rL ${zigPackagesRaw}/. $out
       chmod -R +w $out
-
       substituteInPlace $out/uucode-0.1.0-ZZjBPj96QADXyt5sqwBJUnhaDYs_qBeeKijZvlRa0eqM/build.zig \
         --replace-fail 'run_build_tables_exe.setCwd(b.path(""));' '// setCwd removed - UCD files symlinked to build dir instead'
     '';
 
-    # Override flow-control to use latest upstream version
     flow-control = pkgs.flow-control.overrideAttrs (oldAttrs: rec {
       version = "0.7.2";
       src = pkgs.fetchFromGitHub {
@@ -26,7 +23,6 @@
         hash = "sha256-5+F0DKb4LXtcMXNutUSJuIe7cdBoFUoJhCs8vbm20jg=";
       };
 
-      # Use updated build.zig.zon.nix with 0.7.2 dependencies (pre-patched)
       postConfigure = ''
         ln -s ${zigPackages} $ZIG_GLOBAL_CACHE_DIR/p
       '';
@@ -36,10 +32,11 @@
         ln -s ${zigPackages}/uucode-0.1.0-ZZjBPj96QADXyt5sqwBJUnhaDYs_qBeeKijZvlRa0eqM/ucd ./ucd
       '';
 
-      # Ensure VERSION env var is set for build.zig
-      env = oldAttrs.env // {
-        VERSION = version;
-      };
+      env =
+        oldAttrs.env
+        // {
+          VERSION = version;
+        };
     });
 
     lspTools = with pkgs; [
@@ -56,38 +53,42 @@
     customConfig = ../hjem/flow-control/custom_config;
     customHome = ../hjem/flow-control/custom_home;
 
-    flowWrapper = pkgs.writeShellScript "flow-wrapper" ''
-      FLOW_CONFIG_DIR="''${XDG_CONFIG_HOME:-$HOME/.config}/flow"
-      FLOW_STATE_DIR="''${XDG_STATE_HOME:-$HOME/.local/state}/flow"
-      FLOW_CUSTOM_CONFIG="$FLOW_CONFIG_DIR/custom_config"
-      FLOW_CUSTOM_HOME="$FLOW_CONFIG_DIR/custom_home"
-      FLOW_MAIN_CONFIG="$FLOW_CONFIG_DIR/config"
-      FLOW_HOME_STYLE="$FLOW_CONFIG_DIR/home.style"
+    flowWrapper = pkgs.writeScript "flow-wrapper" ''
+      #!/usr/bin/env nu
 
-      mkdir -p "$FLOW_CONFIG_DIR"
-      mkdir -p "$FLOW_STATE_DIR/projects"
+      def main [...args] {
+        let flow_config_dir = ($env.XDG_CONFIG_HOME? | default $"($env.HOME)/.config") + "/flow"
+        let flow_state_dir = ($env.XDG_STATE_HOME? | default $"($env.HOME)/.local/state") + "/flow"
+        let flow_custom_config = $"($flow_config_dir)/custom_config"
+        let flow_custom_home = $"($flow_config_dir)/custom_home"
+        let flow_main_config = $"($flow_config_dir)/config"
+        let flow_home_style = $"($flow_config_dir)/home.style"
 
-      if [ ! -f "$FLOW_CUSTOM_CONFIG" ]; then
-        cp ${customConfig} "$FLOW_CUSTOM_CONFIG"
-      fi
+        mkdir $flow_config_dir
+        mkdir $"($flow_state_dir)/projects"
 
-      if [ ! -f "$FLOW_CUSTOM_HOME" ]; then
-        cp ${customHome} "$FLOW_CUSTOM_HOME"
-      fi
+        if not ($flow_custom_config | path exists) {
+          cp ${customConfig} $flow_custom_config
+        }
 
-      if [ ! -f "$FLOW_MAIN_CONFIG" ]; then
-        echo 'include_files "'"$FLOW_CUSTOM_CONFIG"'"' > "$FLOW_MAIN_CONFIG"
-      elif ! grep -q "include_files" "$FLOW_MAIN_CONFIG"; then
-        echo 'include_files "'"$FLOW_CUSTOM_CONFIG"'"' >> "$FLOW_MAIN_CONFIG"
-      fi
+        if not ($flow_custom_home | path exists) {
+          cp ${customHome} $flow_custom_home
+        }
 
-      if [ ! -f "$FLOW_HOME_STYLE" ]; then
-        echo 'include_files "'"$FLOW_CUSTOM_HOME"'"' > "$FLOW_HOME_STYLE"
-      elif ! grep -q '^include_files' "$FLOW_HOME_STYLE"; then
-        echo 'include_files "'"$FLOW_CUSTOM_HOME"'"' >> "$FLOW_HOME_STYLE"
-      fi
+        if not ($flow_main_config | path exists) {
+          $'include_files "($flow_custom_config)"' | save $flow_main_config
+        } else if (open $flow_main_config | str contains $'include_files "($flow_custom_config)"' | not $in) {
+          $"\ninclude_files \"($flow_custom_config)\"" | save --append $flow_main_config
+        }
 
-      exec ${flow-control}/bin/flow "$@"
+        if not ($flow_home_style | path exists) {
+          $'include_files "($flow_custom_home)"' | save $flow_home_style
+        } else if (open $flow_home_style | str contains $'include_files "($flow_custom_home)"' | not $in) {
+          $"\ninclude_files \"($flow_custom_home)\"" | save --append $flow_home_style
+        }
+
+        ^${flow-control}/bin/flow ...$args
+      }
     '';
 
     wrappedFlow = pkgs.symlinkJoin {

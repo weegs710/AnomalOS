@@ -5,27 +5,34 @@
     pkgs,
     ...
   }: let
-      claudeLauncher = pkgs.writeShellScriptBin "claude-launcher" ''
-        #!/usr/bin/env bash
+      claudeLauncher = pkgs.writeScriptBin "claude-launcher" ''
+        #!/usr/bin/env nu
 
-        PROJECTS_DIR="$HOME/claude-projects/projects"
+        def main [project_name?: string] {
+          let projects_dir = $"($env.HOME)/claude-projects/projects"
 
-        if [ -z "$1" ]; then
-          echo "Usage: cc <project-name>"
-          echo "Available projects:"
-          ls -1 "$PROJECTS_DIR" 2>/dev/null || echo "No projects found"
-          exit 1
-        fi
+          if ($project_name | is-empty) {
+            print "Usage: cc <project-name>"
+            print ""
+            print "Available projects:"
+            try {
+              ls $projects_dir | get name | each { |it| print ($it | path basename) }
+            } catch {
+              print "No projects found"
+            }
+            exit 1
+          }
 
-        PROJECT_DIR="$PROJECTS_DIR/$1"
+          let project_dir = $"($projects_dir)/($project_name)"
 
-        if [ ! -d "$PROJECT_DIR" ]; then
-          echo "Error: Project '$1' not found in $PROJECTS_DIR"
-          exit 1
-        fi
+          if not ($project_dir | path exists) {
+            print $"Error: Project '($project_name)' not found in ($projects_dir)"
+            exit 1
+          }
 
-        cd "$PROJECT_DIR" || exit 1
-        exec claude
+          cd $project_dir
+          ^claude
+        }
       '';
   in {
     config = lib.mkIf config.mySystem.features.claudeCode {
