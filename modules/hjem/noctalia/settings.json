@@ -158,24 +158,12 @@
     "lockScreenBlur": 0,
     "lockScreenTint": 0,
     "keybinds": {
-      "keyUp": [
-        "Up"
-      ],
-      "keyDown": [
-        "Down"
-      ],
-      "keyLeft": [
-        "Left"
-      ],
-      "keyRight": [
-        "Right"
-      ],
-      "keyEnter": [
-        "Return"
-      ],
-      "keyEscape": [
-        "Esc"
-      ]
+      "keyUp": ["Up"],
+      "keyDown": ["Down"],
+      "keyLeft": ["Left"],
+      "keyRight": ["Right"],
+      "keyEnter": ["Return"],
+      "keyEscape": ["Esc"]
     }
   },
   "ui": {
@@ -236,9 +224,9 @@
     "fillColor": "#000000",
     "useSolidColor": false,
     "solidColor": "#1a1a2e",
-    "automationEnabled": false,
+    "automationEnabled": true,
     "wallpaperChangeMode": "random",
-    "randomIntervalSec": 600,
+    "randomIntervalSec": 7200,
     "transitionDuration": 2000,
     "transitionType": "stripes",
     "skipStartupTransition": false,
@@ -473,12 +461,7 @@
     "autoHideMs": 2000,
     "overlayLayer": false,
     "backgroundOpacity": 1,
-    "enabledTypes": [
-      0,
-      1,
-      4,
-      3
-    ],
+    "enabledTypes": [0, 1, 4, 3],
     "monitors": []
   },
   "audio": {
@@ -502,7 +485,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "fruit-salad",
+    "generationMethod": "content",
     "monitorForColors": ""
   },
   "templates": {

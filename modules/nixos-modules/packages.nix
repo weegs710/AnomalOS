@@ -13,6 +13,7 @@
         hyprls
         hyperfine
         jq
+        nemo-with-extensions
         nodejs
         python3
         ripgrep
