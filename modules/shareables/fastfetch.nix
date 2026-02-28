@@ -2,10 +2,10 @@
   perSystem = {pkgs, ...}: let
     logo = ../hjem/fastfetch/fetch-logo.webp;
     configFile = pkgs.writeText "fastfetch-config.jsonc" ''
-      {
+          {
         "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
         "logo": {
-          "source": "${logo}",
+          "source": "/home/${config.mySystem.user.name}/dotfiles/modules/hjem/fastfetch/fetch-logo.webp",
           "type": "kitty",
           "width": 39,
           "height": 20,
@@ -27,94 +27,93 @@
           },
           {
             "type": "custom",
-            "format": " SYSTEM"
+            "format": "SYSTEM"
           },
           {
             "type": "os",
-            "key": "│ ├"
+            "key": "├"
           },
           {
             "type": "kernel",
-            "key": "│ ├"
+            "key": "├"
           },
           {
             "type": "command",
-            "key": "│ ├󰦛",
+            "key": "├󰦛",
             "text": "readlink /nix/var/nix/profiles/system | sed -E 's/system-([0-9]+)-link/Generation: \\1/'"
           },
           {
             "type": "command",
-            "key": "│ ├",
+            "key": "├",
             "text": "nix path-info -S /run/current-system | awk '{printf \"Closure Size: %.2f GB\", $2/1024/1024/1024}'"
           },
           {
             "type": "command",
-            "key": "│ └",
-            "text": "birth_install=1750377600; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days using NixOS"
+            "key": "└",
+            "text": "birth_install=1750377600; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days using NixOS."
           },
           {
             "type": "custom",
-            "format": " HARDWARE"
+            "format": "HARDWARE"
           },
           {
             "type": "cpu",
-            "key": "│ ├"
+            "key": "├"
           },
           {
             "type": "gpu",
-            "key": "│ ├󰢮"
+            "key": "├󰢮"
           },
           {
             "type": "memory",
-            "key": "│ └"
+            "key": "└"
           },
           {
             "type": "custom",
-            "format": " DESKTOP"
+            "format": "DESKTOP"
           },
           {
             "type": "wm",
-            "key": "│ ├"
+            "key": "├"
           },
           {
             "type": "shell",
-            "key": "│ ├"
+            "key": "├"
           },
           {
             "type": "terminal",
-            "key": "│ ├"
+            "key": "├"
           },
           {
             "type": "terminalfont",
-            "key": "│ └"
+            "key": "└"
           },
           {
             "type": "custom",
-            "format": "󰍹 MEDIA"
+            "format": "MEDIA"
           },
           {
             "type": "display",
-            "key": "│ ├󰍹"
+            "key": "├󰍹"
           },
           {
             "type": "sound",
-            "key": "│ ├󰓃"
+            "key": "├󰓃"
           },
           {
             "type": "player",
-            "key": "│ ├󰗜"
+            "key": "├󰗜"
           },
           {
             "type": "media",
-            "key": "│ └󰝚"
+            "key": "└󰝚"
           },
           {
             "type": "custom",
             "format": "\u001b[90m  \u001b[31m  \u001b[32m  \u001b[33m  \u001b[34m  \u001b[35m  \u001b[36m  \u001b[37m "
           }
         ]
-      }
-    '';
+      }    '';
     wrappedFastfetch = pkgs.symlinkJoin {
       name = "fastfetch-wrapped";
       paths = [pkgs.fastfetch];
