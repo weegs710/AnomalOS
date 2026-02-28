@@ -15,7 +15,9 @@
         };
 
         users.users.${config.mySystem.user.name}.packages = with pkgs; [
-          openraPackages.engines.bleed
+          (openraPackages.engines.bleed.overrideAttrs (old: {
+            postPatch = "";
+          }))
           protonup-qt
           ryubing
           (wrapRetroArch {
