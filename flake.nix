@@ -28,17 +28,17 @@
       url = "github:feel-co/hjem";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-   #  nixmate = {
-   #    url = "github:daskladas/nixmate";
-   #    inputs.nixpkgs.follows = "nixpkgs";
-   #  };
-    oxicord = {
-      url = "github:linuxmobile/oxicord";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    #  nixmate = {
+    #    url = "github:daskladas/nixmate";
+    #    inputs.nixpkgs.follows = "nixpkgs";
+    #  };
+    # oxicord = {
+    #   url = "github:linuxmobile/oxicord";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
-  outputs = inputs@{flake-parts, ...}: let
+  outputs = inputs @ {flake-parts, ...}: let
     inherit (inputs.nixpkgs.lib.fileset) toList fileFilter;
     import-tree = path:
       toList (fileFilter (file: file.hasExt "nix" && !(inputs.nixpkgs.lib.hasPrefix "_" file.name)) path);

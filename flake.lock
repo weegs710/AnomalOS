@@ -357,28 +357,6 @@
         "type": "github"
       }
     },
-    "oxicord": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay_2",
-        "systems": "systems_3"
-      },
-      "locked": {
-        "lastModified": 1771792403,
-        "narHash": "sha256-URYNf9ZP6joZtI7qLLhEH9s+HrdbXiFVrCXoHpYPtGs=",
-        "owner": "linuxmobile",
-        "repo": "oxicord",
-        "rev": "0dbc62e52830aceb5934822c6fe0aa2124a19fc6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "linuxmobile",
-        "repo": "oxicord",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -389,8 +367,7 @@
         "nix-flatpak": "nix-flatpak",
         "nixpkgs": "nixpkgs",
         "nixpkgs-kernel": "nixpkgs-kernel",
-        "noctalia": "noctalia",
-        "oxicord": "oxicord"
+        "noctalia": "noctalia"
       }
     },
     "rust-overlay": {
@@ -407,27 +384,6 @@
         "owner": "oxalica",
         "repo": "rust-overlay",
         "rev": "4912f951a26dc8142b176be2c2ad834319dc06e8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
-      }
-    },
-    "rust-overlay_2": {
-      "inputs": {
-        "nixpkgs": [
-          "oxicord",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1768186348,
-        "narHash": "sha256-nkpIe3zkpeoFuOl8xBpexulECsHLQ9Ljg1gW3bPCjSI=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "af69e497567a5945a64057717bc9b17c8478097e",
         "type": "github"
       },
       "original": {
@@ -475,21 +431,6 @@
       }
     },
     "systems_2": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_3": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
