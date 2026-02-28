@@ -5,7 +5,7 @@
           {
         "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
         "logo": {
-          "source": "/home/${config.mySystem.user.name}/dotfiles/modules/hjem/fastfetch/fetch-logo.webp",
+          "source": "${logo}",
           "type": "kitty",
           "width": 39,
           "height": 20,
