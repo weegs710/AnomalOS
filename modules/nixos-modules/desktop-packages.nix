@@ -12,7 +12,6 @@
           transmission_4-gtk
           unzipNLS
           bluetui
-          fastfetch
           gparted
           piper
           adwaita-icon-theme
