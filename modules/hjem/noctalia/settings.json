@@ -224,7 +224,7 @@
     "fillColor": "#000000",
     "useSolidColor": false,
     "solidColor": "#1a1a2e",
-    "automationEnabled": true,
+    "automationEnabled": false,
     "wallpaperChangeMode": "random",
     "randomIntervalSec": 7200,
     "transitionDuration": 2000,
@@ -479,8 +479,8 @@
     "enableDdcSupport": false
   },
   "colorSchemes": {
-    "useWallpaperColors": true,
-    "predefinedScheme": "Noctalia (default)",
+    "useWallpaperColors": false,
+    "predefinedScheme": "Eldritch",
     "darkMode": true,
     "schedulingMode": "off",
     "manualSunrise": "06:30",

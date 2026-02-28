@@ -16,7 +16,7 @@
           }
         },
         "display": {
-          "separator": " 󰑃 "
+          "separator": " 󰔰 "
         },
         "modules": [
           {
@@ -35,16 +35,16 @@
           },
           {
             "type": "kernel",
-            "key": "├"
+            "key": "│└"
           },
           {
             "type": "command",
-            "key": "├󰦛",
+            "key": "│ └󰦛",
             "text": "readlink /nix/var/nix/profiles/system | sed -E 's/system-([0-9]+)-link/Generation: \\1/'"
           },
           {
             "type": "command",
-            "key": "├",
+            "key": "│  └",
             "text": "nix path-info -S /run/current-system | awk '{printf \"Closure Size: %.2f GB\", $2/1024/1024/1024}'"
           },
           {
@@ -62,7 +62,8 @@
           },
           {
             "type": "gpu",
-            "key": "├󰢮"
+            "key": "├󰢮",
+            "hideType": "integrated"
           },
           {
             "type": "memory",
@@ -78,15 +79,15 @@
           },
           {
             "type": "shell",
-            "key": "├"
+            "key": "└"
           },
           {
             "type": "terminal",
-            "key": "├"
+            "key": " └"
           },
           {
             "type": "terminalfont",
-            "key": "└"
+            "key": "  └"
           },
           {
             "type": "custom",
@@ -98,15 +99,15 @@
           },
           {
             "type": "sound",
-            "key": "├󰓃"
+            "key": "└󰓃"
           },
           {
             "type": "player",
-            "key": "├󰗜"
+            "key": " └󰗜"
           },
           {
             "type": "media",
-            "key": "└󰝚"
+            "key": "  └󰝚"
           },
           {
             "type": "custom",
