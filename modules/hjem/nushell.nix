@@ -212,7 +212,6 @@
         "template" = "╰─❯ ";
       };
     };
-
   in {
     config = {
       users.users.${config.mySystem.user.name}.packages = [
@@ -301,7 +300,7 @@
             pkill quickshell
             tmux new -d noctalia-shell
           }
-          
+
           alias repl = nix repl --expr 'import ~/dotfiles/repl.nix {}'
           alias cc = claude-launcher
           alias l = ls -alh
@@ -316,28 +315,21 @@
           alias scrapev = download-video
           alias gparted = sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted
           alias jj-fetch = jj git fetch --all-remotes
-          
+
           def nu_greeting [] {
             let states = [
-              "analyzing system mutations"
-              "optimizing declarative state"
-              "dreaming in Nix"
-              "rewriting reality"
-              "compiling consciousness"
+              "Analyzing system mutations..."
+              "Optimizing evaluation times..."
+              "Dreaming of derivations..."
+              "Refactoring reality..."
+              "Compiling consciousness..."
+              "Binging vimjoyer content..."
+              "Studying iynaix's code..."
             ]
             let state = ($states | shuffle | first)
 
-            print -n $"(ansi grey) |> NixOS entity loading...(ansi reset)\n"
-            print ""
             print -n $"(ansi cyan)   (ansi reset)"
             print $"Status: ($state)"
-            print ""
-            print $"(ansi red_bold) ⚠ [NOTICE] Unsanctioned modifications detected ⚠(ansi reset)"
-            print $"(ansi grey)"
-            print ""
-            print "           |> (I'm watching you.) <|"
-            print ""
-            print -n $"(ansi reset)"
           }
 
           # Zoxide integration (migrated from Fish 'z' plugin)
