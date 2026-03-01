@@ -134,8 +134,7 @@
             bind = $mainMod, G, togglefloating
             bind = $mainMod, P, pseudo,
             bind = $mainMod, O, togglesplit,
-            bind = $mainMod, F1, exec, vesktop
-            bind = $mainMod SHIFT, F1, exec, ghostty --title=oxicord -e oxicord
+            bind = $mainMod, F1, exec, ghostty --title=endcord --font-size=11 -e endcord
             bind = $mainMod, F2, exec, $editor
             bind = $mainMod, F3, exec, steam
             bind = $mainMod, F4, exec, $music
@@ -212,7 +211,7 @@
             windowrule = float on, match:title ^(.*[Pp]opup.*)$
             windowrule = workspace 1, match:class ^(vesktop)$
             windowrule = workspace 1, match:class ^(im.dino.Dino)$
-            windowrule = workspace 1, match:title ^(oxicord)$
+            windowrule = workspace 1, match:title ^(endcord)$
             windowrule = workspace 2, match:class ^(dev\.zed\.Zed)$
             windowrule = workspace 2, match:class ^(Zed)$
             windowrule = workspace 2, match:title ^(ghostty)$
@@ -221,7 +220,7 @@
             windowrule = fullscreen on, match:class ^(steam_app_3564740)$
             windowrule = suppress_event fullscreen, match:class ^(steam_app_3564740)$
             windowrule = workspace 4, match:class ^(chrome-fanduelsportsnetwork\.com__teams_nhl-blue-jackets-Default)$
-            windowrule = workspace 5, match:class ^(helium)$
+            windowrule = workspace 5, match:class ^(helium)$, match:initial_title ^(New Tab - Helium)$
             windowrule = focus_on_activate on, match:class ^(helium)$
             windowrule = tile on, match:class ^(pavucontrol)$
             windowrule = workspace special:stash, match:class ^(pavucontrol)$
