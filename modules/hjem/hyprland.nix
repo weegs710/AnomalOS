@@ -12,11 +12,7 @@
             # Variables
             $fileManager = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'
             $terminal = ghostty --title=ghostty
-            $editor = ghostty --title=flow -e fish -c "cd ~/dotfiles && exec flow"
-            $webBrowser = helium
             $mainMod = SUPER
-            $sysMon = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'
-            $music = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] euphonica'
 
 
             # Monitors
@@ -126,6 +122,7 @@
                 animation = windowsOut, 1, 3, zoom
                 animation = fade, 1, 3, default
                 animation = workspaces, 1, 3, overshot, slide
+                animation = layers, 1, 3, zoom, fade
             }
 
             # Keybinds
@@ -134,13 +131,6 @@
             bind = $mainMod, G, togglefloating
             bind = $mainMod, P, pseudo,
             bind = $mainMod, O, togglesplit,
-            bind = $mainMod, F1, exec, ghostty --title=endcord --font-size=11 -e endcord
-            bind = $mainMod, F2, exec, $editor
-            bind = $mainMod, F3, exec, steam
-            bind = $mainMod, F4, exec, $music
-            bind = $mainMod SHIFT, F4, exec, flatpak run com.stremio.Stremio
-            bind = $mainMod, F5, exec, $webBrowser
-            bind = $mainMod, F6, exec, $sysMon
             bind = $mainMod, Return, exec, $terminal
             bind = $mainMod, Space, exec, $fileManager
             bind = $mainMod, Backspace, submap, resize
@@ -161,9 +151,6 @@
             bind = $mainMod, grave, togglespecialworkspace, stash
             bind = $mainMod SHIFT, grave, movetoworkspace, special:stash
             bind = $mainMod, pause, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-            bind = , PRINT, exec, hyprshot -m region --clipboard-only
-            bind = SHIFT, PRINT, exec, hyprshot -m region -o ~/Pictures
-            bind = CTRL, PRINT, exec, hyprshot -m window --clipboard-only
             bindel = $mainMod, home, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
             bindel = $mainMod, end, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
             binde = $mainMod, left, movefocus, l
@@ -174,7 +161,7 @@
             binde = $mainMod SHIFT, right, movewindow, r
             binde = $mainMod SHIFT, up, movewindow, u
             binde = $mainMod SHIFT, down, movewindow, d
-            bindr = SUPER, Super_L, exec, noctalia-shell ipc call launcher toggle
+            bindr = SUPER, Super_L, exec, wlr-which-key
             bindr = CTRL_ALT, L, exec, noctalia-shell ipc call lockScreen lock
             bindr = $mainMod, tab, exec, noctalia-shell ipc call controlCenter toggle
             bindm = $mainMod, mouse:272, movewindow
