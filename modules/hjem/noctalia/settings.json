@@ -46,7 +46,6 @@
           "labelMode": "name",
           "occupiedColor": "secondary",
           "pillSize": 0.6,
-          "reverseScroll": false,
           "showApplications": false,
           "showBadge": true,
           "showLabelsOnlyWhenOccupied": false,
@@ -91,6 +90,14 @@
         }
       ],
       "right": [
+        {
+          "hideWhenZero": false,
+          "hideWhenZeroUnread": false,
+          "iconColor": "none",
+          "id": "NotificationHistory",
+          "showUnreadBadge": true,
+          "unreadBadgeColor": "error"
+        },
         {
           "compactMode": false,
           "compactShowAlbumArt": true,
@@ -163,8 +170,10 @@
       "keyLeft": ["Left"],
       "keyRight": ["Right"],
       "keyEnter": ["Return"],
-      "keyEscape": ["Esc"]
-    }
+      "keyEscape": ["Esc"],
+      "keyRemove": ["Del"]
+    },
+    "reverseScroll": false
   },
   "ui": {
     "fontDefault": "Terminess Nerd Font",
@@ -339,13 +348,7 @@
     "diskAvailCriticalThreshold": 10,
     "batteryWarningThreshold": 20,
     "batteryCriticalThreshold": 5,
-    "cpuPollingInterval": 250,
-    "gpuPollingInterval": 250,
     "enableDgpuMonitoring": true,
-    "memPollingInterval": 250,
-    "diskPollingInterval": 250,
-    "networkPollingInterval": 250,
-    "loadAvgPollingInterval": 250,
     "useCustomColors": false,
     "warningColor": "",
     "criticalColor": "",
@@ -355,6 +358,7 @@
     "enabled": false,
     "position": "bottom",
     "displayMode": "auto_hide",
+    "dockType": "floating",
     "backgroundOpacity": 1,
     "floatingRatio": 1,
     "size": 1,
@@ -365,21 +369,26 @@
     "pinnedStatic": false,
     "inactiveIndicators": false,
     "deadOpacity": 0.6,
-    "animationSpeed": 1
+    "animationSpeed": 1,
+    "sitOnFrame": false,
+    "showFrameIndicator": true
   },
   "network": {
     "wifiEnabled": true,
+    "airplaneModeEnabled": false,
     "bluetoothRssiPollingEnabled": false,
     "bluetoothRssiPollIntervalMs": 10000,
     "wifiDetailsViewMode": "grid",
     "bluetoothDetailsViewMode": "grid",
-    "bluetoothHideUnnamedDevices": false
+    "bluetoothHideUnnamedDevices": false,
+    "disableDiscoverability": false
   },
   "sessionMenu": {
     "enableCountdown": true,
     "countdownDuration": 3000,
     "position": "center",
     "showHeader": true,
+    "showKeybinds": true,
     "largeButtonsStyle": false,
     "largeButtonsLayout": "single-row",
     "powerOptions": [
@@ -429,21 +438,24 @@
   },
   "notifications": {
     "enabled": true,
+    "enableMarkdown": false,
+    "density": "compact",
     "monitors": [],
     "location": "bottom_right",
     "overlayLayer": true,
     "backgroundOpacity": 1,
     "respectExpireTimeout": true,
     "lowUrgencyDuration": 1,
-    "normalUrgencyDuration": 3,
-    "criticalUrgencyDuration": 5,
+    "normalUrgencyDuration": 2,
+    "criticalUrgencyDuration": 3,
+    "clearDismissed": true,
     "saveToHistory": {
-      "low": true,
+      "low": false,
       "normal": true,
       "critical": true
     },
     "sounds": {
-      "enabled": false,
+      "enabled": true,
       "volume": 0.5,
       "separateSounds": false,
       "criticalSoundFile": "",
