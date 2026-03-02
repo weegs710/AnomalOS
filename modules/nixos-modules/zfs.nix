@@ -1,5 +1,5 @@
 {
-  flake.nixosModules.zfs = {
+  flake.nixosModules.zfs = {config, ...}: {
     services.sanoid = {
       enable = true;
       interval = "hourly";
@@ -46,5 +46,10 @@
         };
       };
     };
+
+    # /tmp is wiped on boot — synced writes are wasted I/O for data that won't survive a reboot anyway.
+    system.activationScripts.zfsTmpNoSync = ''
+      ${config.boot.zfs.package}/bin/zfs set sync=disabled zroot/tmp
+    '';
   };
 }
