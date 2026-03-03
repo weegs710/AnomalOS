@@ -69,6 +69,7 @@
             "Downloads"
             "Music"
             "Pictures"
+            "Videos"
             "Desktop"
             "dotfiles"
             "homebrew"
