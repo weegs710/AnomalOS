@@ -273,7 +273,7 @@
             Comment=Minimal image viewer
             Exec=qview %U
             Icon=com.interversehq.qView
-            Hidden=true
+            NoDisplay=false
             Categories=Qt;Graphics;Viewer;Photography;
             MimeType=image/bmp;image/x-win-bitmap;image/gif;image/icns;image/x-icon;image/jpeg;image/jpg;image/x-portable-bitmap;image/x-portable-graymap;image/png;image/x-portable-pixmap;image/svg+xml;image/tiff;image/vnd.wap.wbmp;image/webp;image/x-xbitmap;image/x-xpixmap;application/x-navi-animation;image/apng;image/avif;image/avif-sequence;image/x-sgi-bw;image/aces;image/x-exr;image/vnd.radiance;image/heic;image/heif;image/jxl;application/x-krita;image/openraster;image/vnd.zbrush.pcx;image/x-pcx;image/x-pic;image/vnd.adobe.photoshop;application/x-photoshop;application/photoshop;application/psd;image/psd;image/x-sun-raster;image/x-rgb;image/x-sgi-rgba;image/sgi;image/x-tga;image/x-xcf;
           '';
@@ -293,37 +293,13 @@
           '';
 
           # Custom launchers — open apps into specific workspaces/layouts via hyprctl
-          "applications/pavucontrol.desktop".text = ''
-            [Desktop Entry]
-            Name=PulseAudio Volume Control
-            GenericName=Volume Control
-            Comment=Adjust the volume level
-            Icon=multimedia-volume-control
-            Exec=hyprctl dispatch exec '[workspace special:control-panel; float] pavucontrol'
-            Terminal=false
-            Type=Application
-            Categories=AudioVideo;Audio;Mixer;GTK;
-            Keywords=pavucontrol;audio;sound;volume;
-          '';
-          "applications/qalculate-gtk.desktop".text = ''
-            [Desktop Entry]
-            Name=Qalculate!
-            GenericName=Calculator
-            Comment=Powerful and easy to use calculator
-            Icon=qalculate
-            Exec=hyprctl dispatch exec '[workspace special:control-panel; float] qalculate-gtk'
-            Terminal=false
-            Type=Application
-            Categories=Utility;Calculator;GTK;
-            Keywords=calculator;math;
-          '';
           "applications/piper.desktop".text = ''
             [Desktop Entry]
             Name=Piper
             GenericName=Gaming Mouse Configuration
             Comment=Configure gaming mice
             Icon=org.freedesktop.Piper
-            Exec=hyprctl dispatch exec '[workspace special:control-panel; float] piper'
+            Exec=hyprctl dispatch exec '[workspace special:stash; tile] piper'
             Terminal=false
             Type=Application
             Categories=Settings;HardwareSettings;GTK;

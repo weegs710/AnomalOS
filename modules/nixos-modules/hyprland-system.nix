@@ -34,10 +34,6 @@
           };
         };
 
-        systemd.user.services.xdg-desktop-portal.environment = {
-          XDG_DESKTOP_PORTAL_DIR = "/run/current-system/sw/share/xdg-desktop-portal/portals";
-        };
-
         services = {
           hypridle.enable = true;
           xserver.enable = false;
