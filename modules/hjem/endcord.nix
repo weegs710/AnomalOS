@@ -46,8 +46,10 @@
           keep_deleted = True
           rpc = False
           game_detection = False
+          message_spacing = False
 
           [keybindings]
+          tree_select = ("ALT+32", 567)
           tree_up = 573
           tree_down = 532
           extra_up = 575
@@ -59,12 +61,11 @@
           toggle_member_list = 21
           upload = "ALT+117"
           copy_message_link = "ALT+108"
+          preview_upload = None
 
           [command_bindings]
-          "552" = "switch_tab prev"
-          "567" = "switch_tab next"
-          "336" = "tree_select server; collapse_all_except selected"
-          "337" = "tree_select server prev; collapse_all_except selected"
+          "ALT+118" = "paste"
+          "552" = "tree_select server; collapse_all_except selected"
         '';
 
         xdg.config.files."endcord/Themes/noctalia.ini".text = ''
@@ -80,7 +81,7 @@
           color_chat_separator = [8, -1, "i"]
           color_chat_standout = [14, -1]
           color_chat_edited = [8, -1]
-          color_chat_url = [14, -1, "u"]
+          color_chat_url = [13, -1, "u"]
           color_chat_spoiler = [8, -1]
           color_chat_code = [7, 0]
 
@@ -102,7 +103,7 @@
           color_tree_active_mentioned = [1, 0]
 
           color_format_message = [[-1, -1], [8, -2, 0, 0, 7], [6, -2, 0, 8, 9], [6, -2, 0, 19, 20]]
-          color_format_reply = [[8, -1], [12, -2, 0, 0, 7], [6, -2, 0, 8, 9], [6, -2, 0, 19, 20], [-1, -2, 0, 21, 27]]
+          color_format_reply = [[14, -1], [12, -2, 0, 0, 7], [6, -2, 0, 8, 9], [6, -2, 0, 19, 20], [-1, -2, 0, 21, 27]]
           color_format_reactions = [[8, -1], [5, -2, 0, 0, 7], [-1, -2, 0, 23, 27]]
           color_format_forum = [[-1, -1], [8, -2, 0, 0, 12], [6, -2, 0, 15, 20]]
         '';
