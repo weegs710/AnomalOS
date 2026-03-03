@@ -19,7 +19,6 @@
             postPatch = "";
           }))
           protonup-qt
-          ryubing
           (wrapRetroArch {
             cores = with libretro; [
               nestopia
