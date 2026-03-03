@@ -29,38 +29,20 @@
     menus = {
       config = commonSettings // {
         menu = [
-          {key = "e"; desc = "endcord"; cmd = "ghostty --title=endcord --font-size=11 -e endcord";}
-          {key = "f"; desc = "flow"; cmd = ''ghostty --title=flow -e fish -c "cd ${homeDir}/dotfiles && exec flow"'';}
-          {key = "s"; desc = "steam"; cmd = "steam";}
-          {key = "m"; desc = "euphonica"; cmd = euphonicaCmd;}
-          {key = "v"; desc = "stremio"; cmd = "flatpak run com.stremio.Stremio";}
-          {key = "h"; desc = "helium"; cmd = "helium";}
+          # Quick launches
           {key = "b"; desc = "btop"; cmd = btopCmd;}
-          {key = "question"; desc = "launcher"; cmd = "noctalia-shell ipc call launcher toggle";}
-          {
-            key = "Print";
-            desc = "screenshot";
-            submenu = [
-              {key = "r"; desc = "region → clipboard"; cmd = "hyprshot -m region --clipboard-only";}
-              {key = "s"; desc = "region → save"; cmd = "hyprshot -m region -o ${homeDir}/Pictures";}
-              {key = "w"; desc = "window → clipboard"; cmd = "hyprshot -m window --clipboard-only";}
-            ];
-          }
-          {
-            key = "p";
-            desc = "power";
-            submenu = [
-              {key = "l"; desc = "lock"; cmd = "noctalia-shell ipc call lockScreen lock";}
-              {key = "s"; desc = "sleep"; cmd = "systemctl suspend";}
-              {key = "r"; desc = "reboot"; cmd = "reboot";}
-              {key = "q"; desc = "shutdown"; cmd = "poweroff";}
-            ];
-          }
+          {key = "m"; desc = "euphonica"; cmd = euphonicaCmd;}
+          {key = "h"; desc = "helium"; cmd = "helium";}
+          {key = "s"; desc = "steam"; cmd = "steam";}
+          {key = "v"; desc = "stremio"; cmd = "flatpak run com.stremio.Stremio";}
+          {key = "z"; desc = "zed"; cmd = "zeditor";}
+          # Category menus
           {
             key = "c";
             desc = "comms";
             submenu = [
               {key = "e"; desc = "endcord"; cmd = "ghostty --title=endcord --font-size=11 -e endcord";}
+              {key = "g"; desc = "gajim"; cmd = "gajim";}
             ];
           }
           {
@@ -75,18 +57,17 @@
             key = "g";
             desc = "games";
             submenu = [
-              {key = "s"; desc = "steam"; cmd = "steam";}
-              {key = "r"; desc = "retroarch"; cmd = "retroarch";}
               {
                 key = "o";
                 desc = "openra";
                 submenu = [
+                  {key = "d"; desc = "Dune 2000"; cmd = "openra-d2k";}
                   {key = "r"; desc = "Red Alert"; cmd = "openra-ra";}
                   {key = "c"; desc = "Tiberian Dawn"; cmd = "openra-cnc";}
-                  {key = "d"; desc = "Dune 2000"; cmd = "openra-d2k";}
                 ];
               }
-              {key = "p"; desc = "protonup-qt"; cmd = "protonup-qt";}
+              {key = "r"; desc = "retroarch"; cmd = "retroarch";}
+              {key = "s"; desc = "steam"; cmd = "steam";}
             ];
           }
           {
@@ -94,8 +75,10 @@
             desc = "media";
             submenu = [
               {key = "m"; desc = "euphonica"; cmd = euphonicaCmd;}
-              {key = "v"; desc = "stremio"; cmd = "flatpak run com.stremio.Stremio";}
               {key = "g"; desc = "gimp"; cmd = "gimp";}
+              {key = "q"; desc = "qview"; cmd = "qview";}
+              {key = "v"; desc = "stremio"; cmd = "flatpak run com.stremio.Stremio";}
+              {key = "z"; desc = "zathura"; cmd = "zathura";}
             ];
           }
           {
@@ -103,9 +86,39 @@
             desc = "tools";
             submenu = [
               {key = "b"; desc = "btop"; cmd = btopCmd;}
-              {key = "n"; desc = "nemo"; cmd = "nemo";}
               {key = "c"; desc = "cryptomator"; cmd = "cryptomator";}
+              {key = "f"; desc = "filen"; cmd = "filen-desktop";}
+              {key = "g"; desc = "gparted"; cmd = "gparted";}
+              {key = "l"; desc = "lact"; cmd = "lact gui";}
+              {key = "n"; desc = "nemo"; cmd = "nemo";}
+              {key = "p"; desc = "piper"; cmd = "piper";}
+              {key = "t"; desc = "protontricks"; cmd = "protontricks --no-term --gui";}
+              {key = "u"; desc = "protonup-qt"; cmd = "protonup-qt";}
               {key = "x"; desc = "transmission"; cmd = "transmission-gtk";}
+              {key = "v"; desc = "virt-manager"; cmd = "virt-manager";}
+            ];
+          }
+          # Launcher
+          {key = "question"; desc = "launcher"; cmd = "noctalia-shell ipc call launcher toggle";}
+          # Screenshot
+          {
+            key = "Print";
+            desc = "screenshot";
+            submenu = [
+              {key = "r"; desc = "region → clipboard"; cmd = "hyprshot -m region --clipboard-only";}
+              {key = "s"; desc = "region → save"; cmd = "hyprshot -m region -o ${homeDir}/Pictures";}
+              {key = "w"; desc = "window → clipboard"; cmd = "hyprshot -m window --clipboard-only";}
+            ];
+          }
+          # Power
+          {
+            key = "p";
+            desc = "power";
+            submenu = [
+              {key = "l"; desc = "lock"; cmd = "noctalia-shell ipc call lockScreen lock";}
+              {key = "r"; desc = "reboot"; cmd = "reboot";}
+              {key = "q"; desc = "shutdown"; cmd = "poweroff";}
+              {key = "s"; desc = "sleep"; cmd = "systemctl suspend";}
             ];
           }
         ];
