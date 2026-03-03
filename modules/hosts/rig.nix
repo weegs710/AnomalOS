@@ -2,8 +2,8 @@
   inputs,
   self,
   ...
-}: {
-  flake.nixosConfigurations.Rig = inputs.nixpkgs.lib.nixosSystem {
+}: let
+  rig = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     specialArgs = {inherit inputs;};
     modules =
@@ -14,7 +14,7 @@
         ./_hardware-configuration.nix
 
         # Host-specific configuration
-        ({config, ...}: {
+        ({...}: {
           mySystem = {
             hostName = "HX99G";
             user = {
@@ -72,4 +72,7 @@
         })
       ];
   };
+in {
+  flake.nixosConfigurations.Rig = rig;
+  flake.rig = rig;
 }

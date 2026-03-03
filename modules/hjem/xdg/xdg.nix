@@ -232,52 +232,6 @@
             Inherits=phinger-cursors-dark
           '';
 
-          # Hidden desktop entries — suppress defaults from app menu
-          "applications/qt5ct.desktop".text = ''
-            [Desktop Entry]
-            Type=Application
-            Name=Qt5 Settings
-            Hidden=true
-          '';
-          "applications/qt6ct.desktop".text = ''
-            [Desktop Entry]
-            Type=Application
-            Name=Qt6 Settings
-            Hidden=true
-          '';
-          "applications/kvantummanager.desktop".text = ''
-            [Desktop Entry]
-            Type=Application
-            Name=Kvantum Manager
-            Hidden=true
-          '';
-          "applications/org.pulseaudio.pavucontrol.desktop".text = ''
-            [Desktop Entry]
-            Type=Application
-            Name=PulseAudio Volume Control
-            Hidden=true
-          '';
-          "applications/org.freedesktop.Piper.desktop".text = ''
-            [Desktop Entry]
-            Type=Application
-            Name=Piper
-            Hidden=true
-          '';
-
-          # qView — registers image mime types, hidden from menu
-          "applications/com.interversehq.qView.desktop".text = ''
-            [Desktop Entry]
-            Type=Application
-            Name=qView
-            GenericName=Image Viewer
-            Comment=Minimal image viewer
-            Exec=qview %U
-            Icon=com.interversehq.qView
-            NoDisplay=false
-            Categories=Qt;Graphics;Viewer;Photography;
-            MimeType=image/bmp;image/x-win-bitmap;image/gif;image/icns;image/x-icon;image/jpeg;image/jpg;image/x-portable-bitmap;image/x-portable-graymap;image/png;image/x-portable-pixmap;image/svg+xml;image/tiff;image/vnd.wap.wbmp;image/webp;image/x-xbitmap;image/x-xpixmap;application/x-navi-animation;image/apng;image/avif;image/avif-sequence;image/x-sgi-bw;image/aces;image/x-exr;image/vnd.radiance;image/heic;image/heif;image/jxl;application/x-krita;image/openraster;image/vnd.zbrush.pcx;image/x-pcx;image/x-pic;image/vnd.adobe.photoshop;application/x-photoshop;application/photoshop;application/psd;image/psd;image/x-sun-raster;image/x-rgb;image/x-sgi-rgba;image/sgi;image/x-tga;image/x-xcf;
-          '';
-
           # flow-control — terminal text editor with LSP support
           "applications/flow-control.desktop".text = ''
             [Desktop Entry]

@@ -250,12 +250,12 @@
 
           def nrs-rig [] {
             cd ~/dotfiles/
-            nh os switch .#nixosConfigurations.Rig
+            nh os switch .#rig
           }
 
           def nrt-rig [] {
             cd ~/dotfiles/
-            nh os test .#nixosConfigurations.Rig
+            nh os test .#rig
           }
 
           def snag [] {
@@ -265,7 +265,7 @@
 
           def evaltime [] {
             cd ~/dotfiles/
-            hyperfine 'nix eval .#nixosConfigurations.Rig.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
+            hyperfine 'nix eval .#rig.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
           }
 
           def recycle [] {

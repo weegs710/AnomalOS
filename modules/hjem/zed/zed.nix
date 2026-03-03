@@ -8,7 +8,6 @@
     username = config.mySystem.user.name;
     wrappedZed = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.zed;
     flakePath = "${config.users.users.${username}.home}/dotfiles";
-    hostName = config.networking.hostName;
     settingsJson = pkgs.writeText "zed-settings.json" (builtins.toJSON {
       theme = "Noctalia Dark";
       telemetry = {
@@ -38,7 +37,7 @@
         nixd.settings = {
           nixpkgs.expr = "import (builtins.getFlake \"${flakePath}\").inputs.nixpkgs { }";
           formatting.command = ["alejandra" "--quiet"];
-          options.nixos.expr = "(builtins.getFlake \"${flakePath}\").nixosConfigurations.${hostName}.options";
+          options.nixos.expr = "(builtins.getFlake \"${flakePath}\").rig.options";
         };
         basedpyright.settings.basedpyright.analysis = {
           typeCheckingMode = "standard";
