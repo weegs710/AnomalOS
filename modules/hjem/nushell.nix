@@ -224,6 +224,7 @@
         "oh-my-posh/config.json".text = ompConfig;
 
         "nushell/env.nu".text = ''
+          $env.SHELL = (^which nu | str trim)
           $env.PAGER = "bat"
           $env.MANPAGER = "sh -c 'col -bx | bat -l man -p'"
 
