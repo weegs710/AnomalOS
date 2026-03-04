@@ -74,5 +74,5 @@
   };
 in {
   flake.nixosConfigurations.Rig = rig;
-  flake.rig = rig;
+  flake.nixosConfigurations.rig = rig;
 }

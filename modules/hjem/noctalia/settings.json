@@ -1,5 +1,5 @@
 {
-  "settingsVersion": 53,
+  "settingsVersion": 55,
   "bar": {
     "barType": "simple",
     "position": "top",
@@ -9,6 +9,9 @@
     "showCapsule": true,
     "capsuleOpacity": 0.75,
     "capsuleColorKey": "none",
+    "widgetSpacing": 6,
+    "contentPadding": 2,
+    "fontScale": 1,
     "backgroundOpacity": 0,
     "useSeparateOpacity": true,
     "floating": false,
@@ -21,6 +24,7 @@
     "displayMode": "always_visible",
     "autoHideDelay": 500,
     "autoShowDelay": 150,
+    "showOnWorkspaceSwitch": true,
     "widgets": {
       "left": [
         {
@@ -100,14 +104,11 @@
         },
         {
           "compactMode": false,
-          "compactShowAlbumArt": true,
-          "compactShowVisualizer": false,
           "hideMode": "visible",
           "hideWhenIdle": false,
           "id": "MediaMini",
           "maxWidth": 300,
           "panelShowAlbumArt": true,
-          "panelShowVisualizer": true,
           "scrollingMode": "always",
           "showAlbumArt": false,
           "showArtistFirst": true,
@@ -128,10 +129,19 @@
         }
       ]
     },
+    "mouseWheelAction": "none",
+    "reverseScroll": false,
+    "mouseWheelWrap": true,
+    "middleClickAction": "none",
+    "middleClickFollowMouse": false,
+    "middleClickCommand": "",
+    "rightClickAction": "controlCenter",
+    "rightClickFollowMouse": true,
+    "rightClickCommand": "",
     "screenOverrides": []
   },
   "general": {
-    "avatarImage": "/home/weegs/Pictures/2026-01-03-143506_hyprshot.png",
+    "avatarImage": "/home/weegs/.local/share/wallpapers/cyberstoner.png",
     "dimmerOpacity": 0,
     "showScreenCorners": false,
     "forceBlackScreenCorners": false,
@@ -147,6 +157,7 @@
     "lockOnSuspend": false,
     "showSessionButtonsOnLockScreen": true,
     "showHibernateOnLockScreen": false,
+    "enableLockScreenMediaControls": false,
     "enableShadows": true,
     "shadowDirection": "center",
     "shadowOffsetX": 0,
@@ -154,13 +165,14 @@
     "language": "",
     "allowPanelsOnScreenWithoutBar": true,
     "showChangelogOnStartup": true,
-    "telemetryEnabled": false,
+    "telemetryEnabled": true,
     "enableLockScreenCountdown": true,
     "lockScreenCountdownDuration": 10000,
     "autoStartAuth": false,
     "allowPasswordWithFprintd": false,
     "clockStyle": "custom",
     "clockFormat": "hh\\nmm",
+    "passwordChars": false,
     "lockScreenMonitors": [],
     "lockScreenBlur": 0,
     "lockScreenTint": 0,
@@ -169,7 +181,7 @@
       "keyDown": ["Down"],
       "keyLeft": ["Left"],
       "keyRight": ["Right"],
-      "keyEnter": ["Return"],
+      "keyEnter": ["Return", "Enter"],
       "keyEscape": ["Esc"],
       "keyRemove": ["Del"]
     },
@@ -181,14 +193,11 @@
     "fontDefaultScale": 1,
     "fontFixedScale": 1,
     "tooltipsEnabled": true,
+    "boxBorderEnabled": true,
     "panelBackgroundOpacity": 0.75,
     "panelsAttachedToBar": false,
     "settingsPanelMode": "centered",
-    "wifiDetailsViewMode": "grid",
-    "bluetoothDetailsViewMode": "grid",
-    "networkPanelView": "wifi",
-    "bluetoothHideUnnamedDevices": false,
-    "boxBorderEnabled": true
+    "settingsPanelSideBarCardStyle": false
   },
   "location": {
     "name": "43567",
@@ -223,7 +232,7 @@
   "wallpaper": {
     "enabled": true,
     "overviewEnabled": false,
-    "directory": "/home/weegs/.local/share/wallpapers",
+    "directory": "~/.local/share/wallpapers",
     "monitorDirectories": [],
     "enableMultiMonitorDirectories": false,
     "showHiddenFiles": true,
@@ -238,10 +247,10 @@
     "randomIntervalSec": 900,
     "transitionDuration": 2000,
     "transitionType": "stripes",
-    "skipStartupTransition": false,
-    "transitionEdgeSmoothness": 0,
+    "skipStartupTransition": true,
+    "transitionEdgeSmoothness": 0.05,
     "panelPosition": "follow_bar",
-    "hideWallpaperFilenames": true,
+    "hideWallpaperFilenames": false,
     "overviewBlur": 0.4,
     "overviewTint": 0.6,
     "useWallhaven": false,
@@ -366,22 +375,34 @@
     "monitors": [],
     "pinnedApps": [],
     "colorizeIcons": false,
+    "showLauncherIcon": false,
+    "launcherPosition": "end",
+    "launcherIconColor": "none",
     "pinnedStatic": false,
     "inactiveIndicators": false,
+    "groupApps": false,
+    "groupContextMenuMode": "extended",
+    "groupClickAction": "cycle",
+    "groupIndicatorStyle": "dots",
     "deadOpacity": 0.6,
     "animationSpeed": 1,
     "sitOnFrame": false,
-    "showFrameIndicator": true
+    "showDockIndicator": false,
+    "indicatorThickness": 3,
+    "indicatorColor": "primary",
+    "indicatorOpacity": 0.6
   },
   "network": {
     "wifiEnabled": true,
     "airplaneModeEnabled": false,
     "bluetoothRssiPollingEnabled": false,
     "bluetoothRssiPollIntervalMs": 10000,
+    "networkPanelView": "wifi",
     "wifiDetailsViewMode": "grid",
     "bluetoothDetailsViewMode": "grid",
     "bluetoothHideUnnamedDevices": false,
-    "disableDiscoverability": false
+    "disableDiscoverability": false,
+    "bluetoothAutoConnect": true
   },
   "sessionMenu": {
     "enableCountdown": true,
@@ -483,12 +504,14 @@
     "visualizerType": "linear",
     "mprisBlacklist": [],
     "preferredPlayer": "",
-    "volumeFeedback": false
+    "volumeFeedback": false,
+    "volumeFeedbackSoundFile": ""
   },
   "brightness": {
     "brightnessStep": 5,
     "enforceMinimum": true,
-    "enableDdcSupport": false
+    "enableDdcSupport": false,
+    "backlightDeviceMappings": []
   },
   "colorSchemes": {
     "useWallpaperColors": false,
@@ -497,7 +520,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "content",
+    "generationMethod": "fruit-salad",
     "monitorForColors": ""
   },
   "templates": {
@@ -505,14 +528,6 @@
       {
         "enabled": true,
         "id": "gtk"
-      },
-      {
-        "enabled": true,
-        "id": "qt"
-      },
-      {
-        "enabled": true,
-        "id": "kcolorscheme"
       },
       {
         "enabled": true,
@@ -533,6 +548,22 @@
       {
         "enabled": true,
         "id": "btop"
+      },
+      {
+        "enabled": true,
+        "id": "kcolorscheme"
+      },
+      {
+        "enabled": true,
+        "id": "qt"
+      },
+      {
+        "enabled": true,
+        "id": "zathura"
+      },
+      {
+        "enabled": true,
+        "id": "hyprtoolkit"
       }
     ],
     "enableUserTheming": true
@@ -547,21 +578,36 @@
     "manualSunset": "18:30"
   },
   "hooks": {
-    "enabled": false,
+    "enabled": true,
     "wallpaperChange": "",
     "darkModeChange": "",
     "screenLock": "",
     "screenUnlock": "",
     "performanceModeEnabled": "",
     "performanceModeDisabled": "",
-    "startup": "",
+    "startup": "sleep 5 && python3 -c \"import json,os,time; p=os.path.expanduser('~/.config/noctalia/settings.json'); s=json.load(open(p)); o=s['wallpaper'].get('sortOrder','name'); s['wallpaper']['sortOrder']='__rescan__'; open(p,'w').write(json.dumps(s,indent=4)); time.sleep(1); s=json.load(open(p)); s['wallpaper']['sortOrder']=o; open(p,'w').write(json.dumps(s,indent=4))\"",
     "session": ""
   },
   "plugins": {
     "autoUpdate": false
   },
+  "idle": {
+    "enabled": false,
+    "screenOffTimeout": 600,
+    "lockTimeout": 660,
+    "suspendTimeout": 1800,
+    "fadeDuration": 5,
+    "screenOffCommand": "",
+    "lockCommand": "",
+    "suspendCommand": "",
+    "resumeScreenOffCommand": "",
+    "resumeLockCommand": "",
+    "resumeSuspendCommand": "",
+    "customCommands": "[]"
+  },
   "desktopWidgets": {
     "enabled": false,
+    "overviewEnabled": true,
     "gridSnap": false,
     "monitorWidgets": [
       {
