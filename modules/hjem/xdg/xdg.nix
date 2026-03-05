@@ -36,7 +36,7 @@
       ];
 
       environment.sessionVariables = {
-        EDITOR = "flow";
+        EDITOR = "fresh";
         NIXOS_OZONE_WL = "1";
         TERMINAL = "ghostty";
         VISUAL = "zeditor";
@@ -94,7 +94,7 @@
             application/x-rar=org.gnome.FileRoller.desktop
             application/x-tar=org.gnome.FileRoller.desktop
             application/x-terminal-emulator=com.mitchellh.ghostty.desktop
-            application/xml=flow-control.desktop
+            application/xml=fresh.desktop
             application/zip=org.gnome.FileRoller.desktop
             audio/aac=io.github.htkhiem.Euphonica.desktop
             audio/flac=io.github.htkhiem.Euphonica.desktop
@@ -114,8 +114,8 @@
             image/tiff=com.interversehq.qView.desktop
             image/webp=com.interversehq.qView.desktop
             text/html=helium.desktop
-            text/plain=flow-control.desktop
-            text/xml=flow-control.desktop
+            text/plain=fresh.desktop
+            text/xml=fresh.desktop
             video/3gpp=com.stremio.Stremio.desktop
             video/3gpp2=com.stremio.Stremio.desktop
             video/mp4=com.stremio.Stremio.desktop
@@ -145,14 +145,14 @@
             Inherits=phinger-cursors-dark
           '';
 
-          # flow-control — terminal text editor with LSP support
-          "applications/flow-control.desktop".text = ''
+          # fresh — terminal text editor with LSP support
+          "applications/fresh.desktop".text = ''
             [Desktop Entry]
             Type=Application
-            Name=Flow Control
+            Name=Fresh
             GenericName=Text Editor
-            Comment=Programmer's text editor with tree-sitter and LSP support
-            Exec=ghostty -e flow %F
+            Comment=Terminal-based text editor with LSP support and TypeScript plugins
+            Exec=ghostty -e fresh %F
             Icon=text-editor
             Terminal=false
             Categories=Development;TextEditor;Utility;

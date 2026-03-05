@@ -18,7 +18,7 @@
             keybind = shift+enter=text:\n
             keybind = ctrl+v=paste_from_clipboard
 
-            # Unbind terminal shortcuts that conflict with flow-control editor
+            # Unbind terminal shortcuts that conflict with fresh editor
             keybind = ctrl+q=unbind
             keybind = ctrl+w=unbind
             keybind = ctrl+tab=unbind

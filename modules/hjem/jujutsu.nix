@@ -19,7 +19,7 @@
 
           [ui]
             pager = ":builtin"
-            editor = "flow"
+            editor = "fresh"
 
           [git]
             auto-local-branch = true

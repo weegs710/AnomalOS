@@ -109,7 +109,7 @@
             key = "d";
             desc = "dev";
             submenu = [
-              {key = "f"; desc = "flow"; cmd = ''ghostty --title=flow -e fish -c "cd ${homeDir}/dotfiles && exec flow"'';}
+              {key = "f"; desc = "fresh"; cmd = "ghostty --title=fresh -e fresh";}
               {key = "g"; desc = "ghostty"; cmd = terminalCmd;}
               {key = "s"; desc = "superfile"; cmd = fileManagerCmd;}
               {key = "z"; desc = "zed"; cmd = "zeditor";}
