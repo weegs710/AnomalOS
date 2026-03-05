@@ -16,6 +16,15 @@
       kernelPackages = let
         customKernel = kernelPkgs.cachyosKernels.linux-cachyos-latest-x86_64-v3.override {
           bbr3 = true;
+          argsOverride = {
+            # Inject architecture-specific flags for v3 performance
+            extraMakeFlags = ["KCFLAGS=-march=x86-64-v3 -O2"];
+          };
+          structuredExtraConfig = with kernelPkgs.lib.kernel; {
+            # Enable Zstandard compression to keep closure lean
+            MODULE_COMPRESS_ZSTD = yes;
+          };
+          # ------------------------------------------------
         };
         basePackages = kernelPkgs.linuxKernel.packagesFor customKernel;
       in
@@ -24,6 +33,7 @@
             kernel = customKernel;
           };
         });
+
       kernelParams = [
         "quiet"
         "hid_apple.fnmode=2"
