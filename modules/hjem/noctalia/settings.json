@@ -141,7 +141,7 @@
     "screenOverrides": []
   },
   "general": {
-    "avatarImage": "/home/weegs/.local/share/wallpapers/cyberstoner.png",
+    "avatarImage": "/home/weegs/.local/share/wallpapers/cyberstoner.webp",
     "dimmerOpacity": 0,
     "showScreenCorners": false,
     "forceBlackScreenCorners": false,
@@ -359,8 +359,8 @@
     "batteryCriticalThreshold": 5,
     "enableDgpuMonitoring": true,
     "useCustomColors": false,
-    "warningColor": "",
-    "criticalColor": "",
+    "warningColor": "#b6a2e0",
+    "criticalColor": "#fd4663",
     "externalMonitor": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
   },
   "dock": {
@@ -514,13 +514,13 @@
     "backlightDeviceMappings": []
   },
   "colorSchemes": {
-    "useWallpaperColors": false,
+    "useWallpaperColors": true,
     "predefinedScheme": "Eldritch",
     "darkMode": true,
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "fruit-salad",
+    "generationMethod": "faithful",
     "monitorForColors": ""
   },
   "templates": {
