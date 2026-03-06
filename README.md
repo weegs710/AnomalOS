@@ -4,13 +4,15 @@
 
 > **Requirements**: Nushell is required for this configuration. Shell wrapper scripts and utilities are written in nushell and will not work without it. Nushell is included in the flake, but if you're cherry-picking modules, make sure you have it installed. You have been warned.
 
+![System Overview](docs/assets/HX99G-nixos.svg)
+
 ## What's in here
 
 - **Kernel:** CachyOS Linux 6.19.2 with v3 microcode, bbr3 network control, and zfs support patches.
 - **WM**: hyprland (pure wayland) with noctalia-shell
 - **Display Manager**: ly
 - **Shell**: nushell with oh-my-posh prompt
-- **Editors**: zed (GUI) flow-control (TUI)
+- **Editors**: zed (GUI) fresh (TUI)
 - **Term**: ghostty
 - **Filesystem**: zfs with automated snapshots
 - **Gaming**: steam with proton tooling, decky-loader, mangohud, and bunch of emulators

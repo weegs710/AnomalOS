@@ -230,7 +230,7 @@
             windowrule = workspace special:stash, match:class ^(piper)$
             windowrule = float on, match:title ^(btop)$
             windowrule = workspace special:stash, match:title ^(btop)$
-            windowrule = workspace 2, match:title ^(flow)$
+            windowrule = workspace 2, match:title ^(fresh)$
             windowrule = tile on, match:title ^(pulsemixer)$
             windowrule = workspace special:stash, match:title ^(pulsemixer)$
             windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(helium)$

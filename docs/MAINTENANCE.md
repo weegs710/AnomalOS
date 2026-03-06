@@ -109,8 +109,8 @@ Select previous generation from boot menu. If that doesn't work, see the USB rec
 
 ```bash
 cd ~/dotfiles
-git log --oneline
-git checkout <last-working-commit>
+jj log              # Find the last working commit
+jj edit <id>        # Switch working copy to that commit
 nrs-rig
 ```
 

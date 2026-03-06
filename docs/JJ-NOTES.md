@@ -20,7 +20,7 @@
 
 ```bash
 # Make changes to config files
-vim configuration.nix
+fresh modules/hjem/something.nix
 
 # Check what changed
 jj s
@@ -28,7 +28,7 @@ jj d
 
 # Describe and finalize
 jj dm "add wireguard configuration"
-jjn          # Creates new commit + moves bookmark (shell alias)
+jj n          # Creates new empty commit (finalizes current)
 
 # Test
 nrt-rig
@@ -37,7 +37,7 @@ nrt-rig
 jj sq
 
 # Push to both remotes (GitHub + Codeberg)
-jj p
+jj-push       # nushell function: fetch + push + fetch
 ```
 
 ## Core Commands
@@ -56,7 +56,6 @@ jj ds         # Diff stats
 ```bash
 jj dm "msg"   # Describe current commit
 jj n          # Create new empty commit (finalizes current)
-jjn           # jj n + move bookmark (shell alias - use this)
 ```
 
 ### Manipulation
@@ -77,10 +76,12 @@ Bookmarks don't auto-advance. After `jj n`, run `jj tug` or use `jjn` shell alia
 ### Remotes
 ```bash
 jj f          # Fetch from all remotes
-jj p          # Push (to both GitHub + Codeberg via origin)
+jj p          # Push
+jj-fetch      # nushell alias: jj git fetch --all-remotes
+jj-push       # nushell def: fetch + push + fetch (defined in nushell.nix)
+jj-pull       # nushell def: fetch + move main bookmark to main@origin
+jj-commit     # nushell def: interactive split + bookmark move
 ```
-
-Origin remote pushes to both GitHub and Codeberg automatically (multiple push URLs configured).
 
 ### Recovery
 ```bash
@@ -91,20 +92,24 @@ Everything is recoverable via operation log. `jj u` works for rebases, squashes,
 
 ## Key Aliases
 
-Configured in `modules/hjem/jujutsu.nix`:
-
-**Daily use:**
+**jj aliases** (configured in `modules/hjem/jujutsu.nix`):
 - `s` — status
 - `d` — diff
 - `dm "msg"` — describe
 - `n` — new commit
 - `sq` — squash
+- `sp` / `spi` — split
 - `p` — push
 - `f` — fetch
 - `u` — undo
+- `l` / `ll` — log (short / detailed)
+- `tug` — move closest bookmark to @-
 
-**Shell aliases** (in `modules/nixos-modules/nix-daemon.nix`):
-- `jjn` — `jj new && jj bookmark move` (recommended workflow)
+**Nushell defs** (defined in `modules/hjem/nushell.nix`):
+- `jj-fetch` — `jj git fetch --all-remotes`
+- `jj-push` — fetch + push + fetch (safe push workflow)
+- `jj-pull` — fetch + move main bookmark to main@origin
+- `jj-commit` — interactive split + bookmark move
 
 ## Differences from Git
 
@@ -130,6 +135,6 @@ If flakes can't see new files, ensure:
 
 Edit `modules/hjem/jujutsu.nix` and rebuild:
 ```bash
-vim modules/hjem/jujutsu.nix
+fresh modules/hjem/jujutsu.nix
 nrt-rig
 ```

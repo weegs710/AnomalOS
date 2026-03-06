@@ -2,6 +2,8 @@
 
 How everything's wired up and how to change it.
 
+![Config Diagram](assets/HX99G-config-diagram.svg)
+
 ## How modules work
 
 Everything in `modules/` gets auto-imported by flake-parts. No manual import lists. Drop a file, it's in.
@@ -122,13 +124,14 @@ System-wide packages go in the relevant module or directly in rig.nix.
 From `modules/nixos-modules/nix-daemon.nix`:
 
 ```bash
-nrt-rig    # Test Rig config
-nrs-rig    # Switch to Rig config
+nrt-rig    # Test Rig config (nh os test)
+nrs-rig    # Switch to Rig config (nh os switch)
 rig-up     # Update + test + prompt to switch
 update     # nix flake update
 recycle    # Keep last 10 generations, GC the rest
 nfa        # nix flake archive
 closure    # Show current system closure size
+noct-up    # Update noctalia flake inputs only
 ```
 
 ## Testing workflow
@@ -144,6 +147,12 @@ Something broke? Rollback:
 ```bash
 sudo nixos-rebuild switch --rollback
 # Or just reboot — test configs revert automatically
+
+# Or use jj to go back to last working commit:
+cd ~/dotfiles
+jj log          # Find the last good commit
+jj edit <id>    # Switch to it
+nrs-rig
 ```
 
 ## What's next

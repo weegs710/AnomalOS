@@ -62,12 +62,12 @@ ASLR, stack protection, kernel pointer hiding, SYN flood protection, ICMP rate l
 Single config file deployed via Hjem. Dwindle tiling, VRR enabled.
 
 **Workspaces:**
-1. **comms** — Vesktop/Discord
-2. **dev** — Zed, Ghostty terminals
+1. **comms** — endcord, gajim
+2. **dev** — Zed, Ghostty terminals, fresh
 3. **games** — Steam and games
 4. **media** — Euphonica, Stremio
 5. **web** — Helium browser
-- **stash** (special) — utility apps (pavucontrol, nmtui, blueman, LACT, btop, piper, etc.)
+- **stash** (special) — utility apps (pavucontrol, nmtui, blueman, LACT, btop, piper, pulsemixer, cliphist)
 
 **Keybinds:**
 
@@ -89,40 +89,28 @@ Single config file deployed via Hjem. Dwindle tiling, VRR enabled.
 | Super+Shift+Arrows | Move window |
 | Super+Home/End | Volume up/down |
 | Super+Pause | Mute toggle |
-| Super Super_L | Noctalia launcher |
+| Super (tap) | wlr-which-key menu |
 | Super+Tab | Noctalia control center |
 | Ctrl+Alt+L | Lock screen |
-| Print | Screenshot region → clipboard |
-| Shift+Print | Screenshot region → ~/Pictures |
-| Ctrl+Print | Screenshot window → clipboard |
+| Ctrl+Alt+Delete | wlr-which-key power menu |
+| Print | wlr-which-key capture menu |
 
-**Quick launch (F-keys):**
+**wlr-which-key** is the primary navigation layer — Super tap opens it. From there: quick app launches, screenshot/record, power menu. See `modules/hjem/wlr-which-key.nix` for the full menu structure.
 
-| Key | App | Workspace |
-|-----|-----|-----------|
-| Super+F1 | Vesktop | comms |
-| Super+F2 | Zed | dev |
-| Super+F3 | Steam | games |
-| Super+F4 | Euphonica | media |
-| Super+Shift+F4 | Stremio | media |
-| Super+F5 | Helium | web |
-| Super+F6 | btop | stash |
-
-**Auto-launch at login:** Steam, Noctalia shell, Helium, Zed, Euphonica, Vesktop.
+**Auto-launch at login:** noctalia-shell only. All other apps are launched on-demand via wlr-which-key or keybinds.
 
 **Window behavior:**
 - Dialogs, popups, file choosers, settings windows float automatically
 - Games workspace: no gaps, no rounding, full opacity
-- Other workspaces: 3px gaps in, 6px gaps out, 0.94 active / 0.90 inactive opacity
-- Vesktop, Steam, Stremio, Helium, Euphonica: full opacity override
-- Floating windows: always full opacity
+- Other workspaces: 3px gaps in, 6px gaps out
+- Helium, steam apps: full opacity override
 - Picture-in-Picture: floats and pins
 
 ### Noctalia (`modules/hjem/noctalia/`)
 
-Shell UI — launcher, bar, lock screen, control center. Color scheme via matugen (currently Fruit Salad). Wallpaper rotation every 10 minutes with wave transitions.
+Shell UI — launcher, bar, lock screen, control center. Color scheme via kcolorscheme. Wallpaper from `~/.local/share/wallpapers/` with random rotation.
 
-Settings live in `modules/hjem/noctalia/settings.json`. Matugen scheme, wallpaper interval, fonts, bar layout are all in there.
+Settings live in `modules/hjem/noctalia/settings.json`.
 
 ### Ly
 
@@ -132,7 +120,7 @@ TUI login screen. Minimal, works with YubiKey auth.
 
 - GTK: adw-gtk3 dark theme, prefer-dark via dconf
 - Cursors: phinger-cursors-dark (hyprcursor variant, custom derivation in `modules/hjem/xdg/xdg.nix`)
-- Fonts: SpaceMono Nerd Font
+- Fonts: Terminess Nerd Font (UI), JetBrainsMono NFM (monospace)
 - Qt: Qt6ct platform theme
 
 ## Development
@@ -143,23 +131,27 @@ AI-assisted development. Project management via `cc` command.
 
 ### Zed (`modules/hjem/zed/`)
 
-GPU-accelerated editor. Language server support (nixd, nil, hyprls). Config deployed via Hjem.
+GPU-accelerated GUI editor. LSP support via nixd, nil, alejandra, basedpyright, ruff. Config deployed via Hjem.
+
+### Fresh (`modules/hjem/fresh-editor.nix`)
+
+TUI editor with LSP and TypeScript plugin support. Wrapped with full LSP toolchain on PATH: nixd, nil, alejandra, basedpyright, ruff, vscode-langservers-extracted, hyprls, marksman, nufmt. Config at `~/.config/fresh/config.json`, deployed via Hjem as a writable copy.
 
 ### Ghostty (`modules/hjem/ghostty.nix`)
 
-GPU-accelerated terminal. SpaceMono Nerd Font Mono, size 13.
+GPU-accelerated terminal. Noctalia theme.
 
-### Fish + Oh My Posh (`modules/hjem/fish.nix`, `oh-my-posh.nix`)
+### Nushell + Oh My Posh (`modules/hjem/nushell.nix`)
 
-Fish shell with Oh My Posh prompt. Git integration, language version detection.
+Nushell as daily driver with Oh My Posh prompt and carapace completions. Aliases and jj workflow functions defined here.
 
 ### Languages (`languages.nix`)
 
-Node.js, Python 3 (with uv), Rust, Java 21. Language servers: nixd, nil, hyprls. Formatter: alejandra.
+Java 21 (`jdk21`). `ns` — fzf-powered nix package search via nix-search-tv. Gated on `features.development`.
 
 ### Dev utilities
 
-`fzf`, `jq`, `tldr`, `gh` (GitHub CLI), `alejandra` (nix formatter).
+`fzf`, `jq`, `gh` (GitHub CLI), `alejandra` (nix formatter), `nix-index`.
 
 ## Gaming
 
