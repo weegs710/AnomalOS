@@ -95,7 +95,6 @@
           {key = "space"; desc = "superfile"; cmd = fileManagerCmd;}
           {key = "e"; desc = "euphonica"; cmd = euphonicaCmd;}
           {key = "h"; desc = "helium"; cmd = "helium";}
-          {key = "z"; desc = "zed"; cmd = "zeditor";}
           # Category menus
           {
             key = "c";
@@ -112,7 +111,6 @@
               {key = "f"; desc = "fresh"; cmd = "ghostty --title=fresh -e fresh";}
               {key = "g"; desc = "ghostty"; cmd = terminalCmd;}
               {key = "s"; desc = "superfile"; cmd = fileManagerCmd;}
-              {key = "z"; desc = "zed"; cmd = "zeditor";}
             ];
           }
           {
