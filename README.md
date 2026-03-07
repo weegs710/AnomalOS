@@ -12,7 +12,7 @@
 - **WM**: hyprland (pure wayland) with noctalia-shell
 - **Display Manager**: ly
 - **Shell**: nushell with oh-my-posh prompt
-- **Editors**: zed (GUI) fresh (TUI)
+- **Editors**: fresh
 - **Term**: ghostty
 - **Filesystem**: zfs with automated snapshots
 - **Gaming**: steam with proton tooling, decky-loader, mangohud, and bunch of emulators
