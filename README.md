@@ -4,7 +4,7 @@
 
 > **Requirements**: Nushell is required for this configuration. Shell wrapper scripts and utilities are written in nushell and will not work without it. Nushell is included in the flake, but if you're cherry-picking modules, make sure you have it installed. You have been warned.
 
-![System Overview](docs/assets/HX99G-nixos.svg)
+![System Overview](docs/assets/anomalOS-overview.svg)
 
 ## What's in here
 

@@ -2,7 +2,7 @@
 
 How everything's wired up and how to change it.
 
-![Config Diagram](assets/HX99G-config-diagram.svg)
+![Config Diagram](assets/anomalOS-diagram.svg)
 
 ## How modules work
 
