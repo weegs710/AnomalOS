@@ -38,9 +38,10 @@ nix run github:ryantm/agenix -- -e secrets/my-secret.age
 
 # Type your secret, save, exit. The .age file is encrypted.
 
-# Force-add it (secrets/ is in .gitignore as defense in depth)
+# secrets/ is gitignored — force-add the encrypted file
 git add -f secrets/my-secret.age
-git commit -m "Add my-secret"
+jj dm "add my-secret"
+jj n
 ```
 
 ## Using a secret in config
@@ -83,9 +84,9 @@ sudo cat /etc/ssh/ssh_host_ed25519_key.pub
 nix run github:ryantm/agenix -- -r
 
 # 4. Commit
-git add modules/nixos-modules/secrets.nix
 git add -f secrets/*.age
-git commit -m "Add new machine to secrets"
+jj dm "add new machine to secrets"
+jj n
 ```
 
 ## Why git add -f?
@@ -107,4 +108,4 @@ grep -r "age.secrets" ~/dotfiles/modules/   # Check declaration exists
 ```
 
 **YubiKey issues with agenix:**
-YubiKey-backed SSH keys work for system decryption at boot, but CLI operations (creating/editing secrets) can be finicky. If agenix hangs, try using a regular SSH key for that operation.
+YubiKey-backed SSH keys work fine at boot, but creating or editing secrets interactively can be flaky. If agenix hangs, use a regular SSH key instead.

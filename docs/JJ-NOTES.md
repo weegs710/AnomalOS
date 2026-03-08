@@ -71,7 +71,7 @@ jj bs <name> -r <rev>   # Set bookmark to revision
 jj tug                  # Move closest bookmark to @-
 ```
 
-Bookmarks don't auto-advance. After `jj n`, run `jj tug` or use `jjn` shell alias.
+Bookmarks don't auto-advance. After `jj n`, run `jj tug` to move the bookmark forward.
 
 ### Remotes
 ```bash
@@ -117,7 +117,7 @@ Everything is recoverable via operation log. `jj u` works for rebases, squashes,
 |-----|-----|-------|
 | `git status` | `jj s` | |
 | `git diff` | `jj d` | |
-| `git commit -m` | `jj dm "msg"` then `jjn` | Describe then finalize |
+| `git commit -m` | `jj dm "msg"` then `jj n` | Describe then finalize |
 | `git push` | `jj p` | |
 | `git fetch` | `jj f` | No auto-merge |
 | `git undo` | `jj u` | Undo last operation |
@@ -129,7 +129,7 @@ Everything is recoverable via operation log. `jj u` works for rebases, squashes,
 
 If flakes can't see new files, ensure:
 1. Files aren't in `.gitignore`
-2. You've run `jjn` to move bookmarks (keeps git in sync)
+2. Run `jj tug` to move bookmarks (keeps git in sync)
 
 ## Configuration
 

@@ -65,7 +65,7 @@ zfs list -o name,used,avail,refer,usedsnap,usedds
 # usedsnap = how much your snapshots are actually using
 ```
 
-Snapshots use significant space when there's heavy file churn, large deletions, or long retention on rapidly changing data.
+Snapshots eat space fast if you're deleting a lot or keeping long retention on datasets that change constantly.
 
 ## Sanoid health
 
