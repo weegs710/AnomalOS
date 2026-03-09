@@ -278,10 +278,6 @@ But remember, this is primarily my personal config, and I am still fairly new to
 
 **[Michael C Buckley](https://github.com/Michael-C-Buckley)**, **[iynaix](https://github.com/iynaix)**, **[vimjoyer](https://github.com/vimjoyer)** — for helping me figure out NixOS. Reading their configs and vimjoyer's videos are how I actually learned how to do any of this.
 
-**[hjem](https://github.com/feel-co/hjem)** — for existing. home-manager wasn't for me and hjem gave me a way out.
-
-**[noctalia-dev](https://github.com/noctalia-dev)** — for noctalia-shell. Dropped it in and replaced my entire hyprland ecosystem in one shot — stylix, waybar, rofi, all of it.
-
 ## license
 
 MIT License. Do whatever you want with it.
