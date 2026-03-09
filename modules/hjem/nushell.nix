@@ -259,9 +259,8 @@
             nh os test .#rig
           }
 
-          def snag [] {
-            cd ~/Documents/test-zone/
-            ./snag.py
+          def --wrapped snag [...args: string] {
+            nu ~/.config/snag/snag.nu ...$args
           }
 
           def evaltime [] {
@@ -312,7 +311,6 @@
           alias cam-list = andcam-list
           alias cam-off = pkill scrcpy
           alias cam-on = andcam-start
-          alias scrapem = download-playlist
           alias scrapev = download-video
           alias gparted = sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted
           alias jj-fetch = jj git fetch --all-remotes
