@@ -19,6 +19,7 @@
         ripgrep
         rustc
         tldr
+        tutanota-desktop
         uv
         zathura
       ];
