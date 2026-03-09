@@ -4,18 +4,9 @@
 
 > **Requirements**: nushell is required for this configuration. Shell wrapper scripts and utilities are written in nushell and will not work without it. nushell is included in the flake, but if you're cherry-picking modules, make sure you have it installed. You have been warned.
 
-![System Overview](docs/assets/anomalOS-overview.svg)
+![anomalOS Overview](docs/assets/anomalOS-overview.svg)
 
-## stack
-
-- **Kernel:** CachyOS Linux 6.19.2, v3 microcode, bbr3, zfs patches
-- **WM:** Hyprland (pure wayland) + noctalia-shell
-- **Display Manager:** ly
-- **Shell:** nushell + oh-my-posh
-- **Editor:** fresh
-- **Terminal:** ghostty
-- **Filesystem:** ZFS with automated snapshots
-- **Gaming:** steam, proton, decky-loader, mangohud, emulators
+![anomalOS Diagram](docs/assets/anomalOS-diagram.svg)
 
 ## features
 
