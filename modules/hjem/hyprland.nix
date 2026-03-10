@@ -2,11 +2,27 @@
   flake.nixosModules.hyprland = {
     config,
     lib,
+    pkgs,
     ...
   }: let
     username = config.mySystem.user.name;
+    hyprFocus = pkgs.writeScriptBin "hypr-focus" ''
+      #!/usr/bin/env nu
+      def main [direction: string] {
+        let layout = (hyprctl activeworkspace -j | from json | get tiledLayout)
+        if $layout == "monocle" {
+          match $direction {
+            "l" | "u" => { hyprctl dispatch layoutmsg cycleprev }
+            "r" | "d" => { hyprctl dispatch layoutmsg cyclenext }
+          }
+        } else {
+          hyprctl dispatch movefocus $direction
+        }
+      }
+    '';
   in {
     config = lib.mkIf config.mySystem.features.desktop {
+      users.users.${username}.packages = [ hyprFocus ];
       hjem.users.${username} = {
         xdg.config.files."hypr/hyprland.conf".text = ''
           # Variables
@@ -160,10 +176,10 @@
           bind = $mainMod, pause, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
           bindel = $mainMod, home, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
           bindel = $mainMod, end, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-          binde = $mainMod, left, movefocus, l
-          binde = $mainMod, right, movefocus, r
-          binde = $mainMod, up, movefocus, u
-          binde = $mainMod, down, movefocus, d
+          binde = $mainMod, left, exec, hypr-focus l
+          binde = $mainMod, right, exec, hypr-focus r
+          binde = $mainMod, up, exec, hypr-focus u
+          binde = $mainMod, down, exec, hypr-focus d
           binde = $mainMod SHIFT, left, movewindow, l
           binde = $mainMod SHIFT, right, movewindow, r
           binde = $mainMod SHIFT, up, movewindow, u
