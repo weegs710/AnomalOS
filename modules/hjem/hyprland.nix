@@ -84,8 +84,8 @@
           # Decoration
           decoration {
               rounding = 10
-              active_opacity = 0.94
-              inactive_opacity = 0.90
+              active_opacity = 1.0
+              inactive_opacity = 1.0
               shadow {
                   enabled = true
                   range = 8
@@ -212,6 +212,7 @@
           windowrule = float on, match:title ^(.*[Pp]opup.*)$
           windowrule = workspace 1, match:class ^(org.gajim.Gajim)$
           windowrule = workspace 1, match:class ^(vesktop)$
+          windowrule = workspace 1, match:class ^(chrome-kippjfofjhjlffjecoapiogbkgbpmgej-Default)$
           windowrule = workspace 2, match:class ^(dev\.zed\.Zed)$
           windowrule = workspace 2, match:class ^(Zed)$
           windowrule = workspace 2, match:title ^(ghostty)$
@@ -253,6 +254,9 @@
           windowrule = workspace 5, match:class ^(com\.stremio\.stremio)$
           windowrule = match:class ^(gcr-prompter)$, stay_focused on
           windowrule = match:class ^(gcr-prompter)$, focus_on_activate on
+
+          # Workspace-based opacity: workspace 2 (dev) is transparent, everything else is fully opaque
+          windowrule = opacity 0.94 override 0.90 override, match:workspace 2
         '';
       };
     };
