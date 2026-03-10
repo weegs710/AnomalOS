@@ -128,6 +128,11 @@
                   desc = "gajim";
                   cmd = "gajim";
                 }
+                {
+                  key = "f";
+                  desc = "facebook";
+                  cmd = "helium --app-id=kippjfofjhjlffjecoapiogbkgbpmgej";
+                }
               ];
             }
             {
