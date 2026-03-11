@@ -8,6 +8,17 @@
   }: let
     username = config.mySystem.user.name;
     system = pkgs.stdenv.hostPlatform.system;
+    restartScript = pkgs.writeTextFile {
+      name = "noctalia-restart";
+      executable = true;
+      text = ''
+        #!${pkgs.nushell}/bin/nu
+        if (^${pkgs.procps}/bin/pgrep quickshell | complete).exit_code != 0 { exit }
+        ^${pkgs.procps}/bin/pkill quickshell
+        sleep 500ms
+        ^${pkgs.tmux}/bin/tmux new-session -d /etc/profiles/per-user/${username}/bin/noctalia-shell
+      '';
+    };
     noctalia-shell = pkgs.symlinkJoin {
       name = "noctalia-shell";
       paths = [ inputs.noctalia-shell.packages.${system}.default ];
@@ -27,6 +38,21 @@
 
         environment.sessionVariables = {
           QT_QPA_PLATFORMTHEME = "qt6ct";
+        };
+
+        systemd.user.paths.noctalia-restart = {
+          description = "Watch for system rebuild to restart noctalia-shell";
+          wantedBy = [ "graphical-session.target" ];
+          after = [ "graphical-session.target" ];
+          pathConfig.PathChanged = "/run/current-system";
+        };
+
+        systemd.user.services.noctalia-restart = {
+          description = "Restart noctalia-shell after rebuild";
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "${restartScript}";
+          };
         };
 
         hjem.users.${username} = {
