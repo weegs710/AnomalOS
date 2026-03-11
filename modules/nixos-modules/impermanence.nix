@@ -51,6 +51,7 @@
           "/var/lib/pinchflat"
           "/var/lib/flatpak"
           "/etc/NetworkManager/system-connections"
+          "/var/lib/bluetooth"
         ];
         files = [
           "/etc/ssh/ssh_host_ed25519_key"
