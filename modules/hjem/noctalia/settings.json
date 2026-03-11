@@ -570,10 +570,6 @@
       },
       {
         "enabled": true,
-        "id": "zed"
-      },
-      {
-        "enabled": true,
         "id": "btop"
       },
       {
@@ -595,6 +591,10 @@
       {
         "enabled": true,
         "id": "fresh"
+      },
+      {
+        "enabled": true,
+        "id": "steam"
       }
     ],
     "enableUserTheming": true
