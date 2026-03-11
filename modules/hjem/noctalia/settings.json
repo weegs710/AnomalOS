@@ -1,5 +1,5 @@
 {
-  "settingsVersion": 55,
+  "settingsVersion": 57,
   "bar": {
     "barType": "simple",
     "position": "top",
@@ -43,6 +43,7 @@
           "enableScrollWheel": true,
           "focusedColor": "primary",
           "followFocusedScreen": false,
+          "fontWeight": "bold",
           "groupedBorderOpacity": 1,
           "hideUnoccupied": false,
           "iconScale": 0.8,
@@ -159,6 +160,7 @@
     "showHibernateOnLockScreen": false,
     "enableLockScreenMediaControls": false,
     "enableShadows": true,
+    "enableBlurBehind": true,
     "shadowDirection": "center",
     "shadowOffsetX": 0,
     "shadowOffsetY": 0,
@@ -208,6 +210,7 @@
     "fontDefaultScale": 1,
     "fontFixedScale": 1,
     "tooltipsEnabled": true,
+    "scrollbarAlwaysVisible": true,
     "boxBorderEnabled": true,
     "panelBackgroundOpacity": 0.75,
     "panelsAttachedToBar": false,
@@ -257,7 +260,7 @@
     "fillColor": "#000000",
     "useSolidColor": false,
     "solidColor": "#1a1a2e",
-    "automationEnabled": false,
+    "automationEnabled": true,
     "wallpaperChangeMode": "random",
     "randomIntervalSec": 900,
     "transitionDuration": 2000,
@@ -377,6 +380,10 @@
     "warningColor": "#b6a2e0",
     "criticalColor": "#fd4663",
     "externalMonitor": "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor"
+  },
+  "noctaliaPerformance": {
+    "disableWallpaper": true,
+    "disableDesktopWidgets": true
   },
   "dock": {
     "enabled": false,
@@ -520,7 +527,7 @@
   "audio": {
     "volumeStep": 5,
     "volumeOverdrive": false,
-    "cavaFrameRate": 144,
+    "spectrumFrameRate": 144,
     "visualizerType": "linear",
     "mprisBlacklist": [],
     "preferredPlayer": "",
@@ -584,6 +591,10 @@
       {
         "enabled": true,
         "id": "hyprtoolkit"
+      },
+      {
+        "enabled": true,
+        "id": "fresh"
       }
     ],
     "enableUserTheming": true
