@@ -15,6 +15,8 @@
         #!${pkgs.nushell}/bin/nu
         if (^${pkgs.procps}/bin/pgrep quickshell | complete).exit_code != 0 { exit }
         ^${pkgs.procps}/bin/pkill quickshell
+        # Kill wlsunset early so it fully releases wlr-gamma-control before the new instance acquires it
+        ^${pkgs.procps}/bin/pkill -x wlsunset
         sleep 500ms
         ^${pkgs.tmux}/bin/tmux new-session -d /etc/profiles/per-user/${username}/bin/noctalia-shell
       '';

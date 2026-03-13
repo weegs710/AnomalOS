@@ -297,8 +297,10 @@
           }
 
           def noct-r [] {
-            pkill quickshell
-            tmux new -d noctalia-shell
+            if (pkill quickshell | complete).exit_code != 0 { return }
+            pkill -x wlsunset
+            sleep 500ms
+            tmux new-session -d noctalia-shell
           }
 
           alias repl = nix repl --expr 'import ~/dotfiles/repl.nix {}'
