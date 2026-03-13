@@ -65,13 +65,14 @@
       '';
     };
 
-    shotRegionSaveCmd = ''fn=/tmp/wkshot_$$.png && hyprshot -m region -z --raw > $fn && ghostty --title=name-shot -e nu ${shotSaveScript} $fn'';
-    shotWindowSaveCmd = ''fn=/tmp/wkshot_$$.png && hyprshot -m window -z --raw > $fn && ghostty --title=name-shot -e nu ${shotSaveScript} $fn'';
-    shotScreenSaveCmd = ''fn=/tmp/wkshot_$$.png && hyprshot -m output -z --raw > $fn && ghostty --title=name-shot -e nu ${shotSaveScript} $fn'';
-    clipRegionCmd = ''region=$(slurp -f "%wx%h+%x+%y") && nu ${clipStartScript} region "$region"'';
+    shotRegionClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m region -z --clipboard-only'";
+    shotWindowClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m window -z --clipboard-only'";
+    shotScreenClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m output -z --clipboard-only'";
+    shotRegionSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m region -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
+    shotWindowSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m window -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
+    shotScreenSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m output -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
     clipScreenCmd = ''nu ${clipStartScript} screen'';
-    clipWindowCmd = ''nu ${clipStartScript} focused'';
-    stopRecordCmd = ''bash -c 'pid=$(cat /tmp/gsr.pid 2>/dev/null) && kill -INT "$pid" && rm -f /tmp/gsr.pid && while kill -0 "$pid" 2>/dev/null; do sleep 0.1; done; ghostty --title=name-clip -e nu ${clipSaveScript}' '';
+    stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
 
     # Colors from noctalia Eldritch scheme — changing colorscheme requires updating these. Reference: ~/.config/noctalia/colors.json
     commonSettings = {
@@ -320,78 +321,67 @@
         // {
           menu = [
             {
+              key = "x";
+              desc = "stop recording";
+              cmd = stopRecordCmd;
+            }
+            {
+              key = "r";
+              desc = "region → clipboard";
+              cmd = shotRegionClipCmd;
+            }
+            {
+              key = "w";
+              desc = "window → clipboard";
+              cmd = shotWindowClipCmd;
+            }
+            {
               key = "s";
-              desc = "shot";
+              desc = "screen → clipboard";
+              cmd = shotScreenClipCmd;
+            }
+            {
+              key = "f";
+              desc = "save to file";
               submenu = [
                 {
-                  key = "s";
-                  desc = "save";
-                  submenu = [
-                    {
-                      key = "r";
-                      desc = "region";
-                      cmd = shotRegionSaveCmd;
-                    }
-                    {
-                      key = "w";
-                      desc = "window";
-                      cmd = shotWindowSaveCmd;
-                    }
-                    {
-                      key = "s";
-                      desc = "screen";
-                      cmd = shotScreenSaveCmd;
-                    }
-                  ];
+                  key = "r";
+                  desc = "region";
+                  cmd = shotRegionSaveCmd;
                 }
                 {
-                  key = "c";
-                  desc = "clipboard";
-                  submenu = [
-                    {
-                      key = "r";
-                      desc = "region";
-                      cmd = "hyprshot -m region -z --clipboard-only";
-                    }
-                    {
-                      key = "w";
-                      desc = "window";
-                      cmd = "hyprshot -m window -z --clipboard-only";
-                    }
-                    {
-                      key = "s";
-                      desc = "screen";
-                      cmd = "hyprshot -m output -z --clipboard-only";
-                    }
-                  ];
+                  key = "w";
+                  desc = "window";
+                  cmd = shotWindowSaveCmd;
+                }
+                {
+                  key = "s";
+                  desc = "screen";
+                  cmd = shotScreenSaveCmd;
                 }
               ];
             }
             {
               key = "c";
-              desc = "clip";
-              submenu = [
-                {
-                  key = "r";
-                  desc = "region → record";
-                  cmd = clipRegionCmd;
-                }
-                {
-                  key = "w";
-                  desc = "window → record";
-                  cmd = clipWindowCmd;
-                }
-                {
-                  key = "s";
-                  desc = "screen → record";
-                  cmd = clipScreenCmd;
-                }
-                {
-                  key = "x";
-                  desc = "stop";
-                  cmd = stopRecordCmd;
-                }
-              ];
+              desc = "start recording";
+              cmd = clipScreenCmd;
+            }
+          ];
+        };
+
+      "post-record" =
+        commonSettings
+        // {
+          menu = [
+            {
+              key = "s";
+              desc = "save clip";
+              cmd = "ghostty --title=name-clip -e nu ${clipSaveScript}";
+            }
+            {
+              key = "d";
+              desc = "discard";
+              cmd = "rm -f /tmp/gsr_clip.mp4";
             }
           ];
         };
