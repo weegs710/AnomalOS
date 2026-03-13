@@ -40,11 +40,16 @@
           QT_QPA_PLATFORMTHEME = "qt6ct";
         };
 
+        system.activationScripts.noctaliaRestartTrigger = ''
+          printf "1" > /run/noctalia-restart-trigger
+          chmod 644 /run/noctalia-restart-trigger
+        '';
+
         systemd.user.paths.noctalia-restart = {
           description = "Watch for system rebuild to restart noctalia-shell";
           wantedBy = [ "graphical-session.target" ];
           after = [ "graphical-session.target" ];
-          pathConfig.PathChanged = "/run/current-system";
+          pathConfig.PathChanged = "/run/noctalia-restart-trigger";
         };
 
         systemd.user.services.noctalia-restart = {
@@ -52,6 +57,7 @@
           serviceConfig = {
             Type = "oneshot";
             ExecStart = "${restartScript}";
+            KillMode = "process";
           };
         };
 
