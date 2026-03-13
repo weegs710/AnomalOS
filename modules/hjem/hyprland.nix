@@ -22,7 +22,7 @@
     '';
   in {
     config = lib.mkIf config.mySystem.features.desktop {
-      users.users.${username}.packages = [ hyprFocus ];
+      users.users.${username}.packages = [hyprFocus];
       hjem.users.${username} = {
         xdg.config.files."hypr/hyprland.conf".text = ''
           # Variables
@@ -52,9 +52,9 @@
 
           # General
           general {
-              gaps_in = 3
-              gaps_out = 6
-              border_size = 3
+              gaps_in = 5
+              gaps_out = 10
+              border_size = 1
               resize_on_border = false
               allow_tearing = false
               layout = dwindle
@@ -67,16 +67,16 @@
           }
 
           # Workspaces
-          workspace = 1, defaultName:comms, gapsin:3, gapsout:6, persistent:true, layout:master
-          workspace = 2, defaultName:dev, gapsin:3, gapsout:6, persistent:true
-          workspace = 3, defaultName:web, gapsin:3, gapsout:6, persistent:true, layout:scrolling
+          workspace = 1, defaultName:comms, gapsin:5, gapsout:10, persistent:true
+          workspace = 2, defaultName:dev, gapsin:5, gapsout:10, persistent:true, layout:scrolling
+          workspace = 3, defaultName:web, gapsin:5, gapsout:10, persistent:true, layout:master
           workspace = 4, defaultName:games, gapsin:0, gapsout:0, rounding:false, persistent:true, layout:monocle
-          workspace = 5, defaultName:media, gapsin:3, gapsout:6, persistent:true, layout:monocle
-          workspace = special:control-panel, gapsin:2, gapsout:5
+          workspace = 5, defaultName:media, gapsin:5, gapsout:10, persistent:true, layout:monocle
+          workspace = special:control-panel, gapsin:5, gapsout:10, layout:scrolling
 
           # Scrolling Layout
           scrolling {
-              column_width = 0.8
+              column_width = 0.9
               focus_fit_method = 0
               fullscreen_on_one_column = true
           }
@@ -86,7 +86,7 @@
               always_keep_position = false
               new_status = master
               orientation = top
-              mfact = 0.70
+              mfact = 0.75
               new_on_top = true
           }
 
@@ -127,7 +127,7 @@
           # Device
           device {
               name = epic-mouse-v1
-              sensitivity = -0.5
+              sensitivity = 1.0
           }
 
           # Animations
