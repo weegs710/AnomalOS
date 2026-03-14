@@ -38,19 +38,11 @@
 
       features = {
         yubikey = lib.mkEnableOption "YubiKey U2F authentication support";
-        claudeCode = lib.mkEnableOption "Claude Code development environment";
+        aiTooling = lib.mkEnableOption "AI tooling (Claude Code and related tools)";
         gaming = lib.mkEnableOption "Gaming support (Steam, emulators)";
         desktop = lib.mkEnableOption "Desktop environment (Hyprland)";
         development = lib.mkEnableOption "Development tools and languages";
-        security = lib.mkEnableOption "Enhanced security features";
-        flatpak = lib.mkEnableOption "Declarative Flatpak package management";
         media = lib.mkEnableOption "Media tools (audio, video, creation)";
-        vm = lib.mkEnableOption "Virtual machine support (libvirtd, virt-manager)";
-        androidWebcam = lib.mkEnableOption "Android phone as USB webcam via scrcpy";
-      };
-
-      security = {
-        dnscrypt = lib.mkEnableOption "DNSCrypt-Proxy with encrypted DNS (Quad9 + Cloudflare)";
       };
 
       hardware = {

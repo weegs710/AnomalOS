@@ -245,7 +245,7 @@
             main()
       '';
   in {
-    config = lib.mkIf config.mySystem.features.androidWebcam {
+    config = lib.mkIf config.mySystem.features.media {
         boot = {
           kernelModules = ["v4l2loopback"];
           extraModulePackages = [config.boot.kernelPackages.v4l2loopback];
@@ -257,6 +257,7 @@
         users.users.${config.mySystem.user.name}.extraGroups = ["adbusers"];
 
         environment.systemPackages = with pkgs; [
+          adbfs-rootless
           scrcpy
           android-tools
           startAndroidCam

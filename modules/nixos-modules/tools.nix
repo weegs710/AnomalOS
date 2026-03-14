@@ -19,6 +19,19 @@
           };
         };
 
+        users.users.${config.mySystem.user.name}.packages = with pkgs; [
+          alejandra
+          gh
+          hyperfine
+          hyprls
+          jq
+          nodejs
+          python3
+          ripgrep
+          rustc
+          uv
+        ];
+
         environment.systemPackages = with pkgs; [
           jujutsu
         ];

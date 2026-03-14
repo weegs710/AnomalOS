@@ -5,7 +5,7 @@
     pkgs,
     ...
   }: {
-      config = lib.mkIf config.mySystem.features.vm {
+      config = lib.mkIf config.mySystem.features.development {
         virtualisation = {
           libvirtd.enable = true;
 

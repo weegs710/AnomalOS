@@ -28,25 +28,17 @@
 
             features = {
               desktop = true;
-              security = true;
               yubikey = true;
-              claudeCode = true;
+              aiTooling = true;
               development = true;
               gaming = true;
-              flatpak = true;
               media = true;
-              vm = true;
-              androidWebcam = true;
             };
 
             hardware = {
               amd = true;
               bluetooth = true;
               steam = true;
-            };
-
-            security = {
-              dnscrypt = true;
             };
           };
 

@@ -6,7 +6,7 @@
   }: let
     dnsDir = "/var/lib/dnscrypt-proxy";
   in {
-    config = lib.mkIf config.mySystem.security.dnscrypt {
+    config = {
         networking.nameservers = ["127.0.0.1" "::1"];
 
         services = {

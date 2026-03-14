@@ -1,12 +1,13 @@
 {
   flake.nixosModules.writing-tools = {
     config,
+    lib,
     pkgs,
     ...
   }: let
     username = config.mySystem.user.name;
   in {
-    config = {
+    config = lib.mkIf config.mySystem.features.development {
       users.users.${username}.packages = with pkgs; [
         pandoc
         python3Packages.weasyprint

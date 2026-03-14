@@ -8,7 +8,7 @@
     in {
       imports = [inputs.nix-flatpak.nixosModules.nix-flatpak];
 
-      config = lib.mkIf config.mySystem.features.flatpak {
+      config = {
         services.flatpak = {
           enable = true;
 

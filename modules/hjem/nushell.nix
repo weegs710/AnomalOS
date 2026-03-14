@@ -215,7 +215,9 @@
   in {
     config = {
       users.users.${config.mySystem.user.name}.packages = [
+        pkgs.fzf
         pkgs.oh-my-posh
+        pkgs.tldr
         pkgs.zoxide
         wrappedNushell
       ];

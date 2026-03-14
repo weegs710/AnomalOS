@@ -9,6 +9,9 @@
       users.users.${config.mySystem.user.name}.packages = with pkgs; [
         adwaita-icon-theme
         bluetui
+        nemo-with-extensions
+        tutanota-desktop
+        zathura
         cliphist
         dbus
         dbus-broker

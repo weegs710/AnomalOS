@@ -1,5 +1,5 @@
 {
-  flake.nixosModules.claude-code = {
+  flake.nixosModules.ai-tooling = {
     config,
     lib,
     pkgs,
@@ -35,7 +35,7 @@
         }
       '';
   in {
-    config = lib.mkIf config.mySystem.features.claudeCode {
+    config = lib.mkIf config.mySystem.features.aiTooling {
         users.users.${config.mySystem.user.name}.packages = with pkgs; [
           claude-code
           claudeLauncher

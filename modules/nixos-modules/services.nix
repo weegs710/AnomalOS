@@ -4,7 +4,7 @@
     lib,
     ...
   }: {
-      config = lib.mkIf config.mySystem.features.security {
+      config = {
         security = {
           polkit.enable = true;
           rtkit.enable = true;

@@ -4,7 +4,7 @@
     lib,
     ...
   }: {
-      config = lib.mkIf config.mySystem.features.security {
+      config = {
         services.suricata = {
           enable = true;
           disabledRules = [
