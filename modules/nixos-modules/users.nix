@@ -37,8 +37,6 @@
         };
       };
 
-      programs.fish.enable = true;
-
       # Bash auto-exec to nushell is handled via ~/.bashrc (see modules/hjem/bash/)
       # Keeps bash as login shell for POSIX compliance and proper env setup
     };

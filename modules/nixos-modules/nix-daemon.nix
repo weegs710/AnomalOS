@@ -20,7 +20,7 @@
 
       optimise = {
         automatic = true;
-        dates = [ "00:00" ];
+        dates = ["00:00"];
       };
     };
 
@@ -33,54 +33,48 @@
       wget
 
       (pkgs.writeScriptBin "rig-up" ''
-        #!/usr/bin/env bash
-        RED='\033[0;31m'
-        GREEN='\033[0;32m'
-        YELLOW='\033[1;33m'
-        BLUE='\033[0;34m'
-        NC='\033[0m'
+        #!/usr/bin/env nu
 
-        set -e
-        trap 'echo -e "''${RED}Error occurred at line $LINENO. Exiting.''${NC}" >&2' ERR
-        if [ ! -f ~/dotfiles/flake.nix ]; then
-            echo -e "''${RED}Error: ~/dotfiles/flake.nix not found''${NC}"
-            exit 1
-        fi
-
-        cd ~/dotfiles/
-
-        echo -e "''${BLUE}[1/3] Updating flake inputs...''${NC}"
-        if nix flake update; then
-            echo -e "''${GREEN}✓ Flake updated successfully''${NC}"
-        else
-            echo -e "''${RED}✗ Flake update failed''${NC}"
-            exit 1
-        fi
-
-        echo -e "\n''${BLUE}[2/3] Testing Rig configuration...''${NC}"
-        if nh os test .#nixosConfigurations.Rig; then
-            echo -e "''${GREEN}✓ Test completed successfully''${NC}"
-        else
-            echo -e "''${RED}✗ Test failed! Configuration not applied.''${NC}"
-            echo -e "''${YELLOW}Tip: Check the error messages above for details''${NC}"
-            exit 1
-        fi
-
-        echo -e "\n''${BLUE}[3/3] Apply configuration?''${NC}"
-        echo -e "''${YELLOW}Test successful! Switch to new configuration? [y/N]''${NC} "
-        read -r response
-
-        if [[ "$response" =~ ^[Yy]$ ]]; then
-            echo -e "''${BLUE}Switching to new configuration...''${NC}"
-            if nh os switch .#nixosConfigurations.Rig; then
-                echo -e "''${GREEN}✓ Successfully switched to Rig configuration!''${NC}"
-            else
-                echo -e "''${RED}✗ Switch failed''${NC}"
+        def main [] {
+            if not ("~/dotfiles/flake.nix" | path expand | path exists) {
+                print $"(ansi red)Error: ~/dotfiles/flake.nix not found(ansi reset)"
                 exit 1
-            fi
-        else
-            echo -e "''${YELLOW}Test configuration not applied. You can run 'nrs-rig' later to switch.''${NC}"
-        fi
+            }
+
+            cd ~/dotfiles/
+
+            print $"(ansi blue)[1/3] Updating flake inputs...(ansi reset)"
+            ^nix flake update
+            if $env.LAST_EXIT_CODE != 0 {
+                print $"(ansi red)✗ Flake update failed(ansi reset)"
+                exit 1
+            }
+            print $"(ansi green)✓ Flake updated successfully(ansi reset)"
+
+            print $"\n(ansi blue)[2/3] Testing Rig configuration...(ansi reset)"
+            ^nh os test .#nixosConfigurations.Rig
+            if $env.LAST_EXIT_CODE != 0 {
+                print $"(ansi red)✗ Test failed! Configuration not applied.(ansi reset)"
+                print $"(ansi yellow)Tip: Check the error messages above for details(ansi reset)"
+                exit 1
+            }
+            print $"(ansi green)✓ Test completed successfully(ansi reset)"
+
+            print $"\n(ansi blue)[3/3] Apply configuration?(ansi reset)"
+            let response = input $"(ansi yellow)Test successful! Switch to new configuration? [y/N] (ansi reset)" | str trim | str downcase
+
+            if ($response | str starts-with "y") {
+                print $"(ansi blue)Switching to new configuration...(ansi reset)"
+                ^nh os switch .#nixosConfigurations.Rig
+                if $env.LAST_EXIT_CODE != 0 {
+                    print $"(ansi red)✗ Switch failed(ansi reset)"
+                    exit 1
+                }
+                print $"(ansi green)✓ Successfully switched to Rig configuration!(ansi reset)"
+            } else {
+                print $"(ansi yellow)Test not applied. You can run 'nrs-rig' later to switch.(ansi reset)"
+            }
+        }
       '')
     ];
 

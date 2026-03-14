@@ -35,7 +35,6 @@
               gaming = true;
               flatpak = true;
               media = true;
-              kdeconnect = true;
               vm = true;
               androidWebcam = true;
             };
