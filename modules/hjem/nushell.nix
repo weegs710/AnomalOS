@@ -263,6 +263,14 @@
             nu ~/.config/snag/snag.nu ...$args
           }
 
+          def --wrapped yoink [...args: string] {
+            nu ~/.config/yoink/yoink.nu ...$args
+          }
+
+          def --wrapped sync-music [...args: string] {
+            nu ~/.config/sync-music/sync-music.nu ...$args
+          }
+
           def evaltime [] {
             cd ~/dotfiles/
             hyperfine 'nix eval .#rig.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
@@ -313,7 +321,6 @@
           alias cam-list = andcam-list
           alias cam-off = pkill scrcpy
           alias cam-on = andcam-start
-          alias scrapev = download-video
           alias gparted = sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted
           alias jj-fetch = jj git fetch --all-remotes
 

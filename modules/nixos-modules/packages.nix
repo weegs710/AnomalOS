@@ -13,6 +13,7 @@
         hyprls
         hyperfine
         jq
+        adbfs-rootless
         nemo-with-extensions
         nodejs
         python3
