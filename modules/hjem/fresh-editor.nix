@@ -11,17 +11,30 @@
 
     configJson = (pkgs.formats.json {}).generate "config.json" {
       version = 1;
-      theme = "noctalia";
+      theme = "dark";
+
+      editor = {
+        use_terminal_bg = true;
+        tab_size = 2;
+        scroll_offset = 8;
+        cursor_style = "blinking_bar";
+        trim_trailing_whitespace_on_save = true;
+        ensure_final_newline_on_save = true;
+        enable_semantic_tokens_full = true;
+        line_wrap = false;
+        show_horizontal_scrollbar = true;
+        rulers = [88 100 120];
+      };
 
       lsp = {
         nix = {
           command = "nixd";
-          args = [];
+          args = ["--semantic-tokens"];
           enabled = true;
           initialization_options = {
             nixpkgs.expr = "import (builtins.getFlake \"${flakePath}\").inputs.nixpkgs { }";
             formatting.command = ["alejandra" "--quiet"];
-            options.nixos.expr = "(builtins.getFlake \"${flakePath}\").rig.options";
+            options.nixos.expr = "(builtins.getFlake \"${flakePath}\").nixosConfigurations.Rig.options";
           };
         };
 
