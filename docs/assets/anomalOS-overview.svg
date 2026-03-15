@@ -36,7 +36,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="937" y="193" rx="2" width="3" height="46" fill="#9071f4"/>
 <text x="950" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">UI</text>
 <text x="950" y="221" font-size="15" fill="#ebfafa" font-weight="600">Noctalia Shell</text>
-<text x="950" y="237" font-size="10" fill="#9071f4" opacity="0.6">4.5.0</text>
+<text x="950" y="237" font-size="10" fill="#9071f4" opacity="0.6">v4.6.8-git</text>
 <rect x="70" y="255" rx="12" width="340" height="240" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="70" y="265" rx="12" width="3" height="220" fill="#f265b5"/>
 <text x="88" y="283" font-size="13" fill="#f265b5" font-weight="700" letter-spacing="1">HARDWARE</text>

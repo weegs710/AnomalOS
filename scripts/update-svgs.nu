@@ -487,7 +487,32 @@ def main [] {
     print "  · nushell version...";     let nushell_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.Rig.pkgs.nushell.version")
     print "  · ghostty version...";     let ghostty_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.Rig.pkgs.ghostty.version")
     print "  · fresh-editor version..."; let fresh_ver    = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.Rig.pkgs.fresh-editor.version")
-    print "  · noctalia-shell version..."; let noctalia_ver = (nix-eval-raw $"($flake_ref)#nixosConfigurations.Rig.pkgs.noctalia-shell.version")
+    # noctalia-shell: pkgs.noctalia-shell.version is stale nixpkgs metadata.
+    # Real version lives in UpdateService.qml as `baseVersion`. Fetch it at the
+    # locked rev and append "-git" (all non-tagged builds use that suffix).
+    print "  · noctalia-shell version..."
+    let noctalia_node = ($flake_meta.locks.nodes | get "noctalia-shell")
+    let noctalia_rev  = $noctalia_node.locked.rev
+    let noctalia_qml  = (
+        try {
+            ^gh api $"repos/noctalia-dev/noctalia-shell/contents/Services/Noctalia/UpdateService.qml?ref=($noctalia_rev)" --jq '.content'
+            | ^base64 -d
+        } catch { "" }
+    )
+    let noctalia_ver  = (
+        if ($noctalia_qml | str length) > 0 {
+            let base = (
+                $noctalia_qml
+                | lines
+                | where { $in =~ 'readonly property string baseVersion:' }
+                | first
+                | parse --regex 'baseVersion: "(?P<ver>[^"]+)"'
+                | get ver
+                | first
+            )
+            $"v($base)-git"
+        } else { "?" }
+    )
     print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $"($flake_ref)#nixosConfigurations.Rig.config.environment.systemPackages")
     print "  · user package count...";   let user_pkg_count = (nix-eval-count $"($flake_ref)#nixosConfigurations.Rig.config.users.users.weegs.packages")
     let total_pkgs = $sys_pkg_count + $user_pkg_count
