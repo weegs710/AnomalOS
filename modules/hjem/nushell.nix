@@ -283,6 +283,41 @@
             sudo nix-collect-garbage
           }
 
+          def update-deck-pkgs [] {
+            cd ~/dotfiles/
+
+            let packages = [
+              { name: "steamdeck-dsp",      owner: "Jovian-Experiments", repo: "steamdeck-dsp" },
+              { name: "jupiter-fan-control", owner: "Jovian-Experiments", repo: "jupiter-fan-control" },
+            ]
+
+            for pkg in $packages {
+              let latest = (gh api $"repos/($pkg.owner)/($pkg.repo)/releases/latest" --jq ".tag_name" | str trim)
+              let current = (
+                open flake.nix
+                | lines
+                | where { |l| $l | str contains $"github:($pkg.owner)/($pkg.repo)/" }
+                | first
+                | split row "/"
+                | last
+                | str replace --all '"' ""
+                | str replace ";" ""
+                | str trim
+              )
+
+              if $latest != $current {
+                print $"($pkg.name): ($current) -> ($latest)"
+                open flake.nix
+                | str replace $"github:($pkg.owner)/($pkg.repo)/($current)" $"github:($pkg.owner)/($pkg.repo)/($latest)"
+                | save -f flake.nix
+              } else {
+                print $"($pkg.name) up to date at ($current)"
+              }
+            }
+
+            nix flake update steamdeck-dsp jupiter-fan-control
+          }
+
           def jj-pull [] {
             jj git fetch --all-remotes
             jj bookmark move main --to main@origin

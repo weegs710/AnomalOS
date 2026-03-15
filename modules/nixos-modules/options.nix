@@ -43,6 +43,7 @@
         desktop = lib.mkEnableOption "Desktop environment (Hyprland)";
         development = lib.mkEnableOption "Development tools and languages";
         media = lib.mkEnableOption "Media tools (audio, video, creation)";
+        steamdeck = lib.mkEnableOption "Steam Deck hardware support and gaming mode session";
       };
 
       hardware = {
