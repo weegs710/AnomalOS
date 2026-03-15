@@ -8,19 +8,6 @@
   }: let
     username = config.mySystem.user.name;
     system = pkgs.stdenv.hostPlatform.system;
-    restartScript = pkgs.writeTextFile {
-      name = "noctalia-restart";
-      executable = true;
-      text = ''
-        #!${pkgs.nushell}/bin/nu
-        if (^${pkgs.procps}/bin/pgrep quickshell | complete).exit_code != 0 { exit }
-        ^${pkgs.procps}/bin/pkill quickshell
-        # Kill wlsunset early so it fully releases wlr-gamma-control before the new instance acquires it
-        ^${pkgs.procps}/bin/pkill -x wlsunset
-        sleep 500ms
-        ^${pkgs.tmux}/bin/tmux new-session -d /etc/profiles/per-user/${username}/bin/noctalia-shell
-      '';
-    };
     noctalia-shell = pkgs.symlinkJoin {
       name = "noctalia-shell";
       paths = [ inputs.noctalia-shell.packages.${system}.default ];
@@ -42,25 +29,16 @@
           QT_QPA_PLATFORMTHEME = "qt6ct";
         };
 
-        system.activationScripts.noctaliaRestartTrigger = ''
-          printf "1" > /run/noctalia-restart-trigger
-          chmod 644 /run/noctalia-restart-trigger
-        '';
-
-        systemd.user.paths.noctalia-restart = {
-          description = "Watch for system rebuild to restart noctalia-shell";
-          wantedBy = [ "graphical-session.target" ];
-          after = [ "graphical-session.target" ];
-          pathConfig.PathChanged = "/run/noctalia-restart-trigger";
-        };
-
-        systemd.user.services.noctalia-restart = {
-          description = "Restart noctalia-shell after rebuild";
-          serviceConfig = {
-            Type = "oneshot";
-            ExecStart = "${restartScript}";
-            KillMode = "process";
-          };
+        system.activationScripts.noctaliaRestartTrigger = {
+          text = ''
+            uid=$(${pkgs.coreutils}/bin/id -u ${username} 2>/dev/null)
+            if [ -n "$uid" ] && [ -d /run/user/$uid/hypr ]; then
+              XDG_RUNTIME_DIR=/run/user/$uid \
+              ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+                ${pkgs.hyprland}/bin/hyprctl -i 0 dispatch exec \
+                "${pkgs.nushell}/bin/nu --config /home/${username}/.config/nushell/config.nu --env-config /home/${username}/.config/nushell/env.nu -c noct-r >> /home/${username}/.local/state/noctalia-restart.log 2>&1" || true
+            fi
+          '';
         };
 
         hjem.users.${username} = {
