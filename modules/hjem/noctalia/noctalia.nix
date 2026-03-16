@@ -8,9 +8,17 @@
   }: let
     username = config.mySystem.user.name;
     system = pkgs.stdenv.hostPlatform.system;
+    notificationHistoryAllowedApps = [ "vesktop" "gajim" "helium" ];
+    notificationAllowlist = pkgs.writeText "notification-allowlist"
+      (lib.concatStringsSep "\n" notificationHistoryAllowedApps);
+    patchedNoctalia = inputs.noctalia-shell.packages.${system}.default.overrideAttrs (prev: {
+      postPatch = (prev.postPatch or "") + ''
+        bash ${./patch-notification-service.sh}
+      '';
+    });
     noctalia-shell = pkgs.symlinkJoin {
       name = "noctalia-shell";
-      paths = [ inputs.noctalia-shell.packages.${system}.default ];
+      paths = [ patchedNoctalia ];
       nativeBuildInputs = [ pkgs.makeWrapper ];
       postBuild = ''
         wrapProgram $out/bin/noctalia-shell \
@@ -54,6 +62,11 @@
           };
           xdg.config.files."noctalia/templates/fresh.json" = {
             source = ./templates/fresh.json;
+            type = "copy";
+            permissions = "0644";
+          };
+          xdg.config.files."noctalia/notification-allowlist" = {
+            source = notificationAllowlist;
             type = "copy";
             permissions = "0644";
           };

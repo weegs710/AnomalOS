@@ -1,5 +1,5 @@
 {
-  "settingsVersion": 57,
+  "settingsVersion": 58,
   "bar": {
     "barType": "simple",
     "position": "top",
@@ -12,6 +12,7 @@
     "widgetSpacing": 6,
     "contentPadding": 2,
     "fontScale": 1,
+    "enableExclusionZoneInset": true,
     "backgroundOpacity": 0,
     "useSeparateOpacity": true,
     "floating": false,
@@ -52,6 +53,7 @@
           "occupiedColor": "secondary",
           "pillSize": 0.6,
           "showApplications": false,
+          "showApplicationsHover": false,
           "showBadge": true,
           "showLabelsOnlyWhenOccupied": false,
           "unfocusedIconsOpacity": 1
@@ -213,6 +215,7 @@
     "scrollbarAlwaysVisible": true,
     "boxBorderEnabled": true,
     "panelBackgroundOpacity": 0.75,
+    "translucentWidgets": false,
     "panelsAttachedToBar": false,
     "settingsPanelMode": "centered",
     "settingsPanelSideBarCardStyle": false
@@ -290,11 +293,12 @@
     "autoPasteClipboard": false,
     "enableClipPreview": true,
     "clipboardWrapText": true,
+    "enableClipboardSmartIcons": true,
+    "enableClipboardChips": true,
     "clipboardWatchTextCommand": "wl-paste --type text --watch cliphist store",
     "clipboardWatchImageCommand": "wl-paste --type image --watch cliphist store",
     "position": "center",
     "pinnedApps": [],
-    "useApp2Unit": false,
     "sortByMostUsed": true,
     "terminalCommand": "ghostty -e",
     "customLaunchPrefixEnabled": false,
@@ -547,7 +551,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "rainbow",
+    "generationMethod": "fruit-salad",
     "monitorForColors": ""
   },
   "templates": {
@@ -640,6 +644,7 @@
     "enabled": false,
     "overviewEnabled": true,
     "gridSnap": false,
+    "gridSnapScale": false,
     "monitorWidgets": [
       {
         "name": "HDMI-A-2",
