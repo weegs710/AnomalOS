@@ -350,6 +350,7 @@
 
           alias repl = nix repl --expr 'import ~/dotfiles/repl.nix {}'
           alias cc = claude-launcher
+          alias hex = claude-launcher hex
           alias l = ls -alh
           alias ll = ls -l
           alias closure = nix path-info -Sh /run/current-system
