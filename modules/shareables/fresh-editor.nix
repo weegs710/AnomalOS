@@ -18,7 +18,8 @@
       nativeBuildInputs = [pkgs.makeWrapper];
       postBuild = ''
         wrapProgram $out/bin/fresh \
-          --prefix PATH : ${pkgs.lib.makeBinPath lspTools}
+          --prefix PATH : ${pkgs.lib.makeBinPath lspTools} \
+          --run 'cd "$HOME/dotfiles"'
       '';
       meta.mainProgram = "fresh";
     };
