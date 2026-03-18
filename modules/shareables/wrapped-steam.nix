@@ -40,21 +40,35 @@
         platforms = platforms.linux;
       };
 
-      passthru.updateScript = pkgs.writeShellScript "update-decky-loader" ''
-        #!/usr/bin/env bash
-        set -euo pipefail
+      passthru.updateScript = pkgs.writeTextFile {
+        name = "update-decky-loader";
+        executable = true;
+        text = ''
+          #!${pkgs.nushell}/bin/nu
 
-        LATEST_VERSION=$(${pkgs.curl}/bin/curl -s https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases/latest | ${pkgs.jq}/bin/jq -r .tag_name | sed 's/^v//')
+          let version = http get "https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases/latest"
+            | get tag_name
+            | str replace --regex '^v' ""
 
-        HASH=$(${pkgs.nurl}/bin/nurl "https://github.com/SteamDeckHomebrew/decky-loader/releases/download/v$LATEST_VERSION/PluginLoader" 2>&1 | grep -oP 'hash = "\K[^"]+')
+          let url = $"https://github.com/SteamDeckHomebrew/decky-loader/releases/download/v($version)/PluginLoader"
+          let hash = (^${pkgs.nurl}/bin/nurl $url
+            | lines
+            | where { |l| $l | str contains 'hash = "' }
+            | first
+            | str trim
+            | parse 'hash = "{hash}";'
+            | get hash
+            | first)
 
-        FILE="${toString ./.}/modules/shareables/wrapped-steam.nix"
-        ${pkgs.gnused}/bin/sed -i "s/deckyVersion = \"[^\"]*\"/deckyVersion = \"$LATEST_VERSION\"/" "$FILE"
-        ${pkgs.gnused}/bin/sed -i "s|hash = \"[^\"]*\"|hash = \"$HASH\"|" "$FILE" || \
-        ${pkgs.gnused}/bin/sed -i "s|hash = lib.fakeHash|hash = \"$HASH\"|" "$FILE"
+          let file = $"($nu.home-path)/dotfiles/modules/shareables/wrapped-steam.nix"
+          open --raw $file
+            | str replace --regex 'deckyVersion = "[^"]*"' $'deckyVersion = "($version)"'
+            | str replace --regex 'hash = (?:"[^"]*"|lib\.fakeHash)' $'hash = "($hash)"'
+            | save --force $file
 
-        echo "Updated Decky Loader to version $LATEST_VERSION with hash $HASH"
-      '';
+          print $"Updated Decky Loader to ($version) with hash ($hash)"
+        '';
+      };
     };
 
     # Wrap Steam with Decky in FHS environment
