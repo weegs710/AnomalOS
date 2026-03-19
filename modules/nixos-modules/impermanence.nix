@@ -48,6 +48,7 @@
           "/var/log"
           "/var/lib/nixos"
           "/var/db/sudo"
+          "/var/lib/tailscale"
           "/var/lib/pinchflat"
           "/var/lib/flatpak"
           "/etc/NetworkManager/system-connections"
