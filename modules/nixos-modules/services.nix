@@ -27,6 +27,8 @@
               PrintMotd = false;
               PermitEmptyPasswords = false;
               KexAlgorithms = [
+                "mlkem768x25519-sha256"
+                "sntrup761x25519-sha512@openssh.com"
                 "curve25519-sha256@libssh.org"
                 "curve25519-sha256"
               ];

@@ -5,6 +5,7 @@
     # Prevents recursion via NUSHELL env var and parent process check
     hjem.users.${config.mySystem.user.name}.files = {
       ".bashrc".source = ./bashrc.bash;
+      ".bash_profile".source = ./bash_profile.bash;
     };
   };
 }
