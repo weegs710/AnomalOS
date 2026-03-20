@@ -361,6 +361,7 @@
           alias cam-on = andcam-start
           alias gparted = sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted
           alias jj-fetch = jj git fetch --all-remotes
+          alias pixel = ssh -p 8022 u0_a267@100.121.71.20
 
           def nu_greeting [] {
             let states = [
