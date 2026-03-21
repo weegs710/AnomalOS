@@ -1,0 +1,54 @@
+--- a/src/meta_providers/mod.rs
++++ b/src/meta_providers/mod.rs
+@@ -1,6 +1,7 @@
+ mod base;
+ mod chain;
++pub mod deezer;
+ pub mod lastfm;
+ pub mod models;
+ pub mod musicbrainz;
+ pub mod lrclib;
+--- a/src/meta_providers/chain.rs
++++ b/src/meta_providers/chain.rs
+@@ -1,6 +1,6 @@
+ use crate::common::{AlbumInfo, ArtistInfo, SongInfo};
+
+-use super::{lastfm::LastfmWrapper, lrclib::LrcLibWrapper, models, musicbrainz::MusicBrainzWrapper, MetadataProvider};
++use super::{deezer::DeezerWrapper, lastfm::LastfmWrapper, lrclib::LrcLibWrapper, models, musicbrainz::MusicBrainzWrapper, MetadataProvider};
+
+ /// A meta-MetadataProvider that works by daisy-chaining actual MetadataProviders.
+ /// Think composite pattern.
+@@ -74,6 +74,7 @@ pub fn get_provider(key: &str) -> Box<dyn MetadataProvider> {
+         "musicbrainz" => Box::new(MusicBrainzWrapper::new()),
+         "lastfm" => Box::new(LastfmWrapper::new()),
+         "lrclib" => Box::new(LrcLibWrapper::new()),
++        "deezer" => Box::new(DeezerWrapper::new()),
+         _ => unimplemented!(),
+     }
+ }
+--- a/data/io.github.htkhiem.Euphonica.gschema.xml
++++ b/data/io.github.htkhiem.Euphonica.gschema.xml
+@@ -168,6 +168,7 @@
+ 		<child schema="io.github.htkhiem.Euphonica.metaprovider.lastfm" name="lastfm"/>
+ 		<child schema="io.github.htkhiem.Euphonica.metaprovider.musicbrainz" name="musicbrainz"/>
+ 		<child schema="io.github.htkhiem.Euphonica.metaprovider.lrclib" name="lrclib"/>
++		<child schema="io.github.htkhiem.Euphonica.metaprovider.deezer" name="deezer"/>
+ 	</schema>
+
+ 	<schema id="io.github.htkhiem.Euphonica.metaprovider.lastfm" path="/io/github/htkhiem/Euphonica/metaprovider/lastfm/">
+@@ -411,4 +412,16 @@
+ 		</key>
+ 	</schema>
++
++	<schema id="io.github.htkhiem.Euphonica.metaprovider.deezer" path="/io/github/htkhiem/Euphonica/metaprovider/deezer/">
++		<key name="name" type="s">
++			<default>'Deezer'</default>
++		</key>
++		<key name="enabled" type="b">
++			<default>true</default>
++		</key>
++		<key name="download-artist-avatar" type="b">
++			<default>true</default>
++		</key>
++	</schema>
+ </schemalist>
