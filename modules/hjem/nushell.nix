@@ -251,9 +251,46 @@
 
         "nushell/config.nu".text = ''
 
+          def cachix-pin-system [] {
+            let closure = (^nix path-info -rs /run/current-system
+              | lines
+              | where ($it | str length) > 0
+              | parse --regex '(?P<path>/nix/store/\S+)\s+(?P<nar_size>\d+)'
+              | update nar_size {into int})
+
+            print $"Checking ($closure | length) paths against anomalos..."
+            let pinned_paths = ($closure
+              | par-each {|r|
+                  let hash = ($r.path | path basename | split row '-' | first)
+                  let in_anomalos = (try { http head $"https://anomalos.cachix.org/($hash).narinfo"; true } catch { false })
+                  $r | insert in_anomalos $in_anomalos
+                }
+              | where in_anomalos
+              | get path)
+
+            if ($pinned_paths | is-empty) {
+              print "No paths found in anomalos — skipping pin."
+              return
+            }
+
+            let primary = ($pinned_paths | first)
+            let artifact_flags = ($pinned_paths | skip 1 | each {|p| ["-a" $p]} | flatten)
+
+            print $"Pinning ($pinned_paths | length) paths as 'current-system' --keep-revisions 3..."
+            # Fixed name so --keep-revisions rotates over revisions of the same pin, not unique pins that never evict.
+            ^cachix pin anomalos ...([  "current-system" $primary] ++ $artifact_flags ++ ["--keep-revisions" "3"])
+            print "Done."
+          }
+
           def nrs-rig [] {
             cd ~/dotfiles/
             nh os switch .#rig
+            if $env.LAST_EXIT_CODE == 0 {
+              ^nix-store -qR /run/current-system | ^cachix push anomalos
+              if $env.LAST_EXIT_CODE == 0 {
+                cachix-pin-system
+              }
+            }
           }
 
           def nrt-rig [] {
