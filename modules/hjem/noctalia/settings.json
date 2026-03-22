@@ -419,11 +419,11 @@
     "indicatorOpacity": 0.6
   },
   "network": {
-    "wifiEnabled": true,
+    "wifiEnabled": false,
     "airplaneModeEnabled": false,
     "bluetoothRssiPollingEnabled": false,
     "bluetoothRssiPollIntervalMs": 10000,
-    "networkPanelView": "wifi",
+    "networkPanelView": "ethernet",
     "wifiDetailsViewMode": "grid",
     "bluetoothDetailsViewMode": "grid",
     "bluetoothHideUnnamedDevices": false,
