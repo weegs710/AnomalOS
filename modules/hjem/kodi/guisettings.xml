@@ -1,0 +1,7 @@
+<settings version="2">
+    <setting id="lookandfeel.startupwindow">10025</setting>
+    <audio>
+        <mute>false</mute>
+        <fvolumelevel>0.500000</fvolumelevel>
+    </audio>
+</settings>

@@ -287,6 +287,13 @@
             nu ~/.config/sync-music/sync-music.nu ...$args
           }
 
+          def kodi-sync [] {
+            let dst = "~/dotfiles/modules/hjem/kodi"
+            cp ~/.kodi/userdata/guisettings.xml ($dst | path expand | path join "guisettings.xml")
+            cp ~/.kodi/userdata/sources.xml ($dst | path expand | path join "sources.xml")
+            print "kodi config synced to dotfiles"
+          }
+
           def evaltime [] {
             cd ~/dotfiles/
             hyperfine 'nix eval .#rig.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
