@@ -225,6 +225,11 @@
                   cmd = "qview";
                 }
                 {
+                  key = "k";
+                  desc = "kodi";
+                  cmd = "kodi";
+                }
+                {
                   key = "v";
                   desc = "stremio";
                   cmd = "flatpak run com.stremio.Stremio";

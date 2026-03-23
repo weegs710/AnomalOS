@@ -6,6 +6,23 @@
     ...
   }: let
     username = config.mySystem.user.name;
+    pinToggle = pkgs.writeScriptBin "hypr-pin-toggle" ''
+      #!/usr/bin/env nu
+      def main [] {
+        let win = (hyprctl activewindow -j | from json)
+        if $win.pinned {
+          hyprctl dispatch pin
+          hyprctl dispatch togglefloating
+        } else {
+          if not $win.floating {
+            hyprctl dispatch togglefloating
+          }
+          hyprctl dispatch pin
+          hyprctl dispatch resizewindowpixel $"exact 512 288,address:($win.address)"
+          hyprctl dispatch movewindowpixel $"exact 2034 62,address:($win.address)"
+        }
+      }
+    '';
     hyprFocus = pkgs.writeScriptBin "hypr-focus" ''
       #!/usr/bin/env nu
       def main [direction: string] {
@@ -22,7 +39,7 @@
     '';
   in {
     config = lib.mkIf config.mySystem.features.desktop {
-      users.users.${username}.packages = [hyprFocus];
+      users.users.${username}.packages = [hyprFocus pinToggle];
       hjem.users.${username} = {
         xdg.config.files."hypr/hyprland.conf".text = ''
           # Variables
@@ -191,6 +208,7 @@
           bindr = $mainMod, tab, exec, noctalia-shell ipc call controlCenter toggle
           bindm = $mainMod, mouse:272, movewindow
           bindm = $mainMod, mouse:273, resizewindow
+          bind = $mainMod, backslash, exec, hypr-pin-toggle
 
           # Submaps
           submap = resize
@@ -268,6 +286,7 @@
           windowrule = size 512 288, match:initial_title Picture in picture
           windowrule = move 2034 62, match:initial_title Picture in picture
           windowrule = workspace 5, match:class ^(com\.stremio\.stremio)$
+          windowrule = workspace 5, match:class ^(Kodi)$
           windowrule = match:class ^(gcr-prompter)$, stay_focused on
           windowrule = match:class ^(gcr-prompter)$, focus_on_activate on
 
