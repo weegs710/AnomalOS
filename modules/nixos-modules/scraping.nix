@@ -75,7 +75,7 @@
           }
       }
 
-      def save-config [music_dir: string] {
+      def save-config [music_dir: string]: nothing -> nothing {
           mkdir ($CONFIG_FILE | path dirname)
           {music_dir: $music_dir} | save --force $CONFIG_FILE
           print $"(ansi green)Configuration saved.(ansi reset)"
@@ -90,18 +90,10 @@
           $log_path
       }
 
-      def get-playlist-name [url: string]: nothing -> string {
+      def verify-url [url: string]: nothing -> nothing {
           let result = ^yt-dlp --flat-playlist --print "%(playlist_title)s" $url | complete
-          if $result.exit_code == 0 and ($result.stdout | str trim | is-not-empty) {
-              $result.stdout | str trim | lines | first
-          } else {
-              print $"  (ansi yellow)Could not automatically fetch playlist name.(ansi reset)"
-              let name = input "  [?] Please enter a name for this playlist: " | str trim
-              if ($name | is-empty) {
-                  print $"  (ansi red)Error: Playlist name cannot be empty(ansi reset)"
-                  exit 1
-              }
-              $name
+          if $result.exit_code != 0 or ($result.stdout | str trim | is-empty) {
+              error make {msg: $"Could not reach or parse URL: ($url)"}
           }
       }
 
@@ -153,11 +145,7 @@
           let artist = input "  [?] Enter artist name: " | str trim
           let album = input "  [?] Enter album name: " | str trim
           let artist_folder = $artist | split row "," | first | str trim
-          let title = if ($metadata | is-empty) {
-              "Unknown Title"
-          } else {
-              $metadata.title? | default "Unknown Title" | into string
-          }
+          let title = $metadata.title? | default "Unknown Title" | into string
 
           {title: $title, artist: $artist, artist_folder: $artist_folder, album: $album, track_number: null}
       }
@@ -185,17 +173,17 @@
           } else {
               ^yt-dlp ...$args o+e>| lines | each { |line|
                   $line | write-log $log_file
-                  if ($line | str contains "[download] Downloading item") {
-                      print $"  ($line)"
-                  } else if ($line | str contains "ERROR:") {
-                      print $"  (ansi red)($line)(ansi reset)"
+                  match $line {
+                      _ if ($line | str contains "[download] Downloading item") => { print $"  ($line)" }
+                      _ if ($line | str contains "ERROR:") => { print $"  (ansi red)($line)(ansi reset)" }
+                      _ => {}
                   }
               } | ignore
           }
           $env.LAST_EXIT_CODE
       }
 
-      def download-album [url: string, metadata: record, music_dir: string, verbose: bool, log_file: string] {
+      def download-album [url: string, metadata: record, music_dir: string, verbose: bool, log_file: string]: nothing -> nothing {
           let album_dir = [$music_dir, $metadata.artist_folder, $metadata.album] | path join
 
           if ($album_dir | path exists) {
@@ -215,15 +203,19 @@
           mkdir $album_dir
           print $"\n  (ansi blue)Downloading album...(ansi reset)"
 
-          let ppargs = $"ffmpeg:-metadata artist=($metadata.artist | shell-quote) -metadata album=($metadata.album | shell-quote) -loglevel error"
+          # album_artist is intentionally static — provides consistent grouping across all tracks
+          let ppargs = $"ffmpeg:-metadata album_artist=($metadata.artist | shell-quote) -loglevel error"
           let output_template = [$album_dir, "%(title)s - %(artist)s - %(album)s.%(ext)s"] | path join
 
           let dl_args = [
               "-x" "--audio-format" "mp3"
               "--add-metadata" "--embed-thumbnail"
-              "--metadata" $"artist=($metadata.artist)"
-              "--metadata" $"album=($metadata.album)"
-              "--parse-metadata" "playlist_index:%(track_number)s"
+              # per-track: use each track's own album field, fall back to playlist title
+              "--parse-metadata" "%(album,playlist_title)s:%(meta_album)s"
+              # per-track: map playlist index to embedded track number
+              "--parse-metadata" "%(playlist_index)s:%(meta_track)s"
+              # strip YouTube auto-generated " - Topic" suffix from artist fields
+              "--replace-in-metadata" "artist" " - Topic$" ""
               "--ignore-errors"
               "--js-runtimes" "node"
               "--remote-components" "ejs:github"
@@ -250,7 +242,7 @@
           print $"  Album saved to: ($album_dir)"
       }
 
-      def print-intro [music_dir: string] {
+      def print-intro [music_dir: string]: nothing -> nothing {
           let line = 1..8 | each { "=" } | str join ""
           print $"\n  (ansi blue)($line)(ansi reset)"
           print $"(ansi blue_bold)  Snag It?(ansi reset)"
@@ -264,8 +256,8 @@
           input $"\n  (ansi attr_bold)[?](ansi reset) ($prompt) [y/N]: " | str trim | str downcase | str starts-with "y"
       }
 
-      def run-download [url: string, verbose: bool, do_log: bool, music_dir: string] {
-          get-playlist-name $url | ignore  # verify URL is accessible
+      def run-download [url: string, verbose: bool, do_log: bool, music_dir: string]: nothing -> nothing {
+          verify-url $url
 
           let metadata_raw = extract-metadata $url
 
@@ -309,21 +301,21 @@
               return
           }
 
-          if $url != null {
-              run-download $url $verbose (not $no_log) $music_dir
-          } else {
-              print-intro $music_dir
+          match $url {
+              null => {
+                  print-intro $music_dir
 
-              mut entered_url = ""
-              loop {
-                  let u = input "\n  [?] Enter Album/Playlist URL: " | str trim
-                  if ($u | is-not-empty) { $entered_url = $u; break }
-                  print $"      (ansi red)URL cannot be empty.(ansi reset)"
+                  mut entered_url = ""
+                  loop {
+                      let u = input "\n  [?] Enter Album/Playlist URL: " | str trim
+                      if ($u | is-not-empty) { $entered_url = $u; break }
+                      print $"      (ansi red)URL cannot be empty.(ansi reset)"
+                  }
+
+                  let be_verbose = ask-bool "Enable verbose console output?"
+                  run-download $entered_url $be_verbose true $music_dir
               }
-
-              let be_verbose = ask-bool "Enable verbose console output?"
-
-              run-download $entered_url $be_verbose true $music_dir
+              _ => { run-download $url $verbose (not $no_log) $music_dir }
           }
       }
     '';
