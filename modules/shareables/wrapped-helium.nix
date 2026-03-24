@@ -4,40 +4,22 @@
     system,
     ...
   }: let
-    # Widevine is unfree and requires allowUnfree in perSystem context
     pkgsUnfree = import pkgs.path {
       inherit system;
       config.allowUnfree = true;
     };
 
-    extensionPolicy = pkgs.writeText "policy.json" (builtins.toJSON {
-      # IDs only (no URLs) to avoid triggering TRK protocol blocking
-      ExtensionInstallForcelist = [
-        "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
-        "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
-        "agleiimpggapjekcdhdjbmegjbbkleie" # Ground News
-        "neebplgakaahbhdphmkckjjcegoiijjo" # Keepa
-        "odibgflepadohfmpcemnjbhkionjkapk" # Helium Translator Inline
-      ];
-    });
-
-    policiesDir = pkgs.runCommand "helium-policies" {} ''
-      mkdir -p $out/etc/opt/chrome/policies/managed
-      cp ${extensionPolicy} $out/etc/opt/chrome/policies/managed/extensions.json
-    '';
-
     widevineConfig = pkgs.writeText "latest-component-updated-widevine-cdm" (builtins.toJSON {
       Path = "${pkgsUnfree.widevine-cdm}/share/google/chrome/WidevineCdm";
     });
 
-    # Tarball allows more control than AppImage
     heliumPkg = pkgs.stdenv.mkDerivation rec {
       pname = "helium";
-      version = "0.8.5.1";
+      version = "0.10.7.1";
 
       src = pkgs.fetchurl {
         url = "https://github.com/imputnet/helium-linux/releases/download/${version}/${pname}-${version}-x86_64_linux.tar.xz";
-        sha256 = "sha256-/cp201tiw2N+xsj89Ms06efJyYnfgc04uoJnvsjDUog=";
+        sha256 = "sha256-ZHziopdl8ClZQJUHXtIIb9ok/flZoixMdlLMKf5HUUo=";
       };
 
       nativeBuildInputs = with pkgs; [
@@ -65,7 +47,7 @@
         libGL
       ];
 
-      # Qt shim libraries are optional compatibility layers
+      # helium ships Qt shim stubs that autoPatchelf cannot satisfy; absence is intentional
       autoPatchelfIgnoreMissingDeps = [
         "libQt5Core.so.5"
         "libQt5Gui.so.5"
@@ -84,10 +66,9 @@
         chmod +x $out/opt/helium/helium
 
         makeWrapper $out/opt/helium/helium $out/bin/helium
+
         mkdir -p $out/share/applications
         cp $out/opt/helium/helium.desktop $out/share/applications/
-        substituteInPlace $out/share/applications/helium.desktop \
-          --replace 'Exec=helium' 'Exec=${pname}'
 
         for size in 16 32 48 64 128 256; do
           mkdir -p $out/share/icons/hicolor/''${size}x''${size}/apps
@@ -101,10 +82,11 @@
       meta = {
         description = "Private, fast, and honest web browser";
         homepage = "https://helium.computer/";
-        platforms = [ "x86_64-linux" ];
+        platforms = ["x86_64-linux"];
       };
     };
 
+    # --policy-dir and user-flags only fire when the hjem module has populated those paths
     heliumWrapper = pkgs.writeShellScript "helium-wrapper" ''
       USER_DATA_DIR=""
       for arg in "$@"; do
@@ -122,32 +104,27 @@
       cp ${widevineConfig} "$USER_DATA_DIR/WidevineCdm/latest-component-updated-widevine-cdm"
       chmod u+w "$USER_DATA_DIR/WidevineCdm/latest-component-updated-widevine-cdm"
 
-      {
-        echo "[$(date)] Wrapper called with args: $@"
-        echo "[$(date)] About to exec: ${heliumPkg}/bin/helium"
-        echo "[$(date)] heliumPkg path: ${heliumPkg}"
-        echo "[$(date)] Contents of makeWrapper script:"
-        head -50 ${heliumPkg}/bin/helium 2>&1
-        echo "[$(date)] Checking policies mount at /etc/chromium/policies/managed:"
-        ls -la /etc/chromium/policies/managed/ 2>&1 || echo "NOT FOUND"
-        echo "[$(date)] Checking policies mount at /etc/opt/chrome/policies/managed:"
-        ls -la /etc/opt/chrome/policies/managed/ 2>&1 || echo "NOT FOUND"
-      } >>/tmp/helium-wrapper.log
+      POLICY_FLAGS=""
+      if [ -d "$HOME/.config/net.imput.helium/policies" ]; then
+        POLICY_FLAGS="--policy-dir=$HOME/.config/net.imput.helium/policies"
+      fi
 
-      exec ${heliumPkg}/bin/helium "$@" >>/tmp/helium.log 2>&1
+      USER_FLAGS=""
+      if [ -f "$HOME/.config/net.imput.helium/user-flags" ]; then
+        USER_FLAGS=$(cat "$HOME/.config/net.imput.helium/user-flags")
+      fi
+
+      exec ${heliumPkg}/bin/helium $POLICY_FLAGS $USER_FLAGS "$@"
     '';
 
     wrappedHelium = pkgs.buildFHSEnv {
       name = "helium";
-      targetPkgs = pkgs: [
+      targetPkgs = _pkgs: [
         heliumPkg
         pkgs.mesa
         pkgs.libGL
         pkgs.libdrm
         pkgs.libva
-      ];
-      extraBwrapArgs = [
-        "--ro-bind ${policiesDir}/etc/opt/chrome/policies/managed /etc/chromium/policies/managed"
       ];
       runScript = heliumWrapper;
       extraInstallCommands = ''
@@ -164,7 +141,7 @@
       '';
       meta = {
         mainProgram = "helium";
-        description = "Helium browser with DRM, dark UI, and bundled extensions";
+        description = "Helium browser with Widevine DRM";
       };
     };
   in {
