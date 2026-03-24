@@ -18,18 +18,18 @@ awk '
 ' "$FILE" >"$FILE.tmp" && mv "$FILE.tmp" "$FILE"
 
 awk '
-/^      if \(shouldSave\) \{$/ {
-    print "      if (shouldSave) {"
-    print "        const _allowed = (notificationAllowlistFile.text() || \"\")"
-    print "          .toLowerCase().split(\"\\n\").map(a => a.trim()).filter(a => a !== \"\");"
-    print "        if (_allowed.length === 0 || _allowed.includes((data.appName || \"\").toLowerCase())) {"
-    print "          addToHistory(data);"
-    print "        }"
-    in_block = 1
+/^  function trySaveToHistory\(data, notification\) \{$/ {
+    print
+    in_fn = 1
     next
 }
-in_block {
-    if (/^      }$/) { in_block = 0; print }
+in_fn && /^      return;$/ {
+    print
+    print "    const _allowed = (notificationAllowlistFile.text() || \"\")"
+    print "      .toLowerCase().split(\"\\n\").map(a => a.trim()).filter(a => a !== \"\");"
+    print "    if (_allowed.length > 0 && !_allowed.includes((data.appName || \"\").toLowerCase()))"
+    print "      return;"
+    in_fn = 0
     next
 }
 { print }

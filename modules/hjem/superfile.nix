@@ -52,6 +52,37 @@
             theme = ""
             transparent_background = true
             zoxide_support = true
+
+            [open_with]
+            apng = "qview"
+            avif = "qview"
+            bmp = "qview"
+            exr = "qview"
+            gif = "qview"
+            hdr = "qview"
+            heic = "qview"
+            heif = "qview"
+            ico = "qview"
+            jpeg = "qview"
+            jpg = "qview"
+            jxl = "qview"
+            kra = "qview"
+            ora = "qview"
+            pbm = "qview"
+            pcx = "qview"
+            pgm = "qview"
+            png = "qview"
+            ppm = "qview"
+            psd = "qview"
+            sgi = "qview"
+            svg = "qview"
+            tga = "qview"
+            tif = "qview"
+            tiff = "qview"
+            webp = "qview"
+            xbm = "qview"
+            xcf = "qview"
+            xpm = "qview"
           '';
         };
       };

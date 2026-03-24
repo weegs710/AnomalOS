@@ -12,6 +12,9 @@
         inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
 
+      # Bind mount is removed during activation on tmpfs root; read key from persist directly.
+      age.identityPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+
       age.secrets.tailscale-authkey = {
         file = ../../secrets/tailscale-authkey.age;
         mode = "0400";
