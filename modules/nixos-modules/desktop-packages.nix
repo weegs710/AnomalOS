@@ -17,7 +17,6 @@
         dbus
         dbus-broker
         file-roller
-        gajim
         gparted
         libGL
         libnotify
@@ -44,7 +43,6 @@
 
       fonts.packages = with pkgs.nerd-fonts; [
         dejavu-sans-mono
-        zed-mono
         jetbrains-mono
         fira-code
         terminess-ttf

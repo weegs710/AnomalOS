@@ -39,7 +39,7 @@
         EDITOR = "fresh";
         NIXOS_OZONE_WL = "1";
         TERMINAL = "ghostty";
-        VISUAL = "zeditor";
+        VISUAL = "fresh";
         XDG_TERMINAL_EDITOR = "ghostty";
         XDG_DATA_DIRS = [
           "$HOME/.local/share/flatpak/exports/share"

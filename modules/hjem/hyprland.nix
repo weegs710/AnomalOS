@@ -244,11 +244,8 @@
           windowrule = opacity 1.0 override 1.0 override 1.0 override, match:title ^(termfilechooser)$
           windowrule = float on, match:title ^(.*[Dd]ialog.*)$
           windowrule = float on, match:title ^(.*[Pp]opup.*)$
-          windowrule = workspace 1, match:class ^(org.gajim.Gajim)$
           windowrule = workspace 1, match:class ^(vesktop)$
           windowrule = workspace 1, match:class ^(chrome-kippjfofjhjlffjecoapiogbkgbpmgej-Default)$
-          windowrule = workspace 2, match:class ^(dev\.zed\.Zed)$
-          windowrule = workspace 2, match:class ^(Zed)$
           windowrule = workspace 2, match:title ^(ghostty)$
           windowrule = workspace 4, match:class ^(steam)$
           windowrule = workspace 4, match:class ^(steam_app_.*)$

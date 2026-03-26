@@ -10,9 +10,6 @@
   in {
     config = lib.mkIf config.mySystem.features.desktop {
       users.users.${username}.packages = [
-        pkgs.cryptomator
-        pkgs.filen-desktop
-        pkgs.filen-cli
         wrappedFastfetch
       ];
     };

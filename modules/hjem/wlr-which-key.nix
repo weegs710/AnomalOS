@@ -125,11 +125,6 @@
                   cmd = "vesktop";
                 }
                 {
-                  key = "g";
-                  desc = "gajim";
-                  cmd = "gajim";
-                }
-                {
                   key = "f";
                   desc = "facebook";
                   cmd = "helium --app-id=kippjfofjhjlffjecoapiogbkgbpmgej";
@@ -249,16 +244,6 @@
                   key = "b";
                   desc = "btop";
                   cmd = btopCmd;
-                }
-                {
-                  key = "c";
-                  desc = "cryptomator";
-                  cmd = "cryptomator";
-                }
-                {
-                  key = "f";
-                  desc = "filen";
-                  cmd = "filen-desktop";
                 }
                 {
                   key = "g";

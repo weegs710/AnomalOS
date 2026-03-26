@@ -8,7 +8,7 @@
   }: let
     username = config.mySystem.user.name;
     system = pkgs.stdenv.hostPlatform.system;
-    notificationHistoryAllowedApps = [ "vesktop" "gajim" "helium" ];
+    notificationHistoryAllowedApps = [ "vesktop" "helium" ];
     notificationAllowlist = pkgs.writeText "notification-allowlist"
       (lib.concatStringsSep "\n" notificationHistoryAllowedApps);
     patchedNoctalia = inputs.noctalia-shell.packages.${system}.default.overrideAttrs (prev: {

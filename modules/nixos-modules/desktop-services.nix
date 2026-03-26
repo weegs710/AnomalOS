@@ -18,6 +18,7 @@
         udisks2.enable = true;
         gvfs.enable = true;
         locate.enable = true;
+        speechd.enable = false;
       };
 
       programs = {
