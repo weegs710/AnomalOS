@@ -287,6 +287,10 @@
             nu ~/.config/sync-music/sync-music.nu ...$args
           }
 
+          def --wrapped update-svgs [...args: string] {
+            nu ~/dotfiles/scripts/update-svgs.nu ...$args
+          }
+
           def kodi-sync [] {
             let dst = "~/dotfiles/modules/hjem/kodi"
             cp ~/.kodi/userdata/guisettings.xml ($dst | path expand | path join "guisettings.xml")
