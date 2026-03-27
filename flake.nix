@@ -36,6 +36,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.noctalia-qs.follows = "noctalia-qs";
     };
+    severed-chains = {
+      url = "path:/home/weegs/Documents/test-zone/dragoon/Severed-Chains";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {flake-parts, ...}: let

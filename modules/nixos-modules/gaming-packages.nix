@@ -1,4 +1,4 @@
-{
+{inputs, ...}: {
   flake.nixosModules.gaming-packages = {
     config,
     lib,
@@ -15,6 +15,7 @@
         };
 
         users.users.${config.mySystem.user.name}.packages = with pkgs; [
+          inputs.severed-chains.packages.${pkgs.system}.default
           (openraPackages.engines.bleed.overrideAttrs (old: {
             postPatch = "";
           }))

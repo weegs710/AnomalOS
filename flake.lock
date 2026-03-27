@@ -426,6 +426,7 @@
         "nixpkgs-kernel": "nixpkgs-kernel",
         "noctalia-qs": "noctalia-qs",
         "noctalia-shell": "noctalia-shell",
+        "severed-chains": "severed-chains",
         "steamdeck-dsp": "steamdeck-dsp"
       }
     },
@@ -449,6 +450,23 @@
         "owner": "oxalica",
         "repo": "rust-overlay",
         "type": "github"
+      }
+    },
+    "severed-chains": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774622528,
+        "narHash": "sha256-iR3tyh4wBWF/HpK0UsNLrRais8Q6Y5aHiGj8ixTotfY=",
+        "path": "/home/weegs/Documents/test-zone/dragoon/Severed-Chains",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/weegs/Documents/test-zone/dragoon/Severed-Chains",
+        "type": "path"
       }
     },
     "smfh": {
