@@ -9,7 +9,7 @@
     steamdeckDsp = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.steamdeck-dsp;
 
     kernelPkgs = import inputs.nixpkgs-kernel {
-      system = pkgs.stdenv.system;
+      system = pkgs.stdenv.hostPlatform.system;
       overlays = [inputs.nix-cachyos-kernel.overlays.pinned];
     };
 

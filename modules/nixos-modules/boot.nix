@@ -5,7 +5,7 @@
     ...
   }: let
     kernelPkgs = import inputs.nixpkgs-kernel {
-      system = pkgs.stdenv.system;
+      system = pkgs.stdenv.hostPlatform.system;
       overlays = [inputs.nix-cachyos-kernel.overlays.pinned];
     };
   in {

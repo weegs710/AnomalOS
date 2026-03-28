@@ -15,7 +15,7 @@
         };
 
         users.users.${config.mySystem.user.name}.packages = with pkgs; [
-          inputs.severed-chains.packages.${pkgs.system}.default
+          inputs.severed-chains.packages.${pkgs.stdenv.hostPlatform.system}.default
           (openraPackages.engines.bleed.overrideAttrs (old: {
             postPatch = "";
           }))
