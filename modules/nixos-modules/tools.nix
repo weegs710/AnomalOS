@@ -28,6 +28,7 @@
           nodejs
           python3
           ripgrep
+          cargo
           rustc
           uv
         ];
