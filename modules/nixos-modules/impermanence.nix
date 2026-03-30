@@ -96,6 +96,7 @@
         users.${username} = {
           directories = [
             ".cache"
+            ".cargo"
           ];
         };
       };
