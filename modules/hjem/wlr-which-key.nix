@@ -114,6 +114,11 @@
               desc = "helium";
               cmd = "helium";
             }
+            {
+              key = "z";
+              desc = "zen";
+              cmd = "zen";
+            }
             # Category menus
             {
               key = "c";
