@@ -8,18 +8,6 @@
     username = config.mySystem.user.name;
     wrappedHelium = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.helium;
 
-    extensionPolicy = builtins.toJSON {
-      # URLs trigger TRK protocol blocking in ungoogled-chromium; IDs alone are sufficient
-      # See: https://github.com/imputnet/helium/blob/main/patches/iridium-browser/all-add-trk-prefixes-to-possibly-evil-connections.patch
-      ExtensionInstallForcelist = [
-        "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
-        "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
-        "agleiimpggapjekcdhdjbmegjbbkleie" # Ground News
-        "neebplgakaahbhdphmkckjjcegoiijjo" # Keepa
-        "odibgflepadohfmpcemnjbhkionjkapk" # Helium Translator Inline
-      ];
-    };
-
     # HeliumLayoutType::kToolbar = 1; sets tabs-in-toolbar layout
     # See: https://github.com/imputnet/helium/blob/main/patches/helium/ui/layout/core.patch
     initialPreferences = builtins.toJSON {
@@ -38,8 +26,6 @@
 
       hjem.users.${username} = {
         xdg.config.files = {
-          # Presence of this dir triggers --policy-dir in the shareable wrapper
-          "net.imput.helium/policies/managed/extensions.json".text = extensionPolicy;
           # Read once on first launch only; will not override an existing profile
           "net.imput.helium/initial_preferences".text = initialPreferences;
           # Read by the shareable wrapper; one flag per line
