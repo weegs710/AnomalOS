@@ -18,11 +18,13 @@
             keybind = shift+enter=text:\n
             keybind = ctrl+v=paste_from_clipboard
 
-            # Unbind terminal shortcuts that conflict with fresh editor
+            # Unbind terminal shortcuts that conflict with editors
             keybind = ctrl+q=unbind
             keybind = ctrl+w=unbind
-            keybind = ctrl+tab=unbind
-            keybind = ctrl+shift+tab=unbind
+            keybind = shift+page_up=unbind
+            keybind = shift+page_down=unbind
+            keybind = shift+home=unbind
+            keybind = shift+end=unbind
           '';
 
           xdg.data.files."applications/com.mitchellh.ghostty.desktop".text = ''
