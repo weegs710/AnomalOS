@@ -53,7 +53,7 @@
           monitor = , preferred, auto, 1
 
           # Environment
-          env = HYPRCURSOR_THEME,phinger-cursors-dark-hyprcursor
+          env = HYPRCURSOR_THEME,fft-ivalice-hyprcursor
           env = HYPRCURSOR_SIZE,32
           env = XCURSOR_THEME,phinger-cursors-dark
           env = XCURSOR_SIZE,32

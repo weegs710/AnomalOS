@@ -7,6 +7,25 @@
   }: let
     username = config.mySystem.user.name;
 
+    fft-ivalice-hyprcursor = pkgs.stdenvNoCC.mkDerivation {
+      pname = "fft-ivalice-hyprcursor";
+      version = "1.0";
+
+      src = ./fft-ivalice-hyprcursor;
+
+      dontBuild = true;
+
+      installPhase = ''
+        mkdir -p $out/share/icons/fft-ivalice-hyprcursor
+        cp -r $src/* $out/share/icons/fft-ivalice-hyprcursor/
+      '';
+
+      meta = with lib; {
+        description = "Cursor theme extracted from Final Fantasy Tactics - The Ivalice Chronicles";
+        platforms = platforms.linux;
+      };
+    };
+
     phinger-cursors-dark-hyprcursor = pkgs.stdenvNoCC.mkDerivation {
       pname = "phinger-cursors-dark-hyprcursor";
       version = "2.1";
@@ -33,6 +52,7 @@
         pkgs.phinger-cursors
         pkgs.adw-gtk3
         phinger-cursors-dark-hyprcursor
+        fft-ivalice-hyprcursor
       ];
 
       environment.sessionVariables = {
