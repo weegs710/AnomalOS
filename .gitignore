@@ -206,6 +206,9 @@ go.work
 # Project Specific
 # ============================================================================
 
+# Cursor assets extracted from commercial games — not for public distribution
+modules/hjem/xdg/fft-ivalice-hyprcursor/hyprcursors/
+
 # Local testing
 test-result
 test-output/

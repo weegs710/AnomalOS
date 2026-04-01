@@ -11,7 +11,7 @@
       pname = "fft-ivalice-hyprcursor";
       version = "1.0";
 
-      src = ./fft-ivalice-hyprcursor;
+      src = builtins.path { path = ./fft-ivalice-hyprcursor; name = "fft-ivalice-hyprcursor"; };
 
       dontBuild = true;
 
