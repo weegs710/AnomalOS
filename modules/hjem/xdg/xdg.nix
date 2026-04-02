@@ -1,4 +1,4 @@
-{
+{inputs, ...}: {
   flake.nixosModules.xdg = {
     config,
     lib,
@@ -11,7 +11,7 @@
       pname = "fft-ivalice-hyprcursor";
       version = "1.0";
 
-      src = builtins.path { path = ./fft-ivalice-hyprcursor; name = "fft-ivalice-hyprcursor"; };
+      src = inputs.fft-ivalice-cursor;
 
       dontBuild = true;
 

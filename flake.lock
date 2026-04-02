@@ -77,6 +77,19 @@
         "type": "github"
       }
     },
+    "fft-ivalice-cursor": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775173669,
+        "narHash": "sha256-jk7s4SftLdQvi+fc8JKZhEZiJVJGnQteTtTzaA/B8jM=",
+        "path": "/home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor",
+        "type": "path"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -416,6 +429,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "fft-ivalice-cursor": "fft-ivalice-cursor",
         "flake-parts": "flake-parts",
         "hjem": "hjem",
         "impermanence": "impermanence",
