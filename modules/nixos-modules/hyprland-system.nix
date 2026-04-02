@@ -49,6 +49,8 @@
 
         environment.sessionVariables = {
           NIXOS_OZONE_WL = "1";
+          # GTK3 apps bypass xdg-portal for file dialogs without this
+          GTK_USE_PORTAL = "1";
         };
       };
     };

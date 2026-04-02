@@ -12,6 +12,8 @@
         hash = "sha256-PEojifuiIjF3OUxDoMCyynOJUpFglTzh7lJUcq7g4e0=";
       };
       vendorHash = "sha256-5SSnrG3DvD1i7rNcpztHkUUap4Qp7MX04ofD7rA3xgM=";
+      # write all panel-selected files to --chooser-file instead of only the triggered one
+      patches = (old.patches or []) ++ [ ./superfile-chooser-multi ];
       doCheck = false;
     });
 
