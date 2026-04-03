@@ -1,5 +1,5 @@
 {
-  "settingsVersion": 58,
+  "settingsVersion": 59,
   "bar": {
     "barType": "simple",
     "position": "top",
@@ -15,7 +15,6 @@
     "enableExclusionZoneInset": true,
     "backgroundOpacity": 0,
     "useSeparateOpacity": true,
-    "floating": false,
     "marginVertical": 5,
     "marginHorizontal": 5,
     "frameThickness": 8,
@@ -267,11 +266,14 @@
     "wallpaperChangeMode": "random",
     "randomIntervalSec": 900,
     "transitionDuration": 2000,
-    "transitionType": "stripes",
+    "transitionType": [
+      "stripes"
+    ],
     "skipStartupTransition": true,
     "transitionEdgeSmoothness": 0.05,
     "panelPosition": "follow_bar",
     "hideWallpaperFilenames": false,
+    "useOriginalImages": false,
     "overviewBlur": 0.4,
     "overviewTint": 0.6,
     "useWallhaven": false,
@@ -403,6 +405,8 @@
     "colorizeIcons": false,
     "showLauncherIcon": false,
     "launcherPosition": "end",
+    "launcherUseDistroLogo": false,
+    "launcherIcon": "",
     "launcherIconColor": "none",
     "pinnedStatic": false,
     "inactiveIndicators": false,
@@ -419,7 +423,6 @@
     "indicatorOpacity": 0.6
   },
   "network": {
-    "wifiEnabled": false,
     "airplaneModeEnabled": false,
     "bluetoothRssiPollingEnabled": false,
     "bluetoothRssiPollIntervalMs": 10000,
@@ -533,6 +536,7 @@
     "volumeOverdrive": false,
     "spectrumFrameRate": 144,
     "visualizerType": "linear",
+    "spectrumMirrored": true,
     "mprisBlacklist": [],
     "preferredPlayer": "",
     "volumeFeedback": false,
@@ -552,7 +556,8 @@
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
     "generationMethod": "vibrant",
-    "monitorForColors": ""
+    "monitorForColors": "",
+    "syncGsettings": true
   },
   "templates": {
     "activeTemplates": [
@@ -621,10 +626,12 @@
     "performanceModeEnabled": "",
     "performanceModeDisabled": "",
     "startup": "sleep 5 && python3 -c \"import json,os,time; p=os.path.expanduser('~/.config/noctalia/settings.json'); s=json.load(open(p)); o=s['wallpaper'].get('sortOrder','name'); s['wallpaper']['sortOrder']='__rescan__'; open(p,'w').write(json.dumps(s,indent=4)); time.sleep(1); s=json.load(open(p)); s['wallpaper']['sortOrder']=o; open(p,'w').write(json.dumps(s,indent=4))\"",
-    "session": ""
+    "session": "",
+    "colorGeneration": ""
   },
   "plugins": {
-    "autoUpdate": false
+    "autoUpdate": false,
+    "notifyUpdates": true
   },
   "idle": {
     "enabled": false,
