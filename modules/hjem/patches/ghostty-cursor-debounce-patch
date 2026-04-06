@@ -1,0 +1,57 @@
+# Without debounce, cursor trail shaders fire from wrong positions during rapid terminal output scroll
+# See: https://github.com/ghostty-org/ghostty/issues/10995
+--- a/src/renderer/generic.zig
++++ b/src/renderer/generic.zig
+@@ -158,6 +158,11 @@ pub fn Renderer(comptime GraphicsAPI: type) type {
+         /// Custom shader uniform values.
+         custom_shader_uniforms: shadertoy.Uniforms,
+
++        /// Debounce fields for cursor shader uniforms.
++        custom_shader_known_cursor: [4]f32,
++        custom_shader_known_cursor_color: [4]f32,
++        custom_shader_cursor_debounce_start: ?std.time.Instant = null,
++
+         /// Timestamp we rendered out first frame.
+         ///
+         /// This is used when updating custom shader uniforms.
+@@ -770,6 +775,8 @@ pub fn Renderer(comptime GraphicsAPI: type) type {
+                     .selection_background_color = @splat(0),
+                     .selection_foreground_color = @splat(0),
+                 },
++                .custom_shader_known_cursor = @splat(0),
++                .custom_shader_known_cursor_color = @splat(0),
+                 .bg_image_buffer = undefined,
+
+                 // Fonts
+@@ -2195,14 +2202,23 @@ pub fn Renderer(comptime GraphicsAPI: type) type {
+                 };
+
+                 const cursor_changed: bool =
+-                    !std.meta.eql(new_cursor, uniforms.current_cursor) or
+-                    !std.meta.eql(cursor_color, uniforms.current_cursor_color);
++                    !std.meta.eql(new_cursor, self.custom_shader_known_cursor) or
++                    !std.meta.eql(cursor_color, self.custom_shader_known_cursor_color);
+
+                 if (cursor_changed) {
+-                    uniforms.previous_cursor = uniforms.current_cursor;
+-                    uniforms.previous_cursor_color = uniforms.current_cursor_color;
+-                    uniforms.current_cursor = new_cursor;
+-                    uniforms.current_cursor_color = cursor_color;
+-                    uniforms.cursor_change_time = uniforms.time;
+-                }
++                    self.custom_shader_cursor_debounce_start = now;
++                    self.custom_shader_known_cursor = new_cursor;
++                    self.custom_shader_known_cursor_color = cursor_color;
++                }
++
++                if (self.custom_shader_cursor_debounce_start) |time| {
++                    if (now.since(time) > std.time.ns_per_ms * 10) {
++                        uniforms.previous_cursor = uniforms.current_cursor;
++                        uniforms.previous_cursor_color = uniforms.current_cursor_color;
++                        uniforms.current_cursor = new_cursor;
++                        uniforms.current_cursor_color = cursor_color;
++                        uniforms.cursor_change_time = uniforms.time;
++                        self.custom_shader_cursor_debounce_start = null;
++                    }
++                }
+             }
