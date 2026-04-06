@@ -8,6 +8,7 @@
     config = lib.mkIf config.mySystem.features.desktop {
       users.users.${config.mySystem.user.name}.packages = with pkgs; [
         adwaita-icon-theme
+        kdePackages.kdeconnect-kde
         bluetui
         cachix
         nemo-with-extensions

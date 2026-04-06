@@ -66,6 +66,7 @@
           # Autostart
           exec-once = dbus-update-activation-environment --systemd --all
           exec-once = noctalia-shell
+          exec-once = kdeconnect-indicator
 
           # General
           general {
