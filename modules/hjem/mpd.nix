@@ -6,10 +6,15 @@
     ...
   }: let
     username = config.mySystem.user.name;
+    # Skip password lookup when no secret service is running
+    # See: https://github.com/htkhiem/euphonica/pull/267
+    euphonica = pkgs.euphonica.overrideAttrs (old: {
+      patches = (old.patches or []) ++ [ ./patches/euphonica-fix-no-secret-service ];
+    });
   in {
     config = lib.mkIf config.mySystem.features.desktop {
         users.users.${username}.packages = [
-          pkgs.euphonica
+          euphonica
           pkgs.mpd
         ];
 
