@@ -5,13 +5,7 @@
     pkgs,
     ...
   }: let
-    yoinkScript = ''
-      #!/usr/bin/env nu
-
-      const CONFIG_FILE = ("~/.config/yoink/config.json" | path expand)
-      const LOG_DIR = ("~/.config/yoink/logs" | path expand)
-      const DEFAULT_VIDEO_DIR = ("~/Videos/yt-dlp" | path expand)
-
+    scrapingLib = ''
       def write-log [log_file: string]: string -> nothing {
           if ($log_file | is-empty) { return }
           let plain = $in | ansi strip | str trim
@@ -20,31 +14,83 @@
           }
       }
 
-      def load-config []: nothing -> string {
-          if ($CONFIG_FILE | path exists) {
-              try {
-                  (open $CONFIG_FILE).video_dir? | default $DEFAULT_VIDEO_DIR
-              } catch {
-                  $DEFAULT_VIDEO_DIR
-              }
+      def run-ytdlp-stream [args: list<string>, verbose: bool, log_file: string]: nothing -> int {
+          if $verbose {
+              ^yt-dlp ...$args o+e>| lines | each { print $in } | ignore
           } else {
-              $DEFAULT_VIDEO_DIR
+              let state = ^yt-dlp --newline ...$args o+e>| lines | reduce --fold {first: true, needs_nl: false} { |raw_line, acc|
+                  let line = $raw_line | str replace --all "\r" ""
+                  if ($line | is-empty) {
+                      $acc
+                  } else {
+                      $line | write-log $log_file
+                      match $line {
+                          _ if ($line | str contains "[download]") and ($line | str contains "%") => {
+                              print --no-newline $"\r  ($line)(ansi erase_line)"
+                              {first: false, needs_nl: true}
+                          }
+                          _ if ($line | str contains "[download] Downloading item") => {
+                              if not $acc.first {
+                                  print --no-newline $"\r(ansi erase_line)(ansi cursor_up)\r(ansi erase_line)"
+                              }
+                              print $"  ($line)"
+                              {first: false, needs_nl: false}
+                          }
+                          _ if ($line | str contains "[Merger]") => {
+                              print --no-newline $"\r  (ansi blue)Merging streams...(ansi reset)(ansi erase_line)"
+                              {first: false, needs_nl: true}
+                          }
+                          _ if ($line | str contains "ERROR:") => {
+                              if $acc.needs_nl { print "" }
+                              print $"  (ansi red)($line)(ansi reset)"
+                              {first: true, needs_nl: false}
+                          }
+                          _ => { $acc }
+                      }
+                  }
+              }
+              if $state.needs_nl { print "" }
           }
+          $env.LAST_EXIT_CODE
       }
+
+      def ask-bool [prompt: string]: nothing -> bool {
+          input $"  (ansi attr_bold)[?](ansi reset) ($prompt) [y/N]: " | str trim | str downcase | str starts-with "y"
+      }
+
+      def shell-quote []: string -> string {
+          let s = $in | str replace --all "'" "'\\'''"
+          $"'($s)'"
+      }
+
+      def load-config [config_file: string, key: string, default_path: string]: nothing -> string {
+          if ($config_file | path exists) {
+              open $config_file | get -o $key
+          } | default $default_path
+      }
+
+      def setup-log-file [log_dir: string, name: string]: nothing -> string {
+          mkdir $log_dir
+          let safe_name = $name | str replace --regex --all '[<>:"/\\|?*]' ""
+          let log_path = [$log_dir, $"(date now | format date '%m-%d-%y - %H%M') - ($safe_name).log"] | path join
+          "" | save $log_path
+          $log_path
+      }
+    '';
+
+    yoinkScript = ''
+      #!/usr/bin/env nu
+
+      ${scrapingLib}
+
+      const CONFIG_FILE = ("~/.config/yoink/config.json" | path expand)
+      const LOG_DIR = ("~/.config/yoink/logs" | path expand)
+      const DEFAULT_VIDEO_DIR = ("~/Videos/yt-dlp" | path expand)
 
       def save-config [video_dir: string]: nothing -> nothing {
           mkdir ($CONFIG_FILE | path dirname)
           {video_dir: $video_dir} | save --force $CONFIG_FILE
           print $"(ansi green)Configuration saved.(ansi reset)"
-      }
-
-      def setup-log-file [title: string]: nothing -> string {
-          mkdir $LOG_DIR
-          let timestamp = date now | format date "%m-%d-%y - %H%M"
-          let safe_title = $title | str replace --regex --all '[<>:"/\\|?*]' ""
-          let log_path = [$LOG_DIR, $"($timestamp) - ($safe_title).log"] | path join
-          "" | save $log_path
-          $log_path
       }
 
       def verify-url [url: string]: nothing -> nothing {
@@ -59,37 +105,17 @@
           if $result.exit_code != 0 {
               return {title: "download", count: 1, playlist_title: ""}
           }
-          let titles = $result.stdout | str trim | lines | where { not ($in | is-empty) }
+          let titles = $result.stdout | str trim | lines | where { $in | is-not-empty }
           let count = $titles | length
-          let title = $titles | first | default "download"
-
-          # for playlists, grab the playlist title separately for the output directory name
-          let playlist_title = if $count > 1 {
-              let pt = ^yt-dlp --flat-playlist --playlist-items 1 --print '%(playlist_title)s' --no-warnings $url | complete
-              if $pt.exit_code == 0 { $pt.stdout | str trim } else { "" }
-          } else {
-              ""
+          {
+              title: ($titles | first | default "download")
+              count: $count
+              # for playlists, grab the playlist title separately for the output directory name
+              playlist_title: (if $count > 1 {
+                  let pt = ^yt-dlp --flat-playlist --playlist-items 1 --print '%(playlist_title)s' --no-warnings $url | complete
+                  if $pt.exit_code == 0 { $pt.stdout | str trim } else { "" }
+              } else { "" })
           }
-
-          {title: $title, count: $count, playlist_title: $playlist_title}
-      }
-
-      def run-ytdlp-stream [args: list<string>, verbose: bool, log_file: string]: nothing -> int {
-          if $verbose {
-              ^yt-dlp ...$args o+e>| lines | each { print $in } | ignore
-          } else {
-              ^yt-dlp ...$args o+e>| lines | each { |line|
-                  $line | write-log $log_file
-                  match $line {
-                      _ if ($line | str contains "[download]") and ($line | str contains "%") => { print $"  ($line)" }
-                      _ if ($line | str contains "[download] Downloading item") => { print $"  ($line)" }
-                      _ if ($line | str contains "[Merger]") => { print $"  (ansi blue)Merging streams...(ansi reset)" }
-                      _ if ($line | str contains "ERROR:") => { print $"  (ansi red)($line)(ansi reset)" }
-                      _ => {}
-                  }
-              } | ignore
-          }
-          $env.LAST_EXIT_CODE
       }
 
       def build-args [url: string, mode: string, output_template: string]: nothing -> list<string> {
@@ -118,7 +144,7 @@
       }
 
       def print-intro [video_dir: string, mode: string]: nothing -> nothing {
-          let line = 1..8 | each { "=" } | str join ""
+          let line = "" | fill -c '=' -w 8
           let mode_label = if $mode == "lite" { "Lite (720-1080p, MP4)" } else { "Max (H.264, best res, MKV)" }
           print $"\n  (ansi blue)($line)(ansi reset)"
           print $"(ansi blue_bold)  Yoink!(ansi reset)"
@@ -127,10 +153,6 @@
           print $"  Mode:   (ansi cyan)($mode_label)(ansi reset)"
           print $"  Output: (ansi cyan)($video_dir)(ansi reset)"
           print $"  For detailed usage: (ansi green)yoink --help(ansi reset)"
-      }
-
-      def ask-bool [prompt: string]: nothing -> bool {
-          input $"\n  (ansi attr_bold)[?](ansi reset) ($prompt) [y/N]: " | str trim | str downcase | str starts-with "y"
       }
 
       def run-download [url: string, mode: string, verbose: bool, do_log: bool, video_dir: string]: nothing -> nothing {
@@ -147,23 +169,18 @@
 
           mkdir $video_dir
 
-          # single video: Title/Title.ext
-          # playlist: Playlist Name/01 - Title/01 - Title.ext
+          # single video: Title/Title.ext  playlist: Playlist Name/01 - Title/01 - Title.ext
+          let playlist_dir = if ($info.playlist_title | is-not-empty) { $info.playlist_title } else { "Playlist" }
           let output_template = if $info.count > 1 {
-              let playlist_dir = if ($info.playlist_title | is-not-empty) {
-                  $info.playlist_title
-              } else {
-                  "Playlist"
-              }
               [$video_dir, $playlist_dir, '%(playlist_index)s - %(title)s', '%(playlist_index)s - %(title)s.%(ext)s'] | path join
           } else {
               [$video_dir, '%(title)s', '%(title)s.%(ext)s'] | path join
           }
 
-          let log_file = if $do_log { setup-log-file $info.title } else { "" }
+          let log_file = if $do_log { setup-log-file $LOG_DIR $info.title } else { "" }
 
+          let sep = "" | fill -c '=' -w 48
           let mode_label = if $mode == "lite" { "720-1080p H.264/AAC, MP4" } else { "H.264 max res + AAC, MKV" }
-          let sep = 1..48 | each { "=" } | str join ""
           print $"\n  (ansi blue)($sep)(ansi reset)"
           if $info.count > 1 {
               print $"  (ansi blue_underline)(ansi attr_bold)Playlist(ansi reset)(ansi blue) : (ansi cyan)($info.playlist_title)(ansi reset)"
@@ -181,12 +198,7 @@
           let exit_code = run-ytdlp-stream $args $verbose $log_file
 
           if $exit_code == 0 {
-              let search_dir = if $info.count > 1 {
-                  let playlist_dir = if ($info.playlist_title | is-not-empty) { $info.playlist_title } else { "Playlist" }
-                  [$video_dir, $playlist_dir] | path join
-              } else {
-                  $video_dir
-              }
+              let search_dir = if $info.count > 1 { [$video_dir, $playlist_dir] | path join } else { $video_dir }
               glob $"($search_dir)/**/*.info.json" | each { |json_file|
                   let url = try { (open $json_file).webpage_url? | default "" } catch { "" }
                   if ($url | str starts-with "http") {
@@ -198,14 +210,10 @@
               print $"\n  (ansi green)Done!(ansi reset)"
               print $"  Saved to:  ($video_dir)"
               print $"  Source links written to .source.html alongside each video"
-              if ($log_file | is-not-empty) {
-                  print $"  Log: ($log_file)"
-              }
+              if ($log_file | is-not-empty) { print $"  Log: ($log_file)" }
           } else {
               print $"\n  (ansi red)yt-dlp exited with code ($exit_code)(ansi reset)"
-              if ($log_file | is-not-empty) {
-                  print $"  (ansi yellow)Check log: ($log_file)(ansi reset)"
-              }
+              if ($log_file | is-not-empty) { print $"  (ansi yellow)Check log: ($log_file)(ansi reset)" }
               exit $exit_code
           }
       }
@@ -218,7 +226,7 @@
           --no-log           # Disable logging to ~/.config/yoink/logs/
           --set-dir: string  # Set a new persistent default output directory
       ] {
-          let video_dir = load-config
+          let video_dir = load-config $CONFIG_FILE "video_dir" $DEFAULT_VIDEO_DIR
           let mode = if $lite { "lite" } else { "max" }
 
           if $set_dir != null {
@@ -250,6 +258,8 @@
     snagScript = ''
       #!/usr/bin/env nu
 
+      ${scrapingLib}
+
       const CONFIG_FILE = ("~/.config/snag/config.json" | path expand)
       const LOG_DIR = ("~/.config/snag/logs" | path expand)
       const DEFAULT_MUSIC_DIR = ("~/Music" | path expand)
@@ -260,44 +270,10 @@
           | str join " "
       }
 
-      def shell-quote []: string -> string {
-          let s = $in | str replace --all "'" "'\\'''"
-          $"'($s)'"
-      }
-
-      def write-log [log_file: string]: string -> nothing {
-          if ($log_file | is-empty) { return }
-          let plain = $in | ansi strip | str trim
-          if ($plain | is-not-empty) {
-              $"($plain)\n" | save --append $log_file
-          }
-      }
-
-      def load-config []: nothing -> string {
-          if ($CONFIG_FILE | path exists) {
-              try {
-                  (open $CONFIG_FILE).music_dir? | default $DEFAULT_MUSIC_DIR
-              } catch {
-                  $DEFAULT_MUSIC_DIR
-              }
-          } else {
-              $DEFAULT_MUSIC_DIR
-          }
-      }
-
       def save-config [music_dir: string]: nothing -> nothing {
           mkdir ($CONFIG_FILE | path dirname)
           {music_dir: $music_dir} | save --force $CONFIG_FILE
           print $"(ansi green)Configuration saved.(ansi reset)"
-      }
-
-      def setup-log-file [album_name: string]: nothing -> string {
-          mkdir $LOG_DIR
-          let timestamp = date now | format date "%m-%d-%y - %H%M"
-          let safe_album = $album_name | str replace --regex --all '[<>:"/\\|?*]' ""
-          let log_path = [$LOG_DIR, $"($timestamp) - ($safe_album).log"] | path join
-          "" | save $log_path
-          $log_path
       }
 
       def verify-url [url: string]: nothing -> nothing {
@@ -314,34 +290,14 @@
           }
           try {
               let data = $result.stdout | str trim | lines | first | from json
-
-              let artist_raw = (
-                  $data.artist?
-                  | default $data.uploader?
-                  | default $data.channel?
-                  | default "Unknown Artist"
-              ) | into string
-
-              let album = (
-                  $data.album?
-                  | default $data.playlist_title?
-                  | default "Unknown Album"
-              ) | into string
-
-              let title = ($data.title? | default "Unknown Title") | into string
+              let artist_raw = ($data.artist? | default $data.uploader? | default $data.channel? | default "Unknown Artist") | into string
               let artist = $artist_raw | str replace --regex " - Topic$" "" | title-case
-              let artist_folder = $artist | split row "," | first | str trim
-
-              let track_number = try {
-                  ($data.track_number? | default $data.playlist_index?) | into int
-              } catch { null }
-
               {
-                  title: $title
+                  title: (($data.title? | default "Unknown Title") | into string)
                   artist: $artist
-                  artist_folder: $artist_folder
-                  album: $album
-                  track_number: $track_number
+                  artist_folder: ($artist | split row "," | first | str trim)
+                  album: (($data.album? | default $data.playlist_title? | default "Unknown Album") | into string)
+                  track_number: (try { ($data.track_number? | default $data.playlist_index?) | into int } catch { null })
               }
           } catch {
               {}
@@ -354,10 +310,13 @@
 
           let artist = input "  [?] Enter artist name: " | str trim
           let album = input "  [?] Enter album name: " | str trim
-          let artist_folder = $artist | split row "," | first | str trim
-          let title = $metadata.title? | default "Unknown Title" | into string
-
-          {title: $title, artist: $artist, artist_folder: $artist_folder, album: $album, track_number: null}
+          {
+              title: ($metadata.title? | default "Unknown Title" | into string)
+              artist: $artist
+              artist_folder: ($artist | split row "," | first | str trim)
+              album: $album
+              track_number: null
+          }
       }
 
       def ask-collision-action [album_dir: string]: nothing -> string {
@@ -375,22 +334,6 @@
               }
           }
           $result
-      }
-
-      def run-ytdlp-stream [args: list<string>, verbose: bool, log_file: string]: nothing -> int {
-          if $verbose {
-              ^yt-dlp ...$args o+e>| lines | each { print $in } | ignore
-          } else {
-              ^yt-dlp ...$args o+e>| lines | each { |line|
-                  $line | write-log $log_file
-                  match $line {
-                      _ if ($line | str contains "[download] Downloading item") => { print $"  ($line)" }
-                      _ if ($line | str contains "ERROR:") => { print $"  (ansi red)($line)(ansi reset)" }
-                      _ => {}
-                  }
-              } | ignore
-          }
-          $env.LAST_EXIT_CODE
       }
 
       def download-album [url: string, metadata: record, music_dir: string, verbose: bool, log_file: string]: nothing -> nothing {
@@ -413,7 +356,7 @@
           mkdir $album_dir
           print $"\n  (ansi blue)Downloading album...(ansi reset)"
 
-          # album_artist is intentionally static — provides consistent grouping across all tracks
+          # album_artist is intentionally static -- provides consistent grouping across all tracks
           let ppargs = $"ffmpeg:-metadata album_artist=($metadata.artist | shell-quote) -loglevel error"
           let output_template = [$album_dir, "%(title)s - %(artist)s - %(album)s.%(ext)s"] | path join
 
@@ -427,6 +370,7 @@
               # strip YouTube auto-generated " - Topic" suffix from artist fields
               "--replace-in-metadata" "artist" " - Topic$" ""
               "--ignore-errors"
+              "--no-warnings"
               "--js-runtimes" "node"
               "--remote-components" "ejs:github"
               "-o" $output_template
@@ -440,20 +384,18 @@
 
           if $returncode != 0 {
               print $"\n  (ansi red)Download failed with exit code ($returncode)(ansi reset)"
-              if ($log_file | is-not-empty) {
-                  print $"  (ansi yellow)Check log: ($log_file)(ansi reset)"
-              }
+              if ($log_file | is-not-empty) { print $"  (ansi yellow)Check log: ($log_file)(ansi reset)" }
               exit 1
           }
 
-          ^yt-dlp --skip-download --write-thumbnail --convert-thumbnails jpg --playlist-items 1 --js-runtimes node --remote-components ejs:github -o $"($album_dir)/thumbnail:cover" $url | ignore
+          ^yt-dlp --skip-download --write-thumbnail --convert-thumbnails jpg --no-warnings --playlist-items 1 --js-runtimes node --remote-components ejs:github -o $"($album_dir)/thumbnail:cover" $url | ignore
 
           print $"\n  (ansi green)Success!(ansi reset)"
           print $"  Album saved to: ($album_dir)"
       }
 
       def print-intro [music_dir: string]: nothing -> nothing {
-          let line = 1..8 | each { "=" } | str join ""
+          let line = "" | fill -c '=' -w 8
           print $"\n  (ansi blue)($line)(ansi reset)"
           print $"(ansi blue_bold)  Snag It?(ansi reset)"
           print $"  (ansi blue)($line)(ansi reset)"
@@ -462,30 +404,15 @@
           print $"  For detailed usage: (ansi green)snag --help(ansi reset)"
       }
 
-      def ask-bool [prompt: string]: nothing -> bool {
-          input $"\n  (ansi attr_bold)[?](ansi reset) ($prompt) [y/N]: " | str trim | str downcase | str starts-with "y"
-      }
-
       def run-download [url: string, verbose: bool, do_log: bool, music_dir: string]: nothing -> nothing {
           verify-url $url
-
           let metadata_raw = extract-metadata $url
+          let needs_fallback = ($metadata_raw | is-empty) or ($metadata_raw.artist == "Unknown Artist") or ($metadata_raw.album == "Unknown Album")
+          let metadata = if $needs_fallback { ask-metadata-fallback $url $metadata_raw } else { $metadata_raw }
 
-          let needs_fallback = if ($metadata_raw | is-empty) {
-              true
-          } else {
-              $metadata_raw.artist == "Unknown Artist" or $metadata_raw.album == "Unknown Album"
-          }
+          let log_file = if $do_log { setup-log-file $LOG_DIR $metadata.album } else { "" }
 
-          let metadata = if $needs_fallback {
-              ask-metadata-fallback $url $metadata_raw
-          } else {
-              $metadata_raw
-          }
-
-          let log_file = if $do_log { setup-log-file $metadata.album } else { "" }
-
-          let sep = 1..48 | each { "=" } | str join ""
+          let sep = "" | fill -c '=' -w 48
           print $"\n  (ansi blue)($sep)(ansi reset)"
           print $"  (ansi blue_underline)(ansi attr_bold)Artist(ansi reset)(ansi blue) : (ansi cyan)($metadata.artist)(ansi reset)"
           print $"  (ansi blue_underline)(ansi attr_bold)Album(ansi reset)(ansi blue)  : (ansi cyan)($metadata.album)(ansi reset)"
@@ -501,7 +428,7 @@
           --no-log           # Disable logging to ~/.config/snag/logs/
           --set-dir: string  # Set a new persistent default music library location
       ] {
-          let music_dir = load-config
+          let music_dir = load-config $CONFIG_FILE "music_dir" $DEFAULT_MUSIC_DIR
 
           if $set_dir != null {
               let new_path = $set_dir | path expand
