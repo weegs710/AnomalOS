@@ -10,7 +10,7 @@
       # Automatically import all nixosModules defined by flake-parts
       (builtins.attrValues self.nixosModules)
       ++ [
-        # Hardware configuration
+        inputs.lix-module.nixosModules.default
         ./_hardware-configuration.nix
 
         # Host-specific configuration
@@ -45,10 +45,12 @@
           nix.settings = {
             substituters = [
               "https://anomalos.cachix.org"
+              "https://cache.lix.systems"
               "https://cache.nixos.org/"
             ];
             trusted-public-keys = [
               "anomalos.cachix.org-1:Rw01Lh1cj/LULRaPi6S145g1qrRzMr0hxvMTvQE0+Ms="
+              "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
               "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
             ];
           };

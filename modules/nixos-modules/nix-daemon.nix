@@ -7,7 +7,6 @@
     nix = {
       settings = {
         warn-dirty = false;
-        download-buffer-size = 268435456; # 256MB
         trusted-users = [config.mySystem.user.name];
         experimental-features = [
           "nix-command"

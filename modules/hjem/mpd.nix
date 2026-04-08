@@ -6,20 +6,10 @@
     ...
   }: let
     username = config.mySystem.user.name;
-    deezerSrc = ./euphonica-deezer;
-    euphonica-with-deezer = pkgs.euphonica.overrideAttrs (old: {
-      prePatch = (old.prePatch or "") + ''
-        mkdir -p src/meta_providers/deezer
-        cp ${deezerSrc}/mod.rs src/meta_providers/deezer/mod.rs
-        cp ${deezerSrc}/models.rs src/meta_providers/deezer/models.rs
-        cp ${deezerSrc}/controller.rs src/meta_providers/deezer/controller.rs
-      '';
-      patches = (old.patches or []) ++ [ "${deezerSrc}/add-deezer-provider" ];
-    });
   in {
     config = lib.mkIf config.mySystem.features.desktop {
         users.users.${username}.packages = [
-          euphonica-with-deezer
+          pkgs.euphonica
           pkgs.mpd
         ];
 

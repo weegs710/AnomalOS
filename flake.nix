@@ -44,6 +44,15 @@
       url = "path:/home/weegs/Documents/test-zone/dragoon/Severed-Chains";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    lix = {
+      url = "git+https://git.lix.systems/lix-project/lix";
+      flake = false;
+    };
+    lix-module = {
+      url = "git+https://git.lix.systems/lix-project/nixos-module";
+      inputs.lix.follows = "lix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {flake-parts, ...}: let
