@@ -73,6 +73,7 @@
           "maxWidth": 300,
           "scrollingMode": "always",
           "showIcon": true,
+          "showText": true,
           "textColor": "none",
           "useFixedWidth": false
         },
@@ -203,7 +204,8 @@
         "Del"
       ]
     },
-    "reverseScroll": false
+    "reverseScroll": false,
+    "smoothScrollEnabled": true
   },
   "ui": {
     "fontDefault": "Terminess Nerd Font",
@@ -223,6 +225,7 @@
     "name": "43567",
     "weatherEnabled": true,
     "weatherShowEffects": true,
+    "weatherTaliaMascotAlways": false,
     "useFahrenheit": true,
     "use12hourFormat": true,
     "showWeekNumberInCalendar": false,
@@ -231,7 +234,8 @@
     "analogClockInCalendar": false,
     "firstDayOfWeek": -1,
     "hideWeatherTimezone": true,
-    "hideWeatherCityName": true
+    "hideWeatherCityName": true,
+    "autoLocate": false
   },
   "calendar": {
     "cards": [
@@ -258,6 +262,7 @@
     "showHiddenFiles": true,
     "viewMode": "browse",
     "setWallpaperOnAllMonitors": true,
+    "linkLightAndDarkWallpapers": true,
     "fillMode": "crop",
     "fillColor": "#000000",
     "useSolidColor": false,
@@ -423,7 +428,6 @@
     "indicatorOpacity": 0.6
   },
   "network": {
-    "airplaneModeEnabled": false,
     "bluetoothRssiPollingEnabled": false,
     "bluetoothRssiPollIntervalMs": 10000,
     "networkPanelView": "ethernet",
@@ -555,7 +559,7 @@
     "schedulingMode": "off",
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
-    "generationMethod": "vibrant",
+    "generationMethod": "rainbow",
     "monitorForColors": "",
     "syncGsettings": true
   },
