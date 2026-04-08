@@ -34,7 +34,7 @@
           initialization_options = {
             nixpkgs.expr = "import (builtins.getFlake \"${flakePath}\").inputs.nixpkgs { }";
             formatting.command = ["alejandra" "--quiet"];
-            options.nixos.expr = "(builtins.getFlake \"${flakePath}\").nixosConfigurations.Rig.options";
+            options.nixos.expr = "(builtins.getFlake \"${flakePath}\").nixosConfigurations.HX99G.options";
           };
         };
 

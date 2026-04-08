@@ -1,8 +1,8 @@
 # Better repl with preloaded functions and libs already loaded
 # https://bmcgee.ie/posts/2023/01/nix-and-its-slow-feedback-loop/#how-you-should-use-the-repl
 # Usage: nix repl --expr 'import ./repl.nix {}'
-#   or:  nix repl --expr 'import ./repl.nix { host = "Rig"; }'
-{host ? "Rig", ...}: let
+#   or:  nix repl --expr 'import ./repl.nix { host = "HX99G"; }'
+{host ? "HX99G", ...}: let
   user = "weegs";
   flake = builtins.getFlake (toString ./.);
   inherit (flake.inputs.nixpkgs) lib;

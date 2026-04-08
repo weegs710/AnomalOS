@@ -205,7 +205,7 @@ repo="${repo:-github:weegs710/AnomalOS}"
 
 # only relevant for AnomalOS
 if [[ $repo == "github:weegs710/AnomalOS" ]]; then
-    hosts=("Rig")
+    hosts=("HX99G")
 
     echo "Available hosts:"
     for i in "${!hosts[@]}"; do

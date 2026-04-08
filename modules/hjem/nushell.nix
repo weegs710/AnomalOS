@@ -259,9 +259,8 @@
             print "Done."
           }
 
-          def nrs-rig [] {
-            cd ~/dotfiles/
-            nh os switch .#rig
+          def nrs [] {
+            nh os switch
             if $env.LAST_EXIT_CODE == 0 {
               ^nix-store -qR /run/current-system | ^cachix push anomalos
               if $env.LAST_EXIT_CODE == 0 {
@@ -270,9 +269,29 @@
             }
           }
 
-          def nrt-rig [] {
+          def nrt [] {
+            nh os test
+          }
+
+          def nrbt [] {
+            nh os boot
+          }
+
+          def nrbld [] {
+            nh os build
+          }
+
+          def nfu [...inputs: string] {
             cd ~/dotfiles/
-            nh os test .#rig
+            if ($inputs | is-empty) {
+              ^nix flake update
+            } else {
+              ^nix flake update ...$inputs
+            }
+          }
+
+          def closure [] {
+            nix path-info -Sh /run/current-system
           }
 
           def --wrapped snag [...args: string] {
@@ -299,8 +318,7 @@
           }
 
           def evaltime [] {
-            cd ~/dotfiles/
-            hyperfine 'nix eval .#rig.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
+            hyperfine $'nix eval ($env.NH_FLAKE)#HX99G.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
           }
 
           def recycle [] {

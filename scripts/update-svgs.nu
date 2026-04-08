@@ -483,10 +483,10 @@ def main [] {
 
     let flake_ref = $dotfiles
 
-    print "  · hyprland version...";    let hyprland_ver  = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.Rig.pkgs.hyprland.version")
-    print "  · nushell version...";     let nushell_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.Rig.pkgs.nushell.version")
-    print "  · ghostty version...";     let ghostty_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.Rig.pkgs.ghostty.version")
-    print "  · fresh-editor version..."; let fresh_ver    = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.Rig.pkgs.fresh-editor.version")
+    print "  · hyprland version...";    let hyprland_ver  = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.hyprland.version")
+    print "  · nushell version...";     let nushell_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.nushell.version")
+    print "  · ghostty version...";     let ghostty_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.ghostty.version")
+    print "  · fresh-editor version..."; let fresh_ver    = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.fresh-editor.version")
     # noctalia-shell: pkgs.noctalia-shell.version is stale nixpkgs metadata.
     # Real version lives in UpdateService.qml as `baseVersion`. Fetch it at the
     # locked rev and append "-git" (all non-tagged builds use that suffix).
@@ -513,8 +513,8 @@ def main [] {
             $"v($base)-git"
         } else { "?" }
     )
-    print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $"($flake_ref)#nixosConfigurations.Rig.config.environment.systemPackages")
-    print "  · user package count...";   let user_pkg_count = (nix-eval-count $"($flake_ref)#nixosConfigurations.Rig.config.users.users.weegs.packages")
+    print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $"($flake_ref)#nixosConfigurations.HX99G.config.environment.systemPackages")
+    print "  · user package count...";   let user_pkg_count = (nix-eval-count $"($flake_ref)#nixosConfigurations.HX99G.config.users.users.weegs.packages")
     let total_pkgs = $sys_pkg_count + $user_pkg_count
 
     print "  · closure size (slow)..."

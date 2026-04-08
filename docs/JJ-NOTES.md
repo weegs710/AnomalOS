@@ -31,7 +31,7 @@ jj dm "add wireguard configuration"
 jj n          # Creates new empty commit (finalizes current)
 
 # Test
-nrt-rig
+nrt
 
 # If broken, fix and squash
 jj sq
@@ -136,5 +136,5 @@ If flakes can't see new files, ensure:
 Edit `modules/hjem/jujutsu.nix` and rebuild:
 ```bash
 fresh modules/hjem/jujutsu.nix
-nrt-rig
+nrt
 ```

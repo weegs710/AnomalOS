@@ -139,9 +139,8 @@ sudo echo "YubiKey working!"
 **After install, stop using raw nixos-rebuild:**
 
 ```bash
-nrt-rig    # Test changes (safe — reverts on reboot)
-nrs-rig    # Apply changes
-rig-up     # Update + test + prompt to switch
+nrt    # Test changes (safe — reverts on reboot)
+nrs    # Apply changes
 ```
 
 **Recovery:** boot won't come up? Select a previous generation from the boot menu — NixOS keeps them for this exact reason.
@@ -157,7 +156,7 @@ sudo mount -t zfs zroot/nix /mnt/nix
 sudo mount -t zfs zroot/persist /mnt/persist
 sudo mount -t zfs zroot/cache /mnt/cache
 
-sudo nixos-rebuild switch --flake /mnt/home/weegs/dotfiles#nixosConfigurations.Rig
+sudo nixos-rebuild switch --flake /mnt/home/weegs/dotfiles#nixosConfigurations.HX99G
 sudo reboot
 ```
 
@@ -201,17 +200,17 @@ Because of the flake-parts setup, adding new modules is ezpz. Everything in `mod
 }
 ```
 
-**Feature toggles** live in `modules/hosts/rig.nix`. Set `gaming = false` and all gaming modules become no-ops. Toggle here, don't delete module files.
+**Feature toggles** live in `modules/hosts/hx99g.nix`. Set `gaming = false` and all gaming modules become no-ops. Toggle here, don't delete module files.
 
-**Adding packages:** user packages go in `modules/nixos-modules/packages.nix`. System-wide packages go in the relevant module or directly in rig.nix.
+**Adding packages:** user packages go in `modules/nixos-modules/packages.nix`. System-wide packages go in the relevant module or directly in hx99g.nix.
 
 New files need to be git-tracked before nix can see them — flakes only track git-tracked files.
 
 ## maintenance
 
 ```bash
-rig-up                               # Update inputs, test, prompt to switch
-nix flake update nixpkgs             # Update a single input
+nfu                                  # Update all flake inputs
+nfu nixpkgs                          # Update a single input (nixpkgs is an example -- use any input name from flake.nix)
 recycle                              # Keep last 10 generations, GC the rest
 sudo nixos-rebuild switch --rollback # Rollback
 ```
@@ -223,21 +222,21 @@ Garbage collection and store optimization both run automatically.
 cd ~/dotfiles
 jj log        # Find the last working commit
 jj edit <id>
-nrs-rig
+nrs
 ```
 
-**YubiKey locked you out:** boot single-user mode, set `mySystem.features.yubikey = false` in rig.nix, rebuild.
+**YubiKey locked you out:** boot single-user mode, set `mySystem.features.yubikey = false` in hx99g.nix, rebuild.
 
 <details>
 <summary>Troubleshooting</summary>
 
 **Build failures:**
 ```bash
-sudo nix-collect-garbage -d && nrt-rig
+sudo nix-collect-garbage -d && nrt
 
 nix flake update nixpkgs   # hash mismatch
 rm -rf ~/.cache/nix         # clear eval cache
-nrt-rig -- --show-trace     # verbose output
+nrt -- --show-trace         # verbose output
 ```
 
 **Hyprland won't start:**

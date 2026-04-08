@@ -3,7 +3,7 @@
   self,
   ...
 }: let
-  rig = inputs.nixpkgs.lib.nixosSystem {
+  hx99g = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     specialArgs = {inherit inputs;};
     modules =
@@ -42,6 +42,8 @@
             };
           };
 
+          environment.variables.NH_FLAKE = "/home/weegs/dotfiles";
+
           nix.settings = {
             substituters = [
               "https://anomalos.cachix.org"
@@ -60,6 +62,5 @@
       ];
   };
 in {
-  flake.nixosConfigurations.Rig = rig;
-  flake.nixosConfigurations.rig = rig;
+  flake.nixosConfigurations.HX99G = hx99g;
 }
