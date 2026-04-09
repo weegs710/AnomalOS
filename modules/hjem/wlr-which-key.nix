@@ -132,7 +132,7 @@
                 {
                   key = "f";
                   desc = "facebook";
-                  cmd = "helium --app-id=kippjfofjhjlffjecoapiogbkgbpmgej";
+                  cmd = "hyprctl dispatch exec '[workspace 1] zen --no-remote --new-window https://www.facebook.com'";
                 }
               ];
             }
