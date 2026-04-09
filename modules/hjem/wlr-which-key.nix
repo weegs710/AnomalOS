@@ -167,6 +167,11 @@
                   cmd = "steam";
                 }
                 {
+                  key = "h";
+                  desc = "heroic";
+                  cmd = "heroic";
+                }
+                {
                   key = "r";
                   desc = "retroarch";
                   cmd = "retroarch";

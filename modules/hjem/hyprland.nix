@@ -248,6 +248,7 @@
           windowrule = workspace 1, match:class ^(vesktop)$
           windowrule = workspace 1, match:class ^(chrome-kippjfofjhjlffjecoapiogbkgbpmgej-Default)$
           windowrule = workspace 2, match:title ^(ghostty)$
+          windowrule = workspace 4, match:class ^(heroic)$
           windowrule = workspace 4, match:class ^(steam)$
           windowrule = workspace 4, match:class ^(steam_app_.*)$
           windowrule = fullscreen on, match:class ^(steam_app_3564740)$

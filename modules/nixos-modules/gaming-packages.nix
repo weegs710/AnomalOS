@@ -12,6 +12,7 @@
 
         programs = {
           gamescope.enable = true;
+          gamemode.enable = true;
         };
 
         users.users.${config.mySystem.user.name}.packages = with pkgs; [
@@ -19,6 +20,7 @@
           (openraPackages.engines.bleed.overrideAttrs (old: {
             postPatch = "";
           }))
+          heroic
           protonup-qt
           (wrapRetroArch {
             cores = with libretro; [
