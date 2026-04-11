@@ -93,59 +93,65 @@
           print $"(ansi green)Configuration saved.(ansi reset)"
       }
 
-      def verify-url [url: string]: nothing -> nothing {
+      def extract-info [url: string]: nothing -> record {
           let result = ^yt-dlp --flat-playlist --print '%(title)s' --no-warnings $url | complete
           if $result.exit_code != 0 or ($result.stdout | str trim | is-empty) {
               error make {msg: $"Could not reach or parse URL: ($url)"}
           }
-      }
-
-      def extract-info [url: string]: nothing -> record {
-          let result = ^yt-dlp --flat-playlist --print '%(title)s' --no-warnings $url | complete
-          if $result.exit_code != 0 {
-              return {title: "download", count: 1, playlist_title: ""}
-          }
           let titles = $result.stdout | str trim | lines | where { $in | is-not-empty }
           let count = $titles | length
+          # separate call needed -- flat-playlist doesn't expose playlist_title per-item
+          let playlist_title = if $count > 1 {
+              let pt = ^yt-dlp --flat-playlist --playlist-items 1 --print '%(playlist_title)s' --no-warnings $url | complete
+              if $pt.exit_code == 0 { $pt.stdout | str trim } else { "" }
+          } else { "" }
           {
               title: ($titles | first | default "download")
               count: $count
-              # for playlists, grab the playlist title separately for the output directory name
-              playlist_title: (if $count > 1 {
-                  let pt = ^yt-dlp --flat-playlist --playlist-items 1 --print '%(playlist_title)s' --no-warnings $url | complete
-                  if $pt.exit_code == 0 { $pt.stdout | str trim } else { "" }
-              } else { "" })
+              playlist_title: $playlist_title
           }
       }
 
-      def build-args [url: string, mode: string, output_template: string]: nothing -> list<string> {
+      def build-args [url: string, mode: string, is_playlist: bool, video_dir: string, playlist_dir: string]: nothing -> list<string> {
           let format = if $mode == "lite" {
               'bestvideo[height<=1080][height>=720]+bestaudio/bestvideo[height<=1080]+bestaudio/best[height<=1080]'
           } else {
               'bestvideo[vcodec^=avc]+bestaudio[acodec^=mp4a]/best'
           }
-          let container = if $mode == "lite" { "mp4" } else { "mkv" }
+
+          let ext = '%(ext)s'
+          let output_flags = if $is_playlist {
+              let base = [$video_dir, "playlists", $playlist_dir] | path join
+              let item = '%(playlist_index)s - %(title)s'
+              [
+                  "-o" $"($base)/($item).($ext)"
+                  "-o" $"description:($base)/playlist info/($item)/($item).($ext)"
+                  "-o" $"infojson:($base)/playlist info/($item)/($item).($ext)"
+                  "-o" $"subtitle:($base)/playlist info/($item)/($item).($ext)"
+              ]
+          } else {
+              let title = '%(title)s'
+              ["-o" $"($video_dir)/singles/($title)/($title).($ext)"]
+          }
 
           [
               "-f" $format
-              "--merge-output-format" $container
+              "--merge-output-format" "mp4"
               "--ignore-errors"
               "--force-overwrites"
               "--no-write-playlist-metafiles"
               "--write-description"
               "--write-info-json"
               "--write-auto-subs"
-              "--sub-langs" "en.*"
+              "--sub-langs" "en"
               "--sub-format" "srt"
               "--embed-metadata"
-              "-o" $output_template
-              $url
-          ]
+          ] ++ $output_flags ++ [$url]
       }
 
       def print-intro [video_dir: string, mode: string]: nothing -> nothing {
           let line = "" | fill -c '=' -w 8
-          let mode_label = if $mode == "lite" { "Lite (720-1080p, MP4)" } else { "Max (H.264, best res, MKV)" }
+          let mode_label = if $mode == "lite" { "Lite (720-1080p, MP4)" } else { "Max (H.264, best res, MP4)" }
           print $"\n  (ansi blue)($line)(ansi reset)"
           print $"(ansi blue_bold)  Yoink!(ansi reset)"
           print $"  (ansi blue)($line)(ansi reset)"
@@ -156,7 +162,6 @@
       }
 
       def run-download [url: string, mode: string, verbose: bool, do_log: bool, video_dir: string]: nothing -> nothing {
-          verify-url $url
           let info = extract-info $url
 
           if $info.count > 1 {
@@ -169,18 +174,12 @@
 
           mkdir $video_dir
 
-          # single video: Title/Title.ext  playlist: Playlist Name/01 - Title/01 - Title.ext
           let playlist_dir = if ($info.playlist_title | is-not-empty) { $info.playlist_title } else { "Playlist" }
-          let output_template = if $info.count > 1 {
-              [$video_dir, $playlist_dir, '%(playlist_index)s - %(title)s', '%(playlist_index)s - %(title)s.%(ext)s'] | path join
-          } else {
-              [$video_dir, '%(title)s', '%(title)s.%(ext)s'] | path join
-          }
 
           let log_file = if $do_log { setup-log-file $LOG_DIR $info.title } else { "" }
 
           let sep = "" | fill -c '=' -w 48
-          let mode_label = if $mode == "lite" { "720-1080p H.264/AAC, MP4" } else { "H.264 max res + AAC, MKV" }
+          let mode_label = if $mode == "lite" { "720-1080p H.264/AAC, MP4" } else { "H.264 max res + AAC, MP4" }
           print $"\n  (ansi blue)($sep)(ansi reset)"
           if $info.count > 1 {
               print $"  (ansi blue_underline)(ansi attr_bold)Playlist(ansi reset)(ansi blue) : (ansi cyan)($info.playlist_title)(ansi reset)"
@@ -192,24 +191,41 @@
           print $"  (ansi blue_underline)(ansi attr_bold)Output(ansi reset)(ansi blue)   : (ansi cyan)($video_dir)(ansi reset)"
           print $"  (ansi blue)($sep)(ansi reset)"
 
-          let args = build-args $url $mode $output_template
+          let args = build-args $url $mode ($info.count > 1) $video_dir $playlist_dir
           $"CMD: yt-dlp ($args | str join ' ')" | write-log $log_file
 
           let exit_code = run-ytdlp-stream $args $verbose $log_file
 
           if $exit_code == 0 {
-              let search_dir = if $info.count > 1 { [$video_dir, $playlist_dir] | path join } else { $video_dir }
-              glob $"($search_dir)/**/*.info.json" | each { |json_file|
-                  let url = try { (open $json_file).webpage_url? | default "" } catch { "" }
-                  if ($url | str starts-with "http") {
+              let info_dir = if $info.count > 1 {
+                  [$video_dir, "playlists", $playlist_dir, "playlist info"] | path join
+              } else {
+                  [$video_dir, "singles", $info.title] | path join
+              }
+              let info_files = if $info.count > 1 {
+                  ls $info_dir | where type == dir | each { |d|
+                      ls $d.name | where type == file | get name
+                  } | flatten
+              } else {
+                  ls $info_dir | where type == file | get name
+              }
+              $info_files | each { |f|
+                  if ($f | str ends-with ".description") {
+                      mv $f ($f | str replace --regex '\.description$' '.txt')
+                  } else if ($f | str ends-with ".srt") {
+                      mv $f ($f | str replace --regex '\.en\.srt$' '.txt')
+                  }
+              } | ignore
+              $info_files | where ($in | str ends-with ".info.json") | each { |json_file|
+                  let source_url = try { (open $json_file).webpage_url? | default "" } catch { "" }
+                  if ($source_url | str starts-with "http") {
                       let html_file = $json_file | str replace --all ".info.json" ".source.html"
-                      $"<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=($url)\"></head></html>" | save --force $html_file
+                      $"<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=($source_url)\"></head></html>" | save --force $html_file
                   }
               } | ignore
 
               print $"\n  (ansi green)Done!(ansi reset)"
               print $"  Saved to:  ($video_dir)"
-              print $"  Source links written to .source.html alongside each video"
               if ($log_file | is-not-empty) { print $"  Log: ($log_file)" }
           } else {
               print $"\n  (ansi red)yt-dlp exited with code ($exit_code)(ansi reset)"
@@ -572,6 +588,7 @@
 
       environment.shellAliases = {
         yoink = "nu ~/.config/yoink/yoink.nu";
+        snag = "nu ~/.config/snag/snag.nu";
         sync-music = "nu ~/.config/sync-music/sync-music.nu";
       };
 
