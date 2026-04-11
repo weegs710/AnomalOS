@@ -100,11 +100,6 @@
               cmd = terminalCmd;
             }
             {
-              key = "space";
-              desc = "superfile";
-              cmd = fileManagerCmd;
-            }
-            {
               key = "e";
               desc = "euphonica";
               cmd = euphonicaCmd;
@@ -309,7 +304,7 @@
             }
             # Launcher
             {
-              key = "question";
+              key = "space";
               desc = "launcher";
               cmd = "noctalia-shell ipc call launcher toggle";
             }
