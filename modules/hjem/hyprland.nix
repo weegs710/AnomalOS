@@ -18,8 +18,6 @@
             hyprctl dispatch togglefloating
           }
           hyprctl dispatch pin
-          hyprctl dispatch resizewindowpixel $"exact 512 288,address:($win.address)"
-          hyprctl dispatch movewindowpixel $"exact 2034 62,address:($win.address)"
         }
       }
     '';
@@ -289,6 +287,8 @@
           windowrule = move 2034 62, match:initial_title Picture in picture
           windowrule = workspace 5, match:class ^(com\.stremio\.stremio)$
           windowrule = workspace 5, match:class ^(Kodi)$
+          windowrule = workspace 5, match:class ^(gimp)$
+          windowrule = workspace 5, match:class ^(org\.inkscape\.Inkscape)$
           windowrule = match:class ^(gcr-prompter)$, stay_focused on
           windowrule = match:class ^(gcr-prompter)$, focus_on_activate on
 
