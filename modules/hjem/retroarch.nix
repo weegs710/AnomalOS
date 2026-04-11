@@ -104,27 +104,23 @@
               mgba_use_bios = "ON"
             '';
 
-            # DeSmuME (Nintendo DS) - docs: https://docs.libretro.com/library/desmume/
-            "retroarch/config/DeSmuME/DeSmuME.opt".text = ''
-              desmume_cpu_mode = "jit"
-              desmume_firmware_language = "Auto"
-              desmume_gfx_highres_interpolate_color = "disabled"
-              desmume_gfx_linehack = "enabled"
-              desmume_gfx_multisampling = "disabled"
-              desmume_gfx_texture_deposterize = "disabled"
-              desmume_gfx_texture_scaling = "1"
-              desmume_hybrid_layout_ratio = "3"
-              desmume_hybrid_layout_scale = "1"
-              desmume_hybrid_layout_showbothscreens = "enabled"
-              desmume_hybrid_showbothscreens = "enabled"
-              desmume_internal_resolution = "256x192"
-              desmume_jit_block_size = "100"
-              desmume_mic_mode = "internal"
-              desmume_mouse_mode = "absolute"
-              desmume_num_cores = "4"
-              desmume_pointer_device_acceleration_mod = "0"
-              desmume_pointer_device_deadzone = "15"
-              desmume_screens_gap = "0"
+            # melonDS (Nintendo DS / DSi) - docs: https://docs.libretro.com/library/melonds/
+            "retroarch/config/melonDS/melonDS.opt".text = ''
+              melonds_console_mode = "DS"
+              melonds_boot_directly = "enabled"
+              melonds_screen_layout = "Top/Bottom"
+              melonds_screen_gap = "0"
+              melonds_hybrid_small_screen = "Bottom"
+              melonds_touch_mode = "Mouse"
+              melonds_use_dsi_bios = "disabled"
+              melonds_render_mode = "software"
+              melonds_threaded_renderer = "enabled"
+              melonds_jit_enable = "enabled"
+              melonds_jit_block_size = "32"
+              melonds_jit_branch_optimisations = "enabled"
+              melonds_jit_literal_optimisations = "enabled"
+              melonds_jit_fast_memory = "enabled"
+              melonds_sram_save_interval = "disabled"
             '';
 
             # Genesis Plus GX (Genesis/CD/32X) - docs: https://docs.libretro.com/library/genesis_plus_gx/
@@ -320,45 +316,6 @@
               ppsspp_texture_scaling_level = "4x"
               ppsspp_texture_scaling_type = "hybrid"
               ppsspp_texture_shader = "disabled"
-            '';
-
-            # MAME (Arcade) - docs: https://docs.libretro.com/guides/arcade-getting-started/
-            "retroarch/config/MAME/MAME.opt".text = ''
-              mame_alternate_renderer = "disabled"
-              mame_boot_from_cli = "disabled"
-              mame_boot_to_bios = "disabled"
-              mame_boot_to_osd = "disabled"
-              mame_cheats_enable = "disabled"
-              mame_cpu_overclock = "default"
-              mame_external_hiscore = "disabled"
-              mame_hide_gameinfo = "disabled"
-              mame_hide_nagscreen = "disabled"
-              mame_hide_warnings = "disabled"
-              mame_lightgun_mode = "none"
-              mame_media_type = "rom"
-              mame_mouse_enable = "disabled"
-              mame_read_config = "disabled"
-              mame_softlists_auto_media = "disabled"
-              mame_softlists_enable = "disabled"
-              mame_throttle = "enabled"
-              mame_write_config = "disabled"
-            '';
-
-            # FBNeo (Arcade) - docs: https://docs.libretro.com/library/fbneo/
-            "retroarch/config/FBNeo/FBNeo.opt".text = ''
-              fbneo-allow-depth-32 = "disabled"
-              fbneo-analog-speed = "100%"
-              fbneo-cpu-speed-adjust = "100%"
-              fbneo-cyclone = "disabled"
-              fbneo-diagnostic-input = "None"
-              fbneo-dipswitch-newgfx_hiscore = "Use Old GFX"
-              fbneo-fm-interpolation = "4-point 3rd order"
-              fbneo-frameskip = "disabled"
-              fbneo-hiscores = "enabled"
-              fbneo-lightgun-hide-crosshair = "disabled"
-              fbneo-neogeo-mode = "UNIBIOS"
-              fbneo-samplerate = "48000"
-              fbneo-vertical-mode = "disabled"
             '';
 
             # Stella (Atari 2600) - docs: https://docs.libretro.com/library/stella/
