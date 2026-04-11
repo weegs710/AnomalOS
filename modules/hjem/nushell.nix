@@ -318,7 +318,7 @@
           }
 
           def evaltime [] {
-            hyperfine $'nix eval ($env.NH_FLAKE)#HX99G.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
+            hyperfine $'nix eval ($env.NH_FLAKE)#nixosConfigurations.HX99G.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
           }
 
           def recycle [] {
