@@ -6,32 +6,32 @@
     ...
   }: {
     config = lib.mkIf config.mySystem.features.desktop {
-        hardware = {
-          amdgpu.opencl.enable = lib.mkIf config.mySystem.hardware.amd true;
-          amdgpu.overdrive.enable = lib.mkIf config.mySystem.hardware.amd true;
-          graphics = lib.mkIf config.mySystem.hardware.amd {
-            enable = true;
-            enable32Bit = true;
-          };
-          bluetooth.enable = lib.mkIf config.mySystem.hardware.bluetooth true;
-        };
-
-        services.lact = lib.mkIf config.mySystem.hardware.amd {
+      hardware = {
+        amdgpu.opencl.enable = lib.mkIf config.mySystem.hardware.amd true;
+        amdgpu.overdrive.enable = lib.mkIf config.mySystem.hardware.amd true;
+        graphics = lib.mkIf config.mySystem.hardware.amd {
           enable = true;
+          enable32Bit = true;
         };
+        bluetooth.enable = lib.mkIf config.mySystem.hardware.bluetooth true;
+      };
 
-        programs.gpu-screen-recorder.enable = true;
+      services.lact = lib.mkIf config.mySystem.hardware.amd {
+        enable = true;
+      };
 
-        users.users.${config.mySystem.user.name}.packages = with pkgs; [
-          gimp3-with-plugins
-          gpu-screen-recorder
+      programs.gpu-screen-recorder.enable = true;
 
-        ];
+      users.users.${config.mySystem.user.name}.packages = with pkgs; [
+        gimp3-with-plugins
+        gpu-screen-recorder
+        inkscape
+      ];
 
-        programs.appimage = {
-          enable = true;
-          binfmt = true;
-        };
+      programs.appimage = {
+        enable = true;
+        binfmt = true;
       };
     };
+  };
 }
