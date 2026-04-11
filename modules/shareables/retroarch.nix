@@ -3,14 +3,8 @@
 {
   perSystem = {
     pkgs,
-    system,
     ...
   }: let
-    # Use pkgs with unfree packages allowed for genesis-plus-gx
-    pkgsUnfree = import pkgs.path {
-      inherit system;
-      config.allowUnfree = true;
-    };
     # Define all core configurations
     coreConfigs = {
       "Nestopia UE/Nestopia UE.opt" = ''
@@ -350,8 +344,8 @@
     '';
 
     # Wrap RetroArch with all cores (using unfree-enabled pkgs for genesis-plus-gx)
-    baseRetroArch = pkgsUnfree.wrapRetroArch {
-      cores = with pkgsUnfree.libretro; [
+    baseRetroArch = pkgs.wrapRetroArch {
+      cores = with pkgs.libretro; [
         nestopia
         bsnes
         mupen64plus

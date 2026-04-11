@@ -1,16 +1,10 @@
 {inputs, ...}: {
   perSystem = {
     pkgs,
-    system,
     ...
   }: let
-    pkgsUnfree = import pkgs.path {
-      inherit system;
-      config.allowUnfree = true;
-    };
-
     widevineConfig = pkgs.writeText "latest-component-updated-widevine-cdm" (builtins.toJSON {
-      Path = "${pkgsUnfree.widevine-cdm}/share/google/chrome/WidevineCdm";
+      Path = "${pkgs.widevine-cdm}/share/google/chrome/WidevineCdm";
     });
 
     heliumPkg = pkgs.stdenv.mkDerivation rec {

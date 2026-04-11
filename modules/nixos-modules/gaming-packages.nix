@@ -22,26 +22,6 @@
           }))
           heroic
           protonup-qt
-          (wrapRetroArch {
-            cores = with libretro; [
-              nestopia
-              bsnes
-              mupen64plus
-              gambatte
-              mgba
-              desmume
-              genesis-plus-gx
-              beetle-saturn
-              flycast
-              beetle-psx-hw
-              pcsx2
-              ppsspp
-              mame
-              fbneo
-              stella
-              beetle-pce-fast
-            ];
-          })
         ];
       };
     };

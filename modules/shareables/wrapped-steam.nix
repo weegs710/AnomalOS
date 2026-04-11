@@ -1,11 +1,5 @@
 {
-  perSystem = {pkgs, system, ...}: let
-    # Use pkgs with unfree packages allowed for Steam
-    pkgsUnfree = import pkgs.path {
-      inherit system;
-      config.allowUnfree = true;
-    };
-
+  perSystem = {pkgs, ...}: let
     # Decky-Loader derivation (moved from decky.nix)
     deckyVersion = "3.2.1";
 
@@ -73,7 +67,7 @@
 
     # Wrap Steam with Decky in FHS environment
     wrappedSteam = let
-      base = pkgsUnfree.steam.override {
+      base = pkgs.steam.override {
         extraPkgs = pkgs: [
           # Decky loader and its dependencies
           decky-loader
