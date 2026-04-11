@@ -141,7 +141,6 @@
               "--force-overwrites"
               "--no-write-playlist-metafiles"
               "--write-description"
-              "--write-info-json"
               "--write-auto-subs"
               "--sub-langs" "en"
               "--sub-format" "srt"
@@ -200,7 +199,8 @@
               let info_dir = if $info.count > 1 {
                   [$video_dir, "playlists", $playlist_dir, "playlist info"] | path join
               } else {
-                  [$video_dir, "singles", $info.title] | path join
+                  # yt-dlp sanitizes some title chars (e.g. ? → ？) so $info.title won't match the actual dir
+                  ls ([$video_dir, "singles"] | path join) | where type == dir | sort-by modified --reverse | first | get name
               }
               let info_files = if $info.count > 1 {
                   ls $info_dir | where type == dir | each { |d|
@@ -211,18 +211,17 @@
               }
               $info_files | each { |f|
                   if ($f | str ends-with ".description") {
-                      mv $f ($f | str replace --regex '\.description$' '.txt')
+                      mv $f ($f | str replace --regex '\.description$' '.description.txt')
                   } else if ($f | str ends-with ".srt") {
-                      mv $f ($f | str replace --regex '\.en\.srt$' '.txt')
+                      mv $f ($f | str replace --regex '\.en\.srt$' '.transcript.txt')
                   }
               } | ignore
-              $info_files | where ($in | str ends-with ".info.json") | each { |json_file|
-                  let source_url = try { (open $json_file).webpage_url? | default "" } catch { "" }
-                  if ($source_url | str starts-with "http") {
-                      let html_file = $json_file | str replace --all ".info.json" ".source.html"
-                      $"<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=($source_url)\"></head></html>" | save --force $html_file
-                  }
-              } | ignore
+              let html = $"<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=($url)\"></head></html>"
+              if $info.count > 1 {
+                  $html | save --force ([$video_dir, "playlists", $playlist_dir, "source.html"] | path join)
+              } else {
+                  $html | save --force ([$info_dir, "source.html"] | path join)
+              }
 
               print $"\n  (ansi green)Done!(ansi reset)"
               print $"  Saved to:  ($video_dir)"
