@@ -4,7 +4,7 @@
     lib,
     ...
   }: let
-    version = "1.19.5b";
+    version = "1.19.8b";
     binaryName = "zen";
     libName = "zen-bin-${version}";
 
@@ -14,7 +14,7 @@
 
       src = pkgs.fetchzip {
         url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
-        hash = "sha256-9egQHSYVEHfFokv6ti6VJeiz/N1vQQg5TQhivp+f1wk=";
+        hash = "sha256-oB37jk5WSX1weho16FcQAWG2GjsPYvqzpXAz2Xq3QKA=";
       };
 
       nativeBuildInputs = with pkgs; [
@@ -144,6 +144,7 @@
         lockPref("dom.push.connection.enabled", false);
         lockPref("browser.urlbar.merino-online-suggestions.enabled", false);
         lockPref("browser.urlbar.quicksuggest.enabled", false);
+        lockPref("zen.urlbar.replace-newtab", false);
       '';
     };
   in {

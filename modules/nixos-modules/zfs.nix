@@ -34,9 +34,6 @@
         "zroot/persist" = {
           useTemplate = ["critical"];
         };
-        "zroot/nix" = {
-          useTemplate = ["standard"];
-        };
         "zgames/games/roms" = {
           hourly = 6;
           daily = 3;
