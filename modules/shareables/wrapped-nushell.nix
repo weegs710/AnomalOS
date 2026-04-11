@@ -17,7 +17,7 @@
       lazygit
       direnv
       jq
-      zoxide  # Directory jumper - replacement for Fish's z plugin
+      zoxide # Directory jumper - replacement for Fish's z plugin
     ];
 
     wrappedNushell = pkgs.symlinkJoin {

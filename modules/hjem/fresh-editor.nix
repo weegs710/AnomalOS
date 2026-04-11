@@ -67,15 +67,69 @@
       };
 
       keybindings = [
-        { key = "w"; modifiers = ["ctrl"]; action = "close_tab"; args = {}; when = "normal"; }
-        { key = "j"; modifiers = ["ctrl"]; action = "focus_terminal"; args = {}; when = "normal"; }
-        { key = "e"; modifiers = ["ctrl"]; action = "quick_open"; args = {}; when = "normal"; }
-        { key = "s"; modifiers = ["ctrl" "shift"]; action = "save_as"; args = {}; when = "normal"; }
-        { key = "i"; modifiers = ["ctrl" "shift"]; action = "format_buffer"; args = {}; when = "normal"; }
-        { key = "\\"; modifiers = ["ctrl"]; action = "split_vertical"; args = {}; when = "normal"; }
-        { key = "o"; modifiers = ["ctrl" "alt"]; action = "switch_project"; args = {}; when = "normal"; }
-        { key = "Down"; modifiers = ["ctrl" "alt" "shift"]; action = "duplicate_line"; args = {}; when = "normal"; }
-        { key = "Up"; modifiers = ["ctrl" "alt" "shift"]; action = "duplicate_line"; args = {}; when = "normal"; }
+        {
+          key = "w";
+          modifiers = ["ctrl"];
+          action = "close_tab";
+          args = {};
+          when = "normal";
+        }
+        {
+          key = "j";
+          modifiers = ["ctrl"];
+          action = "focus_terminal";
+          args = {};
+          when = "normal";
+        }
+        {
+          key = "e";
+          modifiers = ["ctrl"];
+          action = "quick_open";
+          args = {};
+          when = "normal";
+        }
+        {
+          key = "s";
+          modifiers = ["ctrl" "shift"];
+          action = "save_as";
+          args = {};
+          when = "normal";
+        }
+        {
+          key = "i";
+          modifiers = ["ctrl" "shift"];
+          action = "format_buffer";
+          args = {};
+          when = "normal";
+        }
+        {
+          key = "\\";
+          modifiers = ["ctrl"];
+          action = "split_vertical";
+          args = {};
+          when = "normal";
+        }
+        {
+          key = "o";
+          modifiers = ["ctrl" "alt"];
+          action = "switch_project";
+          args = {};
+          when = "normal";
+        }
+        {
+          key = "Down";
+          modifiers = ["ctrl" "alt" "shift"];
+          action = "duplicate_line";
+          args = {};
+          when = "normal";
+        }
+        {
+          key = "Up";
+          modifiers = ["ctrl" "alt" "shift"];
+          action = "duplicate_line";
+          args = {};
+          when = "normal";
+        }
       ];
 
       languages = {

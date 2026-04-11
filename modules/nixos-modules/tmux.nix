@@ -4,8 +4,8 @@
     lib,
     ...
   }: {
-      config = lib.mkIf config.mySystem.features.development {
-        programs.tmux.enable = true;
-      };
+    config = lib.mkIf config.mySystem.features.development {
+      programs.tmux.enable = true;
     };
+  };
 }

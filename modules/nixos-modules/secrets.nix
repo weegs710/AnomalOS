@@ -1,5 +1,9 @@
 {inputs, ...}: {
-  flake.nixosModules.secrets = {config, pkgs, ...}: let
+  flake.nixosModules.secrets = {
+    config,
+    pkgs,
+    ...
+  }: let
     weegs = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGK6aaA7gOoqrFHRWpQi5+oQnP3cpknLLesBJHO+lGh weegs@HX99G";
     HX99G = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAXWwfdmR+kA67bNI93fekq22tJZMqaQUgV93P5YERNf root@HX99G";
     users = [weegs];
@@ -13,7 +17,7 @@
       ];
 
       # Bind mount is removed during activation on tmpfs root; read key from persist directly.
-      age.identityPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+      age.identityPaths = ["/persist/etc/ssh/ssh_host_ed25519_key"];
 
       age.secrets.tailscale-authkey = {
         file = ../../secrets/tailscale-authkey.age;

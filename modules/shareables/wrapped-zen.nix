@@ -1,5 +1,9 @@
 {
-  perSystem = {pkgs, lib, ...}: let
+  perSystem = {
+    pkgs,
+    lib,
+    ...
+  }: let
     version = "1.19.5b";
     binaryName = "zen";
     libName = "zen-bin-${version}";

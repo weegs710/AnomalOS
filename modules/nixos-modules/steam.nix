@@ -16,5 +16,5 @@
         SDL_VIDEODRIVER = "wayland";
       };
     };
-    };
+  };
 }

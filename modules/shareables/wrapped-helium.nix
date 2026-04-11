@@ -1,8 +1,5 @@
 {inputs, ...}: {
-  perSystem = {
-    pkgs,
-    ...
-  }: let
+  perSystem = {pkgs, ...}: let
     widevineConfig = pkgs.writeText "latest-component-updated-widevine-cdm" (builtins.toJSON {
       Path = "${pkgs.widevine-cdm}/share/google/chrome/WidevineCdm";
     });
