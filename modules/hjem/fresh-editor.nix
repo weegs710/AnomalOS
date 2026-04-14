@@ -110,6 +110,13 @@
           when = "normal";
         }
         {
+          key = "f";
+          modifiers = ["ctrl"];
+          action = "start_live_grep";
+          args = {};
+          when = "normal";
+        }
+        {
           key = "o";
           modifiers = ["ctrl" "alt"];
           action = "switch_project";
