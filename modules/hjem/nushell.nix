@@ -2,9 +2,32 @@
   flake.nixosModules.nushell = {
     config,
     pkgs,
+    lib,
     ...
   }: let
     wrappedNushell = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.nushell;
+
+    nushellPlugins = with pkgs.nushellPlugins; [
+      formats
+      gstat
+      query
+      semver
+      skim
+    ];
+
+    # Pre-generate plugin registry so plugins are available without manual `plugin add`
+    pluginRegistry = pkgs.runCommand "nu-plugin-registry" {} ''
+      mkdir -p "$out"
+      ${lib.getExe pkgs.nushell} \
+        --plugin-config "$out/plugin.msgpackz" \
+        --commands '${lib.concatStringsSep "; " (map (p: "plugin add ${lib.getExe p}") nushellPlugins)}'
+    '';
+
+    # atuin init tries to create ~/.config/atuin/ -- give it a writable HOME inside the sandbox
+    atuin-init = pkgs.runCommand "atuin-init" { HOME = "/tmp"; } ''
+      mkdir -p "$out"
+      ${lib.getExe pkgs.atuin} init nu > "$out/init.nu"
+    '';
 
     colors = {
       base00 = "000000";
@@ -225,13 +248,17 @@
       hjem.users.${config.mySystem.user.name}.xdg.config.files = {
         "oh-my-posh/config.json".text = ompConfig;
 
+        "nushell/plugin.msgpackz".source = "${pluginRegistry}/plugin.msgpackz";
+        "nushell/atuin-init.nu".source = "${atuin-init}/init.nu";
+
         "nushell/env.nu".text = ''
           $env.SHELL = (^which nu | str trim)
           $env.PAGER = "bat"
           $env.MANPAGER = "sh -c 'col -bx | bat -l man -p'"
 
-          # Runs directly without save/source pattern (Nushell-specific behavior)
+          # Run directly without save/source pattern (Nushell-specific behavior)
           oh-my-posh init nu --config ~/.config/oh-my-posh/config.json
+          source ~/.config/nushell/atuin-init.nu
 
           $env.CARAPACE_BRIDGES = 'fish,bash,zsh'
           $env.CARAPACE_CACHE = $'($env.HOME)/.cache/carapace'

@@ -16,7 +16,7 @@
       tig
       lazygit
       direnv
-      jq
+      atuin
       zoxide # Directory jumper - replacement for Fish's z plugin
     ];
 
