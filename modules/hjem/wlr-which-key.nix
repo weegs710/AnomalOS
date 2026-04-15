@@ -404,14 +404,12 @@
         };
     };
   in {
-    config = lib.mkIf config.mySystem.features.desktop {
-      users.users.${username}.packages = [pkgs.wlr-which-key pkgs.libwebp];
+    users.users.${username}.packages = [pkgs.wlr-which-key pkgs.libwebp];
 
-      hjem.users.${username}.xdg.config.files = lib.mapAttrs' (name: cfg:
-        lib.nameValuePair "wlr-which-key/${name}.yaml" {
-          source = yamlFormat.generate "${name}.yaml" cfg;
-        })
-      menus;
-    };
+    hjem.users.${username}.xdg.config.files = lib.mapAttrs' (name: cfg:
+      lib.nameValuePair "wlr-which-key/${name}.yaml" {
+        source = yamlFormat.generate "${name}.yaml" cfg;
+      })
+    menus;
   };
 }

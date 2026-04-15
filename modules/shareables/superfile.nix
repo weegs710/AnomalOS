@@ -32,7 +32,6 @@
 
   flake.nixosModules.superfile = {
     config,
-    lib,
     pkgs,
     ...
   }: let
@@ -55,31 +54,29 @@
       }
     '';
   in {
-    config = lib.mkIf config.mySystem.features.desktop {
-      users.users.${username}.packages = [wrappedSuperfile];
+    users.users.${username}.packages = [wrappedSuperfile];
 
-      hjem.users.${username}.xdg.config.files = {
-        "xdg-desktop-portal-termfilechooser/config".text = ''
-          [filechooser]
-          cmd=${homeDir}/.config/xdg-desktop-portal-termfilechooser/superfile-wrapper.nu
-          default_dir=$HOME
-          create_help_file=0
-        '';
+    hjem.users.${username}.xdg.config.files = {
+      "xdg-desktop-portal-termfilechooser/config".text = ''
+        [filechooser]
+        cmd=${homeDir}/.config/xdg-desktop-portal-termfilechooser/superfile-wrapper.nu
+        default_dir=$HOME
+        create_help_file=0
+      '';
 
-        # portal searches lowercase; hyprland pkg ships its own hyprland-portals.conf which wins otherwise
-        "xdg-desktop-portal/hyprland-portals.conf".text = ''
-          [preferred]
-          default=hyprland;gtk
-          org.freedesktop.impl.portal.FileChooser=termfilechooser;gtk
-          org.freedesktop.impl.portal.ScreenCast=hyprland
-          org.freedesktop.impl.portal.Screenshot=hyprland
-        '';
+      # portal searches lowercase; hyprland pkg ships its own hyprland-portals.conf which wins otherwise
+      "xdg-desktop-portal/hyprland-portals.conf".text = ''
+        [preferred]
+        default=hyprland;gtk
+        org.freedesktop.impl.portal.FileChooser=termfilechooser;gtk
+        org.freedesktop.impl.portal.ScreenCast=hyprland
+        org.freedesktop.impl.portal.Screenshot=hyprland
+      '';
 
-        "xdg-desktop-portal-termfilechooser/superfile-wrapper.nu" = {
-          source = wrapperScript;
-          type = "copy";
-          permissions = "0755";
-        };
+      "xdg-desktop-portal-termfilechooser/superfile-wrapper.nu" = {
+        source = wrapperScript;
+        type = "copy";
+        permissions = "0755";
       };
     };
   };

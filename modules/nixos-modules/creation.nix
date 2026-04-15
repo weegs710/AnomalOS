@@ -1,37 +1,34 @@
 {
   flake.nixosModules.creation = {
     config,
-    lib,
     pkgs,
     ...
   }: {
-    config = lib.mkIf config.mySystem.features.desktop {
-      hardware = {
-        amdgpu.opencl.enable = lib.mkIf config.mySystem.hardware.amd true;
-        amdgpu.overdrive.enable = lib.mkIf config.mySystem.hardware.amd true;
-        graphics = lib.mkIf config.mySystem.hardware.amd {
-          enable = true;
-          enable32Bit = true;
-        };
-        bluetooth.enable = lib.mkIf config.mySystem.hardware.bluetooth true;
-      };
-
-      services.lact = lib.mkIf config.mySystem.hardware.amd {
+    hardware = {
+      amdgpu.opencl.enable = true;
+      amdgpu.overdrive.enable = true;
+      graphics = {
         enable = true;
+        enable32Bit = true;
       };
+      bluetooth.enable = true;
+    };
 
-      programs.gpu-screen-recorder.enable = true;
+    services.lact = {
+      enable = true;
+    };
 
-      users.users.${config.mySystem.user.name}.packages = with pkgs; [
-        gimp3-with-plugins
-        gpu-screen-recorder
-        inkscape
-      ];
+    programs.gpu-screen-recorder.enable = true;
 
-      programs.appimage = {
-        enable = true;
-        binfmt = true;
-      };
+    users.users.${config.mySystem.user.name}.packages = with pkgs; [
+      gimp3-with-plugins
+      gpu-screen-recorder
+      inkscape
+    ];
+
+    programs.appimage = {
+      enable = true;
+      binfmt = true;
     };
   };
 }

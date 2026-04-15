@@ -29,50 +29,48 @@
       '';
     };
   in {
-    config = lib.mkIf config.mySystem.features.desktop {
-      users.users.${username}.packages = [
-        noctalia-shell
-        inputs.noctalia-qs.packages.${system}.default
-        pkgs.qt6Packages.qt6ct
-      ];
+    users.users.${username}.packages = [
+      noctalia-shell
+      inputs.noctalia-qs.packages.${system}.default
+      pkgs.qt6Packages.qt6ct
+    ];
 
-      environment.sessionVariables = {
-        QT_QPA_PLATFORMTHEME = "qt6ct";
+    environment.sessionVariables = {
+      QT_QPA_PLATFORMTHEME = "qt6ct";
+    };
+
+    system.activationScripts.noctaliaRestartTrigger = {
+      text = ''
+        uid=$(${pkgs.coreutils}/bin/id -u ${username} 2>/dev/null)
+        if [ -n "$uid" ] && [ -d /run/user/$uid/hypr ]; then
+          XDG_RUNTIME_DIR=/run/user/$uid \
+          ${pkgs.util-linux}/bin/runuser -u ${username} -- \
+            ${pkgs.hyprland}/bin/hyprctl -i 0 dispatch exec \
+            "${pkgs.nushell}/bin/nu --config /home/${username}/.config/nushell/config.nu --env-config /home/${username}/.config/nushell/env.nu -c noct-r >> /home/${username}/.local/state/noctalia-restart.log 2>&1" || true
+        fi
+      '';
+    };
+
+    hjem.users.${username} = {
+      xdg.config.files."noctalia/settings.json" = {
+        source = ./settings.json;
+        type = "copy";
+        permissions = "0644";
       };
-
-      system.activationScripts.noctaliaRestartTrigger = {
-        text = ''
-          uid=$(${pkgs.coreutils}/bin/id -u ${username} 2>/dev/null)
-          if [ -n "$uid" ] && [ -d /run/user/$uid/hypr ]; then
-            XDG_RUNTIME_DIR=/run/user/$uid \
-            ${pkgs.util-linux}/bin/runuser -u ${username} -- \
-              ${pkgs.hyprland}/bin/hyprctl -i 0 dispatch exec \
-              "${pkgs.nushell}/bin/nu --config /home/${username}/.config/nushell/config.nu --env-config /home/${username}/.config/nushell/env.nu -c noct-r >> /home/${username}/.local/state/noctalia-restart.log 2>&1" || true
-          fi
-        '';
+      xdg.config.files."noctalia/user-templates.toml" = {
+        source = ./user-templates.toml;
+        type = "copy";
+        permissions = "0644";
       };
-
-      hjem.users.${username} = {
-        xdg.config.files."noctalia/settings.json" = {
-          source = ./settings.json;
-          type = "copy";
-          permissions = "0644";
-        };
-        xdg.config.files."noctalia/user-templates.toml" = {
-          source = ./user-templates.toml;
-          type = "copy";
-          permissions = "0644";
-        };
-        xdg.config.files."noctalia/templates/fresh.json" = {
-          source = ./templates/fresh.json;
-          type = "copy";
-          permissions = "0644";
-        };
-        xdg.config.files."noctalia/notification-allowlist" = {
-          source = notificationAllowlist;
-          type = "copy";
-          permissions = "0644";
-        };
+      xdg.config.files."noctalia/templates/fresh.json" = {
+        source = ./templates/fresh.json;
+        type = "copy";
+        permissions = "0644";
+      };
+      xdg.config.files."noctalia/notification-allowlist" = {
+        source = notificationAllowlist;
+        type = "copy";
+        permissions = "0644";
       };
     };
   };

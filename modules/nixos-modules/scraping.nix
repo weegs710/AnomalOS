@@ -1,7 +1,6 @@
 {
   flake.nixosModules.scraping = {
     config,
-    lib,
     pkgs,
     ...
   }: let
@@ -580,22 +579,20 @@
       }
     '';
   in {
-    config = lib.mkIf config.mySystem.features.media {
-      environment.systemPackages = with pkgs; [
-        yt-dlp
-      ];
+    environment.systemPackages = with pkgs; [
+      yt-dlp
+    ];
 
-      environment.shellAliases = {
-        yoink = "nu ~/.config/yoink/yoink.nu";
-        snag = "nu ~/.config/snag/snag.nu";
-        sync-music = "nu ~/.config/sync-music/sync-music.nu";
-      };
+    environment.shellAliases = {
+      yoink = "nu ~/.config/yoink/yoink.nu";
+      snag = "nu ~/.config/snag/snag.nu";
+      sync-music = "nu ~/.config/sync-music/sync-music.nu";
+    };
 
-      hjem.users.${config.mySystem.user.name}.xdg.config.files = {
-        "snag/snag.nu".text = snagScript;
-        "yoink/yoink.nu".text = yoinkScript;
-        "sync-music/sync-music.nu".text = syncMusicScript;
-      };
+    hjem.users.${config.mySystem.user.name}.xdg.config.files = {
+      "snag/snag.nu".text = snagScript;
+      "yoink/yoink.nu".text = yoinkScript;
+      "sync-music/sync-music.nu".text = syncMusicScript;
     };
   };
 }

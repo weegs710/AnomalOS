@@ -25,21 +25,6 @@
                 "wheel"
               ];
             };
-
-            features = {
-              desktop = true;
-              yubikey = true;
-              aiTooling = true;
-              development = true;
-              gaming = true;
-              media = true;
-            };
-
-            hardware = {
-              amd = true;
-              bluetooth = true;
-              steam = true;
-            };
           };
 
           environment.variables.NH_FLAKE = "/home/weegs/dotfiles";

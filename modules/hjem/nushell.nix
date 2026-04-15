@@ -24,7 +24,7 @@
     '';
 
     # atuin init tries to create ~/.config/atuin/ -- give it a writable HOME inside the sandbox
-    atuin-init = pkgs.runCommand "atuin-init" { HOME = "/tmp"; } ''
+    atuin-init = pkgs.runCommand "atuin-init" {HOME = "/tmp";} ''
       mkdir -p "$out"
       ${lib.getExe pkgs.atuin} init nu > "$out/init.nu"
     '';

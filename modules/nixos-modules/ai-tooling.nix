@@ -1,7 +1,6 @@
 {
   flake.nixosModules.ai-tooling = {
     config,
-    lib,
     pkgs,
     ...
   }: let
@@ -35,15 +34,13 @@
       }
     '';
   in {
-    config = lib.mkIf config.mySystem.features.aiTooling {
-      users.users.${config.mySystem.user.name}.packages = with pkgs; [
-        claude-code
-        claudeLauncher
-      ];
+    users.users.${config.mySystem.user.name}.packages = with pkgs; [
+      claude-code
+      claudeLauncher
+    ];
 
-      environment.shellAliases = {
-        cc = "claude-launcher";
-      };
+    environment.shellAliases = {
+      cc = "claude-launcher";
     };
   };
 }

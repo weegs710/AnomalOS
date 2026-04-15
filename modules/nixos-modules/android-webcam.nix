@@ -1,7 +1,6 @@
 {
   flake.nixosModules.android-webcam = {
     config,
-    lib,
     pkgs,
     ...
   }: let
@@ -245,34 +244,32 @@
           main()
     '';
   in {
-    config = lib.mkIf config.mySystem.features.media {
-      boot = {
-        kernelModules = ["v4l2loopback"];
-        extraModulePackages = [config.boot.kernelPackages.v4l2loopback];
-        extraModprobeConfig = ''
-          options v4l2loopback devices=1 video_nr=9 card_label="Android Camera" exclusive_caps=1
-        '';
-      };
+    boot = {
+      kernelModules = ["v4l2loopback"];
+      extraModulePackages = [config.boot.kernelPackages.v4l2loopback];
+      extraModprobeConfig = ''
+        options v4l2loopback devices=1 video_nr=9 card_label="Android Camera" exclusive_caps=1
+      '';
+    };
 
-      users.users.${config.mySystem.user.name}.extraGroups = ["adbusers"];
+    users.users.${config.mySystem.user.name}.extraGroups = ["adbusers"];
 
-      environment.systemPackages = with pkgs; [
-        adbfs-rootless
-        scrcpy
-        android-tools
-        startAndroidCam
-        listCameras
-        customCamera
-        daemonAndroidCam
-      ];
+    environment.systemPackages = with pkgs; [
+      adbfs-rootless
+      scrcpy
+      android-tools
+      startAndroidCam
+      listCameras
+      customCamera
+      daemonAndroidCam
+    ];
 
-      environment.shellAliases = {
-        cam-on = "andcam-start";
-        cam-list = "andcam-list";
-        cam-cust = "andcam-custom";
-        cam-d = "andcam-daemon";
-        cam-off = "pkill scrcpy";
-      };
+    environment.shellAliases = {
+      cam-on = "andcam-start";
+      cam-list = "andcam-list";
+      cam-cust = "andcam-custom";
+      cam-d = "andcam-daemon";
+      cam-off = "pkill scrcpy";
     };
   };
 }

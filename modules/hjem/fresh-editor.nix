@@ -1,7 +1,6 @@
 {inputs, ...}: {
   flake.nixosModules.fresh-editor = {
     config,
-    lib,
     pkgs,
     ...
   }: let
@@ -191,15 +190,13 @@
       };
     };
   in {
-    config = lib.mkIf config.mySystem.features.development {
-      users.users.${username}.packages = [wrappedFresh];
+    users.users.${username}.packages = [wrappedFresh];
 
-      hjem.users.${username} = {
-        xdg.config.files."fresh/config.json" = {
-          source = configJson;
-          type = "copy";
-          permissions = "0644";
-        };
+    hjem.users.${username} = {
+      xdg.config.files."fresh/config.json" = {
+        source = configJson;
+        type = "copy";
+        permissions = "0644";
       };
     };
   };
