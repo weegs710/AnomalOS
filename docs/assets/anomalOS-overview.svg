@@ -7,7 +7,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <defs><pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
 <circle cx="15" cy="15" r="0.5" fill="#414868" opacity="0.2"/>
 </pattern></defs>
-<rect width="1200" height="800" rx="16" fill="url"/>
+<rect width="1200" height="800" rx="16" fill="url(#grid)"/>
 <text x="50" y="90" font-size="42" fill="#ebfafa" font-weight="700">anomalOS</text>
 <rect x="290" y="70" rx="6" width="72" height="22" fill="#04d1f9" opacity="0.15" stroke="#04d1f9" stroke-width="0.5"/>
 <text x="326" y="85" font-size="10" fill="#04d1f9" font-weight="600" text-anchor="middle">OVERVIEW</text>
@@ -16,12 +16,12 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="73" y="193" rx="2" width="3" height="46" fill="#a48cf2"/>
 <text x="86" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">WM</text>
 <text x="86" y="221" font-size="15" fill="#ebfafa" font-weight="600">Hyprland</text>
-<text x="86" y="237" font-size="10" fill="#a48cf2" opacity="0.6">0.54.2</text>
+<text x="86" y="237" font-size="10" fill="#a48cf2" opacity="0.6">0.54.3</text>
 <rect x="286" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="289" y="193" rx="2" width="3" height="46" fill="#37f499"/>
 <text x="302" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">SHELL</text>
 <text x="302" y="221" font-size="15" fill="#ebfafa" font-weight="600">nu</text>
-<text x="302" y="237" font-size="10" fill="#37f499" opacity="0.6">0.111.0</text>
+<text x="302" y="237" font-size="10" fill="#37f499" opacity="0.6">0.112.1</text>
 <rect x="502" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="505" y="193" rx="2" width="3" height="46" fill="#04d1f9"/>
 <text x="518" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">TERMINAL</text>
@@ -31,12 +31,12 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="721" y="193" rx="2" width="3" height="46" fill="#e9f941"/>
 <text x="734" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">EDITOR</text>
 <text x="734" y="221" font-size="15" fill="#ebfafa" font-weight="600">fresh</text>
-<text x="734" y="237" font-size="10" fill="#e9f941" opacity="0.6">0.2.14</text>
+<text x="734" y="237" font-size="10" fill="#e9f941" opacity="0.6">0.2.23</text>
 <rect x="934" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="937" y="193" rx="2" width="3" height="46" fill="#9071f4"/>
 <text x="950" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">UI</text>
 <text x="950" y="221" font-size="15" fill="#ebfafa" font-weight="600">Noctalia Shell</text>
-<text x="950" y="237" font-size="10" fill="#9071f4" opacity="0.6">v4.7.2-git</text>
+<text x="950" y="237" font-size="10" fill="#9071f4" opacity="0.6">v4.7.7-git</text>
 <rect x="70" y="255" rx="12" width="340" height="240" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="70" y="265" rx="12" width="3" height="220" fill="#f265b5"/>
 <text x="88" y="283" font-size="13" fill="#f265b5" font-weight="700" letter-spacing="1">HARDWARE</text>
@@ -82,13 +82,13 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="90" y="567" font-size="12" fill="#abb4da">System</text>
 <text x="220" y="567" font-size="12" fill="#ebfafa">201</text>
 <text x="90" y="587" font-size="12" fill="#abb4da">User</text>
-<text x="220" y="587" font-size="12" fill="#ebfafa">94</text>
+<text x="220" y="587" font-size="12" fill="#ebfafa">99</text>
 <text x="90" y="607" font-size="12" fill="#abb4da">Total declared</text>
-<text x="220" y="607" font-size="12" fill="#ebfafa">295</text>
+<text x="220" y="607" font-size="12" fill="#ebfafa">300</text>
 <text x="90" y="627" font-size="12" fill="#abb4da">Closure paths</text>
-<text x="220" y="627" font-size="12" fill="#ebfafa">2627</text>
+<text x="220" y="627" font-size="12" fill="#ebfafa">2760</text>
 <text x="90" y="647" font-size="12" fill="#abb4da">Closure size</text>
-<text x="220" y="647" font-size="12" fill="#ebfafa">17.2G</text>
+<text x="220" y="647" font-size="12" fill="#ebfafa">19.0G</text>
 <rect x="430" y="510" rx="12" width="340" height="240" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="430" y="520" rx="12" width="3" height="220" fill="#37f499"/>
 <text x="448" y="538" font-size="13" fill="#37f499" font-weight="700" letter-spacing="1">WRAPPED PKGS</text>
@@ -99,8 +99,8 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="450" y="616" font-size="12" fill="#ebfafa">▸ nushell</text>
 <text x="450" y="634" font-size="12" fill="#ebfafa">▸ retroarch</text>
 <text x="450" y="652" font-size="12" fill="#ebfafa">▸ steam</text>
-<text x="450" y="670" font-size="12" fill="#ebfafa">▸ steamdeck-pkgs</text>
-<text x="450" y="688" font-size="12" fill="#ebfafa">▸ superfile</text>
+<text x="450" y="670" font-size="12" fill="#ebfafa">▸ superfile</text>
+<text x="450" y="688" font-size="12" fill="#ebfafa">▸ zen</text>
 <rect x="790" y="510" rx="12" width="340" height="240" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="790" y="520" rx="12" width="3" height="220" fill="#04d1f9"/>
 <text x="808" y="538" font-size="13" fill="#04d1f9" font-weight="700" letter-spacing="1">GAMING</text>

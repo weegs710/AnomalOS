@@ -11,8 +11,8 @@
       formats
       gstat
       query
-      semver
-      skim
+      # semver # compiled for nushell 0.111.0, incompatible with 0.112.1
+      # skim # compiled for nushell 0.111.0, incompatible with 0.112.1
     ];
 
     # Pre-generate plugin registry so plugins are available without manual `plugin add`
@@ -351,41 +351,6 @@
           def recycle [] {
             sudo nix-env --delete-generations +10 --profile /nix/var/nix/profiles/system
             sudo nix-collect-garbage
-          }
-
-          def update-deck-pkgs [] {
-            cd ~/dotfiles/
-
-            let packages = [
-              { name: "steamdeck-dsp",      owner: "Jovian-Experiments", repo: "steamdeck-dsp" },
-              { name: "jupiter-fan-control", owner: "Jovian-Experiments", repo: "jupiter-fan-control" },
-            ]
-
-            for pkg in $packages {
-              let latest = (gh api $"repos/($pkg.owner)/($pkg.repo)/releases/latest" --jq ".tag_name" | str trim)
-              let current = (
-                open flake.nix
-                | lines
-                | where { |l| $l | str contains $"github:($pkg.owner)/($pkg.repo)/" }
-                | first
-                | split row "/"
-                | last
-                | str replace --all '"' ""
-                | str replace ";" ""
-                | str trim
-              )
-
-              if $latest != $current {
-                print $"($pkg.name): ($current) -> ($latest)"
-                open flake.nix
-                | str replace $"github:($pkg.owner)/($pkg.repo)/($current)" $"github:($pkg.owner)/($pkg.repo)/($latest)"
-                | save -f flake.nix
-              } else {
-                print $"($pkg.name) up to date at ($current)"
-              }
-            }
-
-            nix flake update steamdeck-dsp jupiter-fan-control
           }
 
           def jj-pull [] {

@@ -259,23 +259,6 @@
         "type": "github"
       }
     },
-    "jupiter-fan-control": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1716500049,
-        "narHash": "sha256-dDNfmyatrseGlSAcH0aGgR0eSY5975LkjptTaW541Zw=",
-        "owner": "Jovian-Experiments",
-        "repo": "jupiter-fan-control",
-        "rev": "689b3be548cf11351459490fb1a79307c4e7e53d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Jovian-Experiments",
-        "ref": "20240523.3",
-        "repo": "jupiter-fan-control",
-        "type": "github"
-      }
-    },
     "lix": {
       "flake": false,
       "locked": {
@@ -440,11 +423,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1775710090,
-        "narHash": "sha256-ar3rofg+awPB8QXDaFJhJ2jJhu+KqN/PRCXeyuXR76E=",
+        "lastModified": 1776169885,
+        "narHash": "sha256-l/iNYDZ4bGOAFQY2q8y5OAfBBtrDAaPuRQqWaFHVRXM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "4c1018dae018162ec878d42fec712642d214fdfa",
+        "rev": "4bd9165a9165d7b5e33ae57f3eecbcb28fb231c9",
         "type": "github"
       },
       "original": {
@@ -506,7 +489,6 @@
         "flake-parts": "flake-parts",
         "hjem": "hjem",
         "impermanence": "impermanence",
-        "jupiter-fan-control": "jupiter-fan-control",
         "lix": "lix",
         "lix-module": "lix-module",
         "nix-cachyos-kernel": "nix-cachyos-kernel",
@@ -515,8 +497,7 @@
         "nixpkgs-kernel": "nixpkgs-kernel",
         "noctalia-qs": "noctalia-qs",
         "noctalia-shell": "noctalia-shell",
-        "severed-chains": "severed-chains",
-        "steamdeck-dsp": "steamdeck-dsp"
+        "severed-chains": "severed-chains"
       }
     },
     "severed-chains": {
@@ -534,23 +515,6 @@
       "original": {
         "path": "/home/weegs/Documents/test-zone/dragoon/Severed-Chains",
         "type": "path"
-      }
-    },
-    "steamdeck-dsp": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1772673051,
-        "narHash": "sha256-ba9to4/+FqxUgbVMWhbttkZ9BSw0ObFESuGRafD0B3s=",
-        "owner": "Jovian-Experiments",
-        "repo": "steamdeck-dsp",
-        "rev": "39808c23eb39d655bdf736b414024eabb6536ca9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Jovian-Experiments",
-        "ref": "0.88",
-        "repo": "steamdeck-dsp",
-        "type": "github"
       }
     },
     "systems": {

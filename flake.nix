@@ -10,15 +10,7 @@
       url = "path:/home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor";
       flake = false;
     };
-    steamdeck-dsp = {
-      url = "github:Jovian-Experiments/steamdeck-dsp/0.88";
-      flake = false;
-    };
-    jupiter-fan-control = {
-      url = "github:Jovian-Experiments/jupiter-fan-control/20240523.3";
-      flake = false;
-    };
-    nix-flatpak.url = "github:gmodena/nix-flatpak";
+nix-flatpak.url = "github:gmodena/nix-flatpak";
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
