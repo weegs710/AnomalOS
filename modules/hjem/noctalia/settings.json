@@ -553,7 +553,7 @@
     "backlightDeviceMappings": []
   },
   "colorSchemes": {
-    "useWallpaperColors": true,
+    "useWallpaperColors": false,
     "predefinedScheme": "Eldritch",
     "darkMode": true,
     "schedulingMode": "off",
