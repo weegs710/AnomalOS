@@ -1,9 +1,5 @@
 #!/usr/bin/env nu
-# update-svgs.nu — Regenerates anomalOS-overview.svg and anomalOS-diagram.svg
-# from live repository and system data.
-#
-# IMPORTANT: Run `jj s` in ~/dotfiles first.
-# nix eval reads git-tracked state — uncommitted changes won't appear.
+# nix eval reads git-tracked state -- run `jj s` in ~/dotfiles first.
 
 # ─── String / math helpers ──────────────────────────────────────────────────
 
@@ -26,12 +22,10 @@ def nix-eval-raw [attr: string] {
     try { ^nix eval --raw $attr } catch { "?" }
 }
 
-# Count the length of a Nix list attribute (--apply builtins.length)
 def nix-eval-count [attr: string] {
     try { ^nix eval --json $attr --apply "builtins.length" | from json } catch { 0 }
 }
 
-# Strip wrappers and suffixes to get a clean display name from a shareable filename stem
 def shareable-name [stem: string] {
     $stem
     | str replace --regex '^_'   ''
@@ -89,18 +83,18 @@ def ov-hardware [x: int y: int] {
 }
 
 def ov-fs [x: int y: int] {
-    let px = $x + 20   # pool x
-    let dx = $x + 36   # dataset x (indented)
+    let pool_x    = $x + 20
+    let dataset_x = $x + 36
     [
         ...(ov-section-box $x $y 340 240 "#e9f941" "FS"),
-        $"<text x=\"($px)\" y=\"($y + 57)\"  font-size=\"12\" fill=\"#ebfafa\" font-weight=\"600\">zroot</text>"
-        $"<text x=\"($dx)\" y=\"($y + 75)\"  font-size=\"11\" fill=\"#abb4da\">persist</text>"
-        $"<text x=\"($dx)\" y=\"($y + 91)\"  font-size=\"11\" fill=\"#abb4da\">nix</text>"
-        $"<text x=\"($dx)\" y=\"($y + 107)\" font-size=\"11\" fill=\"#abb4da\">tmp</text>"
-        $"<text x=\"($px)\" y=\"($y + 127)\" font-size=\"12\" fill=\"#ebfafa\" font-weight=\"600\">zgames</text>"
-        $"<text x=\"($dx)\" y=\"($y + 145)\" font-size=\"11\" fill=\"#abb4da\">games/roms</text>"
-        $"<text x=\"($px)\" y=\"($y + 165)\" font-size=\"12\" fill=\"#ebfafa\" font-weight=\"600\">tmpfs</text>"
-        $"<text x=\"($dx)\" y=\"($y + 181)\" font-size=\"11\" fill=\"#abb4da\">/  ·  256M</text>"
+        $"<text x=\"($pool_x)\" y=\"($y + 57)\"  font-size=\"12\" fill=\"#ebfafa\" font-weight=\"600\">zroot</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 75)\"  font-size=\"11\" fill=\"#abb4da\">persist</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 91)\"  font-size=\"11\" fill=\"#abb4da\">nix</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 107)\" font-size=\"11\" fill=\"#abb4da\">tmp</text>"
+        $"<text x=\"($pool_x)\" y=\"($y + 127)\" font-size=\"12\" fill=\"#ebfafa\" font-weight=\"600\">zgames</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 145)\" font-size=\"11\" fill=\"#abb4da\">games/roms</text>"
+        $"<text x=\"($pool_x)\" y=\"($y + 165)\" font-size=\"12\" fill=\"#ebfafa\" font-weight=\"600\">tmpfs</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 181)\" font-size=\"11\" fill=\"#abb4da\">/  ·  256M</text>"
     ]
 }
 
@@ -217,7 +211,6 @@ def diag-header [total_files: int input_count: int] {
     ]
 }
 
-# Badge pill: small colored rounded rect with text
 def diag-badge [x: int y: int label: string color: string] {
     let tw = ($label | str length) * 6 + 8
     [
@@ -226,7 +219,6 @@ def diag-badge [x: int y: int label: string color: string] {
     ]
 }
 
-# Input card with badges (300x48)
 def diag-input-card [x: int y: int name: string repo: string badges: list<record>] {
     let card = [
         $"<rect x=\"($x)\" y=\"($y)\" rx=\"10\" width=\"300\" height=\"48\" fill=\"#212337\" stroke=\"#9071f4\" stroke-width=\"1\" filter=\"url\(#glow-purple\)\"/>"
@@ -236,7 +228,6 @@ def diag-input-card [x: int y: int name: string repo: string badges: list<record
         $"<text x=\"($x + 30)\" y=\"($y + 21)\" font-size=\"12\" fill=\"#ebfafa\" font-weight=\"700\">($name)</text>"
         $"<text x=\"($x + 30)\" y=\"($y + 36)\" font-size=\"8\" fill=\"#abb4da\" opacity=\"0.5\">($repo)</text>"
     ]
-    # render badges from right edge
     mut badge_elems = []
     mut bx = $x + 294
     for b in ($badges | reverse) {
@@ -247,7 +238,6 @@ def diag-input-card [x: int y: int name: string repo: string badges: list<record
     [$card, ($badge_elems | flatten)] | flatten
 }
 
-# Group box: dashed border with section label, contains input cards stacked vertically
 def diag-input-group [x: int y: int label: string color: string inputs: list<record>] {
     let card_h  = 48
     let gap     = 8
@@ -269,7 +259,6 @@ def diag-input-group [x: int y: int label: string color: string inputs: list<rec
     { elems: ([$box, $cards] | flatten), height: $h }
 }
 
-# Module box with input tags on consuming files (330px wide)
 def diag-module-box [x: int y: int label: string path: string files: list<string> file_inputs: record color: string] {
     let n          = ($files | length)
     let h          = (box-height $n)
@@ -291,21 +280,20 @@ def diag-module-box [x: int y: int label: string path: string files: list<string
     ]
 
     let items = ($files | enumerate | each {|it|
-        let iy = $y + 60 + ($it.index * 18)
+        let iy       = $y + 60 + ($it.index * 18)
         let file_key = $"($path)/($it.item)"
         let consumed = ($file_inputs | get -o $file_key | default [])
-        let dot = $"<text x=\"($x + 16)\" y=\"($iy)\" font-size=\"8\" fill=\"($color)\" opacity=\"0.4\">●</text><text x=\"($x + 28)\" y=\"($iy)\" font-size=\"10\" fill=\"#abb4da\">($it.item)</text>"
+        let dot      = $"<text x=\"($x + 16)\" y=\"($iy)\" font-size=\"8\" fill=\"($color)\" opacity=\"0.4\">●</text><text x=\"($x + 28)\" y=\"($iy)\" font-size=\"10\" fill=\"#abb4da\">($it.item)</text>"
         if ($consumed | is-empty) {
             [$dot]
         } else {
-            # render input tags from right side of box
             mut tags = []
             mut tx = $x + $w - 10
             for inp in ($consumed | reverse) {
-                let tw = ($inp | str length) * 5 + 10
-                $tx = $tx - $tw - 3
+                let tw      = ($inp | str length) * 5 + 10
+                $tx         = $tx - $tw - 3
                 let tag_color = "#9071f4"
-                let tcx = $tx + ($tw / 2 | into int)
+                let tcx     = $tx + ($tw / 2 | into int)
                 $tags = ($tags | append [
                     $"<rect x=\"($tx)\" y=\"($iy - 11)\" rx=\"4\" width=\"($tw)\" height=\"14\" fill=\"($tag_color)\" opacity=\"0.15\"/>"
                     $"<text x=\"($tcx)\" y=\"($iy - 2)\" font-size=\"7\" fill=\"($tag_color)\" opacity=\"0.7\" text-anchor=\"middle\">($inp)</text>"
@@ -330,7 +318,6 @@ def diag-legend [y: int cx: int total_files: int input_count: int] {
         $"<text x=\"($cx + 57)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Module</text>"
         $"<circle cx=\"($cx + 155)\" cy=\"($y)\" r=\"5\" fill=\"#f265b5\"/>"
         $"<text x=\"($cx + 167)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Non-flake</text>"
-        # badge key row
         $"<rect x=\"($cx - 200)\" y=\"($y + 25)\" rx=\"6\" width=\"44\" height=\"14\" fill=\"#37f499\" opacity=\"0.18\"/>"
         $"<text x=\"($cx - 178)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#37f499\" font-weight=\"600\" text-anchor=\"middle\">follows</text>"
         $"<rect x=\"($cx - 140)\" y=\"($y + 25)\" rx=\"6\" width=\"38\" height=\"14\" fill=\"#e9f941\" opacity=\"0.18\"/>"
@@ -341,25 +328,23 @@ def diag-legend [y: int cx: int total_files: int input_count: int] {
         $"<text x=\"($cx - 4)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#04d1f9\" font-weight=\"600\" text-anchor=\"middle\">local</text>"
         $"<rect x=\"($cx + 28)\" y=\"($y + 25)\" rx=\"6\" width=\"56\" height=\"14\" fill=\"#9071f4\" opacity=\"0.18\"/>"
         $"<text x=\"($cx + 56)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#9071f4\" font-weight=\"600\" text-anchor=\"middle\">standalone</text>"
-        # summary
         $"<text x=\"($cx)\" y=\"($y + 65)\" font-size=\"12\" fill=\"#abb4da\" text-anchor=\"middle\">($total_files) files  ·  ($input_count) flake inputs</text>"
     ]
 }
 
 def generate-diagram [d: record] {
-    let canvas_w  = 1500
-    let col_gap   = 16
+    let canvas_w = 1500
 
     # ── Input groups ─────────────────────────────────────────────────────────
     let group_x = [60, 408, 756, 1104]
     let group_y = 140
 
-    let g_follows  = (diag-input-group ($group_x | get 0) $group_y "FOLLOWS NIXPKGS" "#37f499" ($d.input_groups.follows))
-    let g_nonflake = (diag-input-group ($group_x | get 1) $group_y "NON-FLAKE"        "#f265b5" ($d.input_groups.nonflake))
-    let g_pinned   = (diag-input-group ($group_x | get 2) $group_y "PINNED"           "#e9f941" ($d.input_groups.pinned))
-    let g_standalone = (diag-input-group ($group_x | get 3) $group_y "STANDALONE"      "#9071f4" ($d.input_groups.standalone))
+    let g_follows    = (diag-input-group ($group_x | get 0) $group_y "FOLLOWS NIXPKGS" "#37f499" ($d.input_groups.follows))
+    let g_nonflake   = (diag-input-group ($group_x | get 1) $group_y "NON-FLAKE"        "#f265b5" ($d.input_groups.nonflake))
+    let g_pinned     = (diag-input-group ($group_x | get 2) $group_y "PINNED"           "#e9f941" ($d.input_groups.pinned))
+    let g_standalone = (diag-input-group ($group_x | get 3) $group_y "STANDALONE"       "#9071f4" ($d.input_groups.standalone))
 
-    let max_group_h = ([$g_follows.height, $g_nonflake.height, $g_pinned.height, $g_standalone.height] | math max)
+    let max_group_h   = ([$g_follows.height, $g_nonflake.height, $g_pinned.height, $g_standalone.height] | math max)
     let groups_bottom = $group_y + $max_group_h
 
     # ── Central nodes ────────────────────────────────────────────────────────
@@ -367,41 +352,37 @@ def generate-diagram [d: record] {
     let flake_x   = 540;  let flake_y = $central_y
     let repl_x    = 860;  let repl_y  = $central_y
 
-    # group → flake.nix connector lines (one per group, from each group's actual bottom)
-    let group_colors   = ["#37f499", "#f265b5", "#e9f941", "#9071f4"]
-    let group_heights  = [$g_follows.height, $g_nonflake.height, $g_pinned.height, $g_standalone.height]
-    let group_centers  = ($group_x | each { $in + 166 })
+    let group_colors  = ["#37f499", "#f265b5", "#e9f941", "#9071f4"]
+    let group_heights = [$g_follows.height, $g_nonflake.height, $g_pinned.height, $g_standalone.height]
+    let group_centers = ($group_x | each { $in + 166 })
     let flake_center_x = $flake_x + 130
     let connectors = ($group_centers | enumerate | each {|it|
-        let gx = $it.item
-        let gy = $group_y + ($group_heights | get $it.index)
+        let gx    = $it.item
+        let gy    = $group_y + ($group_heights | get $it.index)
         let color = ($group_colors | get $it.index)
         $"<polyline points=\"($gx),($gy) ($gx),($gy + 16) ($flake_center_x),($flake_y - 4)\" stroke=\"($color)\" stroke-width=\"1.2\" fill=\"none\" opacity=\"0.3\"/>"
     })
 
     let central = [
-        # flake.nix
         $"<rect x=\"($flake_x)\" y=\"($flake_y)\" rx=\"12\" width=\"260\" height=\"54\" fill=\"#212337\" stroke=\"#04d1f9\" stroke-width=\"1.5\" filter=\"url\(#glow-cyan\)\"/>"
         $"<rect x=\"($flake_x + 3)\" y=\"($flake_y + 8)\" rx=\"3\" width=\"4\" height=\"38\" fill=\"#04d1f9\"/>"
         $"<circle cx=\"($flake_x + 22)\" cy=\"($flake_y + 20)\" r=\"5\" fill=\"#04d1f9\" opacity=\"0.2\"/>"
         $"<circle cx=\"($flake_x + 22)\" cy=\"($flake_y + 20)\" r=\"3\" fill=\"#04d1f9\"/>"
         $"<text x=\"($flake_x + 36)\" y=\"($flake_y + 24)\" font-size=\"13\" fill=\"#ebfafa\" font-weight=\"700\">flake.nix</text>"
         $"<text x=\"($flake_x + 36)\" y=\"($flake_y + 40)\" font-size=\"10\" fill=\"#04d1f9\" opacity=\"0.7\">Flake Root</text>"
-        # repl.nix
         $"<rect x=\"($repl_x)\" y=\"($repl_y)\" rx=\"12\" width=\"260\" height=\"54\" fill=\"#212337\" stroke=\"#37f499\" stroke-width=\"1.5\" filter=\"url\(#glow-green\)\"/>"
         $"<rect x=\"($repl_x + 3)\" y=\"($repl_y + 8)\" rx=\"3\" width=\"4\" height=\"38\" fill=\"#37f499\"/>"
         $"<circle cx=\"($repl_x + 22)\" cy=\"($repl_y + 20)\" r=\"5\" fill=\"#37f499\" opacity=\"0.2\"/>"
         $"<circle cx=\"($repl_x + 22)\" cy=\"($repl_y + 20)\" r=\"3\" fill=\"#37f499\"/>"
         $"<text x=\"($repl_x + 36)\" y=\"($repl_y + 24)\" font-size=\"13\" fill=\"#ebfafa\" font-weight=\"700\">repl.nix</text>"
         $"<text x=\"($repl_x + 36)\" y=\"($repl_y + 40)\" font-size=\"10\" fill=\"#37f499\" opacity=\"0.7\">Nix REPL</text>"
-        # connector between them
         $"<line x1=\"($flake_x + 260)\" y1=\"($flake_y + 27)\" x2=\"($repl_x)\" y2=\"($repl_y + 27)\" stroke=\"#04d1f9\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
         $"<text x=\"($flake_x + 275)\" y=\"($flake_y + 23)\" font-size=\"8\" fill=\"#04d1f9\" opacity=\"0.35\">outputs</text>"
     ]
 
     # ── Modules root card ────────────────────────────────────────────────────
-    let mod_root_y  = $central_y + 80
-    let mod_root_x  = $flake_center_x - 130
+    let mod_root_y     = $central_y + 80
+    let mod_root_x     = $flake_center_x - 130
     let mod_root_files = $d.modules_root_files
 
     let flake_to_mod = [
@@ -409,7 +390,7 @@ def generate-diagram [d: record] {
         $"<text x=\"($flake_center_x + 8)\" y=\"($flake_y + 70)\" font-size=\"8\" fill=\"#e9f941\" opacity=\"0.35\">imports</text>"
     ]
 
-    let box_root = (diag-module-box $mod_root_x $mod_root_y "modules" "modules" $mod_root_files $d.file_inputs "#e9f941")
+    let box_root        = (diag-module-box $mod_root_x $mod_root_y "modules" "modules" $mod_root_files $d.file_inputs "#e9f941")
     let mod_root_bottom = $mod_root_y + (box-height ($mod_root_files | length))
 
     # ── Module boxes (4 columns) ─────────────────────────────────────────────
@@ -417,26 +398,22 @@ def generate-diagram [d: record] {
     let mod_xs = [40, 396, 752, 1108]
     let mod_y  = $mod_root_bottom + 40
 
-    let box_hosts  = (diag-module-box ($mod_xs | get 0) $mod_y "hosts"         "modules/hosts"         $d.hosts_files      $d.file_inputs "#e9f941")
-    let box_hjem   = (diag-module-box ($mod_xs | get 1) $mod_y "hjem"          "modules/hjem"          $d.hjem_files       $d.file_inputs "#e9f941")
-    let box_nixos  = (diag-module-box ($mod_xs | get 2) $mod_y "nixos-modules" "modules/nixos-modules" $d.nixos_files      $d.file_inputs "#e9f941")
-    let box_shar   = (diag-module-box ($mod_xs | get 3) $mod_y "shareables"    "modules/shareables"    $d.shareables_files $d.file_inputs "#e9f941")
+    let box_hosts = (diag-module-box ($mod_xs | get 0) $mod_y "hosts"         "modules/hosts"         $d.hosts_files      $d.file_inputs "#e9f941")
+    let box_hjem  = (diag-module-box ($mod_xs | get 1) $mod_y "hjem"          "modules/hjem"          $d.hjem_files       $d.file_inputs "#e9f941")
+    let box_nixos = (diag-module-box ($mod_xs | get 2) $mod_y "nixos-modules" "modules/nixos-modules" $d.nixos_files      $d.file_inputs "#e9f941")
+    let box_shar  = (diag-module-box ($mod_xs | get 3) $mod_y "shareables"    "modules/shareables"    $d.shareables_files $d.file_inputs "#e9f941")
 
     # ── Tree lines: modules root → child dirs ────────────────────────────────
-    let tree_y   = $mod_root_bottom + 4
-    let bus_y    = $mod_y - 16
-    let mod_cxs  = ($mod_xs | each { $in + ($box_w / 2 | into int) })
+    let tree_y  = $mod_root_bottom + 4
+    let bus_y   = $mod_y - 16
+    let mod_cxs = ($mod_xs | each { $in + ($box_w / 2 | into int) })
 
     let tree_lines = [
-        # vertical from root down to bus
         $"<line x1=\"($flake_center_x)\" y1=\"($tree_y)\" x2=\"($flake_center_x)\" y2=\"($bus_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
-        # horizontal bus
         $"<line x1=\"($mod_cxs | get 0)\" y1=\"($bus_y)\" x2=\"($mod_cxs | get 3)\" y2=\"($bus_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
-        # drops to each column
-        $"<line x1=\"($mod_cxs | get 0)\" y1=\"($bus_y)\" x2=\"($mod_cxs | get 0)\" y2=\"($mod_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
-        $"<line x1=\"($mod_cxs | get 1)\" y1=\"($bus_y)\" x2=\"($mod_cxs | get 1)\" y2=\"($mod_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
-        $"<line x1=\"($mod_cxs | get 2)\" y1=\"($bus_y)\" x2=\"($mod_cxs | get 2)\" y2=\"($mod_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
-        $"<line x1=\"($mod_cxs | get 3)\" y1=\"($bus_y)\" x2=\"($mod_cxs | get 3)\" y2=\"($mod_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        ...($mod_cxs | each {|cx|
+            $"<line x1=\"($cx)\" y1=\"($bus_y)\" x2=\"($cx)\" y2=\"($mod_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        })
     ]
 
     # ── Canvas sizing and legend ─────────────────────────────────────────────
@@ -446,9 +423,9 @@ def generate-diagram [d: record] {
     let shar_bottom  = $mod_y + (box-height ($d.shareables_files | length))
     let max_bottom   = ([$hosts_bottom, $hjem_bottom, $nixos_bottom, $shar_bottom] | math max)
 
-    let legend_y  = $max_bottom + 50
-    let canvas_h  = $legend_y + 90
-    let center_x  = ($canvas_w / 2 | into int)
+    let legend_y = $max_bottom + 50
+    let canvas_h = $legend_y + 90
+    let center_x = ($canvas_w / 2 | into int)
 
     [
         $"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"($canvas_w)\" height=\"($canvas_h)\" viewBox=\"0 0 ($canvas_w) ($canvas_h)\">"
@@ -476,45 +453,41 @@ def generate-diagram [d: record] {
 
 # ─── Data collection ────────────────────────────────────────────────────────
 
-# Classify flake inputs into groups with badges
 def classify-inputs [flake_meta: record] {
     let root_inputs = ($flake_meta.locks.nodes.root.inputs | columns)
 
     let classified = ($root_inputs | each {|name|
         let node_key = ($flake_meta.locks.nodes.root.inputs | get $name)
-        let is_list = ($node_key | describe | str starts-with "list")
+        let is_list  = ($node_key | describe | str starts-with "list")
         if $is_list {
-            # follows-style redirect, shouldn't happen for root inputs but handle it
+            # list type in lock means follows-redirect; root inputs shouldn't have this but be defensive
             { name: $name, repo: $name, badges: [{ label: "follows", color: "#37f499" }], group: "follows" }
         } else {
-            let node = ($flake_meta.locks.nodes | get $node_key)
-            let orig = ($node.original? | default {})
-            let locked = ($node.locked? | default {})
+            let node         = ($flake_meta.locks.nodes | get $node_key)
+            let orig         = ($node.original? | default {})
             let inner_inputs = ($node.inputs? | default {})
 
-            # determine repo display string
-            let url = ($orig.url? | default "")
+            let url   = ($orig.url? | default "")
             let owner = ($orig.owner? | default "")
-            let repo = if ($url | str length) > 0 {
+            let repo  = if ($url | str length) > 0 {
                 $url | str replace 'github:' '' | str replace 'git+https://' '' | str replace --regex '/flake.nix$' ''
             } else if ($owner | str length) > 0 {
                 $"($owner)/($orig.repo? | default $name)"
             } else { $name }
 
-            # classify traits
-            let nxref = ($inner_inputs.nixpkgs? | default null)
-            let is_follows = ($nxref != null and ($nxref | describe | str starts-with "list"))
+            let nxref       = ($inner_inputs.nixpkgs? | default null)
+            let is_follows  = ($nxref != null and ($nxref | describe | str starts-with "list"))
             let is_nonflake = (($node.flake? | default true) == false)
-            let is_path = (($orig.type? | default "") == "path")
-            let ref_pin = ($orig.ref? | default "")
+            let is_path     = (($orig.type? | default "") == "path")
+            let ref_pin     = ($orig.ref? | default "")
             # pinned = has a ref (branch/tag) or the URL contains a commit hash
-            let is_pinned = (($ref_pin | str length) > 0 or ($url =~ '/[0-9a-f]{40}$'))
+            let is_pinned   = (($ref_pin | str length) > 0 or ($url =~ '/[0-9a-f]{40}$'))
 
             mut badges = []
-            if $is_follows   { $badges = ($badges | append { label: "follows", color: "#37f499" }) }
-            if $is_pinned    { $badges = ($badges | append { label: "pinned",  color: "#e9f941" }) }
-            if $is_nonflake  { $badges = ($badges | append { label: "non-flake", color: "#f265b5" }) }
-            if $is_path      { $badges = ($badges | append { label: "local",   color: "#04d1f9" }) }
+            if $is_follows  { $badges = ($badges | append { label: "follows",   color: "#37f499" }) }
+            if $is_pinned   { $badges = ($badges | append { label: "pinned",    color: "#e9f941" }) }
+            if $is_nonflake { $badges = ($badges | append { label: "non-flake", color: "#f265b5" }) }
+            if $is_path     { $badges = ($badges | append { label: "local",     color: "#04d1f9" }) }
 
             # primary group for layout (priority: nonflake > follows > pinned > standalone)
             let group = if $is_nonflake { "nonflake" } else if $is_follows { "follows" } else if $is_pinned { "pinned" } else { "standalone" }
@@ -525,7 +498,6 @@ def classify-inputs [flake_meta: record] {
         }
     })
 
-    # group into buckets
     {
         follows:    ($classified | where { $in.group == "follows" }),
         nonflake:   ($classified | where { $in.group == "nonflake" }),
@@ -534,7 +506,6 @@ def classify-inputs [flake_meta: record] {
     }
 }
 
-# Map files to the input names they consume, by grepping for inputs.X references
 def find-input-consumers [dotfiles: string input_names: list<string>] {
     mut result = {}
     for name in $input_names {
@@ -595,7 +566,7 @@ def main [] {
         | each { $in | path basename }
         | sort
     )
-    let shareables_pkgs = ($shareables_files | each { $in | str replace '.nix' '' })
+    let shareables_pkgs = ($shareables_files | each { $in | path parse | get stem })
 
     let hjem_count         = ($hjem_files | length)
     let nixos_count        = ($nixos_files | length)
@@ -604,7 +575,6 @@ def main [] {
     let modules_root_count = ($modules_root_files | length)
     let total_files        = $hjem_count + $nixos_count + $shareables_count + $hosts_count + $modules_root_count
 
-    # Flake inputs via nix flake metadata (fast -- reads lock file)
     print "→ Classifying flake inputs..."
     let flake_meta  = (^nix flake metadata --json $dotfiles | from json)
     let all_inputs  = ($flake_meta.locks.nodes.root.inputs | columns)
@@ -612,7 +582,6 @@ def main [] {
 
     let input_groups = (classify-inputs $flake_meta)
 
-    # Map files to their consumed inputs
     print "→ Mapping input consumers..."
     let file_inputs = (find-input-consumers $dotfiles $all_inputs)
 
@@ -621,10 +590,10 @@ def main [] {
 
     let flake_ref = $dotfiles
 
-    print "  · hyprland version...";    let hyprland_ver  = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.hyprland.version")
-    print "  · nushell version...";     let nushell_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.nushell.version")
-    print "  · ghostty version...";     let ghostty_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.ghostty.version")
-    print "  · fresh-editor version..."; let fresh_ver    = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.fresh-editor.version")
+    print "  · hyprland version...";     let hyprland_ver  = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.hyprland.version")
+    print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.nushell.version")
+    print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.ghostty.version")
+    print "  · fresh-editor version..."; let fresh_ver     = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.fresh-editor.version")
     # noctalia-shell version from source (pkgs.version is stale nixpkgs metadata)
     print "  · noctalia-shell version..."
     let noctalia_node = ($flake_meta.locks.nodes | get "noctalia-shell")
