@@ -11,8 +11,8 @@
           hide_borders = true;
           animation = "matrix";
           animation_frame_delay = 1;
-          cmatrix_fg = "0x0040E0FF";
-          cmatrix_head_col = "0x01B060FF";
+          cmatrix_fg = "0x0004D1F9";
+          cmatrix_head_col = "0x0166E4FD";
         };
       };
     };
