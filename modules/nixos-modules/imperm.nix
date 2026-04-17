@@ -1,5 +1,5 @@
 {inputs, ...}: {
-  flake.nixosModules.impermanence = {
+  flake.modules.nixos.hx99g-imperm = {
     config,
     lib,
     pkgs,
@@ -26,10 +26,10 @@
         -type f -printf '%s %p\n' 2>/dev/null \
         | sort -rn | head -40 \
         | awk '{
-            size = ''$1;
-            if (size >= 1048576) printf "%7.1fM  %s\n", size/1048576, ''$2;
-            else if (size >= 1024) printf "%7.1fK  %s\n", size/1024, ''$2;
-            else printf "%8dB  %s\n", size, ''$2;
+            size = $1;
+            if (size >= 1048576) printf "%7.1fM  %s\n", size/1048576, $2;
+            else if (size >= 1024) printf "%7.1fK  %s\n", size/1024, $2;
+            else printf "%8dB  %s\n", size, $2;
           }'
     '';
   in {

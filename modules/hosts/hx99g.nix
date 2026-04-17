@@ -13,6 +13,8 @@
       ++ [
         inputs.lix-module.nixosModules.default
         config.flake.modules.nixos.hx99g-hardware
+        config.flake.modules.nixos.hx99g-imperm
+        config.flake.modules.nixos.hx99g-zfs
         ({...}: {
           mySystem = {
             hostName = "HX99G";

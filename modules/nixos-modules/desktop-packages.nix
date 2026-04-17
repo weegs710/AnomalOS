@@ -36,6 +36,11 @@
       xdg-dbus-proxy
     ];
 
+    programs.appimage = {
+      enable = true;
+      binfmt = true;
+    };
+
     environment.shellAliases = {
       gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
     };

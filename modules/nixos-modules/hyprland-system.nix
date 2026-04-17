@@ -4,6 +4,8 @@
     pkgs,
     ...
   }: {
+    hardware.graphics.enable = true;
+
     programs = {
       hyprland = {
         enable = true;
