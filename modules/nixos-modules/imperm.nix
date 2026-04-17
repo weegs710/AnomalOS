@@ -77,6 +77,7 @@
             "dotfiles"
             "homebrew"
             "claude-projects"
+            "weegs.dev"
           ];
           files = [
             ".claude.json"
