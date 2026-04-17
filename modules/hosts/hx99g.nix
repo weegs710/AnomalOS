@@ -1,6 +1,7 @@
 {
   inputs,
   self,
+  config,
   ...
 }: let
   hx99g = inputs.nixpkgs.lib.nixosSystem {
@@ -11,19 +12,14 @@
       (builtins.attrValues self.nixosModules)
       ++ [
         inputs.lix-module.nixosModules.default
-        ./_hardware-configuration.nix
-
-        # Host-specific configuration
+        config.flake.modules.nixos.hx99g-hardware
         ({...}: {
           mySystem = {
             hostName = "HX99G";
             user = {
               name = "weegs";
               description = "weegs";
-              extraGroups = [
-                "networkmanager"
-                "wheel"
-              ];
+              extraGroups = ["networkmanager" "wheel"];
             };
           };
 

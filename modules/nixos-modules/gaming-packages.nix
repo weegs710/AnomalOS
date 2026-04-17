@@ -18,7 +18,6 @@
       (openraPackages.engines.bleed.overrideAttrs (old: {
         postPatch = "";
       }))
-      heroic
       protonup-qt
     ];
   };

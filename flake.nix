@@ -55,6 +55,6 @@ nix-flatpak.url = "github:gmodena/nix-flatpak";
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
 
-      imports = import-tree ./modules;
+      imports = [flake-parts.flakeModules.modules] ++ import-tree ./modules;
     };
 }
