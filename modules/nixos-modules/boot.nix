@@ -1,5 +1,7 @@
 {
-  flake.nixosModules.boot = {...}: {
+  flake.nixosModules.boot = {pkgs, ...}: {
+    console.font = "${pkgs.terminus_font}/share/consolefonts/ter-v18n.psf.gz";
+
     boot = {
       tmp.cleanOnBoot = true;
       initrd.systemd.enable = true;
