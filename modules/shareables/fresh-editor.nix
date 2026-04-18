@@ -1,15 +1,22 @@
 {
   perSystem = {pkgs, ...}: let
     lspTools = with pkgs; [
-      nixd
-      nil
-      alejandra
       basedpyright
-      ruff
-      vscode-langservers-extracted
+      biome
+      clippy
       hyprls
       marksman
+      nil
+      nixd
+      nixfmt
       nufmt
+      ruff
+      rust-analyzer
+      rustfmt
+      # tsserver resolves typescript from PATH at runtime, not bundled
+      typescript
+      typescript-language-server
+      vscode-langservers-extracted
     ];
 
     wrappedFresh = pkgs.symlinkJoin {

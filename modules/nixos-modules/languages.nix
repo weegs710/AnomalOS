@@ -19,7 +19,13 @@
       jdk21
     ];
 
-    users.users.${config.mySystem.user.name}.packages = [
+    users.users.${config.mySystem.user.name}.packages = with pkgs; [
+      biome
+      nixfmt
+      # tsserver resolves typescript from PATH at runtime, not bundled
+      typescript
+      typescript-language-server
+      vscode-langservers-extracted
     ];
 
     programs.nix-index.enable = true;

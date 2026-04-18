@@ -18,7 +18,8 @@
     };
 
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      alejandra
+      cargo
+      clippy
       gh
       hyperfine
       hyprls
@@ -26,8 +27,9 @@
       nodejs
       python3
       ripgrep
-      cargo
+      rust-analyzer
       rustc
+      rustfmt
       uv
     ];
 

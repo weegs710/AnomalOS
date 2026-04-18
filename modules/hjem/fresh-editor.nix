@@ -32,7 +32,7 @@
           enabled = true;
           initialization_options = {
             nixpkgs.expr = "import (builtins.getFlake \"${flakePath}\").inputs.nixpkgs { }";
-            formatting.command = ["alejandra" "--quiet"];
+            formatting.command = ["nixfmt"];
             options.nixos.expr = "(builtins.getFlake \"${flakePath}\").nixosConfigurations.HX99G.options";
           };
         };
@@ -49,6 +49,16 @@
                 reportUnusedVariable = "warning";
               };
             };
+          };
+        };
+
+        rust = {
+          command = "rust-analyzer";
+          args = [];
+          enabled = true;
+          initialization_options = {
+            # runs clippy on save instead of cargo check
+            checkOnSave.command = "clippy";
           };
         };
 
@@ -144,8 +154,58 @@
           comment_prefix = "#";
           auto_indent = true;
           formatter = {
-            command = "alejandra";
-            args = ["--quiet" "-"];
+            command = "nixfmt";
+            args = ["-"];
+            stdin = true;
+            timeout_ms = 10000;
+          };
+          format_on_save = true;
+        };
+
+        typescript = {
+          formatter = {
+            command = "biome";
+            args = ["format" "--stdin-file-path" "dummy.ts"];
+            stdin = true;
+            timeout_ms = 10000;
+          };
+          format_on_save = true;
+        };
+
+        javascript = {
+          formatter = {
+            command = "biome";
+            args = ["format" "--stdin-file-path" "dummy.js"];
+            stdin = true;
+            timeout_ms = 10000;
+          };
+          format_on_save = true;
+        };
+
+        rust = {
+          formatter = {
+            command = "rustfmt";
+            args = ["--edition" "2021"];
+            stdin = true;
+            timeout_ms = 30000;
+          };
+          format_on_save = true;
+        };
+
+        html = {
+          formatter = {
+            command = "biome";
+            args = ["format" "--stdin-file-path" "dummy.html"];
+            stdin = true;
+            timeout_ms = 10000;
+          };
+          format_on_save = true;
+        };
+
+        css = {
+          formatter = {
+            command = "biome";
+            args = ["format" "--stdin-file-path" "dummy.css"];
             stdin = true;
             timeout_ms = 10000;
           };

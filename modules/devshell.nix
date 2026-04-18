@@ -4,25 +4,23 @@
       shellPackage = pkgs.nushell;
 
       buildInputs = with pkgs; [
-        # Nix
+        basedpyright
+        biome
+        clippy
+        git
+        hyprls
+        marksman
         nil
         nixd
-        alejandra
-
-        # Nushell
-        nushell
+        nixfmt
         nufmt
-
-        # Python
-        basedpyright
+        nushell
         ruff
-
-        # Hyprlang
-        hyprls
-
-        # General
-        git
-        marksman
+        rust-analyzer
+        rustfmt
+        # tsserver resolves typescript from PATH at runtime, not bundled
+        typescript
+        typescript-language-server
         vscode-langservers-extracted
       ];
     };
