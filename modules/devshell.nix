@@ -7,6 +7,7 @@
         basedpyright
         biome
         clippy
+        dprint
         git
         hyprls
         marksman

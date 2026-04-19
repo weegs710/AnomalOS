@@ -4,6 +4,7 @@
       basedpyright
       biome
       clippy
+      dprint
       hyprls
       marksman
       nil
