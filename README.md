@@ -1,4 +1,4 @@
-# anomalOS - my gaming centric nixOS configuration
+# anomalOS - my gaming centric NixOS configuration
 
 > **Important**: this is a hobbyist project. im learning as i go. if somethings broken or stupid, thats why. this config is designed for my machine and my workflow. it might work on your system, it might not. there are no guarantees. youre welcome to use the whole thing or just steal bits and pieces. its all FOSS, so do whatever you want with it.
 
@@ -108,7 +108,7 @@ wlr-which-key is the primary navigation layer. Super tap opens it for app launch
 
 automated hourly/daily/weekly/monthly snapshots on `zroot/persist` via sanoid. compression and auto-trim enabled.
 
-i use ZFS because i like the snapshot safety net. i inevitably break or delete things (im dumb), and having ZFS + jujutsu + nixOS generations means i can almost always undo it. see [ZFS Snapshots & Recovery](docs/BACKUP.md).
+i use ZFS because i like the snapshot safety net. i inevitably break or delete things (im dumb), and having ZFS + jujutsu + NixOS generations means i can almost always undo it. see [ZFS Snapshots & Recovery](docs/BACKUP.md).
 
 worth knowing: `/` is a tiny 256MB tmpfs and gets wiped on every boot -- its intentionally small so youll hit an out-of-space error immediately if you forget to persist something, rather than silently losing it on next reboot. `/persist` is where your actual stuff lives. more on this below.
 
@@ -135,7 +135,7 @@ both are consumed by live modules (`modules/hjem/xdg/xdg.nix` and `modules/nixos
 - `mySystem.user.name`, `mySystem.hostName`
 - `initialPassword` for root and your user (see comments in install.sh)
 
-boot a nixOS live ISO, then:
+boot a NixOS live ISO, then:
 
 ```bash
 git clone https://github.com/YOUR_FORK/AnomalOS.git ~/dotfiles
@@ -174,7 +174,7 @@ nrs    # apply changes
 
 note: `nrs` also pushes the system closure to my cachix cache after switching. you dont have write access to it, so that part will fail -- the rebuild itself is fine.
 
-**recovery:** boot wont come up? select a previous generation from the boot menu -- nixOS keeps them for this exact reason.
+**recovery:** boot wont come up? select a previous generation from the boot menu -- NixOS keeps them for this exact reason.
 
 <details>
 <summary>USB recovery steps</summary>
@@ -203,7 +203,7 @@ everything is managed with flake-parts and hjem. shareables (`modules/shareables
 
 adding new modules is ezpz. everything in `modules/` gets auto-imported -- drop a file and its in. files prefixed with `_` are skipped.
 
-**system modules** (`modules/nixos-modules/`) -- nixOS-level stuff. services, packages, kernel, networking:
+**system modules** (`modules/nixos-modules/`) -- NixOS-level stuff. services, packages, kernel, networking:
 
 ```nix
 { inputs, self, ... }:
@@ -296,7 +296,7 @@ systemctl --failed
 systemctl --user --failed
 ```
 
-help: [nixOS Discourse](https://discourse.nixos.org/) · [nixOS Wiki](https://nixos.wiki/) · [Issues](https://github.com/weegs710/AnomalOS/issues)
+help: [NixOS Discourse](https://discourse.nixos.org/) · [NixOS Wiki](https://nixos.wiki/) · [Issues](https://github.com/weegs710/AnomalOS/issues)
 
 </details>
 
@@ -311,7 +311,7 @@ but remember, this is primarily my personal config, and i am still fairly new to
 | # | who | for |
 |---|-----|-----|
 | 0 | [iynaix](https://github.com/iynaix) | code examples, good practices, and logical thinking |
-| 1 | [jet](https://github.com/Michael-C-Buckley) | nixOS nuances and code snippets |
+| 1 | [jet](https://github.com/Michael-C-Buckley) | NixOS nuances and code snippets |
 | 2 | [ladas](https://github.com/Ladas552) | nagging me about stuff i can improve |
 | 3 | [vimjoyer](https://github.com/vimjoyer) | videos and his amazing discord server |
 
