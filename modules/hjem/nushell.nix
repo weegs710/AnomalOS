@@ -333,6 +333,10 @@
             nu ~/.config/sync-music/sync-music.nu ...$args
           }
 
+          def --wrapped gb [...args: string] {
+            nu ~/weegs.dev/moderate.nu ...$args
+          }
+
           def --wrapped update-svgs [...args: string] {
             nu ~/dotfiles/scripts/update-svgs.nu ...$args
           }
