@@ -10,7 +10,7 @@
     yamlFormat = pkgs.formats.yaml {};
 
     btopCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'";
-    euphonicaCmd = "euphonica";
+    rmpcCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=rmpc -e rmpc'";
     terminalCmd = "ghostty --title=ghostty";
     fileManagerCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'";
 
@@ -100,14 +100,9 @@
               cmd = terminalCmd;
             }
             {
-              key = "e";
-              desc = "euphonica";
-              cmd = euphonicaCmd;
-            }
-            {
-              key = "h";
-              desc = "helium";
-              cmd = "helium";
+              key = "r";
+              desc = "rmpc";
+              cmd = rmpcCmd;
             }
             {
               key = "z";
@@ -210,11 +205,6 @@
               desc = "media";
               submenu = [
                 {
-                  key = "e";
-                  desc = "euphonica";
-                  cmd = euphonicaCmd;
-                }
-                {
                   key = "g";
                   desc = "gimp";
                   cmd = "gimp";
@@ -225,9 +215,9 @@
                   cmd = "qview";
                 }
                 {
-                  key = "k";
-                  desc = "kodi";
-                  cmd = "kodi";
+                  key = "r";
+                  desc = "rmpc";
+                  cmd = rmpcCmd;
                 }
                 {
                   key = "v";

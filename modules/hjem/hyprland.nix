@@ -38,17 +38,14 @@
     users.users.${username}.packages = [hyprFocus pinToggle];
     hjem.users.${username} = {
       xdg.config.files."hypr/hyprland.conf".text = ''
-        # Variables
         $fileManager = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'
         $terminal = ghostty --title=ghostty
         $mainMod = SUPER
 
 
-        # Monitors
         monitor = HDMI-A-2, 2560x1440@144, 0x0, 1
         monitor = , preferred, auto, 1
 
-        # Environment
         env = HYPRCURSOR_THEME,fft-ivalice-hyprcursor
         env = HYPRCURSOR_SIZE,32
         env = XCURSOR_THEME,phinger-cursors-dark
@@ -56,15 +53,12 @@
         env = TERMINAL,ghostty
         env = XDG_TERMINAL_EDITOR,ghostty
 
-        # Source
         source = ~/.config/hypr/noctalia/noctalia-colors.conf
 
-        # Autostart
         exec-once = dbus-update-activation-environment --systemd --all
         exec-once = noctalia-shell
         exec-once = kdeconnect-indicator
 
-        # General
         general {
             gaps_in = 5
             gaps_out = 10
@@ -74,13 +68,11 @@
             layout = dwindle
         }
 
-        # Dwindle Layout
         dwindle {
             pseudotile = true
             preserve_split = true
         }
 
-        # Workspaces
         workspace = 1, defaultName:comms, gapsin:5, gapsout:10, persistent:true
         workspace = 2, defaultName:dev, gapsin:5, gapsout:10, persistent:true, layout:scrolling
         workspace = 3, defaultName:web, gapsin:5, gapsout:10, persistent:true, layout:master
@@ -88,14 +80,12 @@
         workspace = 5, defaultName:media, gapsin:5, gapsout:10, persistent:true, layout:monocle
         workspace = special:control-panel, gapsin:5, gapsout:10, layout:scrolling
 
-        # Scrolling Layout
         scrolling {
             column_width = 0.9
             focus_fit_method = 0
             fullscreen_on_one_column = true
         }
 
-        # Master Layout
         master {
             always_keep_position = false
             new_status = master
@@ -104,14 +94,12 @@
             new_on_top = true
         }
 
-        # Misc
         misc {
             force_default_wallpaper = -1
             disable_hyprland_logo = false
             vrr = 1
         }
 
-        # Decoration
         decoration {
             rounding = 10
             active_opacity = 1.0
@@ -131,20 +119,17 @@
             }
         }
 
-        # Input
         input {
             kb_layout = us
             follow_mouse = 1
             sensitivity = 0
         }
 
-        # Device
         device {
             name = epic-mouse-v1
             sensitivity = 1.0
         }
 
-        # Animations
         animations {
             enabled = 1
             bezier = zoom, 0.1, 0.9, 0.1, 1.2
@@ -162,7 +147,6 @@
             animation = layers, 1, 3, zoom, fade
         }
 
-        # Keybinds
         bind = $mainMod, escape, killactive
         bind = $mainMod, F, fullscreen
         bind = $mainMod, G, togglefloating
@@ -207,7 +191,6 @@
         bindm = $mainMod, mouse:273, resizewindow
         bind = $mainMod, backslash, exec, hypr-pin-toggle
 
-        # Submaps
         submap = resize
         binde = , right, resizeactive, 100 0
         binde = , left, resizeactive, -100 0
@@ -217,7 +200,6 @@
         bind = , return, submap, reset
         submap = reset
 
-        # Window Rules
         windowrule = opacity 1.0 override 1.0 override 1.0 override, match:float yes
         windowrule = float on, match:title ^(Open)(.*)$
         windowrule = float on, match:title ^(Save)(.*)$
@@ -277,21 +259,21 @@
         windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$
         windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$
         windowrule = focus_on_activate on, match:class ^(steam_app_.*)$
-        windowrule = workspace 5, match:class ^(io\.github\.htkhiem\.Euphonica)$
-        windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(io\.github\.htkhiem\.Euphonica)$
         windowrule = float on, match:initial_title Picture in picture
         windowrule = pin on, match:initial_title Picture in picture
         windowrule = size 512 288, match:initial_title Picture in picture
         windowrule = move 2034 62, match:initial_title Picture in picture
         windowrule = workspace 5, match:class ^(com\.stremio\.stremio)$
-        windowrule = workspace 5, match:class ^(Kodi)$
         windowrule = workspace 5, match:class ^(gimp)$
         windowrule = workspace 5, match:class ^(org\.inkscape\.Inkscape)$
         windowrule = match:class ^(gcr-prompter)$, stay_focused on
         windowrule = match:class ^(gcr-prompter)$, focus_on_activate on
 
-        # Workspace-based opacity: workspace 2 (dev) is transparent, everything else is fully opaque
-        windowrule = opacity 0.94 override 0.90 override, match:workspace 2
+        windowrule = float on, match:title ^(rmpc)$
+        windowrule = pin on, match:title ^(rmpc)$
+
+        # pinned windows re-trigger workspace opacity rules dynamically
+        windowrule = opacity 0.94 override 0.90 override, match:workspace 2, match:title negative:^(rmpc)$
       '';
     };
   };

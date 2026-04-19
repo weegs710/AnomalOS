@@ -66,7 +66,6 @@
             ".local"
             ".var"
             ".claude"
-            ".kodi"
             "cloud"
             "Documents"
             "Downloads"

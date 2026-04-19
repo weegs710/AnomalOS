@@ -341,13 +341,6 @@
             nu ~/dotfiles/scripts/update-svgs.nu ...$args
           }
 
-          def kodi-sync [] {
-            let dst = "~/dotfiles/modules/hjem/kodi"
-            cp ~/.kodi/userdata/guisettings.xml ($dst | path expand | path join "guisettings.xml")
-            cp ~/.kodi/userdata/sources.xml ($dst | path expand | path join "sources.xml")
-            print "kodi config synced to dotfiles"
-          }
-
           def evaltime [] {
             hyperfine $'nix eval ($env.NH_FLAKE)#nixosConfigurations.HX99G.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
           }

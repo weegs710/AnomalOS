@@ -5,16 +5,8 @@
     ...
   }: let
     username = config.mySystem.user.name;
-    # Skip password lookup when no secret service is running
-    # See: https://github.com/htkhiem/euphonica/pull/267
-    euphonica = pkgs.euphonica.overrideAttrs (old: {
-      patches = (old.patches or []) ++ [./patches/euphonica-fix-no-secret-service];
-    });
   in {
-    users.users.${username}.packages = [
-      euphonica
-      pkgs.mpd
-    ];
+    users.users.${username}.packages = [pkgs.mpd pkgs.mpd-mpris];
 
     hjem.users.${username} = {
       xdg.config.files."mpd/mpd.conf".text = ''
@@ -50,6 +42,17 @@
         ProtectKernelTunables = true;
         ProtectControlGroups = true;
         RestrictRealtime = true;
+      };
+    };
+
+    systemd.user.services.mpd-mpris = {
+      description = "MPRIS2 bridge for MPD";
+      after = ["mpd.service"];
+      wantedBy = ["default.target"];
+      serviceConfig = {
+        ExecStart = "${pkgs.mpd-mpris}/bin/mpd-mpris";
+        Restart = "on-failure";
+        RestartSec = 5;
       };
     };
 
