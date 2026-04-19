@@ -4,13 +4,14 @@ Automated snapshots via [sanoid](https://github.com/jimsalterjrs/sanoid). Snapsh
 
 ## Retention policies
 
-Configured in `modules/nixos-modules/zfs.nix`:
+Templates are defined in `modules/nixos-modules/sanoid.nix`. Dataset assignments are in `modules/hosts/hx99g-zfs.nix`.
 
 | Dataset | Template | Hourly | Daily | Weekly | Monthly |
 |---------|----------|--------|-------|--------|---------|
 | zroot/persist | critical | 50 | 15 | 3 | 1 |
-| zroot/root | important | 24 | 7 | 2 | 1 |
-| zroot/nix | standard | 12 | 3 | 1 | — |
+| zgames/games/roms | (custom) | 6 | 3 | 1 | — |
+
+Only `zroot/persist` is snapshotted by default. Root and nix are not — root is tmpfs anyway and nix is reproducible from the flake.
 
 Old snapshots are pruned automatically based on these policies.
 
@@ -93,7 +94,7 @@ sudo systemctl start sanoid.service  # Kick it manually
 **Out of space:**
 ```bash
 zfs list -o space    # See what's eating it
-# Reduce retention in modules/nixos-modules/zfs.nix and rebuild
+# Reduce retention in modules/nixos-modules/sanoid.nix and rebuild
 ```
 
 **Can't delete a snapshot:**
