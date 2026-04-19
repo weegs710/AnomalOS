@@ -41,8 +41,8 @@
           wineCrossoverBottle = "Heroic";
           winePrefix = "/mnt/games/heroic/Prefixes/default";
           wineVersion = {
-            bin = "/home/weegs/.local/share/Steam/compatibilitytools.d/GE-Proton10-28/proton";
-            name = "GE-Proton10-28";
+            bin = "/home/weegs/.local/share/Steam/compatibilitytools.d/GE-Proton10-34/proton";
+            name = "GE-Proton10-34";
             type = "proton";
           };
           enableEsync = true;
