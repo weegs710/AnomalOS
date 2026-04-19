@@ -34,7 +34,6 @@
       biome
       dprintmd
       nixfmt
-      wrangler
       # tsserver resolves typescript from PATH at runtime, not bundled
       typescript
       typescript-language-server
