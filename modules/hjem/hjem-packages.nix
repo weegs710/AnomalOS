@@ -11,6 +11,7 @@
     users.users.${username}.packages = [
       wrappedFastfetch
       wrappedZen
+      pkgs.stremio-linux-shell
     ];
   };
 }

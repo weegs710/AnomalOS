@@ -50,8 +50,7 @@
           "/var/db/sudo"
           "/var/lib/tailscale"
           "/var/lib/pinchflat"
-          "/var/lib/flatpak"
-          "/etc/NetworkManager/system-connections"
+"/etc/NetworkManager/system-connections"
           "/var/lib/bluetooth"
         ];
         files = [
@@ -66,6 +65,7 @@
             ".local"
             ".var"
             ".claude"
+            ".stremio-server"
             "cloud"
             "Documents"
             "Downloads"

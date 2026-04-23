@@ -61,8 +61,7 @@
       VISUAL = "fresh";
       XDG_TERMINAL_EDITOR = "ghostty";
       XDG_DATA_DIRS = [
-        "$HOME/.local/share/flatpak/exports/share"
-        "$HOME/.local/share"
+"$HOME/.local/share"
       ];
       XCURSOR_PATH = ["${pkgs.phinger-cursors}/share/icons"];
     };

@@ -222,7 +222,7 @@
                 {
                   key = "v";
                   desc = "stremio";
-                  cmd = "flatpak run com.stremio.Stremio";
+                  cmd = "stremio";
                 }
                 {
                   key = "z";

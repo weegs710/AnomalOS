@@ -10,8 +10,7 @@
       url = "path:/home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor";
       flake = false;
     };
-    nix-flatpak.url = "github:gmodena/nix-flatpak";
-    agenix = {
+agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };

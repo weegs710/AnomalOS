@@ -263,7 +263,7 @@
         windowrule = pin on, match:initial_title Picture in picture
         windowrule = size 512 288, match:initial_title Picture in picture
         windowrule = move 2034 62, match:initial_title Picture in picture
-        windowrule = workspace 5, match:class ^(com\.stremio\.stremio)$
+        windowrule = workspace 5, match:class ^(com\.stremio\.Stremio)$
         windowrule = workspace 5, match:class ^(gimp)$
         windowrule = workspace 5, match:class ^(org\.inkscape\.Inkscape)$
         windowrule = match:class ^(gcr-prompter)$, stay_focused on
