@@ -23,6 +23,13 @@
         file = ../../secrets/tailscale-authkey.age;
         mode = "0400";
       };
+
+      # User-owned so the endcord bootstrap activation script reads it without privilege escalation.
+      age.secrets.discord-token = {
+        file = ../../secrets/discord-token.age;
+        mode = "0400";
+        owner = config.mySystem.user.name;
+      };
     };
   };
 }

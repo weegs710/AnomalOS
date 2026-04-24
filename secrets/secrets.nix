@@ -7,4 +7,8 @@ in
     weegs
     HX99G
   ];
+  "discord-token.age".publicKeys = [
+    weegs
+    HX99G
+  ];
 }

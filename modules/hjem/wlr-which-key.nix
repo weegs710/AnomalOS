@@ -1,97 +1,98 @@
 {
-  flake.nixosModules.wlr-which-key = {
-    config,
-    lib,
-    pkgs,
-    ...
-  }: let
-    username = config.mySystem.user.name;
-    homeDir = config.users.users.${username}.home;
-    yamlFormat = pkgs.formats.yaml {};
+  flake.nixosModules.wlr-which-key =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      username = config.mySystem.user.name;
+      homeDir = config.users.users.${username}.home;
+      yamlFormat = pkgs.formats.yaml { };
 
-    btopCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'";
-    rmpcCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=rmpc -e rmpc'";
-    terminalCmd = "ghostty --title=ghostty";
-    fileManagerCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'";
+      endcordCmd = "hyprctl dispatch exec '[workspace 1] ghostty --title=endcord -e endcord'";
+      btopCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'";
+      rmpcCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=rmpc -e rmpc'";
+      terminalCmd = "ghostty --title=ghostty";
+      fileManagerCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'";
 
-    shotSaveScript = pkgs.writeTextFile {
-      name = "shot-save.nu";
-      executable = true;
-      text = ''
-        def main [tmp_file: string] {
-          let shots_dir = ([$env.HOME, "Pictures", "shots"] | path join)
-          mkdir $shots_dir
-          let name = (input "Shot name: " | str trim | str replace --all "'" "" | str replace --all "/" "" | str replace --regex '(?i)\.webp$' "")
-          if $name == "" {
+      shotSaveScript = pkgs.writeTextFile {
+        name = "shot-save.nu";
+        executable = true;
+        text = ''
+          def main [tmp_file: string] {
+            let shots_dir = ([$env.HOME, "Pictures", "shots"] | path join)
+            mkdir $shots_dir
+            let name = (input "Shot name: " | str trim | str replace --all "'" "" | str replace --all "/" "" | str replace --regex '(?i)\.webp$' "")
+            if $name == "" {
+              ^rm -f $tmp_file
+              return
+            }
+            let outfile = ([$shots_dir, $"($name).webp"] | path join)
+            ^cwebp -lossless $tmp_file -o $outfile
             ^rm -f $tmp_file
-            return
           }
-          let outfile = ([$shots_dir, $"($name).webp"] | path join)
-          ^cwebp -lossless $tmp_file -o $outfile
-          ^rm -f $tmp_file
-        }
-      '';
-    };
+        '';
+      };
 
-    clipStartScript = pkgs.writeTextFile {
-      name = "clip-start.nu";
-      executable = true;
-      text = ''
-        def main [mode: string, region?: string] {
-          let tmp_file = "/tmp/gsr_clip.mp4"
-          let capture = if $mode == "region" { $region } else { $mode }
-          ^bash -c $"setsid gpu-screen-recorder -w '($capture)' -f 60 -a default_output -c mp4 -o '($tmp_file)' >/tmp/gsr.log 2>&1 & echo $! > /tmp/gsr.pid"
-        }
-      '';
-    };
-
-    clipSaveScript = pkgs.writeTextFile {
-      name = "clip-save.nu";
-      executable = true;
-      text = ''
-        def main [] {
-          let tmp_file = "/tmp/gsr_clip.mp4"
-          if not ($tmp_file | path exists) { return }
-          let clips_dir = ([$env.HOME, "Videos", "clips"] | path join)
-          mkdir $clips_dir
-          let name = (input "Clip name: " | str trim | str replace --all "'" "" | str replace --all "/" "" | str replace --regex '(?i)\.mp4$' "")
-          if $name == "" {
-            ^rm -f $tmp_file
-            return
+      clipStartScript = pkgs.writeTextFile {
+        name = "clip-start.nu";
+        executable = true;
+        text = ''
+          def main [mode: string, region?: string] {
+            let tmp_file = "/tmp/gsr_clip.mp4"
+            let capture = if $mode == "region" { $region } else { $mode }
+            ^bash -c $"setsid gpu-screen-recorder -w '($capture)' -f 60 -a default_output -c mp4 -o '($tmp_file)' >/tmp/gsr.log 2>&1 & echo $! > /tmp/gsr.pid"
           }
-          let outfile = ([$clips_dir, $"($name).mp4"] | path join)
-          ^mv $tmp_file $outfile
-        }
-      '';
-    };
+        '';
+      };
 
-    shotRegionClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m region -z --clipboard-only'";
-    shotWindowClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m window -z --clipboard-only'";
-    shotScreenClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m output -z --clipboard-only'";
-    shotRegionSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m region -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
-    shotWindowSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m window -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
-    shotScreenSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m output -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
-    clipScreenCmd = ''nu ${clipStartScript} screen'';
-    stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
+      clipSaveScript = pkgs.writeTextFile {
+        name = "clip-save.nu";
+        executable = true;
+        text = ''
+          def main [] {
+            let tmp_file = "/tmp/gsr_clip.mp4"
+            if not ($tmp_file | path exists) { return }
+            let clips_dir = ([$env.HOME, "Videos", "clips"] | path join)
+            mkdir $clips_dir
+            let name = (input "Clip name: " | str trim | str replace --all "'" "" | str replace --all "/" "" | str replace --regex '(?i)\.mp4$' "")
+            if $name == "" {
+              ^rm -f $tmp_file
+              return
+            }
+            let outfile = ([$clips_dir, $"($name).mp4"] | path join)
+            ^mv $tmp_file $outfile
+          }
+        '';
+      };
 
-    # Colors from noctalia Eldritch scheme — changing colorscheme requires updating these. Reference: ~/.config/noctalia/colors.json
-    commonSettings = {
-      font = "JetBrainsMono Nerd Font 12";
-      background = "#212337e6";
-      color = "#ebfafa";
-      border = "#37f499";
-      separator = " ➜ ";
-      border_width = 2;
-      corner_r = 8;
-      padding = 15;
-      anchor = "center";
-      inhibit_compositor_keyboard_shortcuts = true;
-    };
+      shotRegionClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m region -z --clipboard-only'";
+      shotWindowClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m window -z --clipboard-only'";
+      shotScreenClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m output -z --clipboard-only'";
+      shotRegionSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m region -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
+      shotWindowSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m window -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
+      shotScreenSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m output -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${shotSaveScript} $fn' '';
+      clipScreenCmd = "nu ${clipStartScript} screen";
+      stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
 
-    menus = {
-      config =
-        commonSettings
-        // {
+      # Colors from noctalia Eldritch scheme — changing colorscheme requires updating these. Reference: ~/.config/noctalia/colors.json
+      commonSettings = {
+        font = "JetBrainsMono Nerd Font 12";
+        background = "#212337e6";
+        color = "#ebfafa";
+        border = "#37f499";
+        separator = " ➜ ";
+        border_width = 2;
+        corner_r = 8;
+        padding = 15;
+        anchor = "center";
+        inhibit_compositor_keyboard_shortcuts = true;
+      };
+
+      menus = {
+        config = commonSettings // {
           menu = [
             # Quick launches
             {
@@ -114,6 +115,11 @@
               key = "c";
               desc = "comms";
               submenu = [
+                {
+                  key = "e";
+                  desc = "endcord";
+                  cmd = endcordCmd;
+                }
                 {
                   key = "v";
                   desc = "vesktop";
@@ -301,9 +307,7 @@
           ];
         };
 
-      capture =
-        commonSettings
-        // {
+        capture = commonSettings // {
           menu = [
             {
               key = "x";
@@ -354,9 +358,7 @@
           ];
         };
 
-      "post-record" =
-        commonSettings
-        // {
+        "post-record" = commonSettings // {
           menu = [
             {
               key = "s";
@@ -371,9 +373,7 @@
           ];
         };
 
-      power =
-        commonSettings
-        // {
+        power = commonSettings // {
           menu = [
             {
               key = "l";
@@ -392,14 +392,19 @@
             }
           ];
         };
-    };
-  in {
-    users.users.${username}.packages = [pkgs.wlr-which-key pkgs.libwebp];
+      };
+    in
+    {
+      users.users.${username}.packages = [
+        pkgs.wlr-which-key
+        pkgs.libwebp
+      ];
 
-    hjem.users.${username}.xdg.config.files = lib.mapAttrs' (name: cfg:
-      lib.nameValuePair "wlr-which-key/${name}.yaml" {
-        source = yamlFormat.generate "${name}.yaml" cfg;
-      })
-    menus;
-  };
+      hjem.users.${username}.xdg.config.files = lib.mapAttrs' (
+        name: cfg:
+        lib.nameValuePair "wlr-which-key/${name}.yaml" {
+          source = yamlFormat.generate "${name}.yaml" cfg;
+        }
+      ) menus;
+    };
 }
