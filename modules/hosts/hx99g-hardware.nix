@@ -25,7 +25,7 @@
     boot = {
       initrd.availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
       initrd.kernelModules = [];
-      kernelModules = ["kvm-amd"];
+      kernelModules = ["kvm-amd" "ntsync"];
       extraModulePackages = [];
       zfs.devNodes = "/dev/disk/by-partuuid";
       kernelPackages = basePackages.extend (self: super: {
