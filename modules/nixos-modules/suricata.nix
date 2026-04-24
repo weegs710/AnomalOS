@@ -59,6 +59,10 @@
           "3300244"
           "3300245"
           "3300246"
+          # Go HTTP client -- fires thousands of times daily on legitimate Go tools (tailscale, etc.)
+          "3300111"
+          "2024897"
+          "2060251"
         ];
 
         settings = {
@@ -69,14 +73,26 @@
             };
           };
 
+          # kept to satisfy nixos module assertion; ignored at runtime since suricata starts with -q (NFQ mode)
           af-packet = [
             {
-              interface = "wlp6s0";
+              interface = "enp5s0";
               cluster-id = 99;
               cluster-type = "cluster_flow";
               defrag = true;
             }
           ];
+
+          nfq = {
+            mode = "accept";
+            # if suricata dies or queue fills, pass traffic rather than dropping everything
+            "fail-open" = true;
+          };
+
+          stream = {
+            inline = "auto";
+          };
+
           outputs = [
             {
               fast = {
@@ -108,7 +124,35 @@
         };
       };
 
-      systemd.services.suricata.serviceConfig.ProtectProc = lib.mkForce "invisible";
+      systemd.services.suricata.serviceConfig = {
+        ProtectProc = lib.mkForce "invisible";
+        # nixos module hardcodes -i <iface>; no native NFQ option exists so override is required
+        ExecStart = lib.mkForce "!${config.services.suricata.package}/bin/suricata -c ${config.services.suricata.configFile} -q 0";
+      };
+
+      networking.nftables.tables.suricata-ips = {
+        family = "inet";
+        content = ''
+          chain input {
+            type filter hook input priority -5;
+            iif lo accept
+            iifname "tailscale0" accept
+            iifname "virbr0" accept
+            queue num 0 bypass
+          }
+          chain output {
+            type filter hook output priority -5;
+            oif lo accept
+            oifname "tailscale0" accept
+            queue num 0 bypass
+          }
+        '';
+      };
+
+      # nix build sandbox lacks nfqueue -- swap queue rules for accept during ruleset validation only
+      networking.nftables.preCheckRuleset = ''
+        sed -i 's/queue num 0 bypass/accept/g' ruleset.conf
+      '';
 
       services.logrotate.settings.suricata = {
         files = "/var/log/suricata/*.log /var/log/suricata/*.json";
