@@ -9,7 +9,6 @@
     users.users.${username}.packages = with pkgs; [
       pandoc
       python3Packages.weasyprint
-      wkhtmltopdf
     ];
 
     hjem.users.${username} = {
