@@ -98,5 +98,12 @@
       algorithm = "zstd";
       priority = 100;
     };
+
+    environment.sessionVariables = {
+      SDL_VIDEODRIVER = "wayland";
+      PROTON_USE_NTSYNC = "1";
+      RADV_PERFTEST = "gpl";
+      DXVK_ASYNC = "1";
+    };
   };
 }

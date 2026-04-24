@@ -10,8 +10,5 @@
       wrappedSteam
     ];
 
-    environment.sessionVariables = {
-      SDL_VIDEODRIVER = "wayland";
-    };
   };
 }
