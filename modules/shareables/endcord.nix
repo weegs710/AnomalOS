@@ -13,8 +13,8 @@
         pkgs.stdenv.cc.cc.lib
         pkgs.zlib
         pkgs.ncurses
-        # soundcard uses ALSA on Linux; PipeWire's ALSA compat layer satisfies this at runtime.
-        pkgs.alsa-lib
+        # soundcard loads libpulse at runtime; PipeWire's pulse compat layer satisfies this.
+        pkgs.pulseaudio
       ];
 
       endcordPkg = pkgs.stdenv.mkDerivation rec {

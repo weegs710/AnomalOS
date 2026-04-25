@@ -56,10 +56,10 @@
           view_media = ALT+121
 
           [command_bindings]
-          ALT+97 = voice_accept_call
-          ALT+108 = voice_leave_call
-          ALT+100 = voice_reject_call
-          ALT+99 = voice_list_call
+          "ALT+103" = "voice_accept_call"
+          "ALT+108" = "voice_leave_call"
+          "ALT+113" = "voice_reject_call"
+          "ALT+107" = "voice_list_call"
         '';
       };
 
