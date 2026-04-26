@@ -64,8 +64,9 @@
       neededForBoot = true;
     };
     fileSystems."/tmp" = {
-      device = "zroot/tmp";
-      fsType = "zfs";
+      device = "none";
+      fsType = "tmpfs";
+      options = ["defaults" "size=5G" "mode=1777"];
     };
     fileSystems."/persist" = {
       device = "zroot/persist";

@@ -3,8 +3,7 @@
     console.font = "${pkgs.terminus_font}/share/consolefonts/ter-v18n.psf.gz";
 
     boot = {
-      tmp.cleanOnBoot = true;
-      initrd.systemd.enable = true;
+initrd.systemd.enable = true;
       plymouth.enable = true;
       kernelParams = ["quiet"];
       consoleLogLevel = 0;
