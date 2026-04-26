@@ -4,8 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/58f338b00bc5619144a6f3082eed5c83e79b279b";
-    nixpkgs-kernel.url = "github:NixOS/nixpkgs/cb369ef2efd432b3cdf8622b0ffc0a97a02f3137";
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/1fd4933833e225698364785198b27f2c2337e846";
+    nixpkgs-kernel.url = "github:NixOS/nixpkgs/370045a56d68e7127ce54e0906ab33c3abd387a5";
     fft-ivalice-cursor = {
       url = "path:/home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor";
       flake = false;
