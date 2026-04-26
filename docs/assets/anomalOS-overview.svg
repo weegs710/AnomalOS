@@ -11,7 +11,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="50" y="90" font-size="42" fill="#ebfafa" font-weight="700">anomalOS</text>
 <rect x="290" y="70" rx="6" width="72" height="22" fill="#04d1f9" opacity="0.15" stroke="#04d1f9" stroke-width="0.5"/>
 <text x="326" y="85" font-size="10" fill="#04d1f9" font-weight="600" text-anchor="middle">OVERVIEW</text>
-<text x="50" y="120" font-size="15" fill="#abb4da">NixOS 26.05 (Yarara)  ·  Linux 6.19.2-cachyos</text>
+<text x="50" y="120" font-size="15" fill="#abb4da">NixOS 26.05 (Yarara)  ·  Linux 7.0.1-cachyos</text>
 <rect x="70" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="73" y="193" rx="2" width="3" height="46" fill="#a48cf2"/>
 <text x="86" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">WM</text>

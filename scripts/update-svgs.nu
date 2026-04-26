@@ -630,10 +630,15 @@ def main [] {
     } catch { 0 })
     let closure_size = if $closure_bytes > 0 { format-bytes $closure_bytes } else { "?" }
 
+    print "  · nixos version...";   let nixos_release   = (nix-eval-raw $"($flake_ref)#nixosConfigurations.HX99G.config.system.nixos.release")
+    print "  · nixos codename...";  let nixos_codename  = (nix-eval-raw $"($flake_ref)#nixosConfigurations.HX99G.config.system.nixos.codeName")
+    print "  · kernel version...";  let linux_version   = (nix-eval-raw $"($flake_ref)#nixosConfigurations.HX99G.config.boot.kernelPackages.kernel.modDirVersion")
+    let nixos_version = $"($nixos_release) \(($nixos_codename)\)"
+
     # ── Assemble data record ──────────────────────────────────────────────────
     let d = {
-        nixos_version:      "26.05 (Yarara)"
-        linux_version:      "6.19.2-cachyos"
+        nixos_version:      $nixos_version
+        linux_version:      $linux_version
         hyprland_ver:       $hyprland_ver
         nushell_ver:        $nushell_ver
         ghostty_ver:        $ghostty_ver
