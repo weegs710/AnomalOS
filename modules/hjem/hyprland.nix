@@ -231,7 +231,6 @@
           windowrule = float on, match:title ^(.*[Dd]ialog.*)$
           windowrule = float on, match:title ^(.*[Pp]opup.*)$
           windowrule = workspace 1, match:title ^(endcord)$
-          windowrule = workspace 1, match:class ^(vesktop)$
           windowrule = workspace 1, match:class ^(chrome-kippjfofjhjlffjecoapiogbkgbpmgej-Default)$
           windowrule = workspace 2, match:title ^(ghostty)$
           windowrule = workspace 4, match:class ^(heroic)$

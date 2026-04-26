@@ -121,11 +121,6 @@
                   cmd = endcordCmd;
                 }
                 {
-                  key = "v";
-                  desc = "vesktop";
-                  cmd = "vesktop";
-                }
-                {
                   key = "f";
                   desc = "facebook";
                   cmd = "hyprctl dispatch exec '[workspace 1] zen --no-remote --new-window https://www.facebook.com'";

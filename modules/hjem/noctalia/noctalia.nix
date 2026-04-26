@@ -8,7 +8,7 @@
   }: let
     username = config.mySystem.user.name;
     system = pkgs.stdenv.hostPlatform.system;
-    notificationHistoryAllowedApps = ["vesktop" "helium"];
+    notificationHistoryAllowedApps = ["helium"];
     notificationAllowlist =
       pkgs.writeText "notification-allowlist"
       (lib.concatStringsSep "\n" notificationHistoryAllowedApps);
