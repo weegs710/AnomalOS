@@ -11,7 +11,7 @@
       homeDir = config.users.users.${username}.home;
       yamlFormat = pkgs.formats.yaml { };
 
-      endcordCmd = "hyprctl dispatch exec '[workspace 1] ghostty --title=endcord -e endcord'";
+      endcordCmd = "hyprctl dispatch exec '[workspace 1] ghostty --title=endcord -e /etc/profiles/per-user/${username}/bin/endcord'";
       btopCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'";
       rmpcCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=rmpc -e rmpc'";
       terminalCmd = "ghostty --title=ghostty";
