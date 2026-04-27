@@ -45,7 +45,7 @@
         # See: https://github.com/sparklost/endcord/blob/main/docs/configuration.md
         xdg.config.files."endcord/config.ini".text = ''
           [main]
-          native_file_dialog = False
+          native_file_dialog = auto
           native_media_player = True
           limit_channel_cache = 20
           ack_throttling = 8

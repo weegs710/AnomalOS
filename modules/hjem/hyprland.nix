@@ -44,7 +44,7 @@
       ];
       hjem.users.${username} = {
         xdg.config.files."hypr/hyprland.conf".text = ''
-          $fileManager = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e superfile'
+          $fileManager = hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e yazi'
           $terminal = ghostty --title=ghostty
           $mainMod = SUPER
 
