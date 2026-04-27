@@ -34,7 +34,7 @@ Hyprland with noctalia-shell for the bar, launcher, lock screen, and control cen
 | 4 | Super+grave | toggle stash |
 | 5 | Super+Shift+grave | move window to stash |
 | 6 | Super+Return | ghostty |
-| 7 | Super+Space | superfile |
+| 7 | Super+Space | yazi |
 | 8 | Super+Escape | close window |
 | 9 | Super+F | fullscreen |
 | 10 | Super+G | float toggle |
