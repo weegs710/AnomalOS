@@ -33,7 +33,7 @@ agenix = {
     };
     severed-chains = {
       url = "path:/home/weegs/Documents/test-zone/dragoon/Severed-Chains";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     lix = {
       url = "git+https://git.lix.systems/lix-project/lix";
