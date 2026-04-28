@@ -238,6 +238,10 @@
           windowrule = workspace 4, match:class ^(steam_app_.*)$
           windowrule = fullscreen on, match:class ^(steam_app_3564740)$
           windowrule = suppress_event fullscreen, match:class ^(steam_app_3564740)$
+          windowrule = workspace 4, match:class ^(gamescope)$
+          windowrule = fullscreen on, match:class ^(gamescope)$
+          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(gamescope)$
+          windowrule = focus_on_activate on, match:class ^(gamescope)$
           windowrule = workspace 3, match:class ^(helium)$, match:initial_title ^(New Tab - Helium)$
           windowrule = focus_on_activate on, match:class ^(helium)$
           windowrule = workspace 3, match:class ^(zen)$, match:initial_title ^(Zen Browser)$

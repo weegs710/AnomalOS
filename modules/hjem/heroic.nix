@@ -71,7 +71,7 @@
             gamescope = {
               enableUpscaling = false;
               enableLimiter = true;
-              enableForceGrabCursor = true;
+              enableForceGrabCursor = false;
               windowType = "borderless";
               gameWidth = "";
               gameHeight = "";
@@ -80,8 +80,8 @@
               upscaleMethod = "fsr";
               fpsLimiter = "144";
               fpsLimiterNoFocus = "";
-              # -W/-H needed when upscaling disabled; sdl backend avoids open visual distortion bug on Hyprland
-              additionalOptions = "-W 2560 -H 1440 --backend sdl";
+              # -W/-H needed when upscaling disabled
+              additionalOptions = "-W 2560 -H 1440 --backend wayland";
             };
           };
         };
