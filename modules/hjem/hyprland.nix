@@ -279,9 +279,7 @@
           windowrule = workspace 5, match:class ^(org\.inkscape\.Inkscape)$
           windowrule = match:class ^(gcr-prompter)$, stay_focused on
           windowrule = match:class ^(gcr-prompter)$, focus_on_activate on
-
-          windowrule = float on, match:title ^(rmpc)$
-          windowrule = pin on, match:title ^(rmpc)$
+          windowrule = workspace 5, match:title ^(rmpc)$
 
           # pinned windows re-trigger workspace opacity rules dynamically
           windowrule = opacity 0.94 override 0.90 override, match:workspace 2, match:title negative:^(rmpc)$
