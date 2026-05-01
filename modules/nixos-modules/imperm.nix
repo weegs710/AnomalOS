@@ -77,6 +77,7 @@
             "homebrew"
             "claude-projects"
             "weegs.dev"
+            "ossu"
           ];
           files = [
             ".claude.json"
