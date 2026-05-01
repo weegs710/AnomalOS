@@ -12,6 +12,7 @@
       yamlFormat = pkgs.formats.yaml { };
 
       endcordCmd = "hyprctl dispatch exec '[workspace 1] ghostty --title=endcord -e /etc/profiles/per-user/${username}/bin/endcord'";
+      gorguruCmd = "hyprctl dispatch exec '[workspace special:stash] ghostty --title=gorguru -e ${homeDir}/weegs.dev/dist/gorguru'";
       btopCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'";
       rmpcCmd = "hyprctl dispatch exec 'ghostty --title=rmpc -e rmpc'";
       terminalCmd = "ghostty --title=ghostty";
@@ -161,6 +162,11 @@
                   key = "h";
                   desc = "heroic";
                   cmd = "heroic";
+                }
+                {
+                  key = "g";
+                  desc = "gorguru";
+                  cmd = gorguruCmd;
                 }
                 {
                   key = "r";
