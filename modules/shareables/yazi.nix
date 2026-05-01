@@ -1,76 +1,176 @@
-{inputs, ...}: {
-  perSystem = {pkgs, ...}: {
-    packages.yazi = pkgs.yazi.override {extraPackages = [pkgs.exiftool];};
-  };
+{ inputs, ... }:
+{
+  perSystem =
+    { pkgs, ... }:
+    {
+      packages.yazi = pkgs.yazi.override { extraPackages = [ pkgs.exiftool ]; };
+    };
 
-  flake.nixosModules.yazi = {
-    config,
-    pkgs,
-    ...
-  }: let
-    username = config.mySystem.user.name;
-    homeDir = config.users.users.${username}.home;
+  flake.nixosModules.yazi =
+    {
+      config,
+      pkgs,
+      ...
+    }:
+    let
+      username = config.mySystem.user.name;
+      homeDir = config.users.users.${username}.home;
 
-    yaziPkg = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.yazi;
+      yaziPkg = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.yazi;
 
-    wrapperScript = pkgs.writeText "yazi-wrapper.nu" ''
-      #!${pkgs.nushell}/bin/nu
+      wrapperScript = pkgs.writeText "yazi-wrapper.nu" ''
+        #!${pkgs.nushell}/bin/nu
 
-      def main [
-          multiple: string,
-          directory: string,
-          save: string,
-          path: string,
-          out: string,
-          debug?: string,
-      ] {
-          let cwd_file = $"($out).1"
+        def main [
+            multiple: string,
+            directory: string,
+            save: string,
+            path: string,
+            out: string,
+            debug?: string,
+        ] {
+            let cwd_file = $"($out).1"
 
-          if $save == "1" or $directory == "1" {
-              ghostty --title=termfilechooser -e yazi $"--chooser-file=($out)" $"--cwd-file=($cwd_file)" $path
-              let out_empty = not ($out | path exists) or ((ls $out | first | get size) == 0B)
-              let cwd_nonempty = ($cwd_file | path exists) and ((ls $cwd_file | first | get size) > 0B)
-              if $out_empty and $cwd_nonempty {
-                  if $save == "1" {
-                      # reconstruct full save path: cwd + suggested filename from app
-                      let cwd = open $cwd_file | str trim
-                      $"($cwd)/($path | path basename)" | save -f $out
-                  } else {
-                      open --raw $cwd_file | save -f $out
-                  }
-              }
-              if ($cwd_file | path exists) { ^rm -f $cwd_file }
-          } else {
-              ghostty --title=termfilechooser -e yazi $"--chooser-file=($out)" $path
-          }
-      }
-    '';
-  in {
-    users.users.${username}.packages = [yaziPkg];
-
-    hjem.users.${username}.xdg.config.files = {
-      "xdg-desktop-portal-termfilechooser/config".text = ''
-        [filechooser]
-        cmd=${homeDir}/.config/xdg-desktop-portal-termfilechooser/yazi-wrapper.nu
-        default_dir=$HOME
-        create_help_file=0
-        save_mode=last
+            if $save == "1" or $directory == "1" {
+                ghostty --title=termfilechooser -e yazi $"--chooser-file=($out)" $"--cwd-file=($cwd_file)" $path
+                let out_empty = not ($out | path exists) or ((ls $out | first | get size) == 0B)
+                let cwd_nonempty = ($cwd_file | path exists) and ((ls $cwd_file | first | get size) > 0B)
+                if $out_empty and $cwd_nonempty {
+                    if $save == "1" {
+                        # reconstruct full save path: cwd + suggested filename from app
+                        let cwd = open $cwd_file | str trim
+                        $"($cwd)/($path | path basename)" | save -f $out
+                    } else {
+                        open --raw $cwd_file | save -f $out
+                    }
+                }
+                if ($cwd_file | path exists) { ^rm -f $cwd_file }
+            } else {
+                ghostty --title=termfilechooser -e yazi $"--chooser-file=($out)" $path
+            }
+        }
       '';
+    in
+    {
+      users.users.${username}.packages = [ yaziPkg ];
 
-      # portal searches lowercase; hyprland pkg ships its own hyprland-portals.conf which wins otherwise
-      "xdg-desktop-portal/hyprland-portals.conf".text = ''
-        [preferred]
-        default=hyprland;gtk
-        org.freedesktop.impl.portal.FileChooser=termfilechooser;gtk
-        org.freedesktop.impl.portal.ScreenCast=hyprland
-        org.freedesktop.impl.portal.Screenshot=hyprland
-      '';
+      hjem.users.${username}.xdg.config.files = {
+        "yazi/yazi.toml".text = ''
+          [[opener.video]]
+          run = "mpv \"$@\""
+          orphan = true
+          desc = "mpv"
+          for = "unix"
 
-      "xdg-desktop-portal-termfilechooser/yazi-wrapper.nu" = {
-        source = wrapperScript;
-        type = "copy";
-        permissions = "0755";
+          [[opener.audio]]
+          run = "rmpc-open \"$@\""
+          orphan = true
+          desc = "rmpc"
+          for = "unix"
+
+          [[opener.image]]
+          run = "qview \"$@\""
+          orphan = true
+          desc = "qView"
+          for = "unix"
+
+          [[opener.pdf]]
+          run = "zathura \"$@\""
+          orphan = true
+          desc = "Zathura"
+          for = "unix"
+
+          [[opener.archive]]
+          run = "file-roller \"$@\""
+          orphan = true
+          desc = "File Roller"
+          for = "unix"
+
+          [[opener.edit]]
+          run = "ghostty -e fresh -- \"$@\""
+          orphan = true
+          desc = "Fresh"
+          for = "unix"
+
+          [[open.rules]]
+          mime = "video/*"
+          use = "video"
+
+          [[open.rules]]
+          mime = "audio/*"
+          use = "audio"
+
+          [[open.rules]]
+          mime = "image/*"
+          use = "image"
+
+          [[open.rules]]
+          mime = "application/pdf"
+          use = "pdf"
+
+          [[open.rules]]
+          mime = "application/zip"
+          use = "archive"
+
+          [[open.rules]]
+          mime = "application/x-tar"
+          use = "archive"
+
+          [[open.rules]]
+          mime = "application/gzip"
+          use = "archive"
+
+          [[open.rules]]
+          mime = "application/x-7z-compressed"
+          use = "archive"
+
+          [[open.rules]]
+          mime = "application/x-rar"
+          use = "archive"
+
+          [[open.rules]]
+          mime = "application/vnd.rar"
+          use = "archive"
+
+          [[open.rules]]
+          mime = "application/x-xz"
+          use = "archive"
+
+          [[open.rules]]
+          mime = "application/x-bzip2"
+          use = "archive"
+
+          [[open.rules]]
+          mime = "text/*"
+          use = "edit"
+
+          [[open.rules]]
+          name = "*"
+          use = "edit"
+        '';
+
+        "xdg-desktop-portal-termfilechooser/config".text = ''
+          [filechooser]
+          cmd=${homeDir}/.config/xdg-desktop-portal-termfilechooser/yazi-wrapper.nu
+          default_dir=$HOME
+          create_help_file=0
+          save_mode=last
+        '';
+
+        # portal searches lowercase; hyprland pkg ships its own hyprland-portals.conf which wins otherwise
+        "xdg-desktop-portal/hyprland-portals.conf".text = ''
+          [preferred]
+          default=hyprland;gtk
+          org.freedesktop.impl.portal.FileChooser=termfilechooser;gtk
+          org.freedesktop.impl.portal.ScreenCast=hyprland
+          org.freedesktop.impl.portal.Screenshot=hyprland
+        '';
+
+        "xdg-desktop-portal-termfilechooser/yazi-wrapper.nu" = {
+          source = wrapperScript;
+          type = "copy";
+          permissions = "0755";
+        };
       };
     };
-  };
 }
