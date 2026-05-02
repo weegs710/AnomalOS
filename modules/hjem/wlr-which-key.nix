@@ -143,8 +143,8 @@
                   cmd = terminalCmd;
                 }
                 {
-                  key = "s";
-                  desc = "superfile";
+                  key = "y";
+                  desc = "yazi";
                   cmd = fileManagerCmd;
                 }
               ];
@@ -253,8 +253,8 @@
                   cmd = terminalCmd;
                 }
                 {
-                  key = "s";
-                  desc = "superfile";
+                  key = "y";
+                  desc = "yazi";
                   cmd = fileManagerCmd;
                 }
                 {
