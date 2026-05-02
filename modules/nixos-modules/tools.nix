@@ -5,6 +5,10 @@
     ...
   }: {
     programs = {
+      wireshark = {
+        enable = true;
+        package = pkgs.wireshark;
+      };
       git.enable = true;
       direnv = {
         enable = true;

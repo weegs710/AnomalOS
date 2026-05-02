@@ -21,7 +21,7 @@
             user = {
               name = "weegs";
               description = "weegs";
-              extraGroups = ["networkmanager" "wheel"];
+              extraGroups = ["networkmanager" "wheel" "wireshark"];
             };
           };
 
