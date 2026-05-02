@@ -9,8 +9,8 @@
     "showCapsule": true,
     "capsuleOpacity": 0.75,
     "capsuleColorKey": "none",
-    "widgetSpacing": 6,
-    "contentPadding": 2,
+    "widgetSpacing": 10,
+    "contentPadding": 5,
     "fontScale": 1,
     "enableExclusionZoneInset": true,
     "backgroundOpacity": 0,
@@ -27,15 +27,6 @@
     "showOnWorkspaceSwitch": true,
     "widgets": {
       "left": [
-        {
-          "blacklist": [],
-          "chevronColor": "none",
-          "colorizeIcons": false,
-          "drawerEnabled": false,
-          "hidePassive": true,
-          "id": "Tray",
-          "pinned": []
-        },
         {
           "characterCount": 10,
           "colorizeIcons": false,
@@ -60,13 +51,6 @@
       ],
       "center": [
         {
-          "displayMode": "onhover",
-          "iconColor": "none",
-          "id": "Volume",
-          "middleClickCommand": "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0\n override 1.0 override] ghostty --title=pulsemixer -e pulsemixer'",
-          "textColor": "none"
-        },
-        {
           "colorizeIcons": false,
           "hideMode": "hidden",
           "id": "ActiveWindow",
@@ -78,48 +62,36 @@
           "useFixedWidth": false
         },
         {
-          "defaultSettings": {
-            "audioCodec": "opus",
-            "audioSource": "default_output",
-            "colorRange": "limited",
-            "copyToClipboard": false,
-            "directory": "",
-            "filenamePattern": "recording_yyyyMMdd_HHmmss",
-            "frameRate": "60",
-            "hideInactive": false,
-            "quality": "very_high",
-            "resolution": "original",
-            "showCursor": true,
-            "videoCodec": "h264",
-            "videoSource": "portal"
-          },
-          "id": "plugin:screen-recorder"
-        }
-      ],
-      "right": [
-        {
           "hideWhenZero": false,
           "hideWhenZeroUnread": false,
           "iconColor": "none",
           "id": "NotificationHistory",
           "showUnreadBadge": true,
           "unreadBadgeColor": "error"
+        }
+      ],
+      "right": [
+        {
+          "colorName": "primary",
+          "hideWhenIdle": false,
+          "id": "AudioVisualizer",
+          "width": 200
         },
         {
-          "compactMode": false,
-          "hideMode": "visible",
-          "hideWhenIdle": false,
-          "id": "MediaMini",
-          "maxWidth": 300,
-          "panelShowAlbumArt": true,
-          "scrollingMode": "always",
-          "showAlbumArt": false,
-          "showArtistFirst": true,
-          "showProgressRing": true,
-          "showVisualizer": true,
-          "textColor": "none",
-          "useFixedWidth": false,
-          "visualizerType": "linear"
+          "displayMode": "onhover",
+          "iconColor": "none",
+          "id": "Volume",
+          "middleClickCommand": "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0\n override 1.0 override] ghostty --title=pulsemixer -e pulsemixer'",
+          "textColor": "none"
+        },
+        {
+          "blacklist": [],
+          "chevronColor": "none",
+          "colorizeIcons": false,
+          "drawerEnabled": false,
+          "hidePassive": true,
+          "id": "Tray",
+          "pinned": []
         },
         {
           "clockColor": "none",
@@ -149,14 +121,14 @@
     "showScreenCorners": false,
     "forceBlackScreenCorners": false,
     "scaleRatio": 1.2,
-    "radiusRatio": 2,
-    "iRadiusRatio": 2,
+    "radiusRatio": 0.33,
+    "iRadiusRatio": 0.34,
     "boxRadiusRatio": 1,
-    "screenRadiusRatio": 1,
+    "screenRadiusRatio": 0.33,
     "animationSpeed": 2,
     "animationDisabled": false,
     "compactLockScreen": true,
-    "lockScreenAnimations": false,
+    "lockScreenAnimations": true,
     "lockOnSuspend": false,
     "showSessionButtonsOnLockScreen": true,
     "showHibernateOnLockScreen": false,
@@ -171,7 +143,7 @@
     "showChangelogOnStartup": true,
     "telemetryEnabled": true,
     "enableLockScreenCountdown": true,
-    "lockScreenCountdownDuration": 10000,
+    "lockScreenCountdownDuration": 30000,
     "autoStartAuth": false,
     "allowPasswordWithFprintd": false,
     "clockStyle": "custom",
@@ -225,7 +197,7 @@
     "name": "43567",
     "weatherEnabled": true,
     "weatherShowEffects": true,
-    "weatherTaliaMascotAlways": false,
+    "weatherTaliaMascotAlways": true,
     "useFahrenheit": true,
     "use12hourFormat": true,
     "showWeekNumberInCalendar": false,
@@ -233,7 +205,7 @@
     "showCalendarWeather": true,
     "analogClockInCalendar": false,
     "firstDayOfWeek": -1,
-    "hideWeatherTimezone": true,
+    "hideWeatherTimezone": false,
     "hideWeatherCityName": true,
     "autoLocate": false
   },
@@ -310,10 +282,10 @@
     "terminalCommand": "ghostty -e",
     "customLaunchPrefixEnabled": false,
     "customLaunchPrefix": "",
-    "viewMode": "grid",
+    "viewMode": "list",
     "showCategories": true,
     "iconMode": "native",
-    "showIconBackground": false,
+    "showIconBackground": true,
     "enableSettingsSearch": true,
     "enableWindowsSearch": true,
     "enableSessionSearch": true,
@@ -335,9 +307,6 @@
         },
         {
           "id": "NightLight"
-        },
-        {
-          "id": "Notifications"
         }
       ],
       "right": []
@@ -439,7 +408,7 @@
   },
   "sessionMenu": {
     "enableCountdown": true,
-    "countdownDuration": 3000,
+    "countdownDuration": 30000,
     "position": "center",
     "showHeader": true,
     "showKeybinds": true,
@@ -458,35 +427,49 @@
         "command": "",
         "countdownEnabled": true,
         "enabled": true,
-        "keybind": "4"
+        "keybind": "2"
       },
       {
         "action": "shutdown",
         "command": "",
         "countdownEnabled": true,
         "enabled": true,
-        "keybind": "6"
+        "keybind": "3"
       },
       {
         "action": "suspend",
         "command": "",
         "countdownEnabled": true,
         "enabled": false,
-        "keybind": "2"
+        "keybind": ""
       },
       {
         "action": "hibernate",
         "command": "",
         "countdownEnabled": true,
         "enabled": false,
-        "keybind": "3"
+        "keybind": ""
       },
       {
         "action": "logout",
         "command": "",
         "countdownEnabled": true,
         "enabled": false,
-        "keybind": "5"
+        "keybind": ""
+      },
+      {
+        "action": "userspaceReboot",
+        "command": "",
+        "countdownEnabled": true,
+        "enabled": false,
+        "keybind": ""
+      },
+      {
+        "action": "rebootToUefi",
+        "command": "",
+        "countdownEnabled": true,
+        "enabled": true,
+        "keybind": "4"
       }
     ]
   },
@@ -539,16 +522,16 @@
     "volumeStep": 5,
     "volumeOverdrive": false,
     "spectrumFrameRate": 144,
-    "visualizerType": "linear",
+    "visualizerType": "wave",
     "spectrumMirrored": true,
     "mprisBlacklist": [],
-    "preferredPlayer": "",
+    "preferredPlayer": "mpd",
     "volumeFeedback": false,
     "volumeFeedbackSoundFile": ""
   },
   "brightness": {
     "brightnessStep": 5,
-    "enforceMinimum": true,
+    "enforceMinimum": false,
     "enableDdcSupport": false,
     "backlightDeviceMappings": []
   },
