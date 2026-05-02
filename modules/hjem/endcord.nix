@@ -45,15 +45,21 @@
         # See: https://github.com/sparklost/endcord/blob/main/docs/configuration.md
         xdg.config.files."endcord/config.ini".text = ''
           [main]
+          vim_mode = True
           native_file_dialog = auto
           native_media_player = True
           limit_channel_cache = 20
           ack_throttling = 8
 
-          [keybindings]
-          # Ctrl+V (code 22, default) is intercepted by ghostty for paste; Alt+Y mirrors the Windows platform override
-          # See: https://github.com/sparklost/endcord/blob/main/endcord/defaults.py
-          view_media = ALT+121
+          [vim_mode_bindings]
+          chat_up = "259"
+          chat_down = "258"
+          tree_up = "575"
+          tree_down = "534"
+          input_left = "260"
+          input_right = "261"
+          word_left = "393"
+          word_right = "402"
 
           [command_bindings]
           "ALT+103" = "voice_accept_call"
