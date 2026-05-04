@@ -207,6 +207,7 @@
           bind = , return, submap, reset
           submap = reset
 
+          # dialogs
           windowrule = opacity 1.0 override 1.0 override 1.0 override, match:float yes
           windowrule = float on, match:title ^(Open)(.*)$
           windowrule = float on, match:title ^(Save)(.*)$
@@ -219,37 +220,70 @@
           windowrule = float on, match:title ^(Create Folder)(.*)$
           windowrule = float on, match:title ^(Rename)(.*)$
           windowrule = float on, match:title ^(Delete)(.*)$
+          windowrule = float on, match:title ^(.*[Dd]ialog.*)$
+          windowrule = float on, match:title ^(.*[Pp]opup.*)$
+
+          # auth
+          windowrule = match:class ^(gcr-prompter)$, stay_focused on
+          windowrule = match:class ^(gcr-prompter)$, focus_on_activate on
+
+          # file chooser
+          windowrule = float on, match:title ^(termfilechooser)$
+          windowrule = size 1600 900, match:title ^(termfilechooser)$
+          windowrule = move 531 262, match:title ^(termfilechooser)$
+          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:title ^(termfilechooser)$
+
+          # screenshots
           windowrule = float on, match:title ^(name-shot|name-clip)$
           windowrule = size 360 130, match:title ^(name-shot|name-clip)$
           windowrule = center on, match:title ^(name-shot|name-clip)$
           windowrule = stay_focused on, match:title ^(name-shot|name-clip)$
           windowrule = focus_on_activate on, match:title ^(name-shot|name-clip)$
-          windowrule = float on, match:title ^(termfilechooser)$
-          windowrule = size 1600 900, match:title ^(termfilechooser)$
-          windowrule = move 531 262, match:title ^(termfilechooser)$
-          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:title ^(termfilechooser)$
-          windowrule = float on, match:title ^(.*[Dd]ialog.*)$
-          windowrule = float on, match:title ^(.*[Pp]opup.*)$
+
+          # picture in picture
+          windowrule = float on, match:initial_title Picture in picture
+          windowrule = pin on, match:initial_title Picture in picture
+          windowrule = size 512 288, match:initial_title Picture in picture
+          windowrule = move 2034 62, match:initial_title Picture in picture
+
+          # comms
           windowrule = workspace 1, match:title ^(endcord)$
-          windowrule = workspace 1, match:class ^(chrome-kippjfofjhjlffjecoapiogbkgbpmgej-Default)$
+
+          # dev
           windowrule = workspace 2, match:title ^(ghostty)$
+          windowrule = workspace 2, match:title ^(fresh)$
+
+          # browser
+          windowrule = workspace 3, match:class ^(zen)$, match:initial_title ^(Zen Browser)$
+          windowrule = focus_on_activate on, match:class ^(zen)$
+          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(zen)$
+
+          # gaming
           windowrule = workspace 4, match:class ^(heroic)$
           windowrule = workspace 4, match:class ^(steam)$
+          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$
           windowrule = workspace 4, match:class ^(steam_app_.*)$
-          windowrule = fullscreen on, match:class ^(steam_app_3564740)$
-          windowrule = suppress_event fullscreen, match:class ^(steam_app_3564740)$
+          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$
+          windowrule = focus_on_activate on, match:class ^(steam_app_.*)$
           windowrule = workspace 4, match:class ^(gamescope)$
           windowrule = fullscreen on, match:class ^(gamescope)$
           windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(gamescope)$
           windowrule = focus_on_activate on, match:class ^(gamescope)$
-          windowrule = workspace 3, match:class ^(helium)$, match:initial_title ^(New Tab - Helium)$
-          windowrule = focus_on_activate on, match:class ^(helium)$
-          windowrule = workspace 3, match:class ^(zen)$, match:initial_title ^(Zen Browser)$
-          windowrule = focus_on_activate on, match:class ^(zen)$
+
+          # media
+          windowrule = workspace 5, match:class ^(mpv)$
+          windowrule = workspace 5, match:class ^(com\.stremio\.Stremio)$
+          windowrule = workspace 5, match:class ^(gimp)$
+          windowrule = workspace 5, match:class ^(org\.inkscape\.Inkscape)$
+          windowrule = workspace 5, match:title ^(rmpc)$
+
+          # stash
           windowrule = tile on, match:class ^(pavucontrol)$
           windowrule = workspace special:stash, match:class ^(pavucontrol)$
           windowrule = tile on, match:class ^(org\.pulseaudio\.pavucontrol)$
           windowrule = workspace special:stash, match:class ^(org\.pulseaudio\.pavucontrol)$
+          windowrule = tile on, match:title ^(pulsemixer)$
+          windowrule = workspace special:stash, match:title ^(pulsemixer)$
           windowrule = tile on, match:title ^(nmtui)$
           windowrule = workspace special:stash, match:title ^(nmtui)$
           windowrule = tile on, match:title ^(blueman-manager)$
@@ -262,25 +296,6 @@
           windowrule = workspace special:stash, match:class ^(piper)$
           windowrule = float on, match:title ^(btop)$
           windowrule = workspace special:stash, match:title ^(btop)$
-          windowrule = workspace 2, match:title ^(fresh)$
-          windowrule = tile on, match:title ^(pulsemixer)$
-          windowrule = workspace special:stash, match:title ^(pulsemixer)$
-          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(helium)$
-          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(zen)$
-          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$
-          windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam)$
-          windowrule = focus_on_activate on, match:class ^(steam_app_.*)$
-          windowrule = float on, match:initial_title Picture in picture
-          windowrule = pin on, match:initial_title Picture in picture
-          windowrule = size 512 288, match:initial_title Picture in picture
-          windowrule = move 2034 62, match:initial_title Picture in picture
-          windowrule = workspace 5, match:class ^(com\.stremio\.Stremio)$
-          windowrule = workspace 5, match:class ^(mpv)$
-          windowrule = workspace 5, match:class ^(gimp)$
-          windowrule = workspace 5, match:class ^(org\.inkscape\.Inkscape)$
-          windowrule = match:class ^(gcr-prompter)$, stay_focused on
-          windowrule = match:class ^(gcr-prompter)$, focus_on_activate on
-          windowrule = workspace 5, match:title ^(rmpc)$
 
           # pinned windows re-trigger workspace opacity rules dynamically
           windowrule = opacity 0.94 override 0.90 override, match:workspace 2, match:title negative:^(rmpc)$
