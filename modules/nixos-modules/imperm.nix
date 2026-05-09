@@ -70,6 +70,7 @@
               ".ssh"
               ".config"
               ".local"
+              ".concord"
               ".var"
               ".claude"
               ".stremio-server"

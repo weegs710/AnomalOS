@@ -5,7 +5,7 @@
     ...
   }: let
     ghostty = pkgs.ghostty.overrideAttrs (old: {
-      patches = (old.patches or []) ++ [./patches/ghostty-cursor-debounce-patch];
+      patches = (old.patches or []) ++ [../shareables/patches/ghostty-cursor-debounce-patch];
     });
   in {
     users.users.${config.mySystem.user.name}.packages = [ghostty];
@@ -18,7 +18,7 @@
         theme = noctalia
 
         keybind = shift+enter=text:\n
-        keybind = ctrl+v=paste_from_clipboard
+        keybind = ctrl+shift+v=paste_from_clipboard
 
         # Unbind terminal shortcuts that conflict with editors
         keybind = ctrl+q=unbind

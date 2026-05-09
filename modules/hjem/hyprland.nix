@@ -247,7 +247,7 @@
           windowrule = move 2034 62, match:initial_title Picture in picture
 
           # comms
-          windowrule = workspace 1, match:title ^(endcord)$
+          windowrule = workspace 1, match:title ^(concord)$
 
           # dev
           windowrule = workspace 2, match:title ^(ghostty)$
