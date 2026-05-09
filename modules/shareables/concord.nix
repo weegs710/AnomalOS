@@ -3,7 +3,10 @@
     upstream = inputs.concord.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
     patched = upstream.overrideAttrs (old: {
-      patches = (old.patches or []) ++ [ ./patches/concord-clipboard-image ];
+      patches = (old.patches or []) ++ [
+        ./patches/concord-clipboard-image
+        ./patches/concord-emoji-picker
+      ];
     });
 
     concordWrapped = pkgs.symlinkJoin {
