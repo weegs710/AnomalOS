@@ -109,7 +109,7 @@
 +    expand_mention_completions, is_emoji_query_char, is_mention_query_char,
      move_mention_selection, should_start_mention_query,
  };
-+use super::{ActiveGuildScope, EmojiPickerEntry};
++use super::EmojiPickerEntry;
  use super::{DashboardState, FocusPane, MentionPickerEntry};
  
  impl DashboardState {
@@ -129,7 +129,7 @@
      }
  
      fn refresh_active_mention_query(&mut self) {
-@@ -412,6 +416,91 @@
+@@ -412,6 +416,88 @@
  
          self.composer_mention_completions = completions;
      }
@@ -146,11 +146,8 @@
 +        let Some(query) = self.composer_emoji_query.as_deref() else {
 +            return Vec::new();
 +        };
-+        let custom_emojis = match self.active_guild {
-+            ActiveGuildScope::Guild(guild_id) => self.discord.custom_emojis_for_guild(guild_id),
-+            _ => &[],
-+        };
-+        build_emoji_candidates(query, custom_emojis)
++        let custom_emojis = self.discord.all_custom_emojis();
++        build_emoji_candidates(query, &custom_emojis)
 +    }
 +
 +    pub fn move_composer_emoji_selection(&mut self, delta: isize) {
@@ -393,3 +390,16 @@
      render_composer_mention_picker(frame, message_areas, state);
  }
  
+--- a/src/discord/state.rs
++++ b/src/discord/state.rs
+@@ -1063,6 +1063,10 @@
+             .unwrap_or_default()
+     }
+ 
++    pub fn all_custom_emojis(&self) -> Vec<CustomEmojiInfo> {
++        self.custom_emojis.values().flatten().cloned().collect()
++    }
++
+     pub fn member_display_name(
+         &self,
+         guild_id: Id<GuildMarker>,
