@@ -21,7 +21,13 @@
                      AppCommand::DownloadAttachment { url, filename } => {
                          match timeout(
                              ATTACHMENT_PREVIEW_TIMEOUT,
-@@ -952,6 +957,25 @@
+@@ -947,11 +952,30 @@
+     #[cfg(all(unix, not(target_os = "macos")))]
+     {
+         let mut command = Command::new("xdg-open");
+-        command.arg(url);
++        command.arg(url).stdout(Stdio::null()).stderr(Stdio::null());
+         command
      }
  }
  
@@ -70,7 +76,15 @@
      pub fn member_display_name(
          &self,
          guild_id: Id<GuildMarker>,
-@@ -1090,11 +1094,12 @@
+@@ -1072,6 +1076,7 @@
+             .get(&guild_id)
+             .and_then(|members| members.get(&user_id))
+             .map(|member| member.display_name.as_str())
++            .filter(|name| *name != "unknown")
+     }
+ 
+     pub fn channel(&self, channel_id: Id<ChannelMarker>) -> Option<&ChannelState> {
+@@ -1090,11 +1095,12 @@
          author_id: Id<UserMarker>,
          fallback: &str,
      ) -> String {
@@ -86,7 +100,7 @@
      }
  
      fn message_author_avatar_url(
-@@ -1115,6 +1120,9 @@
+@@ -1115,6 +1121,9 @@
          guild_id: Id<GuildMarker>,
          member: &MemberInfo,
      ) {
@@ -96,213 +110,6 @@
          for messages in self.messages.values_mut() {
              for message in messages.iter_mut() {
                  if message.guild_id == Some(guild_id) && message.author_id == member.user_id {
---- a/src/tui/media.rs
-+++ b/src/tui/media.rs
-@@ -537,7 +537,11 @@
-         return None;
-     }
- 
--    let fitted = fit_image_to_canvas(image, full_width, full_height);
-+    let fitted = if render_info.viewer {
-+        fit_image_to_canvas_centered(image, full_width, full_height)
-+    } else {
-+        fit_image_to_canvas(image, full_width, full_height)
-+    };
-     Some(fitted.crop_imm(0, crop_top, full_width, crop_height))
- }
- 
-@@ -570,6 +574,19 @@
-     let mut canvas =
-         DynamicImage::ImageRgba8(ImageBuffer::from_pixel(width, height, Rgba([0, 0, 0, 0])));
-     image::imageops::overlay(&mut canvas, &resized, 0, 0);
-+    canvas
-+}
-+
-+fn fit_image_to_canvas_centered(image: &DynamicImage, width: u32, height: u32) -> DynamicImage {
-+    let resized = image.resize(width, height, FilterType::Nearest);
-+    if resized.width() == width && resized.height() == height {
-+        return resized;
-+    }
-+    let x = (width.saturating_sub(resized.width()) / 2) as i64;
-+    let y = (height.saturating_sub(resized.height()) / 2) as i64;
-+    let mut canvas =
-+        DynamicImage::ImageRgba8(ImageBuffer::from_pixel(width, height, Rgba([0, 0, 0, 0])));
-+    image::imageops::overlay(&mut canvas, &resized, x, y);
-     canvas
- }
- 
---- a/src/tui/message_format.rs
-+++ b/src/tui/message_format.rs
-@@ -154,6 +154,15 @@
-         self.styled_range(start, suffix.len(), style);
-     }
- 
-+    pub(super) fn highlight_links(&mut self) {
-+        let style = Style::default()
-+            .fg(Color::Blue)
-+            .add_modifier(Modifier::UNDERLINED);
-+        for (start, end) in find_url_ranges(&self.text) {
-+            self.styled_range(start, end - start, style);
-+        }
-+    }
-+
-     pub(super) fn spans(&self) -> Vec<Span<'static>> {
-         let mut boundaries = vec![0, self.text.len()];
-         for highlight in &self.mention_highlights {
-@@ -286,11 +295,15 @@
-         .then(|| display_text_with_stickers(message.content.as_deref(), &message.sticker_names))
-         .flatten();
-     if let Some(value) = standalone_content {
--        lines.extend(wrap_rendered_text_lines(
--            state.render_user_mentions_with_highlights(message.guild_id, &message.mentions, &value),
--            width,
--            Style::default(),
--        ));
-+        let rendered = state.render_user_mentions_with_highlights(
-+            message.guild_id,
-+            &message.mentions,
-+            &value,
-+        );
-+        for mut line in wrap_rendered_text_lines(rendered, width, Style::default()) {
-+            line.highlight_links();
-+            lines.push(line);
-+        }
-     }
-     lines.extend(format_embed_lines(
-         &message.embeds,
-@@ -479,6 +492,59 @@
-         .add_modifier(Modifier::UNDERLINED)
- }
- 
-+pub(crate) fn extract_message_urls(message: &MessageState) -> Vec<String> {
-+    let mut urls: Vec<String> = Vec::new();
-+    if let Some(content) = message.content.as_deref() {
-+        for (start, end) in find_url_ranges(content) {
-+            urls.push(content[start..end].to_owned());
-+        }
-+    }
-+    for embed in &message.embeds {
-+        if let Some(url) = embed.url.as_deref() {
-+            if !urls.iter().any(|u| u == url) {
-+                urls.push(url.to_owned());
-+            }
-+        }
-+    }
-+    urls
-+}
-+
-+fn find_url_ranges(text: &str) -> Vec<(usize, usize)> {
-+    let mut ranges = Vec::new();
-+    let bytes = text.as_bytes();
-+    let len = bytes.len();
-+    let mut i = 0;
-+    while i < len {
-+        let prefix_len = if i + 8 <= len && &bytes[i..i + 8] == b"https://" {
-+            8
-+        } else if i + 7 <= len && &bytes[i..i + 7] == b"http://" {
-+            7
-+        } else {
-+            i += 1;
-+            continue;
-+        };
-+        let start = i;
-+        i += prefix_len;
-+        while i < len && is_url_char(bytes[i]) {
-+            i += 1;
-+        }
-+        let mut end = i;
-+        while end > start + prefix_len
-+            && matches!(bytes[end - 1], b'.' | b',' | b';' | b':' | b'!' | b'?' | b')' | b']')
-+        {
-+            end -= 1;
-+        }
-+        if end > start + prefix_len {
-+            ranges.push((start, end));
-+        }
-+    }
-+    ranges
-+}
-+
-+fn is_url_char(b: u8) -> bool {
-+    b > b' ' && !matches!(b, b'<' | b'>' | b'"' | b'`' | b'[' | b']' | b'{' | b'}')
-+}
-+
- fn embed_line_style(embed: &EmbedInfo) -> Style {
-     Style::default().fg(embed_line_color(embed))
- }
-@@ -868,6 +934,8 @@
-         let mut current_start = line_start;
-         let mut current_end = line_start;
-         let mut current_slots: Vec<MessageContentImageSlot> = Vec::new();
-+        let mut rendered_col = 0usize;
-+        let mut slot_interior_end = 0usize;
-         for (relative_start, grapheme) in line.grapheme_indices(true) {
-             let grapheme_start = line_start.saturating_add(relative_start);
-             let grapheme_end = grapheme_start.saturating_add(grapheme.len());
-@@ -892,13 +960,16 @@
-                     line_slots,
-                 ));
-                 current_width = 0;
-+                rendered_col = 0;
-+                slot_interior_end = 0;
-                 current_start = grapheme_start;
-             }
- 
-             if let Some(slot) = slot_at_grapheme {
-+                slot_interior_end = grapheme_start.saturating_add(slot.byte_len);
-                 let line_byte_start = current.len();
-                 current_slots.push(MessageContentImageSlot {
--                    col: u16::try_from(current_width).unwrap_or(u16::MAX),
-+                    col: u16::try_from(rendered_col).unwrap_or(u16::MAX),
-                     byte_start: line_byte_start,
-                     byte_len: slot.byte_len,
-                     display_width: slot.display_width,
-@@ -908,6 +979,14 @@
- 
-             current.push_str(grapheme);
-             current_width = current_width.saturating_add(grapheme_width);
-+            if slot_at_grapheme.is_some() {
-+                // custom emoji images render as 2 cells regardless of `:name:` length
-+                rendered_col = rendered_col.saturating_add(2);
-+            } else if grapheme_start < slot_interior_end {
-+                // inside a slot's fallback text -- image width already counted
-+            } else {
-+                rendered_col = rendered_col.saturating_add(grapheme_width);
-+            }
-             current_end = grapheme_end;
-         }
-         lines.push((
---- a/src/tui/state.rs
-+++ b/src/tui/state.rs
-@@ -51,7 +51,7 @@
-     scroll_message_row_down, scroll_message_row_up,
- };
- 
--pub use composer::{MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
-+pub use composer::{EmojiPickerEntry, MAX_EMOJI_PICKER_VISIBLE, MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
- pub use member_grouping::{MemberEntry, MemberGroup};
- pub use model::{
-     ChannelActionItem, ChannelPaneEntry, ChannelThreadItem, EmojiReactionItem,
-@@ -190,6 +190,9 @@
-     /// composer can rewrite them to Discord's `<@USER_ID>` wire format on
-     /// submit even though the visible text is still the friendly form.
-     composer_mention_completions: Vec<MentionCompletion>,
-+    composer_emoji_query: Option<String>,
-+    composer_emoji_start: Option<usize>,
-+    composer_emoji_selected: usize,
-     message_action_menu: Option<MessageActionMenuState>,
-     options_popup: Option<popups::OptionsPopupState>,
-     image_viewer: Option<ImageViewerState>,
-@@ -306,6 +309,9 @@
-             composer_mention_start: None,
-             composer_mention_selected: 0,
-             composer_mention_completions: Vec::new(),
-+            composer_emoji_query: None,
-+            composer_emoji_start: None,
-+            composer_emoji_selected: 0,
-             message_action_menu: None,
-             options_popup: None,
-             image_viewer: None,
 --- a/src/tui/input/keyboard.rs
 +++ b/src/tui/input/keyboard.rs
 @@ -161,6 +161,12 @@
@@ -318,11 +125,10 @@
      }
  
      let pasted: String = text.chars().filter(|value| *value != '\r').collect();
-@@ -170,6 +176,95 @@
-     state.insert_composer_text_at_cursor(&pasted);
+@@ -171,6 +177,95 @@
      true
  }
-+
+ 
 +#[cfg(target_os = "linux")]
 +fn clipboard_image_attachment() -> Option<MessageAttachmentUpload> {
 +    use std::{
@@ -411,9 +217,10 @@
 +    }
 +}
 +
- 
++
  fn pasted_file_attachments(text: &str) -> Option<Vec<MessageAttachmentUpload>> {
      let mut attachments = Vec::new();
+     for line in meaningful_paste_lines(text) {
 @@ -485,6 +580,11 @@
  }
  
@@ -426,28 +233,462 @@
      if state.composer_mention_query().is_some()
          && let Some(command) = handle_mention_picker_key(state, key)
      {
-@@ -530,6 +630,14 @@
-         }
-         KeyCode::End => {
+@@ -532,6 +632,14 @@
              state.move_composer_cursor_end();
-+            None
-+        }
+             None
+         }
 +        KeyCode::Char('v') if key.modifiers.contains(KeyModifiers::CONTROL) => {
 +            if state.composer_accepts_attachments() {
 +                if let Some(attachment) = clipboard_image_attachment() {
 +                    state.add_pending_composer_attachments(vec![attachment]);
 +                }
 +            }
-             None
-         }
++            None
++        }
          KeyCode::Char(value) => {
+             state.push_composer_char(value);
+             None
+--- a/src/tui/media/preview.rs	2026-05-11 14:33:30.150631275 -0400
++++ b/src/tui/media/preview.rs	2026-05-11 15:19:46.127022357 -0400
+@@ -1,10 +1,12 @@
+ use std::{
+     collections::{HashMap, HashSet},
++    io::Cursor,
+     sync::{Arc, OnceLock},
++    time::{Duration, Instant},
+ };
+ 
+ use crate::discord::ids::{Id, marker::MessageMarker};
+-use image::DynamicImage;
++use image::{AnimationDecoder, DynamicImage, codecs::gif::GifDecoder};
+ use ratatui_image::{picker::Picker, protocol::StatefulProtocol};
+ use tokio::{sync::mpsc, task};
+ 
+@@ -41,10 +43,15 @@
+     pub(super) bytes: Arc<[u8]>,
+ }
+ 
++pub(super) enum ImageData {
++    Static(DynamicImage),
++    Animated { frames: Vec<DynamicImage>, delays_ms: Vec<u32> },
++}
++
+ pub(in crate::tui) struct ImagePreviewDecodeResult {
+     pub(super) key: ImagePreviewKey,
+     pub(super) generation: u64,
+-    pub(super) result: std::result::Result<DynamicImage, String>,
++    pub(super) result: std::result::Result<ImageData, String>,
+ }
+ 
+ pub(super) enum ImagePreviewEntry {
+@@ -66,6 +73,18 @@
+         protocol: Box<StatefulProtocol>,
+         last_used: u64,
+     },
++    Animated {
++        filename: String,
++        frames: Vec<DynamicImage>,
++        delays_ms: Vec<u32>,
++        current_protocol: Option<Box<StatefulProtocol>>,
++        rendered_frame: usize,
++        last_render_info: Option<ImagePreviewRenderInfo>,
++        current_frame: usize,
++        frame_elapsed_ms: u32,
++        last_frame_time: Instant,
++        last_used: u64,
++    },
+     Failed {
+         filename: String,
+         message: String,
+@@ -126,6 +145,49 @@
+                         protocol: protocol.as_mut(),
+                     }
+                 }
++                ImagePreviewEntry::Animated {
++                    filename,
++                    frames,
++                    delays_ms,
++                    current_protocol,
++                    rendered_frame,
++                    last_render_info,
++                    current_frame,
++                    frame_elapsed_ms,
++                    last_frame_time,
++                    ..
++                } => {
++                    let now = Instant::now();
++                    let elapsed = now.duration_since(*last_frame_time).as_millis() as u32;
++                    *last_frame_time = now;
++                    *frame_elapsed_ms = frame_elapsed_ms.saturating_add(elapsed);
++                    while *frame_elapsed_ms >= delays_ms[*current_frame] {
++                        *frame_elapsed_ms -= delays_ms[*current_frame];
++                        *current_frame = (*current_frame + 1) % frames.len();
++                    }
++                    // Recreate protocol when frame changes or layout changes
++                    let layout_changed = *last_render_info != Some(render_info);
++                    let frame_changed = *rendered_frame != *current_frame;
++                    if layout_changed || frame_changed || current_protocol.is_none() {
++                        if let Some(picker) = picker.as_ref() {
++                            *current_protocol = clipped_preview_stateful_protocol(
++                                picker,
++                                &frames[*current_frame],
++                                render_info,
++                            );
++                        }
++                        *rendered_frame = *current_frame;
++                        *last_render_info = Some(render_info);
++                    }
++                    match current_protocol.as_mut() {
++                        Some(protocol) => ImagePreviewState::Ready {
++                            protocol: protocol.as_mut(),
++                        },
++                        None => ImagePreviewState::Loading {
++                            filename: filename.clone(),
++                        },
++                    }
++                }
+                 ImagePreviewEntry::Failed {
+                     filename, message, ..
+                 } => ImagePreviewState::Failed {
+@@ -174,6 +236,26 @@
+         previews.into_iter().map(|(_, preview)| preview).collect()
+     }
+ 
++    pub(in crate::tui) fn next_animation_wake(&self) -> Option<Duration> {
++        self.entries
++            .values()
++            .filter_map(|entry| {
++                if let ImagePreviewEntry::Animated {
++                    delays_ms,
++                    current_frame,
++                    frame_elapsed_ms,
++                    ..
++                } = entry
++                {
++                    let remaining = delays_ms[*current_frame].saturating_sub(*frame_elapsed_ms);
++                    Some(Duration::from_millis(remaining as u64))
++                } else {
++                    None
++                }
++            })
++            .min()
++    }
++
+     pub(in crate::tui) fn next_requests(
+         &mut self,
+         targets: &[ImagePreviewTarget],
+@@ -312,7 +394,24 @@
+ 
+         let last_used = self.next_tick();
+         match result.result {
+-            Ok(image) => {
++            Ok(ImageData::Animated { frames, delays_ms }) => {
++                self.entries.insert(
++                    result.key,
++                    ImagePreviewEntry::Animated {
++                        filename,
++                        current_protocol: None,
++                        rendered_frame: usize::MAX,
++                        last_render_info: None,
++                        frames,
++                        delays_ms,
++                        current_frame: 0,
++                        frame_elapsed_ms: 0,
++                        last_frame_time: Instant::now(),
++                        last_used,
++                    },
++                );
++            }
++            Ok(ImageData::Static(image)) => {
+                 let Some(picker) = self.picker.as_ref() else {
+                     self.entries.insert(
+                         result.key,
+@@ -364,7 +463,9 @@
+         match self.entries.get(key)? {
+             ImagePreviewEntry::Loading { render_info, .. }
+             | ImagePreviewEntry::Decoding { render_info, .. } => Some(*render_info),
+-            ImagePreviewEntry::Ready { .. } | ImagePreviewEntry::Failed { .. } => None,
++            ImagePreviewEntry::Ready { .. }
++            | ImagePreviewEntry::Animated { .. }
++            | ImagePreviewEntry::Failed { .. } => None,
+         }
+     }
+ 
+@@ -479,6 +580,7 @@
+             Self::Loading { filename, .. }
+             | Self::Decoding { filename, .. }
+             | Self::Ready { filename, .. }
++            | Self::Animated { filename, .. }
+             | Self::Failed { filename, .. } => filename,
+         }
+     }
+@@ -488,6 +590,7 @@
+             Self::Loading { last_used, .. }
+             | Self::Decoding { last_used, .. }
+             | Self::Ready { last_used, .. }
++            | Self::Animated { last_used, .. }
+             | Self::Failed { last_used, .. } => *last_used,
+         }
+     }
+@@ -506,6 +609,9 @@
+         | ImagePreviewEntry::Ready {
+             last_used: value, ..
+         }
++        | ImagePreviewEntry::Animated {
++            last_used: value, ..
++        }
+         | ImagePreviewEntry::Failed {
+             last_used: value, ..
+         } => *value = last_used,
+@@ -537,7 +643,7 @@
+ }
+ 
+ fn decode_image_preview(job: ImagePreviewDecodeJob) -> ImagePreviewDecodeResult {
+-    let result = decode_original_preview_image(&job.bytes);
++    let result = decode_image_data(&job.bytes);
+     ImagePreviewDecodeResult {
+         key: job.key,
+         generation: job.generation,
+@@ -545,6 +651,34 @@
+     }
+ }
+ 
++fn decode_image_data(bytes: &[u8]) -> std::result::Result<ImageData, String> {
++    if bytes.starts_with(b"GIF8") {
++        let cursor = Cursor::new(bytes);
++        if let Ok(decoder) = GifDecoder::new(cursor) {
++            let mut images = Vec::new();
++            let mut delays = Vec::new();
++            for frame_result in decoder.into_frames().take(200) {
++                match frame_result {
++                    Ok(frame) => {
++                        let (num, denom) = frame.delay().numer_denom_ms();
++                        let delay_ms = if denom == 0 { 100 } else { (num / denom).max(10) };
++                        images.push(DynamicImage::ImageRgba8(frame.into_buffer()));
++                        delays.push(delay_ms);
++                    }
++                    Err(_) => break,
++                }
++            }
++            if images.len() > 1 {
++                return Ok(ImageData::Animated { frames: images, delays_ms: delays });
++            }
++        }
++    }
++    image::load_from_memory(bytes)
++        .map(ImageData::Static)
++        .map_err(|error| format!("decode failed: {error}"))
++}
++
++#[allow(dead_code)]
+ pub(super) fn decode_original_preview_image(
+     bytes: &[u8],
+ ) -> std::result::Result<DynamicImage, String> {
+--- a/src/tui/media.rs
++++ b/src/tui/media.rs
+@@ -537,7 +537,11 @@
+         return None;
+     }
+ 
+-    let fitted = fit_image_to_canvas(image, full_width, full_height);
++    let fitted = if render_info.viewer {
++        fit_image_to_canvas_centered(image, full_width, full_height)
++    } else {
++        fit_image_to_canvas(image, full_width, full_height)
++    };
+     Some(fitted.crop_imm(0, crop_top, full_width, crop_height))
+ }
+ 
+@@ -573,6 +577,19 @@
+     canvas
+ }
+ 
++fn fit_image_to_canvas_centered(image: &DynamicImage, width: u32, height: u32) -> DynamicImage {
++    let resized = image.resize(width, height, FilterType::Nearest);
++    if resized.width() == width && resized.height() == height {
++        return resized;
++    }
++    let x = (width.saturating_sub(resized.width()) / 2) as i64;
++    let y = (height.saturating_sub(resized.height()) / 2) as i64;
++    let mut canvas =
++        DynamicImage::ImageRgba8(ImageBuffer::from_pixel(width, height, Rgba([0, 0, 0, 0])));
++    image::imageops::overlay(&mut canvas, &resized, x, y);
++    canvas
++}
++
+ #[cfg(test)]
+ mod tests {
+     use std::collections::HashMap;
+--- a/src/tui/message_format.rs
++++ b/src/tui/message_format.rs
+@@ -154,6 +154,15 @@
+         self.styled_range(start, suffix.len(), style);
+     }
+ 
++    pub(super) fn highlight_links(&mut self) {
++        let style = Style::default()
++            .fg(Color::Blue)
++            .add_modifier(Modifier::UNDERLINED);
++        for (start, end) in find_url_ranges(&self.text) {
++            self.styled_range(start, end - start, style);
++        }
++    }
++
+     pub(super) fn spans(&self) -> Vec<Span<'static>> {
+         let mut boundaries = vec![0, self.text.len()];
+         for highlight in &self.mention_highlights {
+@@ -286,11 +295,15 @@
+         .then(|| display_text_with_stickers(message.content.as_deref(), &message.sticker_names))
+         .flatten();
+     if let Some(value) = standalone_content {
+-        lines.extend(wrap_rendered_text_lines(
+-            state.render_user_mentions_with_highlights(message.guild_id, &message.mentions, &value),
+-            width,
+-            Style::default(),
+-        ));
++        let rendered = state.render_user_mentions_with_highlights(
++            message.guild_id,
++            &message.mentions,
++            &value,
++        );
++        for mut line in wrap_rendered_text_lines(rendered, width, Style::default()) {
++            line.highlight_links();
++            lines.push(line);
++        }
+     }
+     lines.extend(format_embed_lines(
+         &message.embeds,
+@@ -479,6 +492,64 @@
+         .add_modifier(Modifier::UNDERLINED)
+ }
+ 
++pub(crate) fn extract_message_urls(message: &MessageState) -> Vec<String> {
++    let mut urls: Vec<String> = Vec::new();
++    if let Some(content) = message.content.as_deref() {
++        for (start, end) in find_url_ranges(content) {
++            urls.push(content[start..end].to_owned());
++        }
++    }
++    for embed in &message.embeds {
++        // skip embed page URLs when the embed has an inline image preview
++        // (those are accessible via "View image" -- "Open link" would open a web page instead)
++        if embed.inline_preview_info().is_some() {
++            continue;
++        }
++        if let Some(url) = embed.url.as_deref() {
++            if !urls.iter().any(|u| u == url) {
++                urls.push(url.to_owned());
++            }
++        }
++    }
++    urls
++}
++
++fn find_url_ranges(text: &str) -> Vec<(usize, usize)> {
++    let mut ranges = Vec::new();
++    let bytes = text.as_bytes();
++    let len = bytes.len();
++    let mut i = 0;
++    while i < len {
++        let prefix_len = if i + 8 <= len && &bytes[i..i + 8] == b"https://" {
++            8
++        } else if i + 7 <= len && &bytes[i..i + 7] == b"http://" {
++            7
++        } else {
++            i += 1;
++            continue;
++        };
++        let start = i;
++        i += prefix_len;
++        while i < len && is_url_char(bytes[i]) {
++            i += 1;
++        }
++        let mut end = i;
++        while end > start + prefix_len
++            && matches!(bytes[end - 1], b'.' | b',' | b';' | b':' | b'!' | b'?' | b')' | b']')
++        {
++            end -= 1;
++        }
++        if end > start + prefix_len {
++            ranges.push((start, end));
++        }
++    }
++    ranges
++}
++
++fn is_url_char(b: u8) -> bool {
++    b > b' ' && !matches!(b, b'<' | b'>' | b'"' | b'`' | b'[' | b']' | b'{' | b'}')
++}
++
+ fn embed_line_style(embed: &EmbedInfo) -> Style {
+     Style::default().fg(embed_line_color(embed))
+ }
+@@ -868,6 +939,8 @@
+         let mut current_start = line_start;
+         let mut current_end = line_start;
+         let mut current_slots: Vec<MessageContentImageSlot> = Vec::new();
++        let mut rendered_col = 0usize;
++        let mut slot_interior_end = 0usize;
+         for (relative_start, grapheme) in line.grapheme_indices(true) {
+             let grapheme_start = line_start.saturating_add(relative_start);
+             let grapheme_end = grapheme_start.saturating_add(grapheme.len());
+@@ -892,13 +965,16 @@
+                     line_slots,
+                 ));
+                 current_width = 0;
++                rendered_col = 0;
++                slot_interior_end = 0;
+                 current_start = grapheme_start;
+             }
+ 
+             if let Some(slot) = slot_at_grapheme {
++                slot_interior_end = grapheme_start.saturating_add(slot.byte_len);
+                 let line_byte_start = current.len();
+                 current_slots.push(MessageContentImageSlot {
+-                    col: u16::try_from(current_width).unwrap_or(u16::MAX),
++                    col: u16::try_from(rendered_col).unwrap_or(u16::MAX),
+                     byte_start: line_byte_start,
+                     byte_len: slot.byte_len,
+                     display_width: slot.display_width,
+@@ -908,6 +984,14 @@
+ 
+             current.push_str(grapheme);
+             current_width = current_width.saturating_add(grapheme_width);
++            if slot_at_grapheme.is_some() {
++                // custom emoji images render as 2 cells regardless of `:name:` length
++                rendered_col = rendered_col.saturating_add(2);
++            } else if grapheme_start < slot_interior_end {
++                // inside a slot's fallback text -- image width already counted
++            } else {
++                rendered_col = rendered_col.saturating_add(grapheme_width);
++            }
+             current_end = grapheme_end;
+         }
+         lines.push((
+--- a/src/tui/mod.rs
++++ b/src/tui/mod.rs
+@@ -633,6 +633,15 @@
+             }
+         }
+ 
++        // schedule next redraw for animated GIF frame advancement
++        if let Some(wake) = image_previews.next_animation_wake() {
++            let deadline = tokio::time::Instant::now() + wake;
++            match pending_redraw_deadline {
++                Some(existing) if existing <= deadline => {}
++                _ => pending_redraw_deadline = Some(deadline),
++            }
++        }
++
+         tokio::select! {
+             maybe_event = terminal_events.next() => {
+                 match maybe_event {
 --- a/src/tui/state/composer.rs
 +++ b/src/tui/state/composer.rs
-@@ -3,6 +3,66 @@
- use crate::discord::PresenceStatus;
+@@ -4,6 +4,66 @@
  
  use super::MemberEntry;
-+
+ 
 +use crate::discord::CustomEmojiInfo;
 +
 +pub const MAX_EMOJI_PICKER_VISIBLE: usize = 8;
@@ -507,9 +748,10 @@
 +    results.into_iter().map(|(_, e)| e).collect()
 +}
 +
- 
++
  /// Maximum number of suggestions the @-mention picker shows at once. Mirrors
  /// the upper bound used by other composer popups so the layout math stays
+ /// predictable.
 --- a/src/tui/state/composer_state.rs
 +++ b/src/tui/state/composer_state.rs
 @@ -3,9 +3,11 @@
@@ -630,15 +872,33 @@
  }
  
  fn clamp_cursor_index(input: &str, index: usize) -> usize {
+--- a/src/tui/state/member_grouping.rs
++++ b/src/tui/state/member_grouping.rs
+@@ -32,7 +32,13 @@
+ 
+     pub fn display_name(self) -> String {
+         match self {
+-            Self::Guild(member) => member.display_name.clone(),
++            Self::Guild(member) => {
++                if member.display_name == "unknown" {
++                    member.username.clone().unwrap_or_else(|| member.display_name.clone())
++                } else {
++                    member.display_name.clone()
++                }
++            }
+             Self::Recipient(recipient) => recipient.display_name.clone(),
+         }
+     }
 --- a/src/tui/state/message_actions.rs
 +++ b/src/tui/state/message_actions.rs
-@@ -1,4 +1,6 @@
+@@ -1,5 +1,7 @@
  use crate::discord::{AppCommand, ReactionEmoji};
-+
-+use super::super::message_format::extract_message_urls;
  
++use super::super::message_format::extract_message_urls;
++
  use super::scroll::{clamp_selected_index, move_index_down, move_index_up};
  use super::{
+     DashboardState, FocusPane, MessageActionItem, MessageActionKind, MessageActionMenuState,
 @@ -150,6 +152,38 @@
                  });
              }
@@ -721,12 +981,43 @@
              MessageActionKind::SetPinned(_) => Some('n'),
              MessageActionKind::VotePollAnswer(_) => None,
              MessageActionKind::OpenPollVotePicker => Some('c'),
-+            MessageActionKind::OpenLink(_) => Some('l'),
-+            MessageActionKind::CopyText => Some('y'),
-+            MessageActionKind::CopyUrl(_) => None,
++            MessageActionKind::OpenLink(_) => Some('o'),
++            MessageActionKind::CopyText => Some('c'),
++            MessageActionKind::CopyUrl(_) => Some('u'),
          }
      }
  }
+--- a/src/tui/state.rs
++++ b/src/tui/state.rs
+@@ -51,7 +51,7 @@
+     scroll_message_row_down, scroll_message_row_up,
+ };
+ 
+-pub use composer::{MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
++pub use composer::{EmojiPickerEntry, MAX_EMOJI_PICKER_VISIBLE, MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
+ pub use member_grouping::{MemberEntry, MemberGroup};
+ pub use model::{
+     ChannelActionItem, ChannelPaneEntry, ChannelThreadItem, EmojiReactionItem,
+@@ -190,6 +190,9 @@
+     /// composer can rewrite them to Discord's `<@USER_ID>` wire format on
+     /// submit even though the visible text is still the friendly form.
+     composer_mention_completions: Vec<MentionCompletion>,
++    composer_emoji_query: Option<String>,
++    composer_emoji_start: Option<usize>,
++    composer_emoji_selected: usize,
+     message_action_menu: Option<MessageActionMenuState>,
+     options_popup: Option<popups::OptionsPopupState>,
+     image_viewer: Option<ImageViewerState>,
+@@ -306,6 +309,9 @@
+             composer_mention_start: None,
+             composer_mention_selected: 0,
+             composer_mention_completions: Vec::new(),
++            composer_emoji_query: None,
++            composer_emoji_start: None,
++            composer_emoji_selected: 0,
+             message_action_menu: None,
+             options_popup: None,
+             image_viewer: None,
 --- a/src/tui/ui/layout.rs
 +++ b/src/tui/ui/layout.rs
 @@ -7,7 +7,7 @@
@@ -866,3 +1157,12 @@
  pub(super) fn render_composer_mention_picker(
      frame: &mut Frame,
      message_areas: MessageAreas,
+--- a/src/tui/ui/types.rs
++++ b/src/tui/ui/types.rs
+@@ -18,6 +18,4 @@ pub(super) const SNOWFLAKE_TIMESTAMP_SHIFT: u8 = 22;
+ pub(super) const MAX_REACTION_USERS_VISIBLE_LINES: usize = 14;
+-pub(super) const IMAGE_VIEWER_POPUP_WIDTH: u16 = 78;
+-pub(super) const IMAGE_VIEWER_POPUP_HEIGHT: u16 = 16;
+ pub(super) const SELECTED_FORUM_POST_BORDER: Color = Color::Green;
+ pub(super) const SELECTED_MESSAGE_BORDER: Color = Color::Green;
+ pub(super) const SELECTED_MESSAGE_CONTENT_OFFSET: u16 = 2;
