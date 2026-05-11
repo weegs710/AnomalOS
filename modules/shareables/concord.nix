@@ -7,6 +7,7 @@
         ./patches/concord-clipboard-image
         ./patches/concord-emoji-picker
         ./patches/concord-username-fix
+        ./patches/concord-link-opener
       ];
     });
 

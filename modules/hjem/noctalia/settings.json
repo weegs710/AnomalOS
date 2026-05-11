@@ -197,7 +197,7 @@
     "name": "43567",
     "weatherEnabled": true,
     "weatherShowEffects": true,
-    "weatherTaliaMascotAlways": true,
+    "weatherTaliaMascotAlways": false,
     "useFahrenheit": true,
     "use12hourFormat": true,
     "showWeekNumberInCalendar": false,

@@ -1,0 +1,160 @@
+--- a/src/tui/state/model.rs
++++ b/src/tui/state/model.rs
+@@ -29,6 +29,7 @@
+     SetPinned(bool),
+     VotePollAnswer(u8),
+     OpenPollVotePicker,
++    OpenLink(usize),
+ }
+ 
+ #[derive(Clone, Debug, Eq, PartialEq)]
+@@ -55,6 +56,7 @@
+             MessageActionKind::SetPinned(_) => Some('n'),
+             MessageActionKind::VotePollAnswer(_) => None,
+             MessageActionKind::OpenPollVotePicker => Some('c'),
++            MessageActionKind::OpenLink(_) => Some('l'),
+         }
+     }
+ }
+--- a/src/tui/state/message_actions.rs
++++ b/src/tui/state/message_actions.rs
+@@ -1,4 +1,6 @@
+ use crate::discord::{AppCommand, ReactionEmoji};
++
++use super::super::message_format::extract_message_urls;
+ 
+ use super::scroll::{clamp_selected_index, move_index_down, move_index_up};
+ use super::{
+@@ -150,6 +152,19 @@
+                 });
+             }
+         }
++        let urls = extract_message_urls(&message);
++        for (index, url) in urls.iter().enumerate() {
++            let label = if url.len() <= 40 {
++                format!("Open link: {}", url)
++            } else {
++                format!("Open link: {}\u{2026}", &url[..40])
++            };
++            actions.push(MessageActionItem {
++                kind: MessageActionKind::OpenLink(index),
++                label,
++                enabled: true,
++            });
++        }
+         if let Some(poll) = &message.poll
+             && !poll.results_finalized.unwrap_or(false)
+         {
+@@ -333,6 +348,13 @@
+                     answer_ids,
+                 })
+             }
++            MessageActionKind::OpenLink(index) => {
++                let message = self.selected_message_state()?;
++                let urls = extract_message_urls(&message);
++                let url = urls.into_iter().nth(index)?;
++                self.close_message_action_menu();
++                Some(AppCommand::OpenUrl { url })
++            }
+         }
+     }
+ 
+--- a/src/tui/message_format.rs
++++ b/src/tui/message_format.rs
+@@ -154,6 +154,15 @@
+         self.styled_range(start, suffix.len(), style);
+     }
+ 
++    pub(super) fn highlight_links(&mut self) {
++        let style = Style::default()
++            .fg(Color::Blue)
++            .add_modifier(Modifier::UNDERLINED);
++        for (start, end) in find_url_ranges(&self.text) {
++            self.styled_range(start, end - start, style);
++        }
++    }
++
+     pub(super) fn spans(&self) -> Vec<Span<'static>> {
+         let mut boundaries = vec![0, self.text.len()];
+         for highlight in &self.mention_highlights {
+@@ -286,11 +295,15 @@
+         .then(|| display_text_with_stickers(message.content.as_deref(), &message.sticker_names))
+         .flatten();
+     if let Some(value) = standalone_content {
+-        lines.extend(wrap_rendered_text_lines(
+-            state.render_user_mentions_with_highlights(message.guild_id, &message.mentions, &value),
+-            width,
+-            Style::default(),
+-        ));
++        let rendered = state.render_user_mentions_with_highlights(
++            message.guild_id,
++            &message.mentions,
++            &value,
++        );
++        for mut line in wrap_rendered_text_lines(rendered, width, Style::default()) {
++            line.highlight_links();
++            lines.push(line);
++        }
+     }
+     lines.extend(format_embed_lines(
+         &message.embeds,
+@@ -479,6 +492,59 @@
+         .add_modifier(Modifier::UNDERLINED)
+ }
+ 
++pub(crate) fn extract_message_urls(message: &MessageState) -> Vec<String> {
++    let mut urls: Vec<String> = Vec::new();
++    if let Some(content) = message.content.as_deref() {
++        for (start, end) in find_url_ranges(content) {
++            urls.push(content[start..end].to_owned());
++        }
++    }
++    for embed in &message.embeds {
++        if let Some(url) = embed.url.as_deref() {
++            if !urls.iter().any(|u| u == url) {
++                urls.push(url.to_owned());
++            }
++        }
++    }
++    urls
++}
++
++fn find_url_ranges(text: &str) -> Vec<(usize, usize)> {
++    let mut ranges = Vec::new();
++    let bytes = text.as_bytes();
++    let len = bytes.len();
++    let mut i = 0;
++    while i < len {
++        let prefix_len = if i + 8 <= len && &bytes[i..i + 8] == b"https://" {
++            8
++        } else if i + 7 <= len && &bytes[i..i + 7] == b"http://" {
++            7
++        } else {
++            i += 1;
++            continue;
++        };
++        let start = i;
++        i += prefix_len;
++        while i < len && is_url_char(bytes[i]) {
++            i += 1;
++        }
++        let mut end = i;
++        while end > start + prefix_len
++            && matches!(bytes[end - 1], b'.' | b',' | b';' | b':' | b'!' | b'?' | b')' | b']')
++        {
++            end -= 1;
++        }
++        if end > start + prefix_len {
++            ranges.push((start, end));
++        }
++    }
++    ranges
++}
++
++fn is_url_char(b: u8) -> bool {
++    b > b' ' && !matches!(b, b'<' | b'>' | b'"' | b'`' | b'[' | b']' | b'{' | b'}')
++}
++
+ fn embed_line_style(embed: &EmbedInfo) -> Style {
+     Style::default().fg(embed_line_color(embed))
+ }
