@@ -71,6 +71,7 @@
               ".config"
               ".local"
               ".concord"
+              ".crawl"
               ".var"
               ".claude"
               ".stremio-server"

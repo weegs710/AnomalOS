@@ -1,25 +1,28 @@
-{inputs, ...}: {
-  flake.nixosModules.gaming-packages = {
-    config,
-    pkgs,
-    ...
-  }: {
-    programs.nix-ld.enable = true;
+{ inputs, ... }:
+{
+  flake.nixosModules.gaming-packages =
+    {
+      config,
+      pkgs,
+      ...
+    }:
+    {
+      programs.nix-ld.enable = true;
 
-    hardware.graphics.enable32Bit = true;
-    hardware.steam-hardware.enable = true;
+      hardware.graphics.enable32Bit = true;
+      hardware.steam-hardware.enable = true;
 
-    programs = {
-      gamescope.enable = true;
-      gamemode.enable = true;
+      programs = {
+        gamescope.enable = true;
+        gamemode.enable = true;
+      };
+
+      users.users.${config.mySystem.user.name}.packages = with pkgs; [
+        (pkgs.callPackage "${inputs.severed-chains}/nix/package.nix" { src = inputs.severed-chains; })
+        (openraPackages.engines.bleed.overrideAttrs (old: {
+          postPatch = "";
+        }))
+        protonup-qt
+      ];
     };
-
-    users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      (pkgs.callPackage "${inputs.severed-chains}/nix/package.nix" { src = inputs.severed-chains; })
-      (openraPackages.engines.bleed.overrideAttrs (old: {
-        postPatch = "";
-      }))
-      protonup-qt
-    ];
-  };
 }
