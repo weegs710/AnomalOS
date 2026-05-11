@@ -1161,7 +1161,7 @@ index 93917be..e1d2e81 100644
      frame: &mut Frame,
      message_areas: MessageAreas,
 diff --git a/src/tui/ui/popups.rs b/src/tui/ui/popups.rs
-index 8dbe31f..6d5648c 100644
+index 8dbe31f..788f20c 100644
 --- a/src/tui/ui/popups.rs
 +++ b/src/tui/ui/popups.rs
 @@ -6,12 +6,13 @@ pub(super) fn render_image_viewer(
@@ -1179,6 +1179,26 @@ index 8dbe31f..6d5648c 100644
      let title_width = usize::from(popup.width.saturating_sub(4)).max(1);
      let title = truncate_display_width(&image_viewer_title(&item), title_width);
      frame.render_widget(Clear, popup);
+@@ -82,7 +83,7 @@ pub(super) fn render_message_action_menu(frame: &mut Frame, area: Rect, state: &
+     }
+ 
+     let selected = state.selected_message_action_index().unwrap_or(0);
+-    let popup = centered_rect(area, 54, (actions.len() as u16).saturating_add(4));
++    let popup = centered_rect(area, 66, (actions.len() as u16).saturating_add(4));
+     frame.render_widget(Clear, popup);
+     frame.render_widget(
+         Paragraph::new(message_action_menu_lines(&actions, selected))
+@@ -920,8 +921,9 @@ pub(super) fn message_action_menu_lines(
+             ])
+         })
+         .collect();
++    lines.push(Line::raw(""));
+     lines.push(Line::from(Span::styled(
+-        "Shortcut/Enter select · Esc close",
++        " Shortcut/Enter select · Esc close",
+         Style::default().fg(DIM),
+     )));
+     lines
 diff --git a/src/tui/ui/tests.rs b/src/tui/ui/tests.rs
 index a9a2a25..a24cc3a 100644
 --- a/src/tui/ui/tests.rs
