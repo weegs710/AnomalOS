@@ -1,0 +1,868 @@
+--- a/src/app.rs
++++ b/src/app.rs
+@@ -2,7 +2,7 @@
+     env, fs,
+     io::{self, Write},
+     path::{Path, PathBuf},
+-    process::Command,
++    process::{Command, Stdio},
+     sync::Arc,
+     time::Instant,
+ };
+@@ -474,6 +474,11 @@
+                                 .await;
+                         }
+                     }
++                    AppCommand::CopyToClipboard { text } => {
++                        if let Err(error) = copy_to_clipboard(&text) {
++                            logging::error("app", format!("copy to clipboard failed: {error}"));
++                        }
++                    }
+                     AppCommand::DownloadAttachment { url, filename } => {
+                         match timeout(
+                             ATTACHMENT_PREVIEW_TIMEOUT,
+@@ -952,6 +957,25 @@
+     }
+ }
+ 
++fn copy_to_clipboard(text: &str) -> io::Result<()> {
++    #[cfg(all(unix, not(target_os = "macos")))]
++    {
++        let mut child = Command::new("wl-copy")
++            .stdin(Stdio::piped())
++            .spawn()?;
++        if let Some(mut stdin) = child.stdin.take() {
++            stdin.write_all(text.as_bytes())?;
++        }
++        return child.wait().and_then(|s| {
++            if s.success() { Ok(()) } else {
++                Err(io::Error::other(format!("wl-copy exited with {s}")))
++            }
++        });
++    }
++    #[allow(unreachable_code)]
++    Err(io::Error::other("clipboard not supported on this platform"))
++}
++
+ struct ResolvedToken {
+     token: String,
+     warnings: Vec<String>,
+--- a/src/discord/commands.rs
++++ b/src/discord/commands.rs
+@@ -167,4 +167,7 @@
+         channel_id: Id<ChannelMarker>,
+         message_id: Id<MessageMarker>,
+     },
++    CopyToClipboard {
++        text: String,
++    },
+ }
+--- a/src/discord/state.rs
++++ b/src/discord/state.rs
+@@ -1063,6 +1063,10 @@
+             .unwrap_or_default()
+     }
+ 
++    pub fn all_custom_emojis(&self) -> Vec<CustomEmojiInfo> {
++        self.custom_emojis.values().flatten().cloned().collect()
++    }
++
+     pub fn member_display_name(
+         &self,
+         guild_id: Id<GuildMarker>,
+@@ -1090,11 +1094,12 @@
+         author_id: Id<UserMarker>,
+         fallback: &str,
+     ) -> String {
+-        guild_id
++        let cached = guild_id
+             .and_then(|guild_id| self.members.get(&guild_id))
+             .and_then(|members| members.get(&author_id))
+-            .map(|member| member.display_name.clone())
+-            .unwrap_or_else(|| fallback.to_owned())
++            .map(|member| member.display_name.as_str())
++            .filter(|name| *name != "unknown");
++        cached.map(str::to_owned).unwrap_or_else(|| fallback.to_owned())
+     }
+ 
+     fn message_author_avatar_url(
+@@ -1115,6 +1120,9 @@
+         guild_id: Id<GuildMarker>,
+         member: &MemberInfo,
+     ) {
++        if member.display_name == "unknown" {
++            return;
++        }
+         for messages in self.messages.values_mut() {
+             for message in messages.iter_mut() {
+                 if message.guild_id == Some(guild_id) && message.author_id == member.user_id {
+--- a/src/tui/media.rs
++++ b/src/tui/media.rs
+@@ -537,7 +537,11 @@
+         return None;
+     }
+ 
+-    let fitted = fit_image_to_canvas(image, full_width, full_height);
++    let fitted = if render_info.viewer {
++        fit_image_to_canvas_centered(image, full_width, full_height)
++    } else {
++        fit_image_to_canvas(image, full_width, full_height)
++    };
+     Some(fitted.crop_imm(0, crop_top, full_width, crop_height))
+ }
+ 
+@@ -570,6 +574,19 @@
+     let mut canvas =
+         DynamicImage::ImageRgba8(ImageBuffer::from_pixel(width, height, Rgba([0, 0, 0, 0])));
+     image::imageops::overlay(&mut canvas, &resized, 0, 0);
++    canvas
++}
++
++fn fit_image_to_canvas_centered(image: &DynamicImage, width: u32, height: u32) -> DynamicImage {
++    let resized = image.resize(width, height, FilterType::Nearest);
++    if resized.width() == width && resized.height() == height {
++        return resized;
++    }
++    let x = (width.saturating_sub(resized.width()) / 2) as i64;
++    let y = (height.saturating_sub(resized.height()) / 2) as i64;
++    let mut canvas =
++        DynamicImage::ImageRgba8(ImageBuffer::from_pixel(width, height, Rgba([0, 0, 0, 0])));
++    image::imageops::overlay(&mut canvas, &resized, x, y);
+     canvas
+ }
+ 
+--- a/src/tui/message_format.rs
++++ b/src/tui/message_format.rs
+@@ -154,6 +154,15 @@
+         self.styled_range(start, suffix.len(), style);
+     }
+ 
++    pub(super) fn highlight_links(&mut self) {
++        let style = Style::default()
++            .fg(Color::Blue)
++            .add_modifier(Modifier::UNDERLINED);
++        for (start, end) in find_url_ranges(&self.text) {
++            self.styled_range(start, end - start, style);
++        }
++    }
++
+     pub(super) fn spans(&self) -> Vec<Span<'static>> {
+         let mut boundaries = vec![0, self.text.len()];
+         for highlight in &self.mention_highlights {
+@@ -286,11 +295,15 @@
+         .then(|| display_text_with_stickers(message.content.as_deref(), &message.sticker_names))
+         .flatten();
+     if let Some(value) = standalone_content {
+-        lines.extend(wrap_rendered_text_lines(
+-            state.render_user_mentions_with_highlights(message.guild_id, &message.mentions, &value),
+-            width,
+-            Style::default(),
+-        ));
++        let rendered = state.render_user_mentions_with_highlights(
++            message.guild_id,
++            &message.mentions,
++            &value,
++        );
++        for mut line in wrap_rendered_text_lines(rendered, width, Style::default()) {
++            line.highlight_links();
++            lines.push(line);
++        }
+     }
+     lines.extend(format_embed_lines(
+         &message.embeds,
+@@ -479,6 +492,59 @@
+         .add_modifier(Modifier::UNDERLINED)
+ }
+ 
++pub(crate) fn extract_message_urls(message: &MessageState) -> Vec<String> {
++    let mut urls: Vec<String> = Vec::new();
++    if let Some(content) = message.content.as_deref() {
++        for (start, end) in find_url_ranges(content) {
++            urls.push(content[start..end].to_owned());
++        }
++    }
++    for embed in &message.embeds {
++        if let Some(url) = embed.url.as_deref() {
++            if !urls.iter().any(|u| u == url) {
++                urls.push(url.to_owned());
++            }
++        }
++    }
++    urls
++}
++
++fn find_url_ranges(text: &str) -> Vec<(usize, usize)> {
++    let mut ranges = Vec::new();
++    let bytes = text.as_bytes();
++    let len = bytes.len();
++    let mut i = 0;
++    while i < len {
++        let prefix_len = if i + 8 <= len && &bytes[i..i + 8] == b"https://" {
++            8
++        } else if i + 7 <= len && &bytes[i..i + 7] == b"http://" {
++            7
++        } else {
++            i += 1;
++            continue;
++        };
++        let start = i;
++        i += prefix_len;
++        while i < len && is_url_char(bytes[i]) {
++            i += 1;
++        }
++        let mut end = i;
++        while end > start + prefix_len
++            && matches!(bytes[end - 1], b'.' | b',' | b';' | b':' | b'!' | b'?' | b')' | b']')
++        {
++            end -= 1;
++        }
++        if end > start + prefix_len {
++            ranges.push((start, end));
++        }
++    }
++    ranges
++}
++
++fn is_url_char(b: u8) -> bool {
++    b > b' ' && !matches!(b, b'<' | b'>' | b'"' | b'`' | b'[' | b']' | b'{' | b'}')
++}
++
+ fn embed_line_style(embed: &EmbedInfo) -> Style {
+     Style::default().fg(embed_line_color(embed))
+ }
+@@ -868,6 +934,8 @@
+         let mut current_start = line_start;
+         let mut current_end = line_start;
+         let mut current_slots: Vec<MessageContentImageSlot> = Vec::new();
++        let mut rendered_col = 0usize;
++        let mut slot_interior_end = 0usize;
+         for (relative_start, grapheme) in line.grapheme_indices(true) {
+             let grapheme_start = line_start.saturating_add(relative_start);
+             let grapheme_end = grapheme_start.saturating_add(grapheme.len());
+@@ -892,13 +960,16 @@
+                     line_slots,
+                 ));
+                 current_width = 0;
++                rendered_col = 0;
++                slot_interior_end = 0;
+                 current_start = grapheme_start;
+             }
+ 
+             if let Some(slot) = slot_at_grapheme {
++                slot_interior_end = grapheme_start.saturating_add(slot.byte_len);
+                 let line_byte_start = current.len();
+                 current_slots.push(MessageContentImageSlot {
+-                    col: u16::try_from(current_width).unwrap_or(u16::MAX),
++                    col: u16::try_from(rendered_col).unwrap_or(u16::MAX),
+                     byte_start: line_byte_start,
+                     byte_len: slot.byte_len,
+                     display_width: slot.display_width,
+@@ -908,6 +979,14 @@
+ 
+             current.push_str(grapheme);
+             current_width = current_width.saturating_add(grapheme_width);
++            if slot_at_grapheme.is_some() {
++                // custom emoji images render as 2 cells regardless of `:name:` length
++                rendered_col = rendered_col.saturating_add(2);
++            } else if grapheme_start < slot_interior_end {
++                // inside a slot's fallback text -- image width already counted
++            } else {
++                rendered_col = rendered_col.saturating_add(grapheme_width);
++            }
+             current_end = grapheme_end;
+         }
+         lines.push((
+--- a/src/tui/state.rs
++++ b/src/tui/state.rs
+@@ -51,7 +51,7 @@
+     scroll_message_row_down, scroll_message_row_up,
+ };
+ 
+-pub use composer::{MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
++pub use composer::{EmojiPickerEntry, MAX_EMOJI_PICKER_VISIBLE, MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
+ pub use member_grouping::{MemberEntry, MemberGroup};
+ pub use model::{
+     ChannelActionItem, ChannelPaneEntry, ChannelThreadItem, EmojiReactionItem,
+@@ -190,6 +190,9 @@
+     /// composer can rewrite them to Discord's `<@USER_ID>` wire format on
+     /// submit even though the visible text is still the friendly form.
+     composer_mention_completions: Vec<MentionCompletion>,
++    composer_emoji_query: Option<String>,
++    composer_emoji_start: Option<usize>,
++    composer_emoji_selected: usize,
+     message_action_menu: Option<MessageActionMenuState>,
+     options_popup: Option<popups::OptionsPopupState>,
+     image_viewer: Option<ImageViewerState>,
+@@ -306,6 +309,9 @@
+             composer_mention_start: None,
+             composer_mention_selected: 0,
+             composer_mention_completions: Vec::new(),
++            composer_emoji_query: None,
++            composer_emoji_start: None,
++            composer_emoji_selected: 0,
+             message_action_menu: None,
+             options_popup: None,
+             image_viewer: None,
+--- a/src/tui/input/keyboard.rs
++++ b/src/tui/input/keyboard.rs
+@@ -161,6 +161,12 @@
+             state.add_pending_composer_attachments(attachments);
+             return true;
+         }
++        if text.trim().is_empty() {
++            if let Some(attachment) = clipboard_image_attachment() {
++                state.add_pending_composer_attachments(vec![attachment]);
++                return true;
++            }
++        }
+     }
+ 
+     let pasted: String = text.chars().filter(|value| *value != '\r').collect();
+@@ -170,6 +176,95 @@
+     state.insert_composer_text_at_cursor(&pasted);
+     true
+ }
++
++#[cfg(target_os = "linux")]
++fn clipboard_image_attachment() -> Option<MessageAttachmentUpload> {
++    use std::{
++        process::Command,
++        time::{SystemTime, UNIX_EPOCH},
++    };
++
++    let types = Command::new("wl-paste").arg("--list-types").output().ok()?;
++    if !types.status.success() {
++        return None;
++    }
++    let types_str = String::from_utf8_lossy(&types.stdout);
++    let mime_type = types_str
++        .lines()
++        .find(|t| {
++            matches!(
++                *t,
++                "image/png" | "image/jpeg" | "image/jpg" | "image/gif" | "image/webp"
++            )
++        })?
++        .to_owned();
++
++    let ext = match mime_type.as_str() {
++        "image/jpeg" | "image/jpg" => "jpg",
++        "image/gif" => "gif",
++        "image/webp" => "webp",
++        _ => "png",
++    };
++    let ts = SystemTime::now()
++        .duration_since(UNIX_EPOCH)
++        .ok()?
++        .as_millis();
++    let path = PathBuf::from(format!("/tmp/concord-clip-{ts}.{ext}"));
++
++    let data = Command::new("wl-paste")
++        .arg("--type")
++        .arg(&mime_type)
++        .output()
++        .ok()?;
++    if !data.status.success() || data.stdout.is_empty() {
++        return None;
++    }
++
++    std::fs::write(&path, &data.stdout).ok()?;
++    let size_bytes = path.metadata().ok()?.len();
++    let filename = format!("clipboard-{ts}.{ext}");
++
++    Some(MessageAttachmentUpload { filename, path, size_bytes })
++}
++
++#[cfg(not(target_os = "linux"))]
++fn clipboard_image_attachment() -> Option<MessageAttachmentUpload> {
++    None
++}
++
++fn handle_emoji_picker_key(
++    state: &mut DashboardState,
++    key: KeyEvent,
++) -> Option<Option<AppCommand>> {
++    let ctrl = key.modifiers.contains(KeyModifiers::CONTROL);
++    match key.code {
++        KeyCode::Up => {
++            state.move_composer_emoji_selection(-1);
++            Some(None)
++        }
++        KeyCode::Down => {
++            state.move_composer_emoji_selection(1);
++            Some(None)
++        }
++        KeyCode::Char('p') if ctrl => {
++            state.move_composer_emoji_selection(-1);
++            Some(None)
++        }
++        KeyCode::Char('n') if ctrl => {
++            state.move_composer_emoji_selection(1);
++            Some(None)
++        }
++        KeyCode::Tab | KeyCode::Enter => {
++            if state.confirm_composer_emoji() { Some(None) } else { None }
++        }
++        KeyCode::Esc => {
++            state.cancel_composer_emoji();
++            Some(None)
++        }
++        _ => None,
++    }
++}
++
+ 
+ fn pasted_file_attachments(text: &str) -> Option<Vec<MessageAttachmentUpload>> {
+     let mut attachments = Vec::new();
+@@ -485,6 +580,11 @@
+ }
+ 
+ fn handle_composer_key(state: &mut DashboardState, key: KeyEvent) -> Option<AppCommand> {
++    if state.composer_emoji_query().is_some()
++        && let Some(command) = handle_emoji_picker_key(state, key)
++    {
++        return command;
++    }
+     if state.composer_mention_query().is_some()
+         && let Some(command) = handle_mention_picker_key(state, key)
+     {
+@@ -530,6 +630,14 @@
+         }
+         KeyCode::End => {
+             state.move_composer_cursor_end();
++            None
++        }
++        KeyCode::Char('v') if key.modifiers.contains(KeyModifiers::CONTROL) => {
++            if state.composer_accepts_attachments() {
++                if let Some(attachment) = clipboard_image_attachment() {
++                    state.add_pending_composer_attachments(vec![attachment]);
++                }
++            }
+             None
+         }
+         KeyCode::Char(value) => {
+--- a/src/tui/state/composer.rs
++++ b/src/tui/state/composer.rs
+@@ -3,6 +3,66 @@
+ use crate::discord::PresenceStatus;
+ 
+ use super::MemberEntry;
++
++use crate::discord::CustomEmojiInfo;
++
++pub const MAX_EMOJI_PICKER_VISIBLE: usize = 8;
++
++#[derive(Debug, Clone)]
++pub struct EmojiPickerEntry {
++    pub name: String,
++    pub text: String,
++}
++
++static UNICODE_EMOJI_LIST: &[(&str, &str)] = &[
++    ("thumbsup", "👍"), ("thumbsdown", "👎"), ("heart", "❤️"), ("fire", "🔥"),
++    ("laughing", "😂"), ("joy", "😂"), ("rofl", "🤣"), ("sob", "😭"),
++    ("sweat_smile", "😅"), ("grin", "😁"), ("smile", "😊"), ("wink", "😉"),
++    ("sunglasses", "😎"), ("thinking", "🤔"), ("eyes", "👀"), ("wave", "👋"),
++    ("raised_hands", "🙌"), ("clap", "👏"), ("pray", "🙏"), ("muscle", "💪"),
++    ("ok_hand", "👌"), ("point_right", "👉"), ("point_left", "👈"),
++    ("skull", "💀"), ("poop", "💩"), ("sparkles", "✨"), ("star", "⭐"),
++    ("100", "💯"), ("check", "✅"), ("x", "❌"), ("angry", "😠"),
++    ("rage", "😡"), ("cry", "😢"), ("facepalm", "🤦"), ("shrug", "🤷"),
++    ("celebrate", "🎉"), ("tada", "🎉"), ("rocket", "🚀"), ("zap", "⚡"),
++    ("cold_face", "🥶"), ("hot_face", "🥵"), ("monkeysee", "🙈"),
++    ("monkeyhear", "🙉"), ("peach", "🍑"), ("eggplant", "🍆"),
++    ("saluting_face", "🫡"), ("nerd", "🤓"), ("monocle", "🧐"),
++    ("exploding_head", "🤯"), ("melting_face", "🫠"), ("salad", "🥗"),
++];
++
++pub(super) fn is_emoji_query_char(c: char) -> bool {
++    c.is_alphanumeric() || c == '_' || c == '-'
++}
++
++pub(super) fn build_emoji_candidates(
++    query: &str,
++    custom_emojis: &[CustomEmojiInfo],
++) -> Vec<EmojiPickerEntry> {
++    let needle = query.to_lowercase();
++    let mut results: Vec<(u8, EmojiPickerEntry)> = Vec::new();
++
++    for emoji in custom_emojis {
++        let name_lower = emoji.name.to_lowercase();
++        let rank = if name_lower.starts_with(&needle) { 0 } else if name_lower.contains(&needle) { 1 } else { continue };
++        let text = if emoji.animated {
++            format!("<a:{}:{}>", emoji.name, emoji.id.get())
++        } else {
++            format!("<:{}:{}>", emoji.name, emoji.id.get())
++        };
++        results.push((rank, EmojiPickerEntry { name: format!(":{}:", emoji.name), text }));
++    }
++
++    for (name, ch) in UNICODE_EMOJI_LIST {
++        let rank = if name.starts_with(&needle) { 2 } else if name.contains(&needle) { 3 } else { continue };
++        results.push((rank, EmojiPickerEntry { name: format!(":{}:", name), text: ch.to_string() }));
++    }
++
++    results.sort_by_key(|(rank, entry)| (*rank, entry.name.clone()));
++    results.truncate(MAX_EMOJI_PICKER_VISIBLE);
++    results.into_iter().map(|(_, e)| e).collect()
++}
++
+ 
+ /// Maximum number of suggestions the @-mention picker shows at once. Mirrors
+ /// the upper bound used by other composer popups so the layout math stays
+--- a/src/tui/state/composer_state.rs
++++ b/src/tui/state/composer_state.rs
+@@ -3,9 +3,11 @@
+ use crate::discord::{AppCommand, MAX_UPLOAD_ATTACHMENT_COUNT, MessageAttachmentUpload};
+ 
+ use super::composer::{
+-    MentionCompletion, build_mention_candidates, expand_mention_completions, is_mention_query_char,
++    MentionCompletion, build_emoji_candidates, build_mention_candidates,
++    expand_mention_completions, is_emoji_query_char, is_mention_query_char,
+     move_mention_selection, should_start_mention_query,
+ };
++use super::EmojiPickerEntry;
+ use super::{DashboardState, FocusPane, MentionPickerEntry};
+ 
+ impl DashboardState {
+@@ -330,6 +332,7 @@
+     fn reset_mention_picker_state(&mut self) {
+         self.close_composer_mention_query();
+         self.composer_mention_completions.clear();
++        self.close_composer_emoji_query();
+     }
+ 
+     fn close_composer_mention_query(&mut self) {
+@@ -351,6 +354,7 @@
+             .replace_range(range.clone(), replacement);
+         self.composer_cursor_byte_index = range.start + replacement.len();
+         self.refresh_active_mention_query();
++        self.refresh_active_emoji_query();
+     }
+ 
+     fn refresh_active_mention_query(&mut self) {
+@@ -412,6 +416,88 @@
+ 
+         self.composer_mention_completions = completions;
+     }
++
++    pub fn composer_emoji_query(&self) -> Option<&str> {
++        self.composer_emoji_query.as_deref()
++    }
++
++    pub fn composer_emoji_selected(&self) -> usize {
++        self.composer_emoji_selected
++    }
++
++    pub fn composer_emoji_candidates(&self) -> Vec<EmojiPickerEntry> {
++        let Some(query) = self.composer_emoji_query.as_deref() else {
++            return Vec::new();
++        };
++        let custom_emojis = self.discord.all_custom_emojis();
++        build_emoji_candidates(query, &custom_emojis)
++    }
++
++    pub fn move_composer_emoji_selection(&mut self, delta: isize) {
++        if self.composer_emoji_query.is_none() {
++            return;
++        }
++        let len = self.composer_emoji_candidates().len();
++        self.composer_emoji_selected = move_mention_selection(self.composer_emoji_selected, len, delta);
++    }
++
++    pub fn confirm_composer_emoji(&mut self) -> bool {
++        let Some(emoji_start) = self.composer_emoji_start else {
++            return false;
++        };
++        let candidates = self.composer_emoji_candidates();
++        let Some(entry) = candidates.get(self.composer_emoji_selected) else {
++            return false;
++        };
++        let text = entry.text.clone();
++        let cursor = self.composer_cursor_byte_index();
++        if emoji_start > cursor {
++            return false;
++        }
++        self.replace_composer_range(emoji_start..cursor, &text);
++        self.close_composer_emoji_query();
++        true
++    }
++
++    pub fn cancel_composer_emoji(&mut self) {
++        self.close_composer_emoji_query();
++    }
++
++    fn close_composer_emoji_query(&mut self) {
++        self.composer_emoji_query = None;
++        self.composer_emoji_start = None;
++        self.composer_emoji_selected = 0;
++    }
++
++    fn refresh_active_emoji_query(&mut self) {
++        let cursor = self.composer_cursor_byte_index();
++        let mut query_start = cursor;
++
++        while query_start > 0 {
++            let previous = previous_char_boundary(&self.composer_input, query_start);
++            let c = self.composer_input[previous..query_start]
++                .chars()
++                .next()
++                .expect("character boundary slice contains one character");
++            if !is_emoji_query_char(c) {
++                break;
++            }
++            query_start = previous;
++        }
++
++        if query_start > 0 {
++            let colon_start = previous_char_boundary(&self.composer_input, query_start);
++            let query = &self.composer_input[query_start..cursor];
++            if &self.composer_input[colon_start..query_start] == ":" && !query.is_empty() {
++                self.composer_emoji_query = Some(query.to_owned());
++                self.composer_emoji_start = Some(colon_start);
++                self.composer_emoji_selected = 0;
++                return;
++            }
++        }
++
++        self.close_composer_emoji_query();
++    }
+ }
+ 
+ fn clamp_cursor_index(input: &str, index: usize) -> usize {
+--- a/src/tui/state/message_actions.rs
++++ b/src/tui/state/message_actions.rs
+@@ -1,4 +1,6 @@
+ use crate::discord::{AppCommand, ReactionEmoji};
++
++use super::super::message_format::extract_message_urls;
+ 
+ use super::scroll::{clamp_selected_index, move_index_down, move_index_up};
+ use super::{
+@@ -150,6 +152,38 @@
+                 });
+             }
+         }
++        let urls = extract_message_urls(&message);
++        for (index, url) in urls.iter().enumerate() {
++            let label = if url.len() <= 40 {
++                format!("Open link: {}", url)
++            } else {
++                format!("Open link: {}\u{2026}", &url[..40])
++            };
++            actions.push(MessageActionItem {
++                kind: MessageActionKind::OpenLink(index),
++                label,
++                enabled: true,
++            });
++        }
++        if message.content.is_some() {
++            actions.push(MessageActionItem {
++                kind: MessageActionKind::CopyText,
++                label: "Copy text".to_owned(),
++                enabled: true,
++            });
++        }
++        for (index, url) in urls.iter().enumerate() {
++            let label = if url.len() <= 40 {
++                format!("Copy URL: {}", url)
++            } else {
++                format!("Copy URL: {}…", &url[..40])
++            };
++            actions.push(MessageActionItem {
++                kind: MessageActionKind::CopyUrl(index),
++                label,
++                enabled: true,
++            });
++        }
+         if let Some(poll) = &message.poll
+             && !poll.results_finalized.unwrap_or(false)
+         {
+@@ -333,6 +367,26 @@
+                     answer_ids,
+                 })
+             }
++            MessageActionKind::OpenLink(index) => {
++                let message = self.selected_message_state()?;
++                let urls = extract_message_urls(&message);
++                let url = urls.into_iter().nth(index)?;
++                self.close_message_action_menu();
++                Some(AppCommand::OpenUrl { url })
++            }
++            MessageActionKind::CopyText => {
++                let message = self.selected_message_state()?;
++                let text = message.content.clone()?;
++                self.close_message_action_menu();
++                Some(AppCommand::CopyToClipboard { text })
++            }
++            MessageActionKind::CopyUrl(index) => {
++                let message = self.selected_message_state()?;
++                let urls = extract_message_urls(&message);
++                let text = urls.into_iter().nth(index)?;
++                self.close_message_action_menu();
++                Some(AppCommand::CopyToClipboard { text })
++            }
+         }
+     }
+ 
+--- a/src/tui/state/model.rs
++++ b/src/tui/state/model.rs
+@@ -29,6 +29,9 @@
+     SetPinned(bool),
+     VotePollAnswer(u8),
+     OpenPollVotePicker,
++    OpenLink(usize),
++    CopyText,
++    CopyUrl(usize),
+ }
+ 
+ #[derive(Clone, Debug, Eq, PartialEq)]
+@@ -55,6 +58,9 @@
+             MessageActionKind::SetPinned(_) => Some('n'),
+             MessageActionKind::VotePollAnswer(_) => None,
+             MessageActionKind::OpenPollVotePicker => Some('c'),
++            MessageActionKind::OpenLink(_) => Some('l'),
++            MessageActionKind::CopyText => Some('y'),
++            MessageActionKind::CopyUrl(_) => None,
+         }
+     }
+ }
+--- a/src/tui/ui/layout.rs
++++ b/src/tui/ui/layout.rs
+@@ -7,7 +7,7 @@
+ use super::super::{message_format::wrap_text_lines, state::DashboardState};
+ use super::types::{
+     DashboardAreas, EMBED_PREVIEW_GUTTER_PREFIX, IMAGE_PREVIEW_HEIGHT, IMAGE_PREVIEW_WIDTH,
+-    IMAGE_VIEWER_POPUP_HEIGHT, IMAGE_VIEWER_POPUP_WIDTH, MAX_REACTION_USERS_VISIBLE_LINES,
++    MAX_REACTION_USERS_VISIBLE_LINES,
+     MESSAGE_AVATAR_OFFSET, MIN_MESSAGE_INPUT_HEIGHT, MessageAreas,
+ };
+ 
+@@ -38,7 +38,9 @@
+ }
+ 
+ pub(super) fn image_viewer_popup(area: Rect) -> Rect {
+-    centered_rect(area, IMAGE_VIEWER_POPUP_WIDTH, IMAGE_VIEWER_POPUP_HEIGHT)
++    let width = (area.width * 9 / 10).max(1);
++    let height = (area.height * 9 / 10).max(1);
++    centered_rect(area, width, height)
+ }
+ 
+ pub(super) fn image_viewer_image_area(area: Rect) -> Rect {
+--- a/src/tui/ui/message_list.rs
++++ b/src/tui/ui/message_list.rs
+@@ -1,5 +1,5 @@
+ use super::forum;
+-use super::panes::{render_composer, render_composer_mention_picker};
++use super::panes::{render_composer, render_composer_emoji_picker, render_composer_mention_picker};
+ use super::*;
+ 
+ #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+@@ -85,6 +85,7 @@
+         );
+         render_typing_footer(frame, message_areas.typing, state);
+         render_composer(frame, message_areas.composer, state);
++        render_composer_emoji_picker(frame, &message_areas, state);
+         render_composer_mention_picker(frame, message_areas, state);
+         return;
+     }
+@@ -208,6 +209,7 @@
+     render_new_messages_notice(frame, message_areas.list, state);
+     render_typing_footer(frame, message_areas.typing, state);
+     render_composer(frame, message_areas.composer, state);
++    render_composer_emoji_picker(frame, &message_areas, state);
+     render_composer_mention_picker(frame, message_areas, state);
+ }
+ 
+--- a/src/tui/ui/panes.rs
++++ b/src/tui/ui/panes.rs
+@@ -18,8 +18,9 @@
+     },
+     message_format::{format_attachment_summary, wrap_text_lines},
+     state::{
+-        ChannelPaneEntry, DashboardState, FocusPane, GuildPaneEntry, MAX_MENTION_PICKER_VISIBLE,
+-        MemberEntry, MemberGroup, MentionPickerEntry, discord_color, folder_color, presence_color,
++        ChannelPaneEntry, DashboardState, EmojiPickerEntry, FocusPane, GuildPaneEntry,
++        MAX_EMOJI_PICKER_VISIBLE, MAX_MENTION_PICKER_VISIBLE, MemberEntry, MemberGroup,
++        MentionPickerEntry, discord_color, folder_color, presence_color,
+         presence_marker,
+     },
+ };
+@@ -330,6 +331,77 @@
+     Some(Position { x, y })
+ }
+ 
++pub(super) fn render_composer_emoji_picker(
++    frame: &mut Frame,
++    message_areas: &MessageAreas,
++    state: &DashboardState,
++) {
++    if state.composer_emoji_query().is_none() {
++        return;
++    }
++    let candidates = state.composer_emoji_candidates();
++    if candidates.is_empty() {
++        return;
++    }
++    let Some(area) = emoji_picker_area(message_areas, candidates.len()) else {
++        return;
++    };
++    frame.render_widget(Clear, area);
++    let inner_width = area.width.saturating_sub(2) as usize;
++    let lines = emoji_picker_lines(&candidates, state.composer_emoji_selected(), inner_width);
++    let block = Block::default()
++        .borders(Borders::ALL)
++        .border_type(BorderType::Plain)
++        .border_style(Style::default().fg(DIM))
++        .title(" emoji ")
++        .title_style(Style::default().fg(Color::White).bold());
++    frame.render_widget(Paragraph::new(lines).block(block), area);
++}
++
++fn emoji_picker_area(message_areas: &MessageAreas, candidate_count: usize) -> Option<Rect> {
++    let composer = message_areas.composer;
++    let messages = message_areas.list;
++    if composer.x < messages.x || composer.width == 0 {
++        return None;
++    }
++    let desired_height = (candidate_count.min(MAX_EMOJI_PICKER_VISIBLE) as u16).saturating_add(2);
++    let available_above = composer.y.saturating_sub(messages.y);
++    let height = desired_height.min(available_above);
++    if height < 3 {
++        return None;
++    }
++    let width = composer.width.clamp(20, 52).min(messages.width);
++    let x = composer.x;
++    let y = composer.y.saturating_sub(height);
++    Some(Rect { x, y, width, height })
++}
++
++fn emoji_picker_lines(
++    candidates: &[EmojiPickerEntry],
++    selected: usize,
++    width: usize,
++) -> Vec<Line<'static>> {
++    let max_label_width = width.saturating_sub(4).max(1);
++    candidates
++        .iter()
++        .enumerate()
++        .map(|(index, entry)| {
++            let cursor = if index == selected { "› " } else { "  " };
++            let label = truncate_display_width(&entry.name, max_label_width);
++            let mut row_style = Style::default().fg(Color::White);
++            if index == selected {
++                row_style = row_style
++                    .bg(Color::Rgb(40, 45, 90))
++                    .add_modifier(Modifier::BOLD);
++            }
++            Line::from(vec![
++                Span::styled(cursor, Style::default().fg(ACCENT)),
++                Span::styled(label, row_style),
++            ])
++        })
++        .collect()
++}
++
+ pub(super) fn render_composer_mention_picker(
+     frame: &mut Frame,
+     message_areas: MessageAreas,
