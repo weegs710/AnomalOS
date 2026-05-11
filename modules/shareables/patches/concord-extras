@@ -1,6 +1,8 @@
+diff --git a/src/app.rs b/src/app.rs
+index 6ca451d..8af4117 100644
 --- a/src/app.rs
 +++ b/src/app.rs
-@@ -2,7 +2,7 @@
+@@ -2,7 +2,7 @@ use std::{
      env, fs,
      io::{self, Write},
      path::{Path, PathBuf},
@@ -9,7 +11,7 @@
      sync::Arc,
      time::Instant,
  };
-@@ -474,6 +474,11 @@
+@@ -474,6 +474,11 @@ fn start_command_loop(
                                  .await;
                          }
                      }
@@ -21,7 +23,7 @@
                      AppCommand::DownloadAttachment { url, filename } => {
                          match timeout(
                              ATTACHMENT_PREVIEW_TIMEOUT,
-@@ -947,11 +952,30 @@
+@@ -947,11 +952,30 @@ fn open_url_command(url: &str) -> Command {
      #[cfg(all(unix, not(target_os = "macos")))]
      {
          let mut command = Command::new("xdg-open");
@@ -53,9 +55,11 @@
  struct ResolvedToken {
      token: String,
      warnings: Vec<String>,
+diff --git a/src/discord/commands.rs b/src/discord/commands.rs
+index 629dc26..1a14313 100644
 --- a/src/discord/commands.rs
 +++ b/src/discord/commands.rs
-@@ -167,4 +167,7 @@
+@@ -167,4 +167,7 @@ pub enum AppCommand {
          channel_id: Id<ChannelMarker>,
          message_id: Id<MessageMarker>,
      },
@@ -63,9 +67,11 @@
 +        text: String,
 +    },
  }
+diff --git a/src/discord/state.rs b/src/discord/state.rs
+index 7acf27f..66dee47 100644
 --- a/src/discord/state.rs
 +++ b/src/discord/state.rs
-@@ -1063,6 +1063,10 @@
+@@ -1063,6 +1063,10 @@ impl DiscordState {
              .unwrap_or_default()
      }
  
@@ -76,7 +82,7 @@
      pub fn member_display_name(
          &self,
          guild_id: Id<GuildMarker>,
-@@ -1072,6 +1076,7 @@
+@@ -1072,6 +1076,7 @@ impl DiscordState {
              .get(&guild_id)
              .and_then(|members| members.get(&user_id))
              .map(|member| member.display_name.as_str())
@@ -84,7 +90,7 @@
      }
  
      pub fn channel(&self, channel_id: Id<ChannelMarker>) -> Option<&ChannelState> {
-@@ -1090,11 +1095,12 @@
+@@ -1090,11 +1095,12 @@ impl DiscordState {
          author_id: Id<UserMarker>,
          fallback: &str,
      ) -> String {
@@ -100,7 +106,7 @@
      }
  
      fn message_author_avatar_url(
-@@ -1115,6 +1121,9 @@
+@@ -1115,6 +1121,9 @@ impl DiscordState {
          guild_id: Id<GuildMarker>,
          member: &MemberInfo,
      ) {
@@ -110,9 +116,11 @@
          for messages in self.messages.values_mut() {
              for message in messages.iter_mut() {
                  if message.guild_id == Some(guild_id) && message.author_id == member.user_id {
+diff --git a/src/tui/input/keyboard.rs b/src/tui/input/keyboard.rs
+index ce77fe9..f7e77c4 100644
 --- a/src/tui/input/keyboard.rs
 +++ b/src/tui/input/keyboard.rs
-@@ -161,6 +161,12 @@
+@@ -161,6 +161,12 @@ pub fn handle_paste(state: &mut DashboardState, text: &str) -> bool {
              state.add_pending_composer_attachments(attachments);
              return true;
          }
@@ -125,7 +133,7 @@
      }
  
      let pasted: String = text.chars().filter(|value| *value != '\r').collect();
-@@ -171,6 +177,95 @@
+@@ -171,6 +177,95 @@ pub fn handle_paste(state: &mut DashboardState, text: &str) -> bool {
      true
  }
  
@@ -221,7 +229,7 @@
  fn pasted_file_attachments(text: &str) -> Option<Vec<MessageAttachmentUpload>> {
      let mut attachments = Vec::new();
      for line in meaningful_paste_lines(text) {
-@@ -485,6 +580,11 @@
+@@ -485,6 +580,11 @@ fn is_shortcut_key(key: KeyEvent) -> bool {
  }
  
  fn handle_composer_key(state: &mut DashboardState, key: KeyEvent) -> Option<AppCommand> {
@@ -233,7 +241,7 @@
      if state.composer_mention_query().is_some()
          && let Some(command) = handle_mention_picker_key(state, key)
      {
-@@ -532,6 +632,14 @@
+@@ -532,6 +632,14 @@ fn handle_composer_key(state: &mut DashboardState, key: KeyEvent) -> Option<AppC
              state.move_composer_cursor_end();
              None
          }
@@ -248,245 +256,11 @@
          KeyCode::Char(value) => {
              state.push_composer_char(value);
              None
---- a/src/tui/media/preview.rs	2026-05-11 14:33:30.150631275 -0400
-+++ b/src/tui/media/preview.rs	2026-05-11 15:19:46.127022357 -0400
-@@ -1,10 +1,12 @@
- use std::{
-     collections::{HashMap, HashSet},
-+    io::Cursor,
-     sync::{Arc, OnceLock},
-+    time::{Duration, Instant},
- };
- 
- use crate::discord::ids::{Id, marker::MessageMarker};
--use image::DynamicImage;
-+use image::{AnimationDecoder, DynamicImage, codecs::gif::GifDecoder};
- use ratatui_image::{picker::Picker, protocol::StatefulProtocol};
- use tokio::{sync::mpsc, task};
- 
-@@ -41,10 +43,15 @@
-     pub(super) bytes: Arc<[u8]>,
- }
- 
-+pub(super) enum ImageData {
-+    Static(DynamicImage),
-+    Animated { frames: Vec<DynamicImage>, delays_ms: Vec<u32> },
-+}
-+
- pub(in crate::tui) struct ImagePreviewDecodeResult {
-     pub(super) key: ImagePreviewKey,
-     pub(super) generation: u64,
--    pub(super) result: std::result::Result<DynamicImage, String>,
-+    pub(super) result: std::result::Result<ImageData, String>,
- }
- 
- pub(super) enum ImagePreviewEntry {
-@@ -66,6 +73,18 @@
-         protocol: Box<StatefulProtocol>,
-         last_used: u64,
-     },
-+    Animated {
-+        filename: String,
-+        frames: Vec<DynamicImage>,
-+        delays_ms: Vec<u32>,
-+        current_protocol: Option<Box<StatefulProtocol>>,
-+        rendered_frame: usize,
-+        last_render_info: Option<ImagePreviewRenderInfo>,
-+        current_frame: usize,
-+        frame_elapsed_ms: u32,
-+        last_frame_time: Instant,
-+        last_used: u64,
-+    },
-     Failed {
-         filename: String,
-         message: String,
-@@ -126,6 +145,49 @@
-                         protocol: protocol.as_mut(),
-                     }
-                 }
-+                ImagePreviewEntry::Animated {
-+                    filename,
-+                    frames,
-+                    delays_ms,
-+                    current_protocol,
-+                    rendered_frame,
-+                    last_render_info,
-+                    current_frame,
-+                    frame_elapsed_ms,
-+                    last_frame_time,
-+                    ..
-+                } => {
-+                    let now = Instant::now();
-+                    let elapsed = now.duration_since(*last_frame_time).as_millis() as u32;
-+                    *last_frame_time = now;
-+                    *frame_elapsed_ms = frame_elapsed_ms.saturating_add(elapsed);
-+                    while *frame_elapsed_ms >= delays_ms[*current_frame] {
-+                        *frame_elapsed_ms -= delays_ms[*current_frame];
-+                        *current_frame = (*current_frame + 1) % frames.len();
-+                    }
-+                    // Recreate protocol when frame changes or layout changes
-+                    let layout_changed = *last_render_info != Some(render_info);
-+                    let frame_changed = *rendered_frame != *current_frame;
-+                    if layout_changed || frame_changed || current_protocol.is_none() {
-+                        if let Some(picker) = picker.as_ref() {
-+                            *current_protocol = clipped_preview_stateful_protocol(
-+                                picker,
-+                                &frames[*current_frame],
-+                                render_info,
-+                            );
-+                        }
-+                        *rendered_frame = *current_frame;
-+                        *last_render_info = Some(render_info);
-+                    }
-+                    match current_protocol.as_mut() {
-+                        Some(protocol) => ImagePreviewState::Ready {
-+                            protocol: protocol.as_mut(),
-+                        },
-+                        None => ImagePreviewState::Loading {
-+                            filename: filename.clone(),
-+                        },
-+                    }
-+                }
-                 ImagePreviewEntry::Failed {
-                     filename, message, ..
-                 } => ImagePreviewState::Failed {
-@@ -174,6 +236,26 @@
-         previews.into_iter().map(|(_, preview)| preview).collect()
-     }
- 
-+    pub(in crate::tui) fn next_animation_wake(&self) -> Option<Duration> {
-+        self.entries
-+            .values()
-+            .filter_map(|entry| {
-+                if let ImagePreviewEntry::Animated {
-+                    delays_ms,
-+                    current_frame,
-+                    frame_elapsed_ms,
-+                    ..
-+                } = entry
-+                {
-+                    let remaining = delays_ms[*current_frame].saturating_sub(*frame_elapsed_ms);
-+                    Some(Duration::from_millis(remaining as u64))
-+                } else {
-+                    None
-+                }
-+            })
-+            .min()
-+    }
-+
-     pub(in crate::tui) fn next_requests(
-         &mut self,
-         targets: &[ImagePreviewTarget],
-@@ -312,7 +394,24 @@
- 
-         let last_used = self.next_tick();
-         match result.result {
--            Ok(image) => {
-+            Ok(ImageData::Animated { frames, delays_ms }) => {
-+                self.entries.insert(
-+                    result.key,
-+                    ImagePreviewEntry::Animated {
-+                        filename,
-+                        current_protocol: None,
-+                        rendered_frame: usize::MAX,
-+                        last_render_info: None,
-+                        frames,
-+                        delays_ms,
-+                        current_frame: 0,
-+                        frame_elapsed_ms: 0,
-+                        last_frame_time: Instant::now(),
-+                        last_used,
-+                    },
-+                );
-+            }
-+            Ok(ImageData::Static(image)) => {
-                 let Some(picker) = self.picker.as_ref() else {
-                     self.entries.insert(
-                         result.key,
-@@ -364,7 +463,9 @@
-         match self.entries.get(key)? {
-             ImagePreviewEntry::Loading { render_info, .. }
-             | ImagePreviewEntry::Decoding { render_info, .. } => Some(*render_info),
--            ImagePreviewEntry::Ready { .. } | ImagePreviewEntry::Failed { .. } => None,
-+            ImagePreviewEntry::Ready { .. }
-+            | ImagePreviewEntry::Animated { .. }
-+            | ImagePreviewEntry::Failed { .. } => None,
-         }
-     }
- 
-@@ -479,6 +580,7 @@
-             Self::Loading { filename, .. }
-             | Self::Decoding { filename, .. }
-             | Self::Ready { filename, .. }
-+            | Self::Animated { filename, .. }
-             | Self::Failed { filename, .. } => filename,
-         }
-     }
-@@ -488,6 +590,7 @@
-             Self::Loading { last_used, .. }
-             | Self::Decoding { last_used, .. }
-             | Self::Ready { last_used, .. }
-+            | Self::Animated { last_used, .. }
-             | Self::Failed { last_used, .. } => *last_used,
-         }
-     }
-@@ -506,6 +609,9 @@
-         | ImagePreviewEntry::Ready {
-             last_used: value, ..
-         }
-+        | ImagePreviewEntry::Animated {
-+            last_used: value, ..
-+        }
-         | ImagePreviewEntry::Failed {
-             last_used: value, ..
-         } => *value = last_used,
-@@ -537,7 +643,7 @@
- }
- 
- fn decode_image_preview(job: ImagePreviewDecodeJob) -> ImagePreviewDecodeResult {
--    let result = decode_original_preview_image(&job.bytes);
-+    let result = decode_image_data(&job.bytes);
-     ImagePreviewDecodeResult {
-         key: job.key,
-         generation: job.generation,
-@@ -545,6 +651,34 @@
-     }
- }
- 
-+fn decode_image_data(bytes: &[u8]) -> std::result::Result<ImageData, String> {
-+    if bytes.starts_with(b"GIF8") {
-+        let cursor = Cursor::new(bytes);
-+        if let Ok(decoder) = GifDecoder::new(cursor) {
-+            let mut images = Vec::new();
-+            let mut delays = Vec::new();
-+            for frame_result in decoder.into_frames().take(200) {
-+                match frame_result {
-+                    Ok(frame) => {
-+                        let (num, denom) = frame.delay().numer_denom_ms();
-+                        let delay_ms = if denom == 0 { 100 } else { (num / denom).max(10) };
-+                        images.push(DynamicImage::ImageRgba8(frame.into_buffer()));
-+                        delays.push(delay_ms);
-+                    }
-+                    Err(_) => break,
-+                }
-+            }
-+            if images.len() > 1 {
-+                return Ok(ImageData::Animated { frames: images, delays_ms: delays });
-+            }
-+        }
-+    }
-+    image::load_from_memory(bytes)
-+        .map(ImageData::Static)
-+        .map_err(|error| format!("decode failed: {error}"))
-+}
-+
-+#[allow(dead_code)]
- pub(super) fn decode_original_preview_image(
-     bytes: &[u8],
- ) -> std::result::Result<DynamicImage, String> {
+diff --git a/src/tui/media.rs b/src/tui/media.rs
+index 5732239..816d5ae 100644
 --- a/src/tui/media.rs
 +++ b/src/tui/media.rs
-@@ -537,7 +537,11 @@
+@@ -537,7 +537,11 @@ fn clipped_preview_image(
          return None;
      }
  
@@ -499,7 +273,7 @@
      Some(fitted.crop_imm(0, crop_top, full_width, crop_height))
  }
  
-@@ -573,6 +577,19 @@
+@@ -573,6 +577,19 @@ fn fit_image_to_canvas(image: &DynamicImage, width: u32, height: u32) -> Dynamic
      canvas
  }
  
@@ -519,9 +293,129 @@
  #[cfg(test)]
  mod tests {
      use std::collections::HashMap;
+diff --git a/src/tui/media/preview.rs b/src/tui/media/preview.rs
+index 5763c1b..7a58d16 100644
+--- a/src/tui/media/preview.rs
++++ b/src/tui/media/preview.rs
+@@ -41,10 +41,14 @@ pub(in crate::tui) struct ImagePreviewDecodeJob {
+     pub(super) bytes: Arc<[u8]>,
+ }
+ 
++pub(super) enum ImageData {
++    Static(DynamicImage),
++}
++
+ pub(in crate::tui) struct ImagePreviewDecodeResult {
+     pub(super) key: ImagePreviewKey,
+     pub(super) generation: u64,
+-    pub(super) result: std::result::Result<DynamicImage, String>,
++    pub(super) result: std::result::Result<ImageData, String>,
+ }
+ 
+ pub(super) enum ImagePreviewEntry {
+@@ -174,6 +178,22 @@ impl ImagePreviewCache {
+         previews.into_iter().map(|(_, preview)| preview).collect()
+     }
+ 
++    pub(in crate::tui) fn viewer_image_natural_cells(
++        &self,
++        img_w: u32,
++        img_h: u32,
++    ) -> Option<(u16, u16)> {
++        let (font_w, font_h) = self.picker.as_ref()?.font_size();
++        let font_w = u32::from(font_w).max(1);
++        let font_h = u32::from(font_h).max(1);
++        if img_w == 0 || img_h == 0 {
++            return None;
++        }
++        let cols = img_w.div_ceil(font_w).min(u32::from(u16::MAX)) as u16;
++        let rows = img_h.div_ceil(font_h).min(u32::from(u16::MAX)) as u16;
++        Some((cols, rows))
++    }
++
+     pub(in crate::tui) fn next_requests(
+         &mut self,
+         targets: &[ImagePreviewTarget],
+@@ -312,7 +332,7 @@ impl ImagePreviewCache {
+ 
+         let last_used = self.next_tick();
+         match result.result {
+-            Ok(image) => {
++            Ok(ImageData::Static(image)) => {
+                 let Some(picker) = self.picker.as_ref() else {
+                     self.entries.insert(
+                         result.key,
+@@ -537,7 +557,7 @@ fn image_preview_decode_permits() -> &'static Arc<tokio::sync::Semaphore> {
+ }
+ 
+ fn decode_image_preview(job: ImagePreviewDecodeJob) -> ImagePreviewDecodeResult {
+-    let result = decode_original_preview_image(&job.bytes);
++    let result = decode_image_data(&job.bytes);
+     ImagePreviewDecodeResult {
+         key: job.key,
+         generation: job.generation,
+@@ -545,6 +565,13 @@ fn decode_image_preview(job: ImagePreviewDecodeJob) -> ImagePreviewDecodeResult
+     }
+ }
+ 
++fn decode_image_data(bytes: &[u8]) -> std::result::Result<ImageData, String> {
++    image::load_from_memory(bytes)
++        .map(ImageData::Static)
++        .map_err(|error| format!("decode failed: {error}"))
++}
++
++#[allow(dead_code)]
+ pub(super) fn decode_original_preview_image(
+     bytes: &[u8],
+ ) -> std::result::Result<DynamicImage, String> {
+diff --git a/src/tui/media/targets.rs b/src/tui/media/targets.rs
+index 6c9f795..b54e0ef 100644
+--- a/src/tui/media/targets.rs
++++ b/src/tui/media/targets.rs
+@@ -106,13 +106,9 @@ pub(in crate::tui) fn visible_image_preview_targets(
+ 
+     if let Some((message_id, preview_index, preview)) = state.selected_image_viewer_preview() {
+         let quality = state.image_preview_quality();
+-        let preview_height = image_preview_height_for_dimensions(
+-            layout.viewer_preview_width,
+-            layout.viewer_max_preview_height,
+-            preview.width,
+-            preview.height,
+-        );
+-        if preview_height == 0 {
++        let preview_width = layout.viewer_preview_width;
++        let preview_height = layout.viewer_max_preview_height;
++        if preview_width == 0 || preview_height == 0 {
+             return Vec::new();
+         }
+         return vec![ImagePreviewTarget {
+@@ -121,19 +117,14 @@ pub(in crate::tui) fn visible_image_preview_targets(
+             preview_index,
+             preview_x_offset_columns: 0,
+             preview_y_offset_rows: 0,
+-            preview_width: layout.viewer_preview_width,
++            preview_width,
+             preview_height,
+             preview_overflow_count: 0,
+             visible_preview_height: preview_height,
+             top_clip_rows: 0,
+             accent_color: preview.accent_color,
+             message_id,
+-            url: preview_request_url(
+-                preview,
+-                layout.viewer_preview_width,
+-                preview_height,
+-                quality,
+-            ),
++            url: preview_request_url(preview, preview_width, preview_height, quality),
+             filename: preview.filename.to_owned(),
+         }];
+     }
+diff --git a/src/tui/message_format.rs b/src/tui/message_format.rs
+index 49e0e94..c50ada6 100644
 --- a/src/tui/message_format.rs
 +++ b/src/tui/message_format.rs
-@@ -154,6 +154,15 @@
+@@ -154,6 +154,15 @@ impl MessageContentLine {
          self.styled_range(start, suffix.len(), style);
      }
  
@@ -537,7 +431,7 @@
      pub(super) fn spans(&self) -> Vec<Span<'static>> {
          let mut boundaries = vec![0, self.text.len()];
          for highlight in &self.mention_highlights {
-@@ -286,11 +295,15 @@
+@@ -286,11 +295,15 @@ pub(super) fn format_message_content_sections(
          .then(|| display_text_with_stickers(message.content.as_deref(), &message.sticker_names))
          .flatten();
      if let Some(value) = standalone_content {
@@ -558,7 +452,7 @@
      }
      lines.extend(format_embed_lines(
          &message.embeds,
-@@ -479,6 +492,64 @@
+@@ -479,6 +492,64 @@ fn embed_url_style() -> Style {
          .add_modifier(Modifier::UNDERLINED)
  }
  
@@ -623,7 +517,7 @@
  fn embed_line_style(embed: &EmbedInfo) -> Style {
      Style::default().fg(embed_line_color(embed))
  }
-@@ -868,6 +939,8 @@
+@@ -868,6 +939,8 @@ fn wrap_text_with_extras(
          let mut current_start = line_start;
          let mut current_end = line_start;
          let mut current_slots: Vec<MessageContentImageSlot> = Vec::new();
@@ -632,7 +526,7 @@
          for (relative_start, grapheme) in line.grapheme_indices(true) {
              let grapheme_start = line_start.saturating_add(relative_start);
              let grapheme_end = grapheme_start.saturating_add(grapheme.len());
-@@ -892,13 +965,16 @@
+@@ -892,13 +965,16 @@ fn wrap_text_with_extras(
                      line_slots,
                  ));
                  current_width = 0;
@@ -650,7 +544,7 @@
                      byte_start: line_byte_start,
                      byte_len: slot.byte_len,
                      display_width: slot.display_width,
-@@ -908,6 +984,14 @@
+@@ -908,6 +984,14 @@ fn wrap_text_with_extras(
  
              current.push_str(grapheme);
              current_width = current_width.saturating_add(grapheme_width);
@@ -665,27 +559,98 @@
              current_end = grapheme_end;
          }
          lines.push((
+diff --git a/src/tui/mod.rs b/src/tui/mod.rs
+index 013b3cd..27dec8e 100644
 --- a/src/tui/mod.rs
 +++ b/src/tui/mod.rs
-@@ -633,6 +633,15 @@
+@@ -513,7 +513,18 @@ async fn run_dashboard(
+             terminal.draw(|frame| {
+                 last_frame_area = frame.area();
+                 ui::sync_view_heights(frame.area(), &mut state);
+-                let mut preview_layout = ui::image_preview_layout(frame.area(), &state);
++                // Compute natural viewer size from Discord-reported image dims + font
++                // size before layout so the canvas and popup are sized together.
++                let natural_viewer_size = state
++                    .selected_image_viewer_preview()
++                    .filter(|_| state.show_images())
++                    .and_then(|(_, _, preview)| {
++                        let img_w = u32::try_from(preview.width?).ok()?;
++                        let img_h = u32::try_from(preview.height?).ok()?;
++                        image_previews.viewer_image_natural_cells(img_w, img_h)
++                    });
++                let mut preview_layout =
++                    ui::image_preview_layout(frame.area(), &state, natural_viewer_size);
+                 if !state.show_images() {
+                     preview_layout.preview_width = 0;
+                     preview_layout.max_preview_height = 0;
+@@ -531,7 +542,7 @@ async fn run_dashboard(
+                     .max(image_targets.len());
+                 avatar_targets = visible_avatar_targets(&state, preview_layout);
+                 emoji_targets = visible_emoji_image_targets(&state);
+-                let image_previews = image_previews.render_state(&image_targets);
++                let image_previews_rendered = image_previews.render_state(&image_targets);
+                 let rendered_avatars = avatar_images.render_state(&avatar_targets);
+                 let rendered_emojis = emoji_images.render_state(&emoji_targets);
+                 let popup_avatar = state
+@@ -545,10 +556,11 @@ async fn run_dashboard(
+                 ui::render(
+                     frame,
+                     &state,
+-                    image_previews,
++                    image_previews_rendered,
+                     rendered_avatars,
+                     rendered_emojis,
+                     popup_avatar,
++                    natural_viewer_size,
+                 );
+             })?;
+             dirty = false;
+@@ -633,6 +645,7 @@ async fn run_dashboard(
              }
          }
  
 +        // schedule next redraw for animated GIF frame advancement
-+        if let Some(wake) = image_previews.next_animation_wake() {
-+            let deadline = tokio::time::Instant::now() + wake;
-+            match pending_redraw_deadline {
-+                Some(existing) if existing <= deadline => {}
-+                _ => pending_redraw_deadline = Some(deadline),
-+            }
-+        }
-+
          tokio::select! {
              maybe_event = terminal_events.next() => {
                  match maybe_event {
+diff --git a/src/tui/state.rs b/src/tui/state.rs
+index a7c82db..c4c0ae0 100644
+--- a/src/tui/state.rs
++++ b/src/tui/state.rs
+@@ -51,7 +51,7 @@ use scroll::{
+     scroll_message_row_down, scroll_message_row_up,
+ };
+ 
+-pub use composer::{MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
++pub use composer::{EmojiPickerEntry, MAX_EMOJI_PICKER_VISIBLE, MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
+ pub use member_grouping::{MemberEntry, MemberGroup};
+ pub use model::{
+     ChannelActionItem, ChannelPaneEntry, ChannelThreadItem, EmojiReactionItem,
+@@ -190,6 +190,9 @@ pub struct DashboardState {
+     /// composer can rewrite them to Discord's `<@USER_ID>` wire format on
+     /// submit even though the visible text is still the friendly form.
+     composer_mention_completions: Vec<MentionCompletion>,
++    composer_emoji_query: Option<String>,
++    composer_emoji_start: Option<usize>,
++    composer_emoji_selected: usize,
+     message_action_menu: Option<MessageActionMenuState>,
+     options_popup: Option<popups::OptionsPopupState>,
+     image_viewer: Option<ImageViewerState>,
+@@ -306,6 +309,9 @@ impl DashboardState {
+             composer_mention_start: None,
+             composer_mention_selected: 0,
+             composer_mention_completions: Vec::new(),
++            composer_emoji_query: None,
++            composer_emoji_start: None,
++            composer_emoji_selected: 0,
+             message_action_menu: None,
+             options_popup: None,
+             image_viewer: None,
+diff --git a/src/tui/state/composer.rs b/src/tui/state/composer.rs
+index db2db5c..b0a2828 100644
 --- a/src/tui/state/composer.rs
 +++ b/src/tui/state/composer.rs
-@@ -4,6 +4,66 @@
+@@ -4,6 +4,66 @@ use crate::discord::PresenceStatus;
  
  use super::MemberEntry;
  
@@ -752,9 +717,11 @@
  /// Maximum number of suggestions the @-mention picker shows at once. Mirrors
  /// the upper bound used by other composer popups so the layout math stays
  /// predictable.
+diff --git a/src/tui/state/composer_state.rs b/src/tui/state/composer_state.rs
+index 62c363a..7e3099a 100644
 --- a/src/tui/state/composer_state.rs
 +++ b/src/tui/state/composer_state.rs
-@@ -3,9 +3,11 @@
+@@ -3,9 +3,11 @@ use std::ops::Range;
  use crate::discord::{AppCommand, MAX_UPLOAD_ATTACHMENT_COUNT, MessageAttachmentUpload};
  
  use super::composer::{
@@ -767,7 +734,7 @@
  use super::{DashboardState, FocusPane, MentionPickerEntry};
  
  impl DashboardState {
-@@ -330,6 +332,7 @@
+@@ -330,6 +332,7 @@ impl DashboardState {
      fn reset_mention_picker_state(&mut self) {
          self.close_composer_mention_query();
          self.composer_mention_completions.clear();
@@ -775,7 +742,7 @@
      }
  
      fn close_composer_mention_query(&mut self) {
-@@ -351,6 +354,7 @@
+@@ -351,6 +354,7 @@ impl DashboardState {
              .replace_range(range.clone(), replacement);
          self.composer_cursor_byte_index = range.start + replacement.len();
          self.refresh_active_mention_query();
@@ -783,7 +750,7 @@
      }
  
      fn refresh_active_mention_query(&mut self) {
-@@ -412,6 +416,88 @@
+@@ -412,6 +416,88 @@ impl DashboardState {
  
          self.composer_mention_completions = completions;
      }
@@ -872,9 +839,11 @@
  }
  
  fn clamp_cursor_index(input: &str, index: usize) -> usize {
+diff --git a/src/tui/state/member_grouping.rs b/src/tui/state/member_grouping.rs
+index f005290..807188d 100644
 --- a/src/tui/state/member_grouping.rs
 +++ b/src/tui/state/member_grouping.rs
-@@ -32,7 +32,13 @@
+@@ -32,7 +32,13 @@ impl MemberEntry<'_> {
  
      pub fn display_name(self) -> String {
          match self {
@@ -889,6 +858,8 @@
              Self::Recipient(recipient) => recipient.display_name.clone(),
          }
      }
+diff --git a/src/tui/state/message_actions.rs b/src/tui/state/message_actions.rs
+index 8af1a83..b125be8 100644
 --- a/src/tui/state/message_actions.rs
 +++ b/src/tui/state/message_actions.rs
 @@ -1,5 +1,7 @@
@@ -899,7 +870,7 @@
  use super::scroll::{clamp_selected_index, move_index_down, move_index_up};
  use super::{
      DashboardState, FocusPane, MessageActionItem, MessageActionKind, MessageActionMenuState,
-@@ -150,6 +152,38 @@
+@@ -150,6 +152,38 @@ impl DashboardState {
                  });
              }
          }
@@ -938,7 +909,7 @@
          if let Some(poll) = &message.poll
              && !poll.results_finalized.unwrap_or(false)
          {
-@@ -333,6 +367,26 @@
+@@ -333,6 +367,26 @@ impl DashboardState {
                      answer_ids,
                  })
              }
@@ -965,9 +936,11 @@
          }
      }
  
+diff --git a/src/tui/state/model.rs b/src/tui/state/model.rs
+index 1cde2a9..db96484 100644
 --- a/src/tui/state/model.rs
 +++ b/src/tui/state/model.rs
-@@ -29,6 +29,9 @@
+@@ -29,6 +29,9 @@ pub enum MessageActionKind {
      SetPinned(bool),
      VotePollAnswer(u8),
      OpenPollVotePicker,
@@ -977,7 +950,7 @@
  }
  
  #[derive(Clone, Debug, Eq, PartialEq)]
-@@ -55,6 +58,9 @@
+@@ -55,6 +58,9 @@ impl MessageActionKind {
              MessageActionKind::SetPinned(_) => Some('n'),
              MessageActionKind::VotePollAnswer(_) => None,
              MessageActionKind::OpenPollVotePicker => Some('c'),
@@ -987,40 +960,49 @@
          }
      }
  }
---- a/src/tui/state.rs
-+++ b/src/tui/state.rs
-@@ -51,7 +51,7 @@
-     scroll_message_row_down, scroll_message_row_up,
- };
+diff --git a/src/tui/ui.rs b/src/tui/ui.rs
+index 1675086..86ed6a9 100644
+--- a/src/tui/ui.rs
++++ b/src/tui/ui.rs
+@@ -131,10 +131,14 @@ pub fn sync_view_heights(area: Rect, state: &mut DashboardState) {
+     }
+ }
  
--pub use composer::{MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
-+pub use composer::{EmojiPickerEntry, MAX_EMOJI_PICKER_VISIBLE, MAX_MENTION_PICKER_VISIBLE, MentionPickerEntry};
- pub use member_grouping::{MemberEntry, MemberGroup};
- pub use model::{
-     ChannelActionItem, ChannelPaneEntry, ChannelThreadItem, EmojiReactionItem,
-@@ -190,6 +190,9 @@
-     /// composer can rewrite them to Discord's `<@USER_ID>` wire format on
-     /// submit even though the visible text is still the friendly form.
-     composer_mention_completions: Vec<MentionCompletion>,
-+    composer_emoji_query: Option<String>,
-+    composer_emoji_start: Option<usize>,
-+    composer_emoji_selected: usize,
-     message_action_menu: Option<MessageActionMenuState>,
-     options_popup: Option<popups::OptionsPopupState>,
-     image_viewer: Option<ImageViewerState>,
-@@ -306,6 +309,9 @@
-             composer_mention_start: None,
-             composer_mention_selected: 0,
-             composer_mention_completions: Vec::new(),
-+            composer_emoji_query: None,
-+            composer_emoji_start: None,
-+            composer_emoji_selected: 0,
-             message_action_menu: None,
-             options_popup: None,
-             image_viewer: None,
+-pub fn image_preview_layout(area: Rect, state: &DashboardState) -> ImagePreviewLayout {
++pub fn image_preview_layout(
++    area: Rect,
++    state: &DashboardState,
++    natural_viewer_size: Option<(u16, u16)>,
++) -> ImagePreviewLayout {
+     let areas = dashboard_areas(area);
+     let list = message_list_area(areas.messages, state);
+-    let viewer_image_area = image_viewer_image_area(areas.messages);
++    let viewer_image_area = image_viewer_image_area(areas.messages, natural_viewer_size);
+     ImagePreviewLayout {
+         list_height: list.height as usize,
+         content_width: message_content_width(list),
+@@ -152,6 +156,7 @@ pub fn render(
+     avatar_images: Vec<AvatarImage>,
+     emoji_images: Vec<EmojiReactionImage<'_>>,
+     profile_avatar: Option<AvatarImage>,
++    natural_viewer_size: Option<(u16, u16)>,
+ ) {
+     let areas = dashboard_areas(frame.area());
+     let mut inline_image_previews = Vec::new();
+@@ -186,7 +191,7 @@ pub fn render(
+     render_emoji_reaction_picker(frame, areas.messages, state, emoji_images);
+     render_reaction_users_popup(frame, areas.messages, state);
+     render_user_profile_popup(frame, areas.messages, state, profile_avatar);
+-    render_image_viewer(frame, areas.messages, state, viewer_image_preview);
++    render_image_viewer(frame, areas.messages, state, viewer_image_preview, natural_viewer_size);
+     render_image_viewer_action_menu(frame, areas.messages, state);
+     render_debug_log_popup(frame, areas.messages, state);
+ }
+diff --git a/src/tui/ui/layout.rs b/src/tui/ui/layout.rs
+index 30d8a94..5ac40f2 100644
 --- a/src/tui/ui/layout.rs
 +++ b/src/tui/ui/layout.rs
-@@ -7,7 +7,7 @@
+@@ -7,7 +7,7 @@ use unicode_width::UnicodeWidthStr;
  use super::super::{message_format::wrap_text_lines, state::DashboardState};
  use super::types::{
      DashboardAreas, EMBED_PREVIEW_GUTTER_PREFIX, IMAGE_PREVIEW_HEIGHT, IMAGE_PREVIEW_WIDTH,
@@ -1029,17 +1011,36 @@
      MESSAGE_AVATAR_OFFSET, MIN_MESSAGE_INPUT_HEIGHT, MessageAreas,
  };
  
-@@ -38,7 +38,9 @@
+@@ -37,12 +37,23 @@ pub(super) fn dashboard_areas(area: Rect) -> DashboardAreas {
+     }
  }
  
- pub(super) fn image_viewer_popup(area: Rect) -> Rect {
+-pub(super) fn image_viewer_popup(area: Rect) -> Rect {
 -    centered_rect(area, IMAGE_VIEWER_POPUP_WIDTH, IMAGE_VIEWER_POPUP_HEIGHT)
-+    let width = (area.width * 9 / 10).max(1);
-+    let height = (area.height * 9 / 10).max(1);
++pub(super) fn image_viewer_popup(area: Rect, natural_size: Option<(u16, u16)>) -> Rect {
++    let max_w = (area.width * 9 / 10).max(1);
++    let max_h = (area.height * 9 / 10).max(1);
++    let (width, height) = match natural_size {
++        Some((nat_cols, nat_rows)) => {
++            // +2 cols for left/right border, +3 rows for top border + hint + bottom border
++            let w = nat_cols.saturating_add(2).min(max_w).max(10);
++            let h = nat_rows.saturating_add(3).min(max_h).max(6);
++            (w, h)
++        }
++        None => (max_w, max_h),
++    };
 +    centered_rect(area, width, height)
  }
  
- pub(super) fn image_viewer_image_area(area: Rect) -> Rect {
+-pub(super) fn image_viewer_image_area(area: Rect) -> Rect {
+-    let inner = image_viewer_popup(area).inner(Margin {
++pub(super) fn image_viewer_image_area(area: Rect, natural_size: Option<(u16, u16)>) -> Rect {
++    let inner = image_viewer_popup(area, natural_size).inner(Margin {
+         vertical: 1,
+         horizontal: 1,
+     });
+diff --git a/src/tui/ui/message_list.rs b/src/tui/ui/message_list.rs
+index 0b2cd78..96f53ac 100644
 --- a/src/tui/ui/message_list.rs
 +++ b/src/tui/ui/message_list.rs
 @@ -1,5 +1,5 @@
@@ -1049,7 +1050,7 @@
  use super::*;
  
  #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-@@ -85,6 +85,7 @@
+@@ -85,6 +85,7 @@ pub(super) fn render_messages(
          );
          render_typing_footer(frame, message_areas.typing, state);
          render_composer(frame, message_areas.composer, state);
@@ -1057,7 +1058,7 @@
          render_composer_mention_picker(frame, message_areas, state);
          return;
      }
-@@ -208,6 +209,7 @@
+@@ -208,6 +209,7 @@ pub(super) fn render_messages(
      render_new_messages_notice(frame, message_areas.list, state);
      render_typing_footer(frame, message_areas.typing, state);
      render_composer(frame, message_areas.composer, state);
@@ -1065,9 +1066,11 @@
      render_composer_mention_picker(frame, message_areas, state);
  }
  
+diff --git a/src/tui/ui/panes.rs b/src/tui/ui/panes.rs
+index 93917be..e1d2e81 100644
 --- a/src/tui/ui/panes.rs
 +++ b/src/tui/ui/panes.rs
-@@ -18,8 +18,9 @@
+@@ -18,8 +18,9 @@ use super::super::{
      },
      message_format::{format_attachment_summary, wrap_text_lines},
      state::{
@@ -1079,7 +1082,7 @@
          presence_marker,
      },
  };
-@@ -330,6 +331,77 @@
+@@ -330,6 +331,77 @@ pub(super) fn composer_cursor_position(area: Rect, state: &DashboardState) -> Op
      Some(Position { x, y })
  }
  
@@ -1157,9 +1160,81 @@
  pub(super) fn render_composer_mention_picker(
      frame: &mut Frame,
      message_areas: MessageAreas,
+diff --git a/src/tui/ui/popups.rs b/src/tui/ui/popups.rs
+index 8dbe31f..6d5648c 100644
+--- a/src/tui/ui/popups.rs
++++ b/src/tui/ui/popups.rs
+@@ -6,12 +6,13 @@ pub(super) fn render_image_viewer(
+     area: Rect,
+     state: &DashboardState,
+     image_preview: Option<ImagePreview<'_>>,
++    natural_size: Option<(u16, u16)>,
+ ) {
+     let Some(item) = state.selected_image_viewer_item() else {
+         return;
+     };
+ 
+-    let popup = image_viewer_popup(area);
++    let popup = image_viewer_popup(area, natural_size);
+     let title_width = usize::from(popup.width.saturating_sub(4)).max(1);
+     let title = truncate_display_width(&image_viewer_title(&item), title_width);
+     frame.render_widget(Clear, popup);
+diff --git a/src/tui/ui/tests.rs b/src/tui/ui/tests.rs
+index a9a2a25..a24cc3a 100644
+--- a/src/tui/ui/tests.rs
++++ b/src/tui/ui/tests.rs
+@@ -346,7 +346,7 @@ fn server_pane_shows_guild_mention_badge() {
+     terminal
+         .draw(|frame| {
+             sync_view_heights(frame.area(), &mut state);
+-            super::render(frame, &state, Vec::new(), Vec::new(), Vec::new(), None);
++            super::render(frame, &state, Vec::new(), Vec::new(), Vec::new(), None, None);
+         })
+         .expect("draw should succeed");
+ 
+@@ -2403,7 +2403,7 @@ fn reaction_users_popup_buffer_renders_without_wrap_artifacts() {
+     terminal
+         .draw(|frame| {
+             sync_view_heights(frame.area(), &mut state);
+-            super::render(frame, &state, Vec::new(), Vec::new(), Vec::new(), None);
++            super::render(frame, &state, Vec::new(), Vec::new(), Vec::new(), None, None);
+         })
+         .expect("first draw");
+ 
+@@ -2418,7 +2418,7 @@ fn reaction_users_popup_buffer_renders_without_wrap_artifacts() {
+     terminal
+         .draw(|frame| {
+             sync_view_heights(frame.area(), &mut state);
+-            super::render(frame, &state, Vec::new(), Vec::new(), Vec::new(), None);
++            super::render(frame, &state, Vec::new(), Vec::new(), Vec::new(), None, None);
+         })
+         .expect("second draw");
+     for _ in 0..6 {
+@@ -2427,7 +2427,7 @@ fn reaction_users_popup_buffer_renders_without_wrap_artifacts() {
+     terminal
+         .draw(|frame| {
+             sync_view_heights(frame.area(), &mut state);
+-            super::render(frame, &state, Vec::new(), Vec::new(), Vec::new(), None);
++            super::render(frame, &state, Vec::new(), Vec::new(), Vec::new(), None, None);
+         })
+         .expect("third draw");
+ 
+@@ -3646,7 +3646,7 @@ fn render_dashboard_dump_with_previews(
+     terminal
+         .draw(|frame| {
+             sync_view_heights(frame.area(), state);
+-            super::render(frame, state, image_previews, Vec::new(), Vec::new(), None);
++            super::render(frame, state, image_previews, Vec::new(), Vec::new(), None, None);
+         })
+         .expect("draw");
+ 
+diff --git a/src/tui/ui/types.rs b/src/tui/ui/types.rs
+index 0edc3ac..ad5bbc0 100644
 --- a/src/tui/ui/types.rs
 +++ b/src/tui/ui/types.rs
-@@ -18,6 +18,4 @@ pub(super) const SNOWFLAKE_TIMESTAMP_SHIFT: u8 = 22;
+@@ -16,8 +16,6 @@ pub(super) const EMBED_PREVIEW_GUTTER_PREFIX: &str = "  ▎ ";
+ pub(super) const DISCORD_EPOCH_MILLIS: u64 = 1_420_070_400_000;
+ pub(super) const SNOWFLAKE_TIMESTAMP_SHIFT: u8 = 22;
  pub(super) const MAX_REACTION_USERS_VISIBLE_LINES: usize = 14;
 -pub(super) const IMAGE_VIEWER_POPUP_WIDTH: u16 = 78;
 -pub(super) const IMAGE_VIEWER_POPUP_HEIGHT: u16 = 16;
