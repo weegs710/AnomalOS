@@ -169,6 +169,11 @@
                   cmd = gorguruCmd;
                 }
                 {
+                  key = "c";
+                  desc = "Dungeon Crawl Stone Soup";
+                  cmd = "crawl-tiles";
+                }
+                {
                   key = "r";
                   desc = "retroarch";
                   cmd = "retroarch";

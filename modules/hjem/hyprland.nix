@@ -265,6 +265,7 @@
           windowrule = workspace 4, match:class ^(steam_app_.*)$
           windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(steam_app_.*)$
           windowrule = focus_on_activate on, match:class ^(steam_app_.*)$
+          windowrule = workspace 4, match:class ^(crawl-tiles)$
           windowrule = workspace 4, match:class ^(gamescope)$
           windowrule = fullscreen on, match:class ^(gamescope)$
           windowrule = opacity 1.0 override 1.0 override 1.0 override, match:class ^(gamescope)$
