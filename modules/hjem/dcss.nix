@@ -73,7 +73,6 @@
         sound_file_path = /home/${username}/.crawl/sound/
 
         # BGM -- must come before include so these fire first (CNC OSP also matches Welcome to X)
-        sound ^= You climb (downwards|upwards):bgm/dungeon.mp3
         sound ^= Welcome.*Dungeon:bgm/dungeon.mp3
         sound ^= Welcome.*Ecumenical Temple:bgm/temple.mp3
         sound ^= Welcome.*Lair of Beasts:bgm/lair.mp3
