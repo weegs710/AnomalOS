@@ -68,6 +68,10 @@
         monster_alert += -uniques
         monster_alert += -nasty
 
+        # Sound
+        sound_file_path = /home/${username}/.crawl/sound/
+        include = sound/init.txt
+
         # Tiles
         game_scale = 2
         tile_full_screen = true
