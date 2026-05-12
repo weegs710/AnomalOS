@@ -1,11 +1,12 @@
-{ ... }: {
+{ inputs, ... }: {
   flake.nixosModules.dcss =
     { config, pkgs, ... }:
     let
       username = config.mySystem.user.name;
+      crawlTilesBGM = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.crawlTilesBGM;
     in
     {
-      users.users.${username}.packages = [ pkgs.crawlTiles ];
+      users.users.${username}.packages = [ crawlTilesBGM ];
 
       hjem.users.${username}.files.".crawl/init.txt".text = ''
         # Starting Screen
@@ -70,6 +71,53 @@
 
         # Sound
         sound_file_path = /home/${username}/.crawl/sound/
+
+        # BGM -- must come before include so these fire first (CNC OSP also matches Welcome to X)
+        sound ^= You climb (downwards|upwards):bgm/dungeon.mp3
+        sound ^= Welcome.*Dungeon:bgm/dungeon.mp3
+        sound ^= Welcome.*Ecumenical Temple:bgm/temple.mp3
+        sound ^= Welcome.*Lair of Beasts:bgm/lair.mp3
+        sound ^= Welcome.*Swamp:bgm/swamp.mp3
+        sound ^= Welcome.*Shoals:bgm/shoals.mp3
+        sound ^= Welcome.*Snake Pit:bgm/snake.mp3
+        sound ^= Welcome.*Spider Nest:bgm/spider.mp3
+        sound ^= Welcome.*Pits of Slime:bgm/slime.mp3
+        sound ^= Welcome.*Orcish Mines:bgm/mines.mp3
+        sound ^= Welcome.*Elven Halls:bgm/elven.mp3
+        sound ^= Welcome.*Vaults:bgm/vaults.mp3
+        sound ^= Welcome.*Crypt:bgm/crypt.mp3
+        sound ^= Welcome.*Tomb of the Ancients:bgm/tomb.mp3
+        sound ^= Welcome.*Depths:bgm/depths.mp3
+        sound ^= Welcome.*Realm of Zot:bgm/zot.mp3
+        sound ^= Welcome to Hell:bgm/hell.mp3
+        sound ^= Welcome back to the Vestibule of Hell:bgm/hell.mp3
+        sound ^= An ancient malice corrodes:bgm/dis.mp3
+        sound ^= Welcome back to the Iron City of Dis:bgm/dis.mp3
+        sound ^= Your scrolls appear blurry in the acrid smoke:bgm/gehenna.mp3
+        sound ^= Welcome back to Gehenna:bgm/gehenna.mp3
+        sound ^= Your potions freeze solid in the terrible cold:bgm/cocytus.mp3
+        sound ^= Welcome back to Cocytus:bgm/cocytus.mp3
+        sound ^= This decaying realm drains your will:bgm/tartarus.mp3
+        sound ^= Welcome back to Tartarus:bgm/tartarus.mp3
+        sound ^= You enter the Abyss:bgm/abyss.mp3
+        sound ^= Welcome back to the Abyss:bgm/abyss.mp3
+        sound ^= You enter the halls of Pandemonium:bgm/pandemonium.mp3
+        sound ^= Welcome back to Pandemonium:bgm/pandemonium.mp3
+        sound ^= You land on top of a ziggurat:bgm/ziggurat.mp3
+        sound ^= You enter an inter-dimensional bazaar:bgm/bazaar.mp3
+        sound ^= You enter a treasure trove:bgm/trove.mp3
+        sound ^= You enter a sewer:bgm/sewer.mp3
+        sound ^= You enter an ossuary:bgm/ossuary.mp3
+        sound ^= You enter a bailey:bgm/bailey.mp3
+        sound ^= You enter a gauntlet:bgm/gauntlet.mp3
+        sound ^= You enter an ice cave:bgm/ice_cave.mp3
+        sound ^= You enter a volcano:bgm/volcano.mp3
+        sound ^= You enter a wizard.*s laboratory:bgm/wizlab.mp3
+        sound ^= You enter a great desolation of salt:bgm/desolation.mp3
+        sound ^= You are dragged down into the Crucible of Flesh:bgm/crucible.mp3
+        sound ^= You enter an ornate necropolis:bgm/necropolis.mp3
+        sound ^= You pick up the Orb of Zot:bgm/orb.mp3
+
         include = sound/init.txt
 
         # Tiles
