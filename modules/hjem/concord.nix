@@ -8,7 +8,7 @@
     {
       users.users.${username}.packages = [ concord ];
 
-      hjem.users.${username}.files.".concord/config.toml".text = ''
+      hjem.users.${username}.files.".config/concord/config.toml".text = ''
         [display]
         disable_image_preview = false
         show_avatars = true
@@ -19,7 +19,7 @@
       '';
 
       system.activationScripts.concord-credential = lib.stringAfter [ "agenix" ] ''
-        cred_dir="/persist/home/${username}/.concord"
+        cred_dir="/persist/home/${username}/.config/concord"
         cred_path="$cred_dir/credential"
 
         mkdir -p "$cred_dir"
