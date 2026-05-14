@@ -30,7 +30,7 @@
       mesa
       piper
       qview
-      transmission_4-gtk
+      tremc
       ueberzugpp
       unzipNLS
       xdg-dbus-proxy

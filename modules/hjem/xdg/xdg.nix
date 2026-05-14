@@ -111,7 +111,7 @@
             application/pdf=org.pwmt.zathura-pdf-mupdf.desktop
             application/vnd.apple.mpegurl=rmpc-open.desktop
             application/x-7z-compressed=org.gnome.FileRoller.desktop
-            application/x-bittorrent=transmission-gtk.desktop
+            application/x-bittorrent=transmission-add.desktop
             application/x-mpegurl=rmpc-open.desktop
             application/x-rar=org.gnome.FileRoller.desktop
             application/x-tar=org.gnome.FileRoller.desktop
@@ -157,7 +157,7 @@
             video/x-ogm=mpv.desktop
             x-scheme-handler/http=zen.desktop
             x-scheme-handler/https=zen.desktop
-            x-scheme-handler/magnet=transmission-gtk.desktop
+            x-scheme-handler/magnet=transmission-add.desktop
             x-scheme-handler/terminal=com.mitchellh.ghostty.desktop
 
             [Removed Associations]

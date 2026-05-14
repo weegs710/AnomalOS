@@ -295,7 +295,7 @@
                 {
                   key = "x";
                   desc = "transmission";
-                  cmd = "transmission-gtk";
+                  cmd = "tremc";
                 }
                 {
                   key = "v";
