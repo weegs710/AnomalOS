@@ -57,11 +57,17 @@ agenix = {
   outputs = inputs @ {flake-parts, ...}: let
     inherit (inputs.nixpkgs.lib.fileset) toList fileFilter;
     import-tree = path:
-      toList (fileFilter (file: file.hasExt "nix" && !(inputs.nixpkgs.lib.hasPrefix "_" file.name)) path);
+      toList (fileFilter (file: file.name == "default.nix") path);
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
 
-      imports = [flake-parts.flakeModules.modules] ++ import-tree ./modules;
+      imports =
+        [flake-parts.flakeModules.modules]
+        ++ import-tree ./modules
+        ++ [
+          ./modules/hosts/hx99g.nix
+          ./modules/devshell.nix
+        ];
     };
 }

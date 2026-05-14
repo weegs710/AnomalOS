@@ -1,7 +1,6 @@
 {
   inputs,
   self,
-  config,
   ...
 }: let
   hx99g = inputs.nixpkgs.lib.nixosSystem {
@@ -12,9 +11,8 @@
       (builtins.attrValues self.nixosModules)
       ++ [
         inputs.lix-module.nixosModules.default
-        config.flake.modules.nixos.hx99g-hardware
-        config.flake.modules.nixos.hx99g-imperm
-        config.flake.modules.nixos.hx99g-zfs
+        ./hx99g-hardware.nix
+        ./hx99g-zfs.nix
         ({...}: {
           mySystem = {
             hostName = "HX99G";

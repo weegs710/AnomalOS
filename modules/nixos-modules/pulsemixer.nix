@@ -1,11 +1,10 @@
 {
-  flake.nixosModules.pulsemixer = {
-    config,
-    pkgs,
-    ...
-  }: {
-    users.users.${config.mySystem.user.name}.packages = with pkgs; [
-      pulsemixer
-    ];
-  };
+  config,
+  pkgs,
+  ...
+}:
+{
+  users.users.${config.mySystem.user.name}.packages = with pkgs; [
+    pulsemixer
+  ];
 }
