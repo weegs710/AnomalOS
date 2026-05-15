@@ -34,8 +34,9 @@ in
       rpc-host-whitelist = "localhost,127.0.0.1";
       encryption = 2;
       utp-enabled = true;
-      ratio-limit = 0.01;
+      ratio-limit = 0;
       ratio-limit-enabled = true;
+      umask = 2;
     };
   };
 
