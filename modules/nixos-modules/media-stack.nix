@@ -44,6 +44,7 @@ in
   services.prowlarr = {
     enable = true;
     openFirewall = false;
+    dataDir = "/persist/var/lib/prowlarr";
     # DynamicUser -- cannot set group; state lands in /var/lib/private/prowlarr
   };
 
@@ -57,6 +58,5 @@ in
     "/var/lib/radarr"
     "/var/lib/sonarr"
     "/var/lib/bazarr"
-    "/var/lib/private/prowlarr"
   ];
 }
