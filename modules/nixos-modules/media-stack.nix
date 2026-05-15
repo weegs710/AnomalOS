@@ -44,8 +44,23 @@ in
   services.prowlarr = {
     enable = true;
     openFirewall = false;
-    dataDir = "/persist/var/lib/prowlarr";
-    # DynamicUser -- cannot set group; state lands in /var/lib/private/prowlarr
+  };
+
+  # DynamicUser conflicts with impermanence -- chowns fail on bind-mounted dirs.
+  # Use a static user and bypass the private dir mechanism entirely.
+  users.users.prowlarr = {
+    isSystemUser = true;
+    group = "prowlarr";
+    home = "/var/lib/prowlarr";
+  };
+  users.groups.prowlarr = { };
+
+  systemd.services.prowlarr.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    StateDirectory = lib.mkForce "";
+    User = lib.mkForce "prowlarr";
+    Group = lib.mkForce "prowlarr";
+    ExecStart = lib.mkForce "${config.services.prowlarr.package}/bin/Prowlarr -nobrowser -data=/var/lib/prowlarr";
   };
 
   services.bazarr = {
@@ -58,5 +73,6 @@ in
     "/var/lib/radarr"
     "/var/lib/sonarr"
     "/var/lib/bazarr"
+    "/var/lib/prowlarr"
   ];
 }
