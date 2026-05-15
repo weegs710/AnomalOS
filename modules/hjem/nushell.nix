@@ -53,46 +53,46 @@ let
           {
             "type" = "os";
             "style" = "diamond";
-            "leading_diamond" = "";
+            "leading_diamond" = "";
             "background" = "#${colors.base02}";
             "foreground" = "#${colors.base05}";
-            "template" = " {{ if .WSL }} on {{ end }}{{ .Icon }} ";
+            "template" = " {{ if .WSL }} on {{ end }}{{ .Icon }} ";
             "properties" = {
-              "alpine" = "";
-              "arch" = "";
-              "debian" = "";
-              "fedora" = "";
-              "linux" = "";
-              "macos" = "";
-              "manjaro" = "";
-              "nixos" = "";
-              "ubuntu" = "";
-              "windows" = "";
+              "alpine" = "";
+              "arch" = "";
+              "debian" = "";
+              "fedora" = "";
+              "linux" = "";
+              "macos" = "";
+              "manjaro" = "";
+              "nixos" = "";
+              "ubuntu" = "";
+              "windows" = "";
             };
           }
 
           {
             "type" = "shell";
             "style" = "powerline";
-            "powerline_symbol" = "";
+            "powerline_symbol" = "";
             "background" = "#${colors.base0C}";
             "foreground" = "#${colors.base00}";
-            "template" = "  {{ .Name }} ";
+            "template" = "  {{ .Name }} ";
           }
 
           {
             "type" = "root";
             "style" = "powerline";
-            "powerline_symbol" = "";
+            "powerline_symbol" = "";
             "background" = "#${colors.base08}";
             "foreground" = "#${colors.base05}";
-            "template" = "  admin ";
+            "template" = "  admin ";
           }
 
           {
             "type" = "git";
             "style" = "powerline";
-            "powerline_symbol" = "";
+            "powerline_symbol" = "";
             "background" = "#6cc644";
             "foreground" = "#${colors.base00}";
             "background_templates" = [
@@ -102,19 +102,19 @@ let
               "{{ if gt .Behind 0 }}#B388FB{{ end }}"
             ];
             "properties" = {
-              "branch_icon" = " ";
+              "branch_icon" = " ";
               "fetch_status" = true;
               "fetch_upstream_icon" = true;
               "fetch_worktree_count" = true;
               "disable_with_jj" = true;
             };
             "template" =
-              " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#${colors.base05}>  {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} ";
+              " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#${colors.base05}>  {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} ";
           }
           {
             "type" = "jujutsu";
             "style" = "powerline";
-            "powerline_symbol" = "";
+            "powerline_symbol" = "";
             "background" = "#6cc644";
             "foreground" = "#${colors.base00}";
             "background_templates" = [
@@ -125,7 +125,7 @@ let
               "ignore_working_copy" = false;
             };
             "template" =
-              " {{ if .ClosestBookmarks }}{{ .ClosestBookmarks }}{{ else }}{{ .ChangeID }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }} ";
+              " {{ if .ClosestBookmarks }}{{ .ClosestBookmarks }}{{ else }}{{ .ChangeID }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }} ";
           }
         ];
       }
@@ -137,7 +137,7 @@ let
           {
             "type" = "status";
             "style" = "diamond";
-            "leading_diamond" = "";
+            "leading_diamond" = "";
             "background" = "#6cc644";
             "foreground" = "#${colors.base00}";
             "background_templates" = [
@@ -149,20 +149,20 @@ let
             "properties" = {
               "always_enabled" = true;
             };
-            "template" = " {{ if gt .Code 0 }}{{ else }}λ{{ end }} ";
+            "template" = " {{ if gt .Code 0 }}{{ else }}λ{{ end }} ";
           }
 
           {
             "type" = "executiontime";
             "style" = "diamond";
-            "trailing_diamond" = "";
+            "trailing_diamond" = "";
             "background" = "#${colors.base02}";
             "foreground" = "#${colors.base05}";
             "properties" = {
               "style" = "roundrock";
               "threshold" = 0;
             };
-            "template" = "  {{ .FormattedMs }} ";
+            "template" = "  {{ .FormattedMs }} ";
           }
         ];
       }
@@ -185,7 +185,7 @@ let
             "foreground" = "#${colors.base04}";
             "properties" = {
               "time_format" =
-                "<#${colors.base0C}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base0C}> 2 Jan, Monday</> <#${colors.base04}>|</>";
+                "<#${colors.base0C}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base0C}> 2 Jan, Monday</> <#${colors.base04}>|</>";
             };
             "template" = "{{ .CurrentDate | date .Format }}";
           }
@@ -193,12 +193,12 @@ let
           {
             "type" = "path";
             "style" = "diamond";
-            "leading_diamond" = "<#${colors.base07}>  </><#${colors.base0D}> in </>";
+            "leading_diamond" = "<#${colors.base07}>  </><#${colors.base0D}> in </>";
             "foreground" = "#${colors.base0D}";
             "properties" = {
-              "folder_icon" = "  ";
-              "folder_separator_icon" = "  ";
-              "home_icon" = " ";
+              "folder_icon" = "  ";
+              "folder_separator_icon" = "  ";
+              "home_icon" = " ";
               "style" = "agnoster_short";
               "max_depth" = 3;
             };
@@ -235,7 +235,7 @@ let
     "transient_prompt" = {
       "background" = "transparent";
       "foreground" = "#${colors.base05}";
-      "template" = " ";
+      "template" = " ";
     };
     "secondary_prompt" = {
       "background" = "transparent";
@@ -416,7 +416,7 @@ in
           ]
           let state = ($states | shuffle | first)
 
-          print -n $"(ansi cyan)   (ansi reset)"
+          print -n $"(ansi cyan)   (ansi reset)"
           print $"Status: ($state)"
         }
 
