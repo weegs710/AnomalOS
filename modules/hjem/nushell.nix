@@ -246,7 +246,10 @@ let
 in
 {
   config = {
+    programs.fish.enable = true;
+
     users.users.${config.mySystem.user.name}.packages = [
+      pkgs.fish
       pkgs.fzf
       pkgs.oh-my-posh
       pkgs.tldr
@@ -465,6 +468,21 @@ in
           | if ($in | default [] | where value =~ '^-.*ERR$' | is-empty) { $in } else { null }
         }
 
+        let fish_completer = {|spans: list<string>|
+          fish --command $"complete '--do-complete=($spans | str join ' ')'"
+          | from tsv --flexible --noheaders --no-infer
+          | rename value description
+        }
+
+        let combined_completer = {|spans: list<string>|
+          let result = (do $carapace_completer $spans | default [])
+          if ($result | is-empty) {
+            do $fish_completer $spans
+          } else {
+            $result
+          }
+        }
+
         $env.config = {
           show_banner: false
 
@@ -481,11 +499,11 @@ in
             case_sensitive: false
             quick: true
             partial: true
-            algorithm: "fuzzy"
+            algorithm: "prefix"
             external: {
               enable: true
               max_results: 100
-              completer: $carapace_completer
+              completer: $combined_completer
             }
           }
 
