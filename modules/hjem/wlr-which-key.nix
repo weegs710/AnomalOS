@@ -9,6 +9,7 @@ let
   homeDir = config.users.users.${username}.home;
   yamlFormat = pkgs.formats.yaml { };
 
+  jellyfinCmd = "hyprctl dispatch exec '[workspace 5] env MOZ_APP_LAUNCHER=zen-jellyfin zen --kiosk --profile ${homeDir}/.local/share/zen-jellyfin --no-remote http://localhost:8096'";
   concordCmd = "hyprctl dispatch exec '[workspace 1] ghostty --title=concord -e /etc/profiles/per-user/${username}/bin/concord'";
   gorguruCmd = "hyprctl dispatch exec '[workspace special:stash] ghostty --title=gorguru -e ${homeDir}/weegs.dev/dist/gorguru'";
   btopCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'";
@@ -108,6 +109,11 @@ let
           key = "z";
           desc = "zen";
           cmd = "zen";
+        }
+        {
+          key = "j";
+          desc = "jellyfin";
+          cmd = jellyfinCmd;
         }
         # Category menus
         {
