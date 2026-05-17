@@ -19,7 +19,16 @@ in
     show_images = true
     image_preview_quality = "high"
     show_custom_emoji = true
+
+    [notifications]
     desktop_notifications = true
+
+    [voice]
+    voice_output_volume = 100
+    self_mute = false
+    self_deaf = false
+    allow_microphone_transmit = true
+    microphone_sensitivity = -60
   '';
 
   system.activationScripts.concord-credential = lib.stringAfter [ "agenix" ] ''
