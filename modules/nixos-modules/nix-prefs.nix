@@ -20,6 +20,12 @@
       max-free = 16106127360; # 15GB (bytes) -- stop GC once there's real breathing room
     };
 
+    gc = {
+      automatic = true;
+      dates = "daily";
+      options = "--delete-older-than 90d";
+    };
+
     optimise = {
       automatic = true;
       dates = [ "00:00" ];
