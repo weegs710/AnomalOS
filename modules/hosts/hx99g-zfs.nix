@@ -2,7 +2,7 @@
 {
   services.sanoid.datasets = {
     "zroot/persist" = {
-      useTemplate = [ "critical" ];
+      useTemplate = [ "desktop" ];
     };
     "zgames/games/roms" = {
       hourly = 6;
