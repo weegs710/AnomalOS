@@ -2,6 +2,8 @@
 {
   console.font = "${pkgs.terminus_font}/share/consolefonts/ter-v18n.psf.gz";
 
+  services.zfs.autoScrub.enable = true;
+
   boot = {
     initrd.systemd.enable = true;
     plymouth.enable = true;
