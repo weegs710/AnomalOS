@@ -46,4 +46,8 @@
     pavucontrol
     wireplumber
   ];
+
+  environment.persistence."/persist".users.${config.mySystem.user.name}.directories = [
+    ".local/state/wireplumber"
+  ];
 }

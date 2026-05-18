@@ -1,4 +1,5 @@
 {
+  config,
   ...
 }:
 {
@@ -26,4 +27,8 @@
   networking.firewall.allowedTCPPorts = [ 8096 ];
 
   environment.persistence."/persist".directories = [ "/var/lib/jellyfin" ];
+
+  environment.persistence."/persist".users.${config.mySystem.user.name}.directories = [
+    ".local/share/zen-jellyfin"
+  ];
 }

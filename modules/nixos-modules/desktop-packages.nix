@@ -54,4 +54,16 @@
     hack
     iosevka
   ];
+
+  environment.persistence."/persist".users.${config.mySystem.user.name}.directories = [
+    ".config/nemo"
+    ".config/tutanota-desktop"
+    ".config/qView"
+    ".config/zathura"
+    ".config/Yubico"
+    ".config/cachix"
+    ".local/share/nemo"
+    ".local/share/zathura"
+    ".local/share/bluetui"
+  ];
 }

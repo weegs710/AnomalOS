@@ -351,4 +351,8 @@ in
       '';
     };
   };
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".config/retroarch"
+  ];
 }

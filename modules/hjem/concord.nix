@@ -46,4 +46,8 @@ in
       chown ${username}: "$cred_path"
     fi
   '';
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".config/concord"
+  ];
 }

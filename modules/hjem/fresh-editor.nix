@@ -417,4 +417,10 @@ in
       permissions = "0644";
     };
   };
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".config/fresh"
+    ".local/share/fresh"
+    ".local/state/fresh"
+  ];
 }

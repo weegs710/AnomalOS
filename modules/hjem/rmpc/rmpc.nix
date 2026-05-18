@@ -682,4 +682,8 @@ in
   systemd.user.tmpfiles.rules = [
     "d ${lyricsDir} 0755 - - -"
   ];
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".local/share/rmpc"
+  ];
 }

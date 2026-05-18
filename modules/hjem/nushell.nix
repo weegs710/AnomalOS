@@ -537,5 +537,14 @@ in
       # Empty by design - all initialization in env.nu for consistency
       "nushell/login.nu".text = "";
     };
+
+    environment.persistence."/persist".users.${config.mySystem.user.name}.directories = [
+      ".config/nushell"
+      ".config/atuin"
+      ".config/carapace"
+      ".local/share/atuin"
+      ".local/share/nushell"
+      ".local/share/zoxide"
+    ];
   };
 }

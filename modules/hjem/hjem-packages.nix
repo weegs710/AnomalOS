@@ -14,4 +14,8 @@ in
     wrappedFastfetch
     wrappedZen
   ];
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".config/zen"
+  ];
 }

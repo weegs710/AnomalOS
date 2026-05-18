@@ -84,4 +84,9 @@ in
       };
     };
   };
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".config/heroic"
+    ".local/state/Heroic"
+  ];
 }

@@ -69,4 +69,8 @@ in
       LOG_LEVEL = "INFO";
     };
   };
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".config/decky-loader"
+  ];
 }

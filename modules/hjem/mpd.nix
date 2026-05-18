@@ -70,4 +70,8 @@ in
   systemd.tmpfiles.rules = [
     "d /home/${username}/.local/share/mpd 0755 ${username} users -"
   ];
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".local/share/mpd"
+  ];
 }

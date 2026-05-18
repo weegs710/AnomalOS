@@ -9,4 +9,8 @@ in
     keyAlgorithm=EC
     name=${config.networking.hostName}
   '';
+
+  environment.persistence."/persist".users.${username}.directories = [
+    ".config/kdeconnect"
+  ];
 }

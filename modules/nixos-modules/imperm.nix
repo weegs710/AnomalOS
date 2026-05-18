@@ -65,9 +65,8 @@ in
       ];
       users.${username} = {
         directories = [
+          # top-level home dirs
           ".ssh"
-          ".config"
-          ".local"
           ".concord"
           ".crawl"
           ".var"
@@ -84,6 +83,51 @@ in
           "claude-projects"
           "weegs.dev"
           "ossu"
+          # XDG / desktop cross-cutting (no single owning module)
+          ".config/dconf"
+          ".config/gtk-3.0"
+          ".config/gtk-4.0"
+          ".config/glib-2.0"
+          ".config/Electron"
+          ".config/environment.d"
+          ".config/systemd"
+          ".config/pulse"
+          ".config/qt5ct"
+          ".config/qt6ct"
+          ".config/QtProject"
+          ".config/age"
+          ".config/gh"
+          # emulators (saves preserved, no dedicated module)
+          ".config/Ryujinx"
+          ".config/ppsspp"
+          ".config/desmume"
+          # actively used, no dedicated module
+          ".config/Cryptomator"
+          # .local/share -- general (no specific module)
+          ".local/share/applications"
+          ".local/share/desktop-directories"
+          ".local/share/icons"
+          ".local/share/mime"
+          ".local/share/wallpapers"
+          ".local/share/cursor-sources"
+          ".local/share/pki"
+          ".local/share/vulkan"
+          ".local/share/sddm"
+          ".local/share/systemd"
+          ".local/share/nix"
+          ".local/share/Trash"
+          ".local/share/hyprland"
+          ".local/share/direnv"
+          ".local/share/Cryptomator"
+          ".local/share/Larian Studios"
+          ".local/share/Paradox Interactive"
+          ".local/share/severed-chains"
+          ".local/share/gorguru"
+          # .local/state -- general
+          ".local/state/nix"
+          ".local/state/nix-output-monitor"
+          ".local/state/comma"
+          ".local/state/Larian Studios"
         ];
         files = [
           ".claude.json"
