@@ -23,7 +23,7 @@
             };
           };
 
-          environment.variables.NH_FLAKE = "/home/weegs/dotfiles";
+          environment.variables.NH_FLAKE = "/home/weegs/repo/public/anomalos";
 
           nix.settings = {
             substituters = [

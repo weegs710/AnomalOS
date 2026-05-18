@@ -6,7 +6,7 @@
 let
   username = config.mySystem.user.name;
   port = 1111;
-  serveDir = "/home/${username}/weegs.dev";
+  serveDir = "/home/${username}/repo/private/weegs.dev";
 in
 {
   users.users.${username}.packages = [ pkgs.miniserve ];

@@ -78,11 +78,9 @@ in
           "Pictures"
           "Videos"
           "Desktop"
-          "dotfiles"
+          "repo"
           "homebrew"
           "claude-projects"
-          "weegs.dev"
-          "ossu"
           # XDG / desktop cross-cutting (no single owning module)
           ".config/dconf"
           ".config/gtk-3.0"
@@ -97,6 +95,7 @@ in
           ".config/QtProject"
           ".config/age"
           ".config/gh"
+          ".config/jj"
           # apps with no dedicated module yet
           ".config/yazi"
           # emulators (saves preserved, no dedicated module)

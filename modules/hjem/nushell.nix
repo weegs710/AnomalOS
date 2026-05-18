@@ -321,7 +321,7 @@ in
         }
 
         def nfu [...inputs: string] {
-          cd ~/dotfiles/
+          cd ~/repo/public/anomalos/
           if ($inputs | is-empty) {
             ^nix flake update
           } else {
@@ -346,11 +346,11 @@ in
         }
 
         def --wrapped gb [...args: string] {
-          nu ~/weegs.dev/moderate.nu ...$args
+          nu ~/repo/private/weegs.dev/moderate.nu ...$args
         }
 
         def --wrapped update-svgs [...args: string] {
-          nu ~/dotfiles/scripts/update-svgs.nu ...$args
+          nu ~/repo/public/anomalos/scripts/update-svgs.nu ...$args
         }
 
         def evaltime [] {
@@ -392,7 +392,7 @@ in
           tmux new-session -d noctalia-shell
         }
 
-        alias repl = nix repl --expr 'import ~/dotfiles/repl.nix {}'
+        alias repl = nix repl --expr 'import ~/repo/public/anomalos/repl.nix {}'
         alias cc = claude-launcher
         alias hex = claude-launcher hex
         alias l = ls -alh

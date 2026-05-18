@@ -207,7 +207,7 @@ def diag-header [total_files: int input_count: int] {
         "<text x=\"50\" y=\"85\" font-size=\"36\" fill=\"#ebfafa\" font-weight=\"700\">anomalOS</text>"
         "<rect x=\"270\" y=\"68\" rx=\"6\" width=\"106\" height=\"22\" fill=\"#04d1f9\" opacity=\"0.15\" stroke=\"#04d1f9\" stroke-width=\"0.5\"/>"
         "<text x=\"323\" y=\"83\" font-size=\"10\" fill=\"#04d1f9\" font-weight=\"600\" text-anchor=\"middle\">FLAKE DIAGRAM</text>"
-        $"<text x=\"50\" y=\"112\" font-size=\"14\" fill=\"#abb4da\">NixOS 26.05  ·  /home/weegs/dotfiles  ·  ($total_files) files  ·  ($input_count) flake inputs</text>"
+        $"<text x=\"50\" y=\"112\" font-size=\"14\" fill=\"#abb4da\">NixOS 26.05  ·  /home/weegs/repo/public/anomalos  ·  ($total_files) files  ·  ($input_count) flake inputs</text>"
     ]
 }
 
