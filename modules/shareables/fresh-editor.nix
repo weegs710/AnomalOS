@@ -27,7 +27,7 @@
       postBuild = ''
         wrapProgram $out/bin/fresh \
           --prefix PATH : ${pkgs.lib.makeBinPath lspTools} \
-          --run 'cd "$HOME/dotfiles"'
+          --run 'cd "$HOME/repo/public/anomalos"'
       '';
       meta.mainProgram = "fresh";
     };

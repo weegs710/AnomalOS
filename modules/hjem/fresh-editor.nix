@@ -7,7 +7,7 @@
 let
   username = config.mySystem.user.name;
   wrappedFresh = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.fresh-editor;
-  flakePath = "${config.users.users.${username}.home}/dotfiles";
+  flakePath = "${config.users.users.${username}.home}/repo/public/anomalos";
 
   configJson = (pkgs.formats.json { }).generate "config.json" {
     version = 1;
