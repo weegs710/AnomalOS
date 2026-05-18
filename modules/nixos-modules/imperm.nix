@@ -97,6 +97,8 @@ in
           ".config/QtProject"
           ".config/age"
           ".config/gh"
+          # apps with no dedicated module yet
+          ".config/yazi"
           # emulators (saves preserved, no dedicated module)
           ".config/Ryujinx"
           ".config/ppsspp"
