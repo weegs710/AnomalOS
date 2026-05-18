@@ -200,11 +200,11 @@ fi
 sudo mount --mkdir -t zfs zroot/persist /mnt/persist
 
 # get repo to install from
-read -rp "Enter flake URL (default: github:weegs710/AnomalOS): " repo
-repo="${repo:-github:weegs710/AnomalOS}"
+read -rp "Enter flake URL (default: git+https://codeberg.org/weegs710/AnomalOS): " repo
+repo="${repo:-git+https://codeberg.org/weegs710/AnomalOS}"
 
 # only relevant for AnomalOS
-if [[ $repo == "github:weegs710/AnomalOS" ]]; then
+if [[ $repo == "git+https://codeberg.org/weegs710/AnomalOS" ]]; then
     hosts=("HX99G")
 
     echo "Available hosts:"
@@ -230,7 +230,7 @@ fi
 read -rp "Enter git rev for flake (default: main): " git_rev
 
 echo "Installing NixOS"
-if [[ $repo == "github:weegs710/AnomalOS" ]]; then
+if [[ $repo == "git+https://codeberg.org/weegs710/AnomalOS" ]]; then
     # root password is irrelevant if initialPassword is set in the config
     sudo nixos-install --no-root-password --flake "$repo/${git_rev:-main}#$host" --option tarball-ttl 0
 else

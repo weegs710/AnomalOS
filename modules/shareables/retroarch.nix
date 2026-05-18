@@ -1,5 +1,5 @@
 # Wrapped RetroArch with all cores and optimized 1440p configs
-# Run with: nix run github:weegs710/AnomalOS#retroarch
+# Run with: nix run git+https://codeberg.org/weegs710/AnomalOS#retroarch
 {
   perSystem = {pkgs, ...}: let
     # Define all core configurations
