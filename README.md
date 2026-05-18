@@ -138,7 +138,7 @@ both are consumed by live modules (`modules/hjem/xdg/xdg.nix` and `modules/nixos
 boot a NixOS live ISO, then:
 
 ```bash
-git clone https://github.com/YOUR_FORK/AnomalOS.git ~/dotfiles
+git clone https://codeberg.org/YOUR_FORK/AnomalOS.git ~/dotfiles
 cd ~/dotfiles
 
 # read the comments in install.sh before you run this
@@ -296,7 +296,7 @@ systemctl --failed
 systemctl --user --failed
 ```
 
-help: [NixOS Discourse](https://discourse.nixos.org/) · [NixOS Wiki](https://nixos.wiki/) · [Issues](https://github.com/weegs710/AnomalOS/issues)
+help: [NixOS Discourse](https://discourse.nixos.org/) · [NixOS Wiki](https://nixos.wiki/) · [Issues](https://codeberg.org/weegs710/AnomalOS/issues)
 
 </details>
 
@@ -321,6 +321,5 @@ MIT license. do whatever you want with it.
 
 ## links
 
-- GitHub: https://github.com/weegs710/AnomalOS
 - Codeberg: https://codeberg.org/weegs710/AnomalOS
 - Website: https://weegs.dev
