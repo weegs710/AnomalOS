@@ -72,7 +72,6 @@ in
           ".crawl"
           ".var"
           ".claude"
-          ".stremio-server"
           "cloud"
           "Documents"
           "Downloads"

@@ -272,7 +272,6 @@ in
       # media
       windowrule = workspace 5, match:class ^(zen-jellyfin)$
       windowrule = workspace 5, match:class ^(mpv)$
-      windowrule = workspace 5, match:class ^(com\.stremio\.Stremio)$
       windowrule = workspace 5, match:class ^(gimp)$
       windowrule = workspace 5, match:class ^(org\.inkscape\.Inkscape)$
       windowrule = workspace 5, match:title ^(rmpc)$

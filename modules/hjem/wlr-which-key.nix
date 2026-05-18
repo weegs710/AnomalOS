@@ -236,11 +236,6 @@ let
               cmd = rmpcCmd;
             }
             {
-              key = "v";
-              desc = "stremio";
-              cmd = "stremio";
-            }
-            {
               key = "z";
               desc = "zathura";
               cmd = "zathura";
