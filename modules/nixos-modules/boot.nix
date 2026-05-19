@@ -2,6 +2,8 @@
 {
   console.font = "${pkgs.terminus_font}/share/consolefonts/ter-v18n.psf.gz";
 
+  system.nixos.label = "";
+
   services.zfs.autoScrub.enable = true;
 
   boot = {
