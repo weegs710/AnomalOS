@@ -301,29 +301,18 @@ in
     '';
 
     xdg.config.files."hypr/hyprland.lua".text = ''
-      -- hyprland.lua — Lua port of hyprland.conf (hyprlang config preserved at hyprland.conf)
-      -- Switch: update hjem path from "hypr/hyprland.conf" to "hypr/hyprland.lua" when ready
-      -- noctalia colors: hardcoded from noctalia-colors.conf until noctalia v5 generates .lua
-      --   then replace the color block below with:
-      --   dofile(os.getenv("HOME") .. "/.config/hypr/noctalia/noctalia-colors.lua")
-
+      -- noctalia colors hardcoded until v5 ships noctalia-colors.lua; swap to dofile() then
 
       local terminal = "ghostty --title=ghostty"
       local mainMod  = "SUPER"
 
-
-      ----------------
-      ---- MONITORS --
-      ----------------
-
+      -- monitors
+      -- hl.monitor({ output = "NAME", mode = "WxH@Hz", position = "XxY", scale = "1" })
       hl.monitor({ output = "HDMI-A-2", mode = "2560x1440@144", position = "0x0",  scale = "1" })
       hl.monitor({ output = "",          mode = "preferred",      position = "auto", scale = "auto" })
 
-
-      -----------------
-      ---- ENVIRONMENT
-      -----------------
-
+      -- environment
+      -- hl.env("KEY", "value")
       hl.env("HYPRCURSOR_THEME",    "fft-ivalice-hyprcursor")
       hl.env("HYPRCURSOR_SIZE",     "32")
       hl.env("XCURSOR_THEME",       "phinger-cursors-dark")
@@ -331,33 +320,23 @@ in
       hl.env("TERMINAL",            "ghostty")
       hl.env("XDG_TERMINAL_EDITOR", "ghostty")
 
-
-      -----------------
-      ---- AUTOSTART ---
-      -----------------
-
+      -- autostart
+      -- hl.on("hyprland.start", function() hl.exec_cmd("cmd") end)
       hl.on("hyprland.start", function()
           hl.exec_cmd("dbus-update-activation-environment --systemd --all")
           hl.exec_cmd("noctalia-shell")
           hl.exec_cmd("kdeconnect-indicator")
       end)
 
-
-      ------------
-      ---- COLORS -
-      ------------
-
-      -- sourced from noctalia-colors.conf; swap to dofile() after noctalia v5 migration
+      -- colors
+      -- local color = "rgb(rrggbb)"
       local primary   = "rgb(37f499)"
       local surface   = "rgb(212337)"
       local secondary = "rgb(04d1f9)"
       local error_col = "rgb(f16c75)"
 
-
-      ----------------
-      ---- CONFIG -----
-      ----------------
-
+      -- config
+      -- hl.config({ section = { key = value } })
       hl.config({
           general = {
               gaps_in          = 5,
@@ -441,12 +420,9 @@ in
 
       hl.device({ name = "epic-mouse-v1", sensitivity = 1.0 })
 
-
-      ------------------
-      ---- ANIMATIONS ---
-      ------------------
-
-      -- second overshot declaration in original wins: 0.13, 0.99, 0.29, 1.5
+      -- animations
+      -- hl.animation({ leaf = "windows", enabled = true, speed = 3, bezier = "curve", style = "slide" })
+      -- overshot uses second (winning) hyprlang declaration's values
       hl.curve("zoom",     { type = "bezier", points = { {0.1, 0.9},   {0.1, 1.2}  } })
       hl.curve("overshot", { type = "bezier", points = { {0.13, 0.99}, {0.29, 1.5} } })
 
@@ -458,22 +434,17 @@ in
       hl.animation({ leaf = "workspaces",  enabled = true, speed = 3, bezier = "overshot", style = "slide" })
       hl.animation({ leaf = "layers",      enabled = true, speed = 3, bezier = "zoom",     style = "fade" })
 
+      -- workspaces
+      -- hl.workspace_rule({ workspace = "N", default_name = "name", layout = "dwindle", persistent = true })
+      hl.workspace_rule({ workspace = "1",                     default_name = "comms", gaps_in = 5, gaps_out = 10, persistent = true })
+      hl.workspace_rule({ workspace = "2",                     default_name = "dev",   gaps_in = 5, gaps_out = 10, persistent = true, layout = "scrolling" })
+      hl.workspace_rule({ workspace = "3",                     default_name = "web",   gaps_in = 5, gaps_out = 10, persistent = true, layout = "master" })
+      hl.workspace_rule({ workspace = "4",                     default_name = "games", gaps_in = 0, gaps_out = 0,  persistent = true, layout = "monocle", no_rounding = true })
+      hl.workspace_rule({ workspace = "5",                     default_name = "media", gaps_in = 5, gaps_out = 10, persistent = true, layout = "monocle" })
+      hl.workspace_rule({ workspace = "special:control-panel",                         gaps_in = 5, gaps_out = 10, layout = "scrolling" })
 
-      --------------------
-      ---- WORKSPACES -----
-      --------------------
-
-      hl.workspace_rule({ workspace = "1",                    default_name = "comms", gaps_in = 5, gaps_out = 10, persistent = true })
-      hl.workspace_rule({ workspace = "2",                    default_name = "dev",   gaps_in = 5, gaps_out = 10, persistent = true, layout = "scrolling" })
-      hl.workspace_rule({ workspace = "3",                    default_name = "web",   gaps_in = 5, gaps_out = 10, persistent = true, layout = "master" })
-      hl.workspace_rule({ workspace = "4",                    default_name = "games", gaps_in = 0, gaps_out = 0,  persistent = true, layout = "monocle", no_rounding = true })
-      hl.workspace_rule({ workspace = "5",                    default_name = "media", gaps_in = 5, gaps_out = 10, persistent = true, layout = "monocle" })
-      hl.workspace_rule({ workspace = "special:control-panel",                        gaps_in = 5, gaps_out = 10, layout = "scrolling" })
-
-
-      ---------------------
-      ---- WINDOW RULES ----
-      ---------------------
+      -- window rules
+      -- hl.window_rule({ match = { class = "^class$" }, float = true, workspace = "N" })
 
       -- dialogs
       hl.window_rule({ match = { float = true }, opacity = "1.0 override 1.0 override 1.0 override" })
@@ -543,10 +514,8 @@ in
       -- dev workspace opacity (pinned windows re-trigger dynamically)
       hl.window_rule({ match = { workspace = "2", title = "negative:^(rmpc)$" }, opacity = "0.94 override 0.90 override" })
 
-
-      ------------------
-      ---- KEYBINDS ----
-      ------------------
+      -- keybinds
+      -- hl.bind("SUPER + key", hl.dsp.dispatcher(), { repeating = true })
 
       -- window management
       hl.bind(mainMod .. " + escape",    hl.dsp.window.close())
@@ -593,7 +562,7 @@ in
       hl.bind(mainMod .. " + home",  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
       hl.bind(mainMod .. " + end",   hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
 
-      -- focus movement (hypr-focus handles monocle/scrolling layout awareness)
+      -- focus movement (hypr-focus cycles layout in monocle, directional focus otherwise)
       hl.bind(mainMod .. " + left",  hl.dsp.exec_cmd("hypr-focus l"), { repeating = true })
       hl.bind(mainMod .. " + right", hl.dsp.exec_cmd("hypr-focus r"), { repeating = true })
       hl.bind(mainMod .. " + up",    hl.dsp.exec_cmd("hypr-focus u"), { repeating = true })
