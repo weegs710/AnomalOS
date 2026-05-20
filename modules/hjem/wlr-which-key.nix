@@ -9,13 +9,13 @@ let
   homeDir = config.users.users.${username}.home;
   yamlFormat = pkgs.formats.yaml { };
 
-  jellyfinCmd = "hyprctl dispatch exec '[workspace 5] env MOZ_APP_LAUNCHER=zen-jellyfin zen --kiosk --profile ${homeDir}/.local/share/zen-jellyfin --no-remote http://localhost:8096'";
-  concordCmd = "hyprctl dispatch exec '[workspace 1] ghostty --title=concord -e /etc/profiles/per-user/${username}/bin/concord'";
-  gorguruCmd = "hyprctl dispatch exec '[workspace special:stash] ghostty --title=gorguru -e ${homeDir}/repo/private/weegs.dev/dist/gorguru'";
-  btopCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty --title=btop -e btop'";
-  rmpcCmd = "hyprctl dispatch exec 'ghostty --title=rmpc -e rmpc'";
+  jellyfinCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('env MOZ_APP_LAUNCHER=zen-jellyfin zen --kiosk --profile ${homeDir}/.local/share/zen-jellyfin --no-remote http://localhost:8096')\"";
+  concordCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=concord -e /etc/profiles/per-user/${username}/bin/concord')\"";
+  gorguruCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=gorguru -e ${homeDir}/repo/private/weegs.dev/dist/gorguru', { workspace = 'special:stash' })\"";
+  btopCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=btop -e btop', { float = true, size = {1600, 900}, move = {531, 262} })\"";
+  rmpcCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=rmpc -e rmpc')\"";
   terminalCmd = "ghostty --title=ghostty";
-  fileManagerCmd = "hyprctl dispatch exec '[size 1600 900; move 531 262; float; opacity 1.0 override 1.0 override 1.0 override] ghostty -e yazi'";
+  fileManagerCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty -e yazi', { float = true, size = {1600, 900}, move = {531, 262} })\"";
 
   shotSaveScript = pkgs.writeTextFile {
     name = "shot-save.nu";
@@ -128,7 +128,7 @@ let
             {
               key = "f";
               desc = "facebook";
-              cmd = "hyprctl dispatch exec '[workspace 1] zen --no-remote --new-window https://www.facebook.com'";
+              cmd = "hyprctl dispatch \"hl.dsp.exec_cmd('zen --no-remote --new-window https://www.facebook.com', { workspace = 1 })\"";
             }
           ];
         }
