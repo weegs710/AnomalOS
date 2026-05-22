@@ -11,4 +11,16 @@ in
     weegs
     HX99G
   ];
+  "jellyfin-api-key.age".publicKeys = [
+    weegs
+    HX99G
+  ];
+  "radarr-api-key.age".publicKeys = [
+    weegs
+    HX99G
+  ];
+  "sonarr-api-key.age".publicKeys = [
+    weegs
+    HX99G
+  ];
 }
