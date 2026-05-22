@@ -237,6 +237,7 @@ in
 
       -- media
       hl.window_rule({ match = { class = "^(zen-jellyfin)$" },           workspace = "5" })
+      hl.window_rule({ match = { class = "^(zen)$", title = ".*Jellyfin.*" }, workspace = "5" })
       hl.window_rule({ match = { class = "^(mpv)$" },                    workspace = "5" })
       hl.window_rule({ match = { class = "^(gimp)$" },                   workspace = "5" })
       hl.window_rule({ match = { class = "^(org%.inkscape%.Inkscape)$" }, workspace = "5" })
