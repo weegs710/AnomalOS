@@ -50,7 +50,7 @@
           {
             "type": "command",
             "key": "└",
-            "text": "birth_install=1750377600; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days using NixOS."
+            "text": "birth_install=1748145600; current=$(date +%s); time_progression=$((current - birth_install)); days_difference=$((time_progression / 86400)); echo $days_difference days using NixOS."
           },
           {
             "type": "custom",
