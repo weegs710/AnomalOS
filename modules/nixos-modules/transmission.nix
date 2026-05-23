@@ -37,6 +37,8 @@ in
       ratio-limit = 0;
       ratio-limit-enabled = true;
       umask = 2;
+      download-queue-size = 9999;
+      download-queue-enabled = true;
     };
   };
 
