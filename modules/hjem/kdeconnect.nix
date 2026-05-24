@@ -10,7 +10,7 @@ in
     name=${config.networking.hostName}
   '';
 
-  environment.persistence."/persist".users.${username}.directories = [
+  preservation.preserveAt."/persist".users.${username}.directories = [
     ".config/kdeconnect"
   ];
 }

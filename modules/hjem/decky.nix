@@ -70,7 +70,7 @@ in
     };
   };
 
-  environment.persistence."/persist".users.${username}.directories = [
+  preservation.preserveAt."/persist".users.${username}.directories = [
     ".config/decky-loader"
   ];
 }

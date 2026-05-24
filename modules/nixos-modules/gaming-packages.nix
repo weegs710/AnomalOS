@@ -23,7 +23,7 @@
     protonup-qt
   ];
 
-  environment.persistence."/persist".users.${config.mySystem.user.name}.directories = [
+  preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
     ".config/openra"
   ];
 }

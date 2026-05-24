@@ -38,7 +38,7 @@ in
     deband=yes
   '';
 
-  environment.persistence."/persist".users.${username}.directories = [
+  preservation.preserveAt."/persist".users.${username}.directories = [
     ".config/mpv"
     ".local/state/mpv"
   ];

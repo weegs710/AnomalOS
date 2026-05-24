@@ -60,6 +60,9 @@ in
     description = "MPRIS2 bridge for MPD";
     after = [ "mpd.service" ];
     wantedBy = [ "default.target" ];
+    environment = {
+      MPD_HOST = "/home/${username}/.config/mpd/socket";
+    };
     serviceConfig = {
       ExecStart = "${pkgs.mpd-mpris}/bin/mpd-mpris";
       Restart = "on-failure";
@@ -71,7 +74,7 @@ in
     "d /home/${username}/.local/share/mpd 0755 ${username} users -"
   ];
 
-  environment.persistence."/persist".users.${username}.directories = [
+  preservation.preserveAt."/persist".users.${username}.directories = [
     ".local/share/mpd"
   ];
 }

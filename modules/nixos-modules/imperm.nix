@@ -35,7 +35,7 @@ let
   '';
 in
 {
-  imports = [ inputs.impermanence.nixosModules.impermanence ];
+  imports = [ inputs.preservation.nixosModules.default ];
 
   fileSystems."/" = lib.mkForce {
     device = "tmpfs";
@@ -47,9 +47,11 @@ in
     ];
   };
 
-  environment.persistence = {
+  preservation.enable = true;
+
+  preservation.preserveAt = {
     "/persist" = {
-      hideMounts = true;
+      commonMountOptions = [ "x-gvfs-hide" ];
       directories = [
         "/var/log"
         "/var/lib/nixos"
@@ -59,10 +61,17 @@ in
         "/var/lib/bluetooth"
       ];
       files = [
-        "/etc/ssh/ssh_host_ed25519_key"
-        "/etc/ssh/ssh_host_ed25519_key.pub"
-        "/etc/ly/save.txt"
-        "/etc/machine-id"
+        # symlink + "uninitialized" seed bypasses O_NOFOLLOW failure introduced in systemd v258
+        # See: https://github.com/nix-community/preservation/issues/22
+        {
+          file = "/etc/machine-id";
+          how = "symlink";
+          inInitrd = true;
+        }
+        # ssh-keygen does not use O_NOFOLLOW so symlinks are safe for host keys
+        { file = "/etc/ssh/ssh_host_ed25519_key"; how = "symlink"; }
+        { file = "/etc/ssh/ssh_host_ed25519_key.pub"; how = "symlink"; }
+        { file = "/etc/ly/save.txt"; how = "symlink"; }
       ];
       users.${username} = {
         directories = [
@@ -140,20 +149,28 @@ in
     };
 
     "/cache" = {
-      hideMounts = true;
+      commonMountOptions = [ "x-gvfs-hide" ];
       directories = [
         "/var/lib/private/dnscrypt-proxy"
         "/var/lib/suricata"
         "/var/lib/libvirt"
       ];
-      users.${username} = {
-        directories = [
-          ".cache"
-          ".cargo"
-        ];
-      };
+      users.${username}.directories = [
+        ".cache"
+        ".cargo"
+      ];
     };
   };
+
+  # Seeds persistent machine-id as "uninitialized" so systemd takes the rewrite path on firstboot
+  # See: https://github.com/nix-community/preservation/issues/22
+  boot.initrd.systemd.tmpfiles.settings."machine-id-init" = {
+    "/sysroot/persist/etc/machine-id".f.argument = "uninitialized";
+  };
+
+  # Prevents machine-id-commit from replacing the preserved symlink with a plain file
+  boot.initrd.systemd.suppressedUnits = [ "systemd-machine-id-commit.service" ];
+  systemd.services.systemd-machine-id-commit.unitConfig.ConditionFirstBoot = true;
 
   users.users.${username}.packages = [ showTmpfs ];
 

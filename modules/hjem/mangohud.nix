@@ -10,6 +10,43 @@ in
       font_size=24
       text_outline
       position=top-left
+      background_alpha=0.5
+      round_corners=5
+
+      fps
+      frametime
+      frame_timing=1
+
+      gpu_stats
+      gpu_temp
+      gpu_junction_temp
+      gpu_core_clock
+      gpu_mem_clock
+      gpu_power
+      gpu_load_change
+      vram
+      vram_max_size
+
+      cpu_stats
+      cpu_temp
+      cpu_mhz
+      cpu_power
+      cpu_load_change
+      core_load
+
+      ram
+      swap
+
+      io_read
+      io_write
+
+      resolution
+      refresh_rate
+      time
+      wine
+      engine_version
+      gpu_name
+      vulkan_driver
     '';
 
     xdg.config.files."MangoHud/presets.conf".text = ''

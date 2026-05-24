@@ -42,11 +42,11 @@ in
     };
   };
 
-  environment.persistence."/persist".directories = [ "/var/lib/transmission" ];
+  preservation.preserveAt."/persist".directories = [ "/var/lib/transmission" ];
 
   users.users.${username}.packages = [ transmissionAdd ];
 
-  environment.persistence."/persist".users.${username}.directories = [
+  preservation.preserveAt."/persist".users.${username}.directories = [
     ".config/transmission"
   ];
 }

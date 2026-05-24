@@ -11,7 +11,7 @@ in
 {
   users.users.${username}.packages = [ wrappedSteam ];
 
-  environment.persistence."/persist".users.${username}.directories = [
+  preservation.preserveAt."/persist".users.${username}.directories = [
     ".local/share/Steam"
     ".local/share/umu"
   ];

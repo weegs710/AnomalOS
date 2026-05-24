@@ -23,8 +23,7 @@ in
     "d /mnt/media/torrents/tv    2775 root  media - -"
     "d /mnt/media/movies         2775 root  media - -"
     "d /mnt/media/tv             2775 root  media - -"
-    # radarr uses nested dataDir (/var/lib/radarr/.config/Radarr); its module only targets
-    # the leaf, leaving intermediate dirs root-owned when impermanence bind-mounts them first
+    # radarr uses nested dataDir (/var/lib/radarr/.config/Radarr); intermediate dirs need explicit ownership
     "d /var/lib/radarr           0755 radarr media - -"
     "d /var/lib/radarr/.config   0755 radarr media - -"
   ];
@@ -46,8 +45,7 @@ in
     openFirewall = false;
   };
 
-  # DynamicUser conflicts with impermanence -- chowns fail on bind-mounted dirs.
-  # Use a static user and bypass the private dir mechanism entirely.
+  # DynamicUser conflicts with preservation bind-mounts -- chowns fail on already-mounted dirs
   users.users.prowlarr = {
     isSystemUser = true;
     group = "prowlarr";
@@ -151,7 +149,7 @@ in
     };
   };
 
-  environment.persistence."/persist".directories = [
+  preservation.preserveAt."/persist".directories = [
     "/var/lib/radarr"
     "/var/lib/sonarr"
     "/var/lib/bazarr"

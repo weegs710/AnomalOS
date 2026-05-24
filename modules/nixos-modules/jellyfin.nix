@@ -26,9 +26,11 @@
   # only Jellyfin hits the LAN; management UIs stay localhost-only
   networking.firewall.allowedTCPPorts = [ 8096 ];
 
-  environment.persistence."/persist".directories = [ "/var/lib/jellyfin" ];
+  preservation.preserveAt."/persist".directories = [
+    { directory = "/var/lib/jellyfin"; user = "jellyfin"; group = "media"; mode = "0755"; }
+  ];
 
-  environment.persistence."/persist".users.${config.mySystem.user.name}.directories = [
+  preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
     ".local/share/zen-jellyfin"
   ];
 }

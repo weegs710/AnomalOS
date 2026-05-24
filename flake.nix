@@ -14,9 +14,8 @@ agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    impermanence = {
-      url = "github:nix-community/impermanence";
-      inputs.nixpkgs.follows = "nixpkgs";
+    preservation = {
+      url = "github:nix-community/preservation";
     };
     hjem = {
       url = "github:feel-co/hjem";
@@ -57,7 +56,7 @@ agenix = {
   outputs = inputs @ {flake-parts, ...}: let
     inherit (inputs.nixpkgs.lib.fileset) toList fileFilter;
     import-tree = path:
-      toList (fileFilter (file: file.name == "default.nix") path);
+      toList (fileFilter (file: file.name == "bundle.nix") path);
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
