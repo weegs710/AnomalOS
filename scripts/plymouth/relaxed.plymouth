@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Relaxed
+Description=Animated boot splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/relaxed
+ScriptFile=/usr/share/plymouth/themes/relaxed/relaxed.script
