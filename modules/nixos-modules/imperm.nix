@@ -62,6 +62,7 @@ in
         "/etc/ssh/ssh_host_ed25519_key"
         "/etc/ssh/ssh_host_ed25519_key.pub"
         "/etc/ly/save.txt"
+        "/etc/machine-id"
       ];
       users.${username} = {
         directories = [

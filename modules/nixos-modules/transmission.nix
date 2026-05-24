@@ -32,7 +32,7 @@ in
       rpc-whitelist-enabled = true;
       rpc-host-whitelist-enabled = true;
       rpc-host-whitelist = "localhost,127.0.0.1";
-      encryption = 2;
+      encryption = 1;
       utp-enabled = true;
       ratio-limit = 0;
       ratio-limit-enabled = true;
