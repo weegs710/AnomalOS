@@ -152,7 +152,7 @@ in
   preservation.preserveAt."/persist".directories = [
     "/var/lib/radarr"
     "/var/lib/sonarr"
-    "/var/lib/bazarr"
-    "/var/lib/prowlarr"
+    { directory = "/var/lib/bazarr"; user = "bazarr"; group = "media"; mode = "0755"; }
+    { directory = "/var/lib/prowlarr"; user = "prowlarr"; group = "prowlarr"; mode = "0755"; }
   ];
 }

@@ -152,7 +152,7 @@ in
       commonMountOptions = [ "x-gvfs-hide" ];
       directories = [
         "/var/lib/private/dnscrypt-proxy"
-        "/var/lib/suricata"
+        { directory = "/var/lib/suricata"; user = "suricata"; group = "suricata"; mode = "0755"; }
         "/var/lib/libvirt"
       ];
       users.${username}.directories = [
