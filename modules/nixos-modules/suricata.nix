@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 {
@@ -124,10 +125,35 @@
       };
     };
 
-    systemd.services.suricata.serviceConfig = {
-      ProtectProc = lib.mkForce "invisible";
-      # nixos module hardcodes -i <iface>; no native NFQ option exists so override is required
-      ExecStart = lib.mkForce "!${config.services.suricata.package}/bin/suricata -c ${config.services.suricata.configFile} -q 0";
+    systemd.services.suricata = {
+      after = lib.mkForce [ "basic.target" "network.target" "nftables.service" ];
+      wants = lib.mkForce [ ];
+      # multi-user.target infers After= from .wants/ symlinks; removing entry is the only way to unblock
+      wantedBy = lib.mkForce [ ];
+      serviceConfig = {
+        ProtectProc = lib.mkForce "invisible";
+        # nixos module hardcodes -i <iface>; no native NFQ option exists so override is required
+        ExecStart = lib.mkForce "!${config.services.suricata.package}/bin/suricata -c ${config.services.suricata.configFile} -q 0";
+      };
+    };
+
+    # nftables sets up the NFQ queue suricata listens on; logical coupling, starts suricata in background
+    systemd.services.nftables.wants = [ "suricata.service" ];
+
+    systemd.services.suricata-update = {
+      # removed from boot; timer handles periodic updates instead
+      wantedBy = lib.mkForce [ ];
+      serviceConfig.ExecStartPost =
+        # -: ignore failure if suricata isn't running; +: elevated to signal another service
+        "-+${pkgs.systemd}/bin/systemctl kill --signal=USR2 suricata.service";
+    };
+
+    systemd.timers.suricata-update = {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "5min";
+        OnUnitActiveSec = "24h";
+      };
     };
 
     networking.nftables.tables.suricata-ips = {

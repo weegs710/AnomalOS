@@ -1,5 +1,7 @@
 { config, ... }:
 {
+  systemd.services.NetworkManager-wait-online.enable = false;
+
   networking = {
     hostName = config.mySystem.hostName;
     hostId = "fff29759";
