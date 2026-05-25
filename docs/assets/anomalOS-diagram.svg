@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1750" viewBox="0 0 1500 1750">
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1802" viewBox="0 0 1500 1802">
 <defs>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;display=swap');
@@ -13,13 +13,13 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <circle cx="15" cy="15" r="0.5" fill="#414868" opacity="0.15"/>
 </pattern>
 </defs>
-<rect width="1500" height="1750" rx="16" fill="#171928"/>
-<rect width="1500" height="1750" rx="16" fill="url(#grid)"/>
+<rect width="1500" height="1802" rx="16" fill="#171928"/>
+<rect width="1500" height="1802" rx="16" fill="url(#grid)"/>
 <text x="50" y="85" font-size="36" fill="#ebfafa" font-weight="700">anomalOS</text>
 <rect x="270" y="68" rx="6" width="106" height="22" fill="#04d1f9" opacity="0.15" stroke="#04d1f9" stroke-width="0.5"/>
 <text x="323" y="83" font-size="10" fill="#04d1f9" font-weight="600" text-anchor="middle">FLAKE DIAGRAM</text>
-<text x="50" y="112" font-size="14" fill="#abb4da">NixOS 26.05  ·  /home/weegs/dotfiles  ·  74 files  ·  14 flake inputs</text>
-<rect x="60" y="140" rx="12" width="332" height="488" fill="none" stroke="#37f499" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+<text x="50" y="112" font-size="14" fill="#abb4da">NixOS 26.05  ·  /home/weegs/repo/public/anomalos  ·  84 files  ·  15 flake inputs</text>
+<rect x="60" y="140" rx="12" width="332" height="432" fill="none" stroke="#37f499" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
 <text x="76" y="160" font-size="10" fill="#37f499" font-weight="700" letter-spacing="1">FOLLOWS NIXPKGS</text>
 <rect x="76" y="172" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
 <rect x="79" y="180" rx="3" width="3" height="32" fill="#9071f4"/>
@@ -33,16 +33,16 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="79" y="236" rx="3" width="3" height="32" fill="#9071f4"/>
 <circle cx="94" cy="246" r="5" fill="#9071f4" opacity="0.2"/>
 <circle cx="94" cy="246" r="3" fill="#9071f4"/>
-<text x="106" y="249" font-size="12" fill="#ebfafa" font-weight="700">hjem</text>
-<text x="106" y="264" font-size="8" fill="#abb4da" opacity="0.5">feel-co/hjem</text>
+<text x="106" y="249" font-size="12" fill="#ebfafa" font-weight="700">concord</text>
+<text x="106" y="264" font-size="8" fill="#abb4da" opacity="0.5">chojs23/concord</text>
 <rect x="316" y="232" rx="6" width="50" height="14" fill="#37f499" opacity="0.18"/>
 <text x="341.0" y="242" font-size="7" fill="#37f499" font-weight="600" text-anchor="middle">follows</text>
 <rect x="76" y="284" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
 <rect x="79" y="292" rx="3" width="3" height="32" fill="#9071f4"/>
 <circle cx="94" cy="302" r="5" fill="#9071f4" opacity="0.2"/>
 <circle cx="94" cy="302" r="3" fill="#9071f4"/>
-<text x="106" y="305" font-size="12" fill="#ebfafa" font-weight="700">impermanence</text>
-<text x="106" y="320" font-size="8" fill="#abb4da" opacity="0.5">nix-community/impermanence</text>
+<text x="106" y="305" font-size="12" fill="#ebfafa" font-weight="700">hjem</text>
+<text x="106" y="320" font-size="8" fill="#abb4da" opacity="0.5">feel-co/hjem</text>
 <rect x="316" y="288" rx="6" width="50" height="14" fill="#37f499" opacity="0.18"/>
 <text x="341.0" y="298" font-size="7" fill="#37f499" font-weight="600" text-anchor="middle">follows</text>
 <rect x="76" y="340" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
@@ -77,17 +77,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="106" y="544" font-size="8" fill="#abb4da" opacity="0.5">noctalia-dev/noctalia-shell</text>
 <rect x="316" y="512" rx="6" width="50" height="14" fill="#37f499" opacity="0.18"/>
 <text x="341.0" y="522" font-size="7" fill="#37f499" font-weight="600" text-anchor="middle">follows</text>
-<rect x="76" y="564" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
-<rect x="79" y="572" rx="3" width="3" height="32" fill="#9071f4"/>
-<circle cx="94" cy="582" r="5" fill="#9071f4" opacity="0.2"/>
-<circle cx="94" cy="582" r="3" fill="#9071f4"/>
-<text x="106" y="585" font-size="12" fill="#ebfafa" font-weight="700">severed-chains</text>
-<text x="106" y="600" font-size="8" fill="#abb4da" opacity="0.5">severed-chains</text>
-<rect x="328" y="568" rx="6" width="38" height="14" fill="#04d1f9" opacity="0.18"/>
-<text x="347.0" y="578" font-size="7" fill="#04d1f9" font-weight="600" text-anchor="middle">local</text>
-<rect x="274" y="568" rx="6" width="50" height="14" fill="#37f499" opacity="0.18"/>
-<text x="299.0" y="578" font-size="7" fill="#37f499" font-weight="600" text-anchor="middle">follows</text>
-<rect x="408" y="140" rx="12" width="332" height="152" fill="none" stroke="#f265b5" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+<rect x="408" y="140" rx="12" width="332" height="208" fill="none" stroke="#f265b5" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
 <text x="424" y="160" font-size="10" fill="#f265b5" font-weight="700" letter-spacing="1">NON-FLAKE</text>
 <rect x="424" y="172" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
 <rect x="427" y="180" rx="3" width="3" height="32" fill="#9071f4"/>
@@ -107,6 +97,16 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="454" y="264" font-size="8" fill="#abb4da" opacity="0.5">https://git.lix.systems/lix-project/lix</text>
 <rect x="652" y="232" rx="6" width="62" height="14" fill="#f265b5" opacity="0.18"/>
 <text x="683.0" y="242" font-size="7" fill="#f265b5" font-weight="600" text-anchor="middle">non-flake</text>
+<rect x="424" y="284" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
+<rect x="427" y="292" rx="3" width="3" height="32" fill="#9071f4"/>
+<circle cx="442" cy="302" r="5" fill="#9071f4" opacity="0.2"/>
+<circle cx="442" cy="302" r="3" fill="#9071f4"/>
+<text x="454" y="305" font-size="12" fill="#ebfafa" font-weight="700">severed-chains</text>
+<text x="454" y="320" font-size="8" fill="#abb4da" opacity="0.5">severed-chains</text>
+<rect x="676" y="288" rx="6" width="38" height="14" fill="#04d1f9" opacity="0.18"/>
+<text x="695.0" y="298" font-size="7" fill="#04d1f9" font-weight="600" text-anchor="middle">local</text>
+<rect x="610" y="288" rx="6" width="62" height="14" fill="#f265b5" opacity="0.18"/>
+<text x="641.0" y="298" font-size="7" fill="#f265b5" font-weight="600" text-anchor="middle">non-flake</text>
 <rect x="756" y="140" rx="12" width="332" height="96" fill="none" stroke="#e9f941" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
 <text x="772" y="160" font-size="10" fill="#e9f941" font-weight="700" letter-spacing="1">PINNED</text>
 <rect x="772" y="172" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
@@ -117,7 +117,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="802" y="208" font-size="8" fill="#abb4da" opacity="0.5">NixOS/nixpkgs</text>
 <rect x="1018" y="176" rx="6" width="44" height="14" fill="#e9f941" opacity="0.18"/>
 <text x="1040.0" y="186" font-size="7" fill="#e9f941" font-weight="600" text-anchor="middle">pinned</text>
-<rect x="1104" y="140" rx="12" width="332" height="208" fill="none" stroke="#9071f4" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
+<rect x="1104" y="140" rx="12" width="332" height="264" fill="none" stroke="#9071f4" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
 <text x="1120" y="160" font-size="10" fill="#9071f4" font-weight="700" letter-spacing="1">STANDALONE</text>
 <rect x="1120" y="172" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
 <rect x="1123" y="180" rx="3" width="3" height="32" fill="#9071f4"/>
@@ -143,198 +143,220 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="1150" y="320" font-size="8" fill="#abb4da" opacity="0.5">NixOS/nixpkgs</text>
 <rect x="1342" y="288" rx="6" width="68" height="14" fill="#9071f4" opacity="0.18"/>
 <text x="1376.0" y="298" font-size="7" fill="#9071f4" font-weight="600" text-anchor="middle">standalone</text>
-<polyline points="226,628 226,644 670,664" stroke="#37f499" stroke-width="1.2" fill="none" opacity="0.3"/>
-<polyline points="574,292 574,308 670,664" stroke="#f265b5" stroke-width="1.2" fill="none" opacity="0.3"/>
-<polyline points="922,236 922,252 670,664" stroke="#e9f941" stroke-width="1.2" fill="none" opacity="0.3"/>
-<polyline points="1270,348 1270,364 670,664" stroke="#9071f4" stroke-width="1.2" fill="none" opacity="0.3"/>
-<rect x="540" y="668" rx="12" width="260" height="54" fill="#212337" stroke="#04d1f9" stroke-width="1.5" filter="url(#glow-cyan)"/>
-<rect x="543" y="676" rx="3" width="4" height="38" fill="#04d1f9"/>
-<circle cx="562" cy="688" r="5" fill="#04d1f9" opacity="0.2"/>
-<circle cx="562" cy="688" r="3" fill="#04d1f9"/>
-<text x="576" y="692" font-size="13" fill="#ebfafa" font-weight="700">flake.nix</text>
-<text x="576" y="708" font-size="10" fill="#04d1f9" opacity="0.7">Flake Root</text>
-<rect x="860" y="668" rx="12" width="260" height="54" fill="#212337" stroke="#37f499" stroke-width="1.5" filter="url(#glow-green)"/>
-<rect x="863" y="676" rx="3" width="4" height="38" fill="#37f499"/>
-<circle cx="882" cy="688" r="5" fill="#37f499" opacity="0.2"/>
-<circle cx="882" cy="688" r="3" fill="#37f499"/>
-<text x="896" y="692" font-size="13" fill="#ebfafa" font-weight="700">repl.nix</text>
-<text x="896" y="708" font-size="10" fill="#37f499" opacity="0.7">Nix REPL</text>
-<line x1="800" y1="695" x2="860" y2="695" stroke="#04d1f9" stroke-width="1.2" opacity="0.3"/>
-<text x="815" y="691" font-size="8" fill="#04d1f9" opacity="0.35">outputs</text>
-<line x1="670" y1="722" x2="670" y2="748" stroke="#e9f941" stroke-width="1.5" opacity="0.4"/>
-<text x="678" y="738" font-size="8" fill="#e9f941" opacity="0.35">imports</text>
-<rect x="540" y="748" rx="12" width="330" height="78" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
-<rect x="543" y="758" rx="3" width="4" height="58" fill="#e9f941"/>
-<circle cx="562" cy="770" r="7" fill="#e9f941" opacity="0.2"/>
-<circle cx="562" cy="770" r="4" fill="#e9f941"/>
-<text x="578" y="774" font-size="13" fill="#ebfafa" font-weight="700">modules</text>
-<rect x="818" y="754" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
-<text x="840" y="767" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">1 file</text>
-<text x="586" y="789" font-size="10" fill="#e9f941" opacity="0.6">modules</text>
-<line x1="552" y1="794" x2="858" y2="794" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
-<text x="556" y="808" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="568" y="808" font-size="10" fill="#abb4da">devshell.nix</text>
-<line x1="670" y1="830" x2="670" y2="850" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
-<line x1="205" y1="850" x2="1273" y2="850" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
-<line x1="205" y1="850" x2="205" y2="866" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
-<line x1="561" y1="850" x2="561" y2="866" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
-<line x1="917" y1="850" x2="917" y2="866" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
-<line x1="1273" y1="850" x2="1273" y2="866" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
-<rect x="40" y="866" rx="12" width="330" height="114" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
-<rect x="43" y="876" rx="3" width="4" height="94" fill="#e9f941"/>
-<circle cx="62" cy="888" r="7" fill="#e9f941" opacity="0.2"/>
-<circle cx="62" cy="888" r="4" fill="#e9f941"/>
-<text x="78" y="892" font-size="13" fill="#ebfafa" font-weight="700">hosts</text>
-<rect x="318" y="872" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
-<text x="340" y="885" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">3 files</text>
-<text x="86" y="907" font-size="10" fill="#e9f941" opacity="0.6">modules/hosts</text>
-<line x1="52" y1="912" x2="358" y2="912" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
-<text x="56" y="926" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="68" y="926" font-size="10" fill="#abb4da">hx99g-hardware.nix</text>
-<rect x="277" y="915" rx="4" width="80" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="317" y="924" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs-kernel</text>
-<rect x="174" y="915" rx="4" width="100" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="224" y="924" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nix-cachyos-kernel</text>
-<text x="56" y="944" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="68" y="944" font-size="10" fill="#abb4da">hx99g-zfs.nix</text>
-<text x="56" y="962" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="68" y="962" font-size="10" fill="#abb4da">hx99g.nix</text>
-<rect x="312" y="951" rx="4" width="45" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="334" y="960" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs</text>
-<rect x="249" y="951" rx="4" width="60" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="279" y="960" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">lix-module</text>
-<rect x="396" y="866" rx="12" width="330" height="474" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
-<rect x="399" y="876" rx="3" width="4" height="454" fill="#e9f941"/>
-<circle cx="418" cy="888" r="7" fill="#e9f941" opacity="0.2"/>
-<circle cx="418" cy="888" r="4" fill="#e9f941"/>
-<text x="434" y="892" font-size="13" fill="#ebfafa" font-weight="700">hjem</text>
-<rect x="674" y="872" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
-<text x="696" y="885" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">23 files</text>
-<text x="442" y="907" font-size="10" fill="#e9f941" opacity="0.6">modules/hjem</text>
-<line x1="408" y1="912" x2="714" y2="912" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
-<text x="412" y="926" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="926" font-size="10" fill="#abb4da">autotrash.nix</text>
-<text x="412" y="944" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="944" font-size="10" fill="#abb4da">bash/bash.nix</text>
-<text x="412" y="962" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="962" font-size="10" fill="#abb4da">decky.nix</text>
-<text x="412" y="980" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="980" font-size="10" fill="#abb4da">default.nix</text>
-<rect x="683" y="969" rx="4" width="30" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="698" y="978" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">hjem</text>
-<text x="412" y="998" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="998" font-size="10" fill="#abb4da">endcord.nix</text>
-<text x="412" y="1016" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1016" font-size="10" fill="#abb4da">fresh-editor.nix</text>
-<rect x="668" y="1005" rx="4" width="45" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="690" y="1014" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs</text>
-<text x="412" y="1034" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1034" font-size="10" fill="#abb4da">ghostty.nix</text>
-<text x="412" y="1052" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1052" font-size="10" fill="#abb4da">git.nix</text>
-<text x="412" y="1070" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1070" font-size="10" fill="#abb4da">heroic.nix</text>
-<text x="412" y="1088" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1088" font-size="10" fill="#abb4da">hjem-packages.nix</text>
-<text x="412" y="1106" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1106" font-size="10" fill="#abb4da">hyprland.nix</text>
-<text x="412" y="1124" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1124" font-size="10" fill="#abb4da">jujutsu.nix</text>
-<text x="412" y="1142" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1142" font-size="10" fill="#abb4da">kdeconnect.nix</text>
-<text x="412" y="1160" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1160" font-size="10" fill="#abb4da">mangohud.nix</text>
-<text x="412" y="1178" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1178" font-size="10" fill="#abb4da">mpd.nix</text>
-<text x="412" y="1196" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1196" font-size="10" fill="#abb4da">noctalia/noctalia.nix</text>
-<rect x="633" y="1185" rx="4" width="80" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="673" y="1194" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">noctalia-shell</text>
-<rect x="565" y="1185" rx="4" width="65" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="597" y="1194" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">noctalia-qs</text>
-<text x="412" y="1214" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1214" font-size="10" fill="#abb4da">nushell.nix</text>
-<text x="412" y="1232" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1232" font-size="10" fill="#abb4da">retroarch.nix</text>
-<text x="412" y="1250" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1250" font-size="10" fill="#abb4da">rmpc/rmpc.nix</text>
-<text x="412" y="1268" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1268" font-size="10" fill="#abb4da">udiskie.nix</text>
-<text x="412" y="1286" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1286" font-size="10" fill="#abb4da">wlr-which-key.nix</text>
-<text x="412" y="1304" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1304" font-size="10" fill="#abb4da">writing-tools.nix</text>
-<text x="412" y="1322" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1322" font-size="10" fill="#abb4da">xdg/xdg.nix</text>
-<rect x="613" y="1311" rx="4" width="100" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="663" y="1320" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">fft-ivalice-cursor</text>
-<rect x="752" y="866" rx="12" width="330" height="744" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
-<rect x="755" y="876" rx="3" width="4" height="724" fill="#e9f941"/>
-<circle cx="774" cy="888" r="7" fill="#e9f941" opacity="0.2"/>
-<circle cx="774" cy="888" r="4" fill="#e9f941"/>
-<text x="790" y="892" font-size="13" fill="#ebfafa" font-weight="700">nixos-modules</text>
-<rect x="1030" y="872" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
-<text x="1052" y="885" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">38 files</text>
-<text x="798" y="907" font-size="10" fill="#e9f941" opacity="0.6">modules/nixos-modules</text>
-<line x1="764" y1="912" x2="1070" y2="912" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
-<text x="768" y="926" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="926" font-size="10" fill="#abb4da">_vm.nix</text>
-<text x="768" y="944" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="944" font-size="10" fill="#abb4da">ai-tooling.nix</text>
-<text x="768" y="962" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="962" font-size="10" fill="#abb4da">android-webcam.nix</text>
-<text x="768" y="980" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="980" font-size="10" fill="#abb4da">audio.nix</text>
-<text x="768" y="998" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="998" font-size="10" fill="#abb4da">boot.nix</text>
-<text x="768" y="1016" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1016" font-size="10" fill="#abb4da">btop.nix</text>
-<text x="768" y="1034" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1034" font-size="10" fill="#abb4da">creation.nix</text>
-<text x="768" y="1052" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1052" font-size="10" fill="#abb4da">desktop-packages.nix</text>
-<text x="768" y="1070" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1070" font-size="10" fill="#abb4da">desktop-services.nix</text>
-<text x="768" y="1088" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1088" font-size="10" fill="#abb4da">dnscrypt.nix</text>
-<text x="768" y="1106" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1106" font-size="10" fill="#abb4da">firewall.nix</text>
-<text x="768" y="1124" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1124" font-size="10" fill="#abb4da">gaming-packages.nix</text>
-<rect x="989" y="1113" rx="4" width="80" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="1029" y="1122" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">severed-chains</text>
-<text x="768" y="1142" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1142" font-size="10" fill="#abb4da">hyprland-system.nix</text>
-<text x="768" y="1160" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1160" font-size="10" fill="#abb4da">imperm.nix</text>
-<rect x="999" y="1149" rx="4" width="70" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="1034" y="1158" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">impermanence</text>
-<text x="768" y="1178" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1178" font-size="10" fill="#abb4da">languages.nix</text>
-<text x="768" y="1196" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1196" font-size="10" fill="#abb4da">ly.nix</text>
-<text x="768" y="1214" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1214" font-size="10" fill="#abb4da">networking.nix</text>
-<text x="768" y="1232" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1232" font-size="10" fill="#abb4da">nix-gc.nix</text>
-<text x="768" y="1250" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1250" font-size="10" fill="#abb4da">nix-index-db.nix</text>
-<rect x="969" y="1239" rx="4" width="100" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="1019" y="1248" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nix-index-database</text>
-<text x="768" y="1268" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1268" font-size="10" fill="#abb4da">nix-prefs.nix</text>
-<rect x="1024" y="1257" rx="4" width="45" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="1046" y="1266" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs</text>
-<text x="768" y="1286" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1286" font-size="10" fill="#abb4da">nushell-book.nix</text>
-<text x="768" y="1304" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1304" font-size="10" fill="#abb4da">options.nix</text>
-<text x="768" y="1322" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1322" font-size="10" fill="#abb4da">pinchflat.nix</text>
-<text x="768" y="1340" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1340" font-size="10" fill="#abb4da">pulsemixer.nix</text>
-<text x="768" y="1358" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1358" font-size="10" fill="#abb4da">qalc.nix</text>
-<text x="768" y="1376" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1376" font-size="10" fill="#abb4da">sanoid.nix</text>
-<text x="768" y="1394" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1394" font-size="10" fill="#abb4da">scraping.nix</text>
-<text x="768" y="1412" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1412" font-size="10" fill="#abb4da">secrets.nix</text>
-<rect x="1029" y="1401" rx="4" width="40" height="14" fill="#9071f4" opacity="0.15"/>
-<text x="1049" y="1410" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">agenix</text>
-<text x="768" y="1430" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1430" font-size="10" fill="#abb4da">services.nix</text>
-<text x="768" y="1448" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1448" font-size="10" fill="#abb4da">steam.nix</text>
-<text x="768" y="1466" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1466" font-size="10" fill="#abb4da">suricata.nix</text>
-<text x="768" y="1484" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1484" font-size="10" fill="#abb4da">tailscale.nix</text>
-<text x="768" y="1502" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1502" font-size="10" fill="#abb4da">timg.nix</text>
-<text x="768" y="1520" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1520" font-size="10" fill="#abb4da">tmux.nix</text>
-<text x="768" y="1538" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1538" font-size="10" fill="#abb4da">tools.nix</text>
-<text x="768" y="1556" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1556" font-size="10" fill="#abb4da">users.nix</text>
-<text x="768" y="1574" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1574" font-size="10" fill="#abb4da">weegs-dev.nix</text>
-<text x="768" y="1592" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1592" font-size="10" fill="#abb4da">yubikey.nix</text>
-<rect x="1108" y="866" rx="12" width="330" height="222" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
-<rect x="1111" y="876" rx="3" width="4" height="202" fill="#e9f941"/>
-<circle cx="1130" cy="888" r="7" fill="#e9f941" opacity="0.2"/>
-<circle cx="1130" cy="888" r="4" fill="#e9f941"/>
-<text x="1146" y="892" font-size="13" fill="#ebfafa" font-weight="700">shareables</text>
-<rect x="1386" y="872" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
-<text x="1408" y="885" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">9 files</text>
-<text x="1154" y="907" font-size="10" fill="#e9f941" opacity="0.6">modules/shareables</text>
-<line x1="1120" y1="912" x2="1426" y2="912" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
-<text x="1124" y="926" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="926" font-size="10" fill="#abb4da">endcord.nix</text>
-<text x="1124" y="944" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="944" font-size="10" fill="#abb4da">fastfetch.nix</text>
-<text x="1124" y="962" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="962" font-size="10" fill="#abb4da">fresh-editor.nix</text>
-<text x="1124" y="980" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="980" font-size="10" fill="#abb4da">retroarch.nix</text>
-<text x="1124" y="998" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="998" font-size="10" fill="#abb4da">wrapped-helium.nix</text>
-<text x="1124" y="1016" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="1016" font-size="10" fill="#abb4da">wrapped-nushell.nix</text>
-<text x="1124" y="1034" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="1034" font-size="10" fill="#abb4da">wrapped-steam.nix</text>
-<text x="1124" y="1052" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="1052" font-size="10" fill="#abb4da">wrapped-zen.nix</text>
-<text x="1124" y="1070" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="1070" font-size="10" fill="#abb4da">yazi.nix</text>
-<circle cx="450" cy="1660" r="5" fill="#04d1f9"/>
-<text x="462" y="1664" font-size="11" fill="#abb4da">Flake Root</text>
-<circle cx="595" cy="1660" r="5" fill="#9071f4"/>
-<text x="607" y="1664" font-size="11" fill="#abb4da">Input</text>
-<circle cx="700" cy="1660" r="5" fill="#37f499"/>
-<text x="712" y="1664" font-size="11" fill="#abb4da">REPL</text>
-<circle cx="795" cy="1660" r="5" fill="#e9f941"/>
-<text x="807" y="1664" font-size="11" fill="#abb4da">Module</text>
-<circle cx="905" cy="1660" r="5" fill="#f265b5"/>
-<text x="917" y="1664" font-size="11" fill="#abb4da">Non-flake</text>
-<rect x="550" y="1685" rx="6" width="44" height="14" fill="#37f499" opacity="0.18"/>
-<text x="572" y="1695" font-size="7" fill="#37f499" font-weight="600" text-anchor="middle">follows</text>
-<rect x="610" y="1685" rx="6" width="38" height="14" fill="#e9f941" opacity="0.18"/>
-<text x="629" y="1695" font-size="7" fill="#e9f941" font-weight="600" text-anchor="middle">pinned</text>
-<rect x="664" y="1685" rx="6" width="50" height="14" fill="#f265b5" opacity="0.18"/>
-<text x="689" y="1695" font-size="7" fill="#f265b5" font-weight="600" text-anchor="middle">non-flake</text>
-<rect x="730" y="1685" rx="6" width="32" height="14" fill="#04d1f9" opacity="0.18"/>
-<text x="746" y="1695" font-size="7" fill="#04d1f9" font-weight="600" text-anchor="middle">local</text>
-<rect x="778" y="1685" rx="6" width="56" height="14" fill="#9071f4" opacity="0.18"/>
-<text x="806" y="1695" font-size="7" fill="#9071f4" font-weight="600" text-anchor="middle">standalone</text>
-<text x="750" y="1725" font-size="12" fill="#abb4da" text-anchor="middle">74 files  ·  14 flake inputs</text>
+<rect x="1120" y="340" rx="10" width="300" height="48" fill="#212337" stroke="#9071f4" stroke-width="1" filter="url(#glow-purple)"/>
+<rect x="1123" y="348" rx="3" width="3" height="32" fill="#9071f4"/>
+<circle cx="1138" cy="358" r="5" fill="#9071f4" opacity="0.2"/>
+<circle cx="1138" cy="358" r="3" fill="#9071f4"/>
+<text x="1150" y="361" font-size="12" fill="#ebfafa" font-weight="700">preservation</text>
+<text x="1150" y="376" font-size="8" fill="#abb4da" opacity="0.5">nix-community/preservation</text>
+<rect x="1342" y="344" rx="6" width="68" height="14" fill="#9071f4" opacity="0.18"/>
+<text x="1376.0" y="354" font-size="7" fill="#9071f4" font-weight="600" text-anchor="middle">standalone</text>
+<polyline points="226,572 226,588 670,608" stroke="#37f499" stroke-width="1.2" fill="none" opacity="0.3"/>
+<polyline points="574,348 574,364 670,608" stroke="#f265b5" stroke-width="1.2" fill="none" opacity="0.3"/>
+<polyline points="922,236 922,252 670,608" stroke="#e9f941" stroke-width="1.2" fill="none" opacity="0.3"/>
+<polyline points="1270,404 1270,420 670,608" stroke="#9071f4" stroke-width="1.2" fill="none" opacity="0.3"/>
+<rect x="540" y="612" rx="12" width="260" height="54" fill="#212337" stroke="#04d1f9" stroke-width="1.5" filter="url(#glow-cyan)"/>
+<rect x="543" y="620" rx="3" width="4" height="38" fill="#04d1f9"/>
+<circle cx="562" cy="632" r="5" fill="#04d1f9" opacity="0.2"/>
+<circle cx="562" cy="632" r="3" fill="#04d1f9"/>
+<text x="576" y="636" font-size="13" fill="#ebfafa" font-weight="700">flake.nix</text>
+<text x="576" y="652" font-size="10" fill="#04d1f9" opacity="0.7">Flake Root</text>
+<rect x="860" y="612" rx="12" width="260" height="54" fill="#212337" stroke="#37f499" stroke-width="1.5" filter="url(#glow-green)"/>
+<rect x="863" y="620" rx="3" width="4" height="38" fill="#37f499"/>
+<circle cx="882" cy="632" r="5" fill="#37f499" opacity="0.2"/>
+<circle cx="882" cy="632" r="3" fill="#37f499"/>
+<text x="896" y="636" font-size="13" fill="#ebfafa" font-weight="700">repl.nix</text>
+<text x="896" y="652" font-size="10" fill="#37f499" opacity="0.7">Nix REPL</text>
+<line x1="800" y1="639" x2="860" y2="639" stroke="#04d1f9" stroke-width="1.2" opacity="0.3"/>
+<text x="815" y="635" font-size="8" fill="#04d1f9" opacity="0.35">outputs</text>
+<line x1="670" y1="666" x2="670" y2="692" stroke="#e9f941" stroke-width="1.5" opacity="0.4"/>
+<text x="678" y="682" font-size="8" fill="#e9f941" opacity="0.35">imports</text>
+<rect x="540" y="692" rx="12" width="330" height="78" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
+<rect x="543" y="702" rx="3" width="4" height="58" fill="#e9f941"/>
+<circle cx="562" cy="714" r="7" fill="#e9f941" opacity="0.2"/>
+<circle cx="562" cy="714" r="4" fill="#e9f941"/>
+<text x="578" y="718" font-size="13" fill="#ebfafa" font-weight="700">modules</text>
+<rect x="818" y="698" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
+<text x="840" y="711" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">1 file</text>
+<text x="586" y="733" font-size="10" fill="#e9f941" opacity="0.6">modules</text>
+<line x1="552" y1="738" x2="858" y2="738" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
+<text x="556" y="752" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="568" y="752" font-size="10" fill="#abb4da">devshell.nix</text>
+<line x1="670" y1="774" x2="670" y2="794" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
+<line x1="205" y1="794" x2="1273" y2="794" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
+<line x1="205" y1="794" x2="205" y2="810" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
+<line x1="561" y1="794" x2="561" y2="810" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
+<line x1="917" y1="794" x2="917" y2="810" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
+<line x1="1273" y1="794" x2="1273" y2="810" stroke="#e9f941" stroke-width="1.2" opacity="0.3"/>
+<rect x="40" y="810" rx="12" width="330" height="114" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
+<rect x="43" y="820" rx="3" width="4" height="94" fill="#e9f941"/>
+<circle cx="62" cy="832" r="7" fill="#e9f941" opacity="0.2"/>
+<circle cx="62" cy="832" r="4" fill="#e9f941"/>
+<text x="78" y="836" font-size="13" fill="#ebfafa" font-weight="700">hosts</text>
+<rect x="318" y="816" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
+<text x="340" y="829" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">3 files</text>
+<text x="86" y="851" font-size="10" fill="#e9f941" opacity="0.6">modules/hosts</text>
+<line x1="52" y1="856" x2="358" y2="856" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
+<text x="56" y="870" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="68" y="870" font-size="10" fill="#abb4da">hx99g-hardware.nix</text>
+<rect x="277" y="859" rx="4" width="80" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="317" y="868" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs-kernel</text>
+<rect x="174" y="859" rx="4" width="100" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="224" y="868" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nix-cachyos-kernel</text>
+<text x="56" y="888" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="68" y="888" font-size="10" fill="#abb4da">hx99g-zfs.nix</text>
+<text x="56" y="906" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="68" y="906" font-size="10" fill="#abb4da">hx99g.nix</text>
+<rect x="312" y="895" rx="4" width="45" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="334" y="904" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs</text>
+<rect x="249" y="895" rx="4" width="60" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="279" y="904" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">lix-module</text>
+<rect x="396" y="810" rx="12" width="330" height="510" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
+<rect x="399" y="820" rx="3" width="4" height="490" fill="#e9f941"/>
+<circle cx="418" cy="832" r="7" fill="#e9f941" opacity="0.2"/>
+<circle cx="418" cy="832" r="4" fill="#e9f941"/>
+<text x="434" y="836" font-size="13" fill="#ebfafa" font-weight="700">hjem</text>
+<rect x="674" y="816" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
+<text x="696" y="829" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">25 files</text>
+<text x="442" y="851" font-size="10" fill="#e9f941" opacity="0.6">modules/hjem</text>
+<line x1="408" y1="856" x2="714" y2="856" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
+<text x="412" y="870" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="870" font-size="10" fill="#abb4da">autotrash.nix</text>
+<text x="412" y="888" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="888" font-size="10" fill="#abb4da">bash/bash.nix</text>
+<text x="412" y="906" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="906" font-size="10" fill="#abb4da">bundle.nix</text>
+<rect x="668" y="895" rx="4" width="45" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="690" y="904" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs</text>
+<rect x="635" y="895" rx="4" width="30" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="650" y="904" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">hjem</text>
+<text x="412" y="924" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="924" font-size="10" fill="#abb4da">concord.nix</text>
+<text x="412" y="942" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="942" font-size="10" fill="#abb4da">dcss.nix</text>
+<text x="412" y="960" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="960" font-size="10" fill="#abb4da">decky.nix</text>
+<text x="412" y="978" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="978" font-size="10" fill="#abb4da">fresh-editor.nix</text>
+<rect x="668" y="967" rx="4" width="45" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="690" y="976" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs</text>
+<text x="412" y="996" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="996" font-size="10" fill="#abb4da">ghostty.nix</text>
+<text x="412" y="1014" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1014" font-size="10" fill="#abb4da">git.nix</text>
+<text x="412" y="1032" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1032" font-size="10" fill="#abb4da">heroic.nix</text>
+<text x="412" y="1050" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1050" font-size="10" fill="#abb4da">hjem-packages.nix</text>
+<text x="412" y="1068" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1068" font-size="10" fill="#abb4da">hyprland.nix</text>
+<text x="412" y="1086" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1086" font-size="10" fill="#abb4da">jujutsu.nix</text>
+<text x="412" y="1104" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1104" font-size="10" fill="#abb4da">kdeconnect.nix</text>
+<text x="412" y="1122" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1122" font-size="10" fill="#abb4da">mangohud.nix</text>
+<text x="412" y="1140" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1140" font-size="10" fill="#abb4da">mpd.nix</text>
+<text x="412" y="1158" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1158" font-size="10" fill="#abb4da">mpv.nix</text>
+<text x="412" y="1176" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1176" font-size="10" fill="#abb4da">noctalia/noctalia.nix</text>
+<rect x="633" y="1165" rx="4" width="80" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="673" y="1174" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">noctalia-shell</text>
+<rect x="565" y="1165" rx="4" width="65" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="597" y="1174" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">noctalia-qs</text>
+<text x="412" y="1194" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1194" font-size="10" fill="#abb4da">nushell.nix</text>
+<text x="412" y="1212" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1212" font-size="10" fill="#abb4da">retroarch.nix</text>
+<text x="412" y="1230" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1230" font-size="10" fill="#abb4da">rmpc/rmpc.nix</text>
+<text x="412" y="1248" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1248" font-size="10" fill="#abb4da">udiskie.nix</text>
+<text x="412" y="1266" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1266" font-size="10" fill="#abb4da">wlr-which-key.nix</text>
+<text x="412" y="1284" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1284" font-size="10" fill="#abb4da">writing-tools.nix</text>
+<text x="412" y="1302" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="424" y="1302" font-size="10" fill="#abb4da">xdg/xdg.nix</text>
+<rect x="613" y="1291" rx="4" width="100" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="663" y="1300" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">fft-ivalice-cursor</text>
+<rect x="752" y="810" rx="12" width="330" height="852" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
+<rect x="755" y="820" rx="3" width="4" height="832" fill="#e9f941"/>
+<circle cx="774" cy="832" r="7" fill="#e9f941" opacity="0.2"/>
+<circle cx="774" cy="832" r="4" fill="#e9f941"/>
+<text x="790" y="836" font-size="13" fill="#ebfafa" font-weight="700">nixos-modules</text>
+<rect x="1030" y="816" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
+<text x="1052" y="829" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">44 files</text>
+<text x="798" y="851" font-size="10" fill="#e9f941" opacity="0.6">modules/nixos-modules</text>
+<line x1="764" y1="856" x2="1070" y2="856" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
+<text x="768" y="870" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="870" font-size="10" fill="#abb4da">_vm.nix</text>
+<text x="768" y="888" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="888" font-size="10" fill="#abb4da">ai-tooling.nix</text>
+<text x="768" y="906" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="906" font-size="10" fill="#abb4da">android-webcam.nix</text>
+<text x="768" y="924" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="924" font-size="10" fill="#abb4da">audio.nix</text>
+<text x="768" y="942" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="942" font-size="10" fill="#abb4da">boot.nix</text>
+<text x="768" y="960" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="960" font-size="10" fill="#abb4da">btop.nix</text>
+<text x="768" y="978" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="978" font-size="10" fill="#abb4da">bundle.nix</text>
+<rect x="1024" y="967" rx="4" width="45" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="1046" y="976" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nixpkgs</text>
+<text x="768" y="996" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="996" font-size="10" fill="#abb4da">creation.nix</text>
+<text x="768" y="1014" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1014" font-size="10" fill="#abb4da">desktop-packages.nix</text>
+<text x="768" y="1032" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1032" font-size="10" fill="#abb4da">desktop-services.nix</text>
+<text x="768" y="1050" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1050" font-size="10" fill="#abb4da">dmemcg-booster.nix</text>
+<text x="768" y="1068" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1068" font-size="10" fill="#abb4da">dnscrypt.nix</text>
+<text x="768" y="1086" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1086" font-size="10" fill="#abb4da">firewall.nix</text>
+<text x="768" y="1104" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1104" font-size="10" fill="#abb4da">gaming-packages.nix</text>
+<rect x="989" y="1093" rx="4" width="80" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="1029" y="1102" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">severed-chains</text>
+<text x="768" y="1122" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1122" font-size="10" fill="#abb4da">hyprland-system.nix</text>
+<text x="768" y="1140" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1140" font-size="10" fill="#abb4da">jellyfin.nix</text>
+<text x="768" y="1158" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1158" font-size="10" fill="#abb4da">languages.nix</text>
+<text x="768" y="1176" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1176" font-size="10" fill="#abb4da">ly.nix</text>
+<text x="768" y="1194" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1194" font-size="10" fill="#abb4da">media-churn.nix</text>
+<text x="768" y="1212" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1212" font-size="10" fill="#abb4da">media-stack.nix</text>
+<text x="768" y="1230" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1230" font-size="10" fill="#abb4da">navidrome.nix</text>
+<text x="768" y="1248" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1248" font-size="10" fill="#abb4da">networking.nix</text>
+<text x="768" y="1266" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1266" font-size="10" fill="#abb4da">nix-index-db.nix</text>
+<rect x="969" y="1255" rx="4" width="100" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="1019" y="1264" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">nix-index-database</text>
+<text x="768" y="1284" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1284" font-size="10" fill="#abb4da">nix-prefs.nix</text>
+<text x="768" y="1302" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1302" font-size="10" fill="#abb4da">nushell-book.nix</text>
+<text x="768" y="1320" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1320" font-size="10" fill="#abb4da">options.nix</text>
+<text x="768" y="1338" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1338" font-size="10" fill="#abb4da">persist.nix</text>
+<rect x="999" y="1327" rx="4" width="70" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="1034" y="1336" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">preservation</text>
+<text x="768" y="1356" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1356" font-size="10" fill="#abb4da">plymouth-relaxed.nix</text>
+<text x="768" y="1374" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1374" font-size="10" fill="#abb4da">pulsemixer.nix</text>
+<text x="768" y="1392" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1392" font-size="10" fill="#abb4da">qalc.nix</text>
+<text x="768" y="1410" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1410" font-size="10" fill="#abb4da">sanoid.nix</text>
+<text x="768" y="1428" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1428" font-size="10" fill="#abb4da">scraping.nix</text>
+<text x="768" y="1446" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1446" font-size="10" fill="#abb4da">secrets.nix</text>
+<rect x="1029" y="1435" rx="4" width="40" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="1049" y="1444" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">agenix</text>
+<text x="768" y="1464" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1464" font-size="10" fill="#abb4da">services.nix</text>
+<text x="768" y="1482" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1482" font-size="10" fill="#abb4da">steam.nix</text>
+<text x="768" y="1500" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1500" font-size="10" fill="#abb4da">suricata.nix</text>
+<text x="768" y="1518" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1518" font-size="10" fill="#abb4da">tailscale.nix</text>
+<text x="768" y="1536" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1536" font-size="10" fill="#abb4da">timg.nix</text>
+<text x="768" y="1554" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1554" font-size="10" fill="#abb4da">tmux.nix</text>
+<text x="768" y="1572" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1572" font-size="10" fill="#abb4da">tools.nix</text>
+<text x="768" y="1590" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1590" font-size="10" fill="#abb4da">transmission.nix</text>
+<text x="768" y="1608" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1608" font-size="10" fill="#abb4da">users.nix</text>
+<text x="768" y="1626" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1626" font-size="10" fill="#abb4da">weegs-dev.nix</text>
+<text x="768" y="1644" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="780" y="1644" font-size="10" fill="#abb4da">yubikey.nix</text>
+<rect x="1108" y="810" rx="12" width="330" height="258" fill="#212337" stroke="#e9f941" stroke-width="1.5" filter="url(#glow-yellow)"/>
+<rect x="1111" y="820" rx="3" width="4" height="238" fill="#e9f941"/>
+<circle cx="1130" cy="832" r="7" fill="#e9f941" opacity="0.2"/>
+<circle cx="1130" cy="832" r="4" fill="#e9f941"/>
+<text x="1146" y="836" font-size="13" fill="#ebfafa" font-weight="700">shareables</text>
+<rect x="1386" y="816" rx="8" width="44" height="18" fill="#e9f941" opacity="0.18"/>
+<text x="1408" y="829" font-size="10" fill="#e9f941" font-weight="600" text-anchor="middle">11 files</text>
+<text x="1154" y="851" font-size="10" fill="#e9f941" opacity="0.6">modules/shareables</text>
+<line x1="1120" y1="856" x2="1426" y2="856" stroke="#e9f941" stroke-width="0.5" opacity="0.2"/>
+<text x="1124" y="870" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="870" font-size="10" fill="#abb4da">bundle.nix</text>
+<text x="1124" y="888" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="888" font-size="10" fill="#abb4da">concord.nix</text>
+<rect x="1380" y="877" rx="4" width="45" height="14" fill="#9071f4" opacity="0.15"/>
+<text x="1402" y="886" font-size="7" fill="#9071f4" opacity="0.7" text-anchor="middle">concord</text>
+<text x="1124" y="906" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="906" font-size="10" fill="#abb4da">crawl.nix</text>
+<text x="1124" y="924" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="924" font-size="10" fill="#abb4da">fastfetch.nix</text>
+<text x="1124" y="942" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="942" font-size="10" fill="#abb4da">fresh-editor.nix</text>
+<text x="1124" y="960" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="960" font-size="10" fill="#abb4da">retroarch.nix</text>
+<text x="1124" y="978" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="978" font-size="10" fill="#abb4da">wrapped-helium.nix</text>
+<text x="1124" y="996" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="996" font-size="10" fill="#abb4da">wrapped-nushell.nix</text>
+<text x="1124" y="1014" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="1014" font-size="10" fill="#abb4da">wrapped-steam.nix</text>
+<text x="1124" y="1032" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="1032" font-size="10" fill="#abb4da">wrapped-zen.nix</text>
+<text x="1124" y="1050" font-size="8" fill="#e9f941" opacity="0.4">●</text><text x="1136" y="1050" font-size="10" fill="#abb4da">yazi.nix</text>
+<circle cx="450" cy="1712" r="5" fill="#04d1f9"/>
+<text x="462" y="1716" font-size="11" fill="#abb4da">Flake Root</text>
+<circle cx="595" cy="1712" r="5" fill="#9071f4"/>
+<text x="607" y="1716" font-size="11" fill="#abb4da">Input</text>
+<circle cx="700" cy="1712" r="5" fill="#37f499"/>
+<text x="712" y="1716" font-size="11" fill="#abb4da">REPL</text>
+<circle cx="795" cy="1712" r="5" fill="#e9f941"/>
+<text x="807" y="1716" font-size="11" fill="#abb4da">Module</text>
+<circle cx="905" cy="1712" r="5" fill="#f265b5"/>
+<text x="917" y="1716" font-size="11" fill="#abb4da">Non-flake</text>
+<rect x="550" y="1737" rx="6" width="44" height="14" fill="#37f499" opacity="0.18"/>
+<text x="572" y="1747" font-size="7" fill="#37f499" font-weight="600" text-anchor="middle">follows</text>
+<rect x="610" y="1737" rx="6" width="38" height="14" fill="#e9f941" opacity="0.18"/>
+<text x="629" y="1747" font-size="7" fill="#e9f941" font-weight="600" text-anchor="middle">pinned</text>
+<rect x="664" y="1737" rx="6" width="50" height="14" fill="#f265b5" opacity="0.18"/>
+<text x="689" y="1747" font-size="7" fill="#f265b5" font-weight="600" text-anchor="middle">non-flake</text>
+<rect x="730" y="1737" rx="6" width="32" height="14" fill="#04d1f9" opacity="0.18"/>
+<text x="746" y="1747" font-size="7" fill="#04d1f9" font-weight="600" text-anchor="middle">local</text>
+<rect x="778" y="1737" rx="6" width="56" height="14" fill="#9071f4" opacity="0.18"/>
+<text x="806" y="1747" font-size="7" fill="#9071f4" font-weight="600" text-anchor="middle">standalone</text>
+<text x="750" y="1777" font-size="12" fill="#abb4da" text-anchor="middle">84 files  ·  15 flake inputs</text>
 </svg>
