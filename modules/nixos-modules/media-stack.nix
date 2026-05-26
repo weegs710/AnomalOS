@@ -19,8 +19,10 @@ in
   systemd.tmpfiles.rules = [
     "d /mnt/media                2775 root  media - -"
     "d /mnt/media/torrents       2775 root  media - -"
-    "d /mnt/media/torrents/movies 2775 root  media - -"
-    "d /mnt/media/torrents/tv    2775 root  media - -"
+    "d /mnt/media/torrents/movies  2775 root   media - -"
+    "d /mnt/media/torrents/tv     2775 root   media - -"
+    "d /mnt/media/torrents/radarr 2775 radarr media - -"
+    "d /mnt/media/torrents/sonarr 2775 sonarr media - -"
     "d /mnt/media/movies         2775 root  media - -"
     "d /mnt/media/tv             2775 root  media - -"
     # radarr uses nested dataDir (/var/lib/radarr/.config/Radarr); intermediate dirs need explicit ownership
