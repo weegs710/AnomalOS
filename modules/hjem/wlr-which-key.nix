@@ -77,7 +77,7 @@ let
   clipScreenCmd = "nu ${clipStartScript} screen";
   stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
 
-  # Colors from noctalia Eldritch scheme — changing colorscheme requires updating these. Reference: ~/.config/noctalia/colors.json
+  # noctalia colorscheme change requires updating these hex values -- See: ~/.config/noctalia/colors.json
   commonSettings = {
     font = "JetBrainsMono Nerd Font 12";
     background = "#212337e6";
@@ -104,6 +104,11 @@ let
           key = "r";
           desc = "rmpc";
           cmd = rmpcCmd;
+        }
+        {
+          key = "e";
+          desc = "weegsmacs";
+          cmd = "emacs";
         }
         {
           key = "z";

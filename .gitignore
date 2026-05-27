@@ -89,6 +89,9 @@ auto-save-list
 tramp
 .\#*
 
+# Fresh editor
+.fresh/
+
 # Nano
 *.save
 
