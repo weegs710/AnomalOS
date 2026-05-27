@@ -41,6 +41,7 @@ in
     # Command Enhancements
     auto_switch = true
     spell_menu = true
+    fail_severity_to_confirm = -1
     autofight_fires = true
     autofight_caught = true
     autofight_wait = true
@@ -129,6 +130,8 @@ in
     tile_show_demon_tier = true
     tile_show_threat_levels = nasty, unusual, tough
     tile_player_status_icons = slow, fragile, petr, mark, will/2, haste, weak, corr, might, brill, -move
+    tile_use_small_layout = false
+    tile_map_pixels = 2
     tile_layout_priority = minimap, monster, inventory, spell, command
   '';
 }
