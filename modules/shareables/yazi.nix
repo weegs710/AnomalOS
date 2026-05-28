@@ -145,7 +145,7 @@
           use = "edit"
 
           [[open.rules]]
-          name = "*"
+          mime = "*/*"
           use = "edit"
         '';
 
