@@ -355,6 +355,10 @@ in
       (setq backup-directory-alist
             `(("." . ,(expand-file-name "backups/" user-emacs-directory))))
 
+      ;; save to actual file on idle instead of #file# sidecars -- jj working copy is crash recovery
+      (setq auto-save-default nil)
+      (auto-save-visited-mode +1)
+
       (show-paren-mode 1)
       (global-display-line-numbers-mode t)
 
@@ -471,7 +475,11 @@ in
         :config
         (projectile-mode +1)
         (setq projectile-project-search-path
-              '("~/repo/public/" "~/repo/private/"))
+              '("~/repo/public/" "~/repo/private/")
+              ;; stops projectile serializing known-projects on every file open
+              projectile-track-known-projects-automatically nil)
+        ;; projectile-find-file-hook-function visits TAGS table + updates cache on every file open -- useless with LSP
+        (remove-hook 'find-file-hook #'projectile-find-file-hook-function)
         :bind-keymap
         ("C-c p" . projectile-command-map))
 
@@ -542,9 +550,9 @@ in
       (use-package treesit-auto
         :demand t
         :config
-        (setq treesit-auto-install nil
-              treesit-auto-langs '(nix python rust typescript tsx javascript json css bash toml yaml))
-        (global-treesit-auto-mode))
+        (setq treesit-auto-langs '(nix python rust typescript tsx javascript json css bash toml yaml))
+        ;; global-treesit-auto-mode advises set-auto-mode-0, rebuilding remap-alist on every file open
+        (treesit-auto-add-to-auto-mode-alist 'all))
 
       ;;; flycheck
 
@@ -583,7 +591,11 @@ in
               lsp-enable-file-watchers nil
               lsp-headerline-breadcrumb-enable nil
               lsp-lens-enable nil
-              lsp-enable-symbol-highlighting nil)
+              lsp-enable-symbol-highlighting nil
+              ;; code-actions segment loads all-the-icons -- not worth it
+              lsp-modeline-code-actions-enable nil)
+        ;; restrict to only languages in use -- lsp--require-packages loads all 100+ clients at first invocation
+        (setq lsp-client-packages '(lsp-nix lsp-pyright lsp-rust lsp-javascript lsp-css lsp-json lsp-html lsp-nushell lsp-marksman))
         ;; rnix-lsp and nix-nil conflict with nixd -- nixd provides full anomalos flake context
         (setq lsp-disabled-clients '(rnix-lsp nix-nil)
               lsp-nix-nixd-nixpkgs-expr
@@ -694,9 +706,11 @@ in
       (use-package vc-jj
         :demand t
         :config
-        (add-to-list 'vc-handled-backends 'JJ))
+        ;; vc-jj.el adds JJ at load time -- null out to stop vc spawning jj subprocesses per file open
+        (setq vc-handled-backends nil))
 
-      ;; disable git process spawning on every file open -- we use jj not git
+      ;; custom-initialize-set skips if default-boundp -- pre-set nil beats magit's defcustom default of t
+      (setq magit-auto-revert-mode nil)
       (with-eval-after-load 'magit
         (magit-auto-revert-mode -1))
 
