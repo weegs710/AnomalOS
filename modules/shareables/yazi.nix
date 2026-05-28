@@ -87,7 +87,7 @@
           for = "unix"
 
           [[opener.edit]]
-          run = "emacsclient \"$@\""
+          run = "emacsclient --reuse-frame --no-wait --alternate-editor= \"$@\""
           orphan = true
           desc = "Emacs"
           for = "unix"
