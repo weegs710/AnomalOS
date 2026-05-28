@@ -87,9 +87,9 @@
           for = "unix"
 
           [[opener.edit]]
-          run = "ghostty -e fresh -- \"$@\""
+          run = "emacsclient \"$@\""
           orphan = true
-          desc = "Fresh"
+          desc = "Emacs"
           for = "unix"
 
           [[open.rules]]
