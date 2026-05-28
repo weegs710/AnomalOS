@@ -359,7 +359,9 @@ in
       (setq auto-save-default nil)
       (auto-save-visited-mode +1)
 
-      (server-start)
+      (require 'server)
+      (unless (server-running-p)
+        (server-start))
 
       (show-paren-mode 1)
       (global-display-line-numbers-mode t)
@@ -381,6 +383,41 @@ in
             maximum-scroll-margin 0.5
             scroll-conservatively 101
             scroll-preserve-screen-position t)
+
+      (electric-pair-mode 1)
+      (setq imenu-auto-rescan t)
+
+      ;;; prettify
+
+      (setq prettify-symbols-unprettify-at-point t)
+      (setq-default prettify-symbols-alist
+        '(("==" . "≡") ("===" . "≣") ("!=" . "≠") ("!==" . "≢")
+          (">=" . "≥") ("<=" . "≤") ("->" . "→") ("<-" . "←")
+          ("<->" . "↔") ("<=>" . "⇔") ("->>" . "↠") ("<<-" . "↞")
+          ("~>" . "↝") ("|>" . "▷") ("<|" . "◁") ("map" . "↦")
+          ("lambda" . "λ") ("alpha" . "α") ("beta" . "β") ("gamma" . "γ")
+          ("delta" . "δ") ("pi" . "π") ("sum" . "∑") ("..." . "…")
+          ("::" . "∷") (">>" . "»") ("<<" . "«") ("sqrt" . "√")
+          ("integral" . "∫") ("forall" . "∀") ("exists" . "∃")))
+      (add-hook 'prog-mode-hook #'prettify-symbols-mode)
+      (add-hook 'org-mode-hook  #'prettify-symbols-mode)
+
+      ;; allow prettify in comments so ;;; renders as # in elisp section headers
+      (add-hook 'emacs-lisp-mode-hook
+        (lambda ()
+          (setq-local prettify-symbols-compose-predicate
+            (lambda (start _end _match)
+              (not (nth 3 (syntax-ppss start)))))
+          (setq-local prettify-symbols-alist
+            (cons '(";;;" . ?#) prettify-symbols-alist))))
+
+      ;;; pulse
+
+      (defun my/pulse-line (&rest _)
+        (pulse-momentary-highlight-one-line (point)))
+
+      (advice-add 'find-file        :after #'my/pulse-line)
+      (advice-add 'switch-to-buffer :after #'my/pulse-line)
 
       ;;; font
 
