@@ -363,6 +363,9 @@ in
       (unless (server-running-p)
         (server-start))
 
+      (global-set-key (kbd "<escape>") #'keyboard-quit)
+      (keymap-set minibuffer-local-map "<escape>" #'abort-minibuffers)
+
       (show-paren-mode 1)
       (global-display-line-numbers-mode t)
 
