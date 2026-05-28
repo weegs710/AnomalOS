@@ -16,7 +16,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="73" y="193" rx="2" width="3" height="46" fill="#a48cf2"/>
 <text x="86" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">WM</text>
 <text x="86" y="221" font-size="15" fill="#ebfafa" font-weight="600">Hyprland</text>
-<text x="86" y="237" font-size="10" fill="#a48cf2" opacity="0.6">0.55.1</text>
+<text x="86" y="237" font-size="10" fill="#a48cf2" opacity="0.6">0.55.2</text>
 <rect x="286" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="289" y="193" rx="2" width="3" height="46" fill="#37f499"/>
 <text x="302" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">SHELL</text>
@@ -31,7 +31,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="721" y="193" rx="2" width="3" height="46" fill="#e9f941"/>
 <text x="734" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">EDITOR</text>
 <text x="734" y="221" font-size="15" fill="#ebfafa" font-weight="600">fresh</text>
-<text x="734" y="237" font-size="10" fill="#e9f941" opacity="0.6">0.3.5</text>
+<text x="734" y="237" font-size="10" fill="#e9f941" opacity="0.6">0.3.6</text>
 <rect x="934" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="937" y="193" rx="2" width="3" height="46" fill="#9071f4"/>
 <text x="950" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">UI</text>
@@ -82,13 +82,13 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="90" y="567" font-size="12" fill="#abb4da">System</text>
 <text x="220" y="567" font-size="12" fill="#ebfafa">209</text>
 <text x="90" y="587" font-size="12" fill="#abb4da">User</text>
-<text x="220" y="587" font-size="12" fill="#ebfafa">114</text>
+<text x="220" y="587" font-size="12" fill="#ebfafa">115</text>
 <text x="90" y="607" font-size="12" fill="#abb4da">Total declared</text>
-<text x="220" y="607" font-size="12" fill="#ebfafa">323</text>
+<text x="220" y="607" font-size="12" fill="#ebfafa">324</text>
 <text x="90" y="627" font-size="12" fill="#abb4da">Closure paths</text>
-<text x="220" y="627" font-size="12" fill="#ebfafa">2962</text>
+<text x="220" y="627" font-size="12" fill="#ebfafa">3170</text>
 <text x="90" y="647" font-size="12" fill="#abb4da">Closure size</text>
-<text x="220" y="647" font-size="12" fill="#ebfafa">20.5G</text>
+<text x="220" y="647" font-size="12" fill="#ebfafa">21.7G</text>
 <rect x="430" y="510" rx="12" width="340" height="240" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="430" y="520" rx="12" width="3" height="220" fill="#37f499"/>
 <text x="448" y="538" font-size="13" fill="#37f499" font-weight="700" letter-spacing="1">WRAPPED PKGS</text>
