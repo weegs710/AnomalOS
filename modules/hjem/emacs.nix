@@ -359,6 +359,8 @@ in
       (setq auto-save-default nil)
       (auto-save-visited-mode +1)
 
+      (server-start)
+
       (show-paren-mode 1)
       (global-display-line-numbers-mode t)
 
@@ -715,7 +717,72 @@ in
         (magit-auto-revert-mode -1))
 
       (use-package majutsu
-        :bind ("C-c j" . majutsu))
+        :demand t
+        :config
+        (defun my/jj-snapshot ()
+          "Snapshot the jj working copy."
+          (interactive)
+          (majutsu-run-jj "status")
+          (message "Snapshotted working copy"))
+
+        (defun my/jj-fetch ()
+          "Fetch from all git remotes."
+          (interactive)
+          (majutsu-git--start '("fetch" "--all-remotes") "Fetched from all remotes"))
+
+        (defun my/jj-pull ()
+          "Fetch all remotes then advance main to main@origin."
+          (interactive)
+          (majutsu-git--start '("fetch" "--all-remotes") nil
+            (lambda (_)
+              (majutsu-run-jj "bookmark" "move" "main" "-t" "main@origin"))))
+
+        (defun my/jj-push ()
+          "Fetch, push, then fetch again."
+          (interactive)
+          (majutsu-git--start '("fetch" "--all-remotes") nil
+            (lambda (_)
+              (majutsu-git--start '("push") "Pushed"
+                (lambda (_)
+                  (majutsu-git--start '("fetch" "--all-remotes") "Done"))))))
+
+        (defun my/jj-commit ()
+          "Split working copy interactively then advance the closest bookmark."
+          (interactive)
+          (let* ((root (majutsu--toplevel-safe))
+                 (status (with-temp-buffer
+                           (let ((default-directory root))
+                             (call-process "jj" nil t nil "status")
+                             (buffer-string)))))
+            (if (string-match-p "The working copy has no changes" status)
+                (message "No changes to commit")
+              (letrec
+                ((cancel-hook
+                  (lambda ()
+                    (remove-hook 'with-editor-post-finish-hook finish-hook)
+                    (remove-hook 'with-editor-post-cancel-hook cancel-hook)))
+                 (finish-hook
+                  (lambda ()
+                    (remove-hook 'with-editor-post-finish-hook finish-hook)
+                    (remove-hook 'with-editor-post-cancel-hook cancel-hook)
+                    (let ((default-directory root))
+                      (majutsu-run-jj "bookmark" "move"
+                                      "--from" "closest_bookmark(@-)"
+                                      "--to" "@-")))))
+                (add-hook 'with-editor-post-finish-hook finish-hook)
+                (add-hook 'with-editor-post-cancel-hook cancel-hook))
+              (majutsu-split))))
+
+        (defvar-keymap my/jj-map
+          :doc "jj workflow keybindings."
+          "l" #'majutsu-log
+          "j" #'my/jj-snapshot
+          "c" #'my/jj-commit
+          "p" #'my/jj-push
+          "P" #'my/jj-pull
+          "f" #'my/jj-fetch)
+
+        (keymap-global-set "C-c j" my/jj-map))
 
       ;;; vterm
 

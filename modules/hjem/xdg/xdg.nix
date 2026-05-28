@@ -57,10 +57,10 @@ in
   ];
 
   environment.sessionVariables = {
-    EDITOR = "fresh";
+    EDITOR = "emacsclient -nw";
     NIXOS_OZONE_WL = "1";
     TERMINAL = "ghostty";
-    VISUAL = "fresh";
+    VISUAL = "emacsclient";
     XDG_TERMINAL_EDITOR = "ghostty";
     XDG_DATA_DIRS = [
       "$HOME/.local/share"
@@ -114,7 +114,7 @@ in
         application/x-rar=org.gnome.FileRoller.desktop
         application/x-tar=org.gnome.FileRoller.desktop
         application/x-terminal-emulator=com.mitchellh.ghostty.desktop
-        application/xml=fresh.desktop
+        application/xml=emacsclient.desktop
         application/zip=org.gnome.FileRoller.desktop
         audio/aac=rmpc-open.desktop
         audio/flac=rmpc-open.desktop
@@ -134,8 +134,8 @@ in
         image/tiff=com.interversehq.qView.desktop
         image/webp=com.interversehq.qView.desktop
         text/html=zen.desktop
-        text/plain=fresh.desktop
-        text/xml=fresh.desktop
+        text/plain=emacsclient.desktop
+        text/xml=emacsclient.desktop
         video/3gpp=mpv.desktop
         video/3gpp2=mpv.desktop
         video/divx=mpv.desktop
