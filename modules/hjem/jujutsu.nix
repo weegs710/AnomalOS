@@ -20,7 +20,7 @@ in
 
         [ui]
           pager = ":builtin"
-          editor = "emacsclient -nw --alternate-editor='emacs -nw'"
+          editor = "emacsclient -nw --alternate-editor='emacs -nw -Q'"
 
         [git]
           auto-local-branch = true
