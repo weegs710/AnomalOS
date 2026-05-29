@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  inputs,
   ...
 }:
 {
@@ -16,7 +15,6 @@
   };
 
   users.users.${config.mySystem.user.name}.packages = with pkgs; [
-    (pkgs.callPackage "${inputs.severed-chains}/nix/package.nix" { src = inputs.severed-chains; })
     (openraPackages.engines.bleed.overrideAttrs (old: {
       postPatch = "";
     }))

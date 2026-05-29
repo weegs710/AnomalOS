@@ -170,20 +170,6 @@ in
         Inherits=phinger-cursors-dark
       '';
 
-      # fresh — terminal text editor with LSP support
-      "applications/fresh.desktop".text = ''
-        [Desktop Entry]
-        Type=Application
-        Name=Fresh
-        GenericName=Text Editor
-        Comment=Terminal-based text editor with LSP support and TypeScript plugins
-        Exec=ghostty -e fresh %F
-        Icon=text-editor
-        Terminal=false
-        Categories=Development;TextEditor;Utility;
-        MimeType=text/plain;text/x-agda;text/x-astro;text/x-awk;text/x-sh;text/x-shellscript;text/x-c;text/x-csrc;text/x-chdr;text/x-csharp;text/x-cmake;text/x-common-lisp;text/x-log;application/x-wine-extension-ini;text/x-c++;text/x-c++src;text/x-c++hdr;application/x-csproj;text/css;text/x-patch;text/x-diff;text/dockerfile;text/x-dtd;text/x-elixir;text/x-elm;text/x-fish;text/x-fsharp;text/x-go;text/x-go-mod;text/x-hare;text/x-haskell;text/x-terraform;text/html;text/x-hurl;text/x-java;text/javascript;application/json;text/x-julia;text/x-kdl;text/x-tex;text/x-latex;text/x-lua;text/x-email;text/x-makefile;text/markdown;text/x-nasm;text/x-nickel;text/x-nim;text/x-nimble;text/x-ninja;text/x-nix;text/x-nushell;text/x-ocaml;text/x-odin;text/x-openscad;text/x-org;text/x-perl;text/x-php;text/x-gettext-translation;text/x-powershell;text/x-protobuf;text/x-purescript;text/x-python;text/x-python3;application/x-python;text/x-rpm-spec;text/x-rst;text/x-ruby;text/x-rustsrc;text/x-rust;text/x-scheme;text/x-sql;text/x-sshconfig;text/x-swift;application/toml;text/x-toml;text/typescript;application/x-typescript;text/x-typst;text/x-verilog;text/x-vim;text/xml;application/xml;text/yaml;application/x-yaml;text/x-zig;application/x-shellscript;
-      '';
-
       # Custom launchers — open apps into specific workspaces/layouts via hyprctl
       "applications/piper.desktop".text = ''
         [Desktop Entry]

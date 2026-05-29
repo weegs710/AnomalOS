@@ -30,10 +30,6 @@ agenix = {
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.noctalia-qs.follows = "noctalia-qs";
     };
-    severed-chains = {
-      url = "path:/home/weegs/Documents/test-zone/dragoon/Severed-Chains";
-      flake = false;
-    };
     lix = {
       url = "git+https://git.lix.systems/lix-project/lix";
       flake = false;

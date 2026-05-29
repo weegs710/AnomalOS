@@ -56,16 +56,7 @@ in
       type = "copy";
       permissions = "0644";
     };
-    xdg.config.files."noctalia/user-templates.toml" = {
-      source = ./user-templates.toml;
-      type = "copy";
-      permissions = "0644";
-    };
-    xdg.config.files."noctalia/templates/fresh.json" = {
-      source = ./templates/fresh.json;
-      type = "copy";
-      permissions = "0644";
-    };
+
     xdg.config.files."noctalia/notification-allowlist" = {
       source = notificationAllowlist;
       type = "copy";

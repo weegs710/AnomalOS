@@ -142,11 +142,6 @@ let
           desc = "dev";
           submenu = [
             {
-              key = "f";
-              desc = "fresh";
-              cmd = "ghostty --title=fresh -e fresh";
-            }
-            {
               key = "g";
               desc = "ghostty";
               cmd = terminalCmd;

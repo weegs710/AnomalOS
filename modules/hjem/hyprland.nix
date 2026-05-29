@@ -221,7 +221,7 @@ in
 
       -- dev
       hl.window_rule({ match = { title = "^(ghostty)$" },  workspace = "2" })
-      hl.window_rule({ match = { title = "^(fresh)$" },    workspace = "2" })
+
       hl.window_rule({ match = { class = "^(emacs)$" },    workspace = "2" })
 
       -- browser

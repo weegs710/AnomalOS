@@ -531,8 +531,7 @@
         "nixpkgs-kernel": "nixpkgs-kernel",
         "noctalia-qs": "noctalia-qs",
         "noctalia-shell": "noctalia-shell",
-        "preservation": "preservation",
-        "severed-chains": "severed-chains"
+        "preservation": "preservation"
       }
     },
     "rust-overlay": {
@@ -554,19 +553,6 @@
         "owner": "oxalica",
         "repo": "rust-overlay",
         "type": "github"
-      }
-    },
-    "severed-chains": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777354269,
-        "narHash": "sha256-iR3tyh4wBWF/HpK0UsNLrRais8Q6Y5aHiGj8ixTotfY=",
-        "path": "/home/weegs/Documents/test-zone/dragoon/Severed-Chains",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/weegs/Documents/test-zone/dragoon/Severed-Chains",
-        "type": "path"
       }
     },
     "systems": {
