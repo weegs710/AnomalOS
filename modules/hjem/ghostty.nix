@@ -18,7 +18,6 @@ in
       window-show-tab-bar = never
       theme = noctalia
 
-      keybind = shift+enter=text:\n
       keybind = ctrl+shift+v=paste_from_clipboard
 
       # Unbind terminal shortcuts that conflict with editors

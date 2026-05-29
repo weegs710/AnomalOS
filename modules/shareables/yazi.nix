@@ -92,6 +92,12 @@
           desc = "Emacs"
           for = "unix"
 
+          [[opener.browser]]
+          run = "zen \"$@\""
+          orphan = true
+          desc = "Zen"
+          for = "unix"
+
           [[open.rules]]
           mime = "video/*"
           use = "video"
@@ -139,6 +145,10 @@
           [[open.rules]]
           mime = "application/x-bzip2"
           use = "archive"
+
+          [[open.rules]]
+          mime = "text/html"
+          use = ["edit", "browser"]
 
           [[open.rules]]
           mime = "text/*"
