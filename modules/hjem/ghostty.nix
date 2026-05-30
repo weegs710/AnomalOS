@@ -13,6 +13,8 @@ in
 
   hjem.users.${config.mySystem.user.name} = {
     xdg.config.files."ghostty/config".text = ''
+      font-size = 10
+
       scroll-to-bottom = keystroke
       copy-on-select = clipboard
       window-show-tab-bar = never
