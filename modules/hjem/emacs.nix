@@ -138,9 +138,17 @@ in
 
   # .config/emacs/eln-cache: native compilation cache -- avoid recompile on each boot
   # .emacs.d must NOT be preserved -- if it exists, emacs ignores XDG and uses it instead
-  preservation.preserveAt."/persist".users.${username}.directories = [
-    ".config/emacs/eln-cache"
-  ];
+  preservation.preserveAt."/persist".users.${username} = {
+    directories = [
+      ".config/emacs/eln-cache"
+      ".config/emacs/.cache"
+    ];
+    files = [
+      ".config/emacs/history"
+      ".config/emacs/recentf"
+      ".config/emacs/bookmarks"
+    ];
+  };
 
   hjem.users.${username}.xdg.config.files = {
     "emacs/early-init.el".text = ''
@@ -362,6 +370,14 @@ in
       (require 'server)
       (unless (server-running-p)
         (server-start))
+
+      (savehist-mode 1)
+
+      (recentf-mode 1)
+      (setq recentf-max-saved-items 200)
+
+      ;; save bookmarks on every change rather than only on quit
+      (setq bookmark-save-flag 1)
 
       (global-set-key (kbd "<escape>") #'keyboard-quit)
       (keymap-set minibuffer-local-map "<escape>" #'abort-minibuffers)
@@ -878,6 +894,55 @@ in
                             :weight 'bold)
         (set-face-attribute 'avy-background-face nil
                             :foreground "#606b9d"))
+
+      ;;; nix
+
+      (defvar my/nix-packages-cache nil)
+      (defconst my/nix-packages-cache-file "/tmp/emacs-nix-packages.cache")
+
+      (defun my/nix--packages ()
+        (or my/nix-packages-cache
+            (setq my/nix-packages-cache
+                  (if (file-readable-p my/nix-packages-cache-file)
+                      (with-temp-buffer
+                        (insert-file-contents my/nix-packages-cache-file)
+                        (split-string (buffer-string) "\n" t))
+                    (let* ((raw (shell-command-to-string
+                                 "${pkgs.nix-search-tv}/bin/nix-search-tv print --indexes nixpkgs 2>/dev/null"))
+                           (pkgs (split-string raw "\n" t)))
+                      (with-temp-file my/nix-packages-cache-file
+                        (insert raw))
+                      pkgs)))))
+
+      (defun my/nix--in-with-pkgs-p ()
+        (save-excursion
+          (let ((depth 0) result done)
+            (while (and (not done) (not (bobp)))
+              (backward-char)
+              (pcase (char-after)
+                (?\] (setq depth (1+ depth)))
+                (?\[
+                 (if (> depth 0)
+                     (setq depth (1- depth))
+                   (skip-chars-backward " \t\n")
+                   (setq result (looking-back "with pkgs;" nil)
+                         done t)))))
+            result)))
+
+      (defun my/nix-insert-package ()
+        "Pick a nixpkgs package from ns index and insert at point."
+        (interactive)
+        (message "Loading nixpkgs index...")
+        (let* ((pick (completing-read "nixpkgs: " (my/nix--packages) nil t))
+               (str  (if (my/nix--in-with-pkgs-p)
+                         pick
+                       (format "pkgs.%s" pick))))
+          (insert str)))
+
+      (with-eval-after-load 'which-key
+        (which-key-add-key-based-replacements "C-c n" "nix")
+        (which-key-add-key-based-replacements "C-c n s" "nix-search+insert"))
+      (keymap-set global-map "C-c n s" #'my/nix-insert-package)
     '';
   };
 }
