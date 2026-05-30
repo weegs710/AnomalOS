@@ -217,7 +217,8 @@ in
       hl.window_rule({ match = { initial_title = "Picture in picture" }, float = true, pin = true, size = {512, 288}, move = {2034, 62} })
 
       -- comms
-      hl.window_rule({ match = { title = "^(concord)$" }, workspace = "1" })
+      hl.window_rule({ match = { title = "^(concord)$" },  workspace = "1" })
+      hl.window_rule({ match = { title = "^(weechat)$" },  workspace = "1" })
 
       -- dev
       hl.window_rule({ match = { title = "^(ghostty)$" },  workspace = "2" })

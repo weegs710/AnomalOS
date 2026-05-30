@@ -13,121 +13,211 @@
 <details>
 <summary>desktop</summary>
 
-Hyprland with noctalia-shell for the bar, launcher, lock screen, and control center. single config at `modules/hjem/hyprland.nix`.
+Hyprland with noctalia-shell for the bar, launcher, lock screen, and control center. config module at `modules/hjem/hyprland.nix`, which generates a Lua config at `hypr/hyprland.lua`.
 
 **workspaces:**
-1. **comms** -- vesktop, gajim
-2. **dev** -- fresh, ghostty
-3. **games** -- steam
-4. **media** -- Euphonica, Stremio
-5. **web** -- Helium
+
+1. **comms** -- concord (Discord TUI), weechat+bitlbee (IRC/XMPP)
+2. **dev** -- ghostty, emacs
+3. **web** -- Zen Browser
+4. **games** -- steam, heroic
+5. **media** -- Jellyfin (Zen kiosk), mpv, gimp, inkscape, rmpc
+
 - **stash** (special) -- pavucontrol, nmtui, blueman, LACT, btop, piper, pulsemixer, cliphist
 
 **keybinds:**
 
-| # | key | action |
-|---|-----|--------|
-| 0 | Super+1-5 | switch workspace |
-| 1 | Super+Shift+1-5 | move window to workspace |
-| 2 | Super+PageUp/Down | cycle workspaces |
-| 3 | Super+MouseWheel | cycle workspaces |
-| 4 | Super+grave | toggle stash |
-| 5 | Super+Shift+grave | move window to stash |
-| 6 | Super+Return | ghostty |
-| 7 | Super+Space | yazi |
-| 8 | Super+Escape | close window |
-| 9 | Super+F | fullscreen |
-| 10 | Super+G | float toggle |
-| 11 | Super+Backspace | resize mode (arrows, esc to exit) |
-| 12 | Super+Arrows | move focus |
-| 13 | Super+Shift+Arrows | move window |
-| 14 | Super+Home/End | volume up/down |
-| 15 | Super+Pause | mute |
-| 16 | Super (tap) | wlr-which-key menu |
-| 17 | Super+Tab | noctalia control center |
-| 18 | Ctrl+Alt+L | lock screen |
-| 19 | Ctrl+Alt+Delete | power menu |
-| 20 | Print | capture menu |
+| #   | key                | action                            |
+| --- | ------------------ | --------------------------------- |
+| 0   | Super+1-5          | switch workspace                  |
+| 1   | Super+Shift+1-5    | move window to workspace          |
+| 2   | Super+PageUp/Down  | cycle workspaces                  |
+| 3   | Super+MouseWheel   | cycle workspaces                  |
+| 4   | Super+grave        | toggle stash                      |
+| 5   | Super+Shift+grave  | move window to stash              |
+| 6   | Super+Return       | ghostty                           |
+| 7   | Super+Space        | yazi                              |
+| 8   | Super+Escape       | close window                      |
+| 9   | Super+F            | fullscreen                        |
+| 10  | Super+G            | float toggle                      |
+| 11  | Super+Backspace    | resize mode (arrows, esc to exit) |
+| 12  | Super+Arrows       | move focus                        |
+| 13  | Super+Shift+Arrows | move window                       |
+| 14  | Super+Home/End     | volume up/down                    |
+| 15  | Super+Pause        | mute                              |
+| 16  | Super (tap)        | wlr-which-key menu                |
+| 17  | Super+Tab          | noctalia control center           |
+| 18  | Ctrl+Alt+L         | lock screen                       |
+| 19  | Ctrl+Alt+Delete    | power menu                        |
+| 20  | Print              | capture menu                      |
 
-wlr-which-key is the primary navigation layer. Super tap opens it for app launches, screenshots, power menu. full menu in `modules/hjem/wlr-which-key.nix`.
+wlr-which-key is the primary navigation layer. Super tap opens it for app launches, system tools, screenshots, power menu. full menu in `modules/hjem/wlr-which-key.nix`.
 
 </details>
 
 <details>
 <summary>security</summary>
 
-- **YubiKey** -- U2F for login, sudo, polkit. auto-login on plug, auto-lock on unplug.
-- **firewall** -- nftables. drops everything by default. SSH on port 2222. gaming ports 23243-23262 open for Divinity Original Sin 2. Decky Loader web UI on 8080.
-- **Suricata** -- network intrusion detection, logs to `/var/log/suricata/`
-- **DNSCrypt** -- encrypted DNS via dnscrypt-proxy, Cloudflare + Quad9, DNSSEC required
-- **kernel hardening** -- ASLR, stack protection, kernel pointer hiding, SYN flood protection, ICMP rate limiting
+- **YubiKey** -- U2F for login, sudo, polkit. touch required on every auth.
+- **firewall** -- nftables. drops everything by default. SSH on port 2222. gaming ports 23243-23262 (Divinity Original Sin 2). Jellyfin on 8096. Decky Loader web UI on 8080. Tailscale interface trusted. ping blocked.
+- **Suricata** -- inline IPS running in NFQ mode, logs to `/var/log/suricata/`. can drop packets, not just detect.
+- **DNSCrypt** -- encrypted DNS via dnscrypt-proxy, Cloudflare + Quad9, DNSSEC required, no-logging servers required, IPv6 queries blocked. systemd-resolved and unbound are disabled.
+- **kernel hardening** -- ASLR, kernel pointer hiding, dmesg restricted to root, ptrace limited to parent processes, core dumps disabled, SYN flood protection, TCP TIME_WAIT protection, ICMP redirect rejection, reverse path filtering.
 
 </details>
 
 <details>
 <summary>development</summary>
 
-- **fresh** -- TUI editor with LSP for nix, python, rust, hyprlang, nushell. full toolchain (nixd, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman) baked into the wrapper.
-- **devshell** -- `nix develop` drops into nushell with the same tools. see [Contributing](#contributing).
-- **Claude Code** -- AI-assisted dev, `cc` alias for project management
-- **nix-search-tv** -- `ns` for fzf-powered package search
-- **nix-index** -- command-not-found handler
+- **emacs** -- primary editor with LSP for nix, python, rust, hyprlang, nushell. full config in `modules/hjem/emacs.nix`.
+- **devshell** -- `nix develop` drops into nushell with: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, clippy, rust-analyzer, rustfmt, dprint, typescript, typescript-language-server, nushell. see [Contributing](#contributing).
+- **Claude Code** -- AI-assisted dev, `cc` alias launches `claude-launcher` with project selection.
+- **nix-search-tv** -- `ns` for fzf-powered package search.
+- **nix-index + nix-index-database** -- command-not-found handler with pre-built community DB, comma integration.
 
 </details>
 
 <details>
 <summary>gaming</summary>
 
-- **steam** -- Proton, Protontricks, Gamescope, controller support, 32-bit compat
-- **Decky Loader** -- steam plugin system, web UI at localhost:8080
-- **MangoHud** -- performance overlay, 5 presets (0=off → 4=full), Shift+F12 to toggle
-- **emulators** -- RetroArch (16 cores), PPSSPP, DeSmuME, Ryujinx, ProtonUp-Qt
+- **steam** -- Proton, Gamescope, controller support, 32-bit compat.
+- **heroic** -- Epic/GOG launcher, globally wired with Gamescope (2560x1440, 144fps, wayland backend).
+- **Decky Loader** -- steam plugin system, web UI at localhost:8080.
+- **MangoHud** -- performance overlay, 5 presets (0=off to 4=full), Shift+F12 to toggle.
+- **gamemode** -- globally enabled.
+- **emulators** -- RetroArch (33 cores), PPSSPP (RetroArch core), melonDS (DS, RetroArch core), ProtonUp-Qt, OpenRA.
+- **DCSS** -- Dungeon Crawl Stone Soup, wired in `modules/hjem/dcss.nix`.
 
 </details>
 
 <details>
 <summary>media</summary>
 
-- **audio** -- Pipewire + WirePlumber, hardware mixing, Bluetooth (A2DP, HSP/HFP)
-- **music** -- MPD + Euphonica GTK4 client. Beets for tagging with MusicBrainz. `scrapem` for playlists → MP3, `scrapev` for video.
-- **media creation** -- GIMP 3, OBS Studio, Video2x
-- **streaming** -- Stremio for video, Transmission for torrents
+- **audio** -- Pipewire + WirePlumber, hardware mixing, Bluetooth (A2DP, aptX, LDAC, AAC, SBC-XQ). HFP/HSP disabled.
+- **music** -- MPD + rmpc TUI client. Navidrome streaming server accessible over Tailscale. `snag` for playlist to MP3, `yoink` for video downloads, `sync-music` for ADB sync to Android.
+- **media server** -- Jellyfin with VAAPI hardware decode. arr suite: Radarr, Sonarr, Prowlarr, Bazarr, FlareSolverr, Recyclarr. Transmission as system service, tremc TUI.
+- **media creation** -- GIMP 3, Inkscape, gpu-screen-recorder (replay buffer).
+- **video playback** -- mpv, Jellyfin via Zen kiosk mode.
 
 </details>
 
 ## ZFS setup
 
-| # | dataset | mount |
-|---|---------|-------|
-| 0 | zroot/root | / (tmpfs -- 256MB, wiped on reboot) |
-| 1 | zroot/nix | /nix |
-| 2 | zroot/tmp | /tmp |
-| 3 | zroot/persist | /persist |
-| 4 | zroot/cache | /cache |
-| 5 | zgames/* | /mnt/games/* (optional) |
+| #   | dataset             | mount                               |
+| --- | ------------------- | ----------------------------------- |
+| 0   | zroot/root          | / (tmpfs -- 256MB, wiped on reboot) |
+| 1   | zroot/nix           | /nix                                |
+| 2   | tmpfs               | /tmp (5GB)                          |
+| 3   | zroot/persist       | /persist                            |
+| 4   | zroot/cache         | /cache                              |
+| 5   | zgames/games/roms   | /mnt/games/1g1r                     |
+| 6   | zgames/games/steam  | /mnt/games/SteamLibrary             |
+| 7   | zgames/games/heroic | /mnt/games/heroic                   |
 
-automated hourly/daily/weekly/monthly snapshots on `zroot/persist` via sanoid. compression and auto-trim enabled.
+automated snapshots via sanoid. `zroot/persist` uses the `desktop` template (hourly=12, daily=7, weekly=2, monthly=1). `zgames/games/roms` has a lighter custom policy (hourly=6, daily=3, weekly=1). compression and auto-trim enabled.
 
-i use ZFS because i like the snapshot safety net. i inevitably break or delete things (im dumb), and having ZFS + jujutsu + NixOS generations means i can almost always undo it. see [ZFS Snapshots & Recovery](docs/BACKUP.md).
+i use ZFS because i like the snapshot safety net. i inevitably break or delete things (im dumb), and having ZFS + jujutsu + NixOS generations means i can almost always undo it.
 
-worth knowing: `/` is a tiny 256MB tmpfs and gets wiped on every boot -- its intentionally small so youll hit an out-of-space error immediately if you forget to persist something, rather than silently losing it on next reboot. `/persist` is where your actual stuff lives. more on this below.
+worth knowing: `/` is a tiny 256MB tmpfs and gets wiped on every boot -- its intentionally small so youll hit an out-of-space error immediately if you forget to persist something, rather than silently losing it on next reboot. `/tmp` is a separate 5GB tmpfs. `/persist` is where your actual stuff lives. more on this below.
+
+<details>
+<summary>ZFS snapshots & recovery</summary>
+
+Automated snapshots via [sanoid](https://github.com/jimsalterjrs/sanoid). Snapshots are copy-on-write -- they start at nearly zero space and only grow as data changes.
+
+Templates are defined in `modules/nixos-modules/sanoid.nix`. Dataset assignments are in `modules/hosts/hx99g-zfs.nix`.
+
+**list snapshots:**
+
+```bash
+zfs list -t snapshot                          # all snapshots
+zfs list -t snapshot -r zroot/persist         # specific dataset
+zfs list -t snapshot -o name,used,refer       # with space usage
+```
+
+**restore a file:**
+
+every dataset has a `.zfs/snapshot` directory:
+
+```bash
+ls /persist/.zfs/snapshot/
+cp /persist/.zfs/snapshot/autosnap_2025-12-11_16:00:00_hourly/path/to/file ~/restored-file
+```
+
+**restore a directory:**
+
+```bash
+cp -a /persist/.zfs/snapshot/autosnap_2025-12-11_12:00:00_hourly/path/to/dir /tmp/restored-dir
+# verify it looks right, then move it where you want
+```
+
+**rollback entire dataset:**
+
+this destroys everything after the snapshot. be sure.
+
+```bash
+sudo zfs rollback zroot/persist@autosnap_2025-12-11_12:00:00_hourly
+```
+
+**manual snapshot:**
+
+```bash
+sudo zfs snapshot zroot/persist@manual-$(date +%Y%m%d-%H%M%S)
+# or kick sanoid:
+sudo systemctl start sanoid.service
+```
+
+**check snapshot space:**
+
+```bash
+zfs list -o name,used,avail,refer,usedsnap,usedds
+# usedsnap = how much your snapshots are actually using
+```
+
+**sanoid health:**
+
+```bash
+systemctl status sanoid.service
+systemctl status sanoid.timer
+sudo journalctl -u sanoid.service -f
+```
+
+snapshots are local to the drive. they protect against accidental deletion and corruption, not hardware failure. your config is in git (GitHub/Codeberg) -- thats your system backup. critical personal data needs an external backup too.
+
+**troubleshooting:**
+
+```bash
+# snapshots not being created
+systemctl status sanoid.timer
+sudo journalctl -u sanoid.service -n 50
+sudo systemctl start sanoid.service
+
+# out of space
+zfs list -o space
+# reduce retention in modules/nixos-modules/sanoid.nix and rebuild
+
+# cant delete a snapshot (probably has dependent clones)
+zfs list -t all | grep <snapshot-name>
+# destroy the clones first
+```
+
+</details>
 
 ## getting started
 
 > **Important**: this config is for my machine. might work on yours, might not. no guarantees.
 
-**fork before you build.** there are two flake inputs pointing to absolute paths on my machine:
+**fork before you build.** there is one flake input pointing to an absolute path on my machine:
 
 ```nix
 fft-ivalice-cursor = { url = "path:/home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor"; ... };
-severed-chains = { url = "path:/home/weegs/Documents/test-zone/dragoon/Severed-Chains"; ... };
 ```
 
-both are consumed by live modules (`modules/hjem/xdg/xdg.nix` and `modules/nixos-modules/gaming-packages.nix`). nix will blow up evaluating the flake if those paths dont exist on your machine. fork the repo and remove both inputs from `flake.nix`, then remove `inputs.fft-ivalice-cursor` from `xdg.nix` and `inputs.severed-chains.packages...` from `gaming-packages.nix`. or swap them for something you have. if you skip this the build fails immediately.
+this is consumed by `modules/hjem/xdg/xdg.nix`. nix will blow up evaluating the flake if that path doesnt exist on your machine. fork the repo, remove the input from `flake.nix`, and remove `inputs.fft-ivalice-cursor` from `xdg.nix`. or swap it for a cursor theme you have.
 
-**hardware:** x86_64 with AVX2, BMI2, and XSAVE (x86_64-v3 -- most CPUs from 2013+ are fine, not all). AMD-only hardware config. Intel users need to change `zfs.devNodes` to `"/dev/disk/by-id"` in `modules/hosts/hx99g-hardware.nix` and drop the AMD microcode stuff. internet, at least 100GB free.
+**hardware:** x86_64 with AVX2, BMI2, and XSAVE (x86_64-v3 -- most CPUs from 2013+ are fine, not all). AMD-only hardware config. Intel users need to change `boot.zfs.devNodes` from `"/dev/disk/by-partuuid"` to `"/dev/disk/by-id"` in `modules/hosts/hx99g-hardware.nix` and drop the AMD microcode stuff. internet, at least 100GB free.
 
-**impermanence.** the root filesystem (`/`) is a 256MB tmpfs -- it gets wiped on every reboot. `/persist` holds the stuff that actually matters (home dirs, SSH keys, network connections). `/cache` is for things youd rather not redownload but wont lose sleep over if theyre gone. everything else gets rebuilt from the nix store on boot. if something goes missing after a reboot, check `modules/hosts/hx99g-imperm.nix` to see whats persisted.
+**persistence.** the root filesystem (`/`) is a 256MB tmpfs -- it gets wiped on every reboot. `/persist` holds the stuff that actually matters (home dirs, SSH keys, network connections). `/cache` is for things youd rather not redownload but wont lose sleep over if theyre gone. everything else gets rebuilt from the nix store on boot. uses [nix-community/preservation](https://github.com/nix-community/preservation) (pure systemd tmpfiles + mounts, no bash). if something goes missing after a reboot, check `modules/nixos-modules/persist.nix` to see whats persisted.
 
 **before you run install.sh**, set these in your host config:
 
@@ -152,6 +242,9 @@ install.sh handles partitioning (1GB EFI boot, 16GB swap used during install onl
 **post-install YubiKey setup** (the module is always loaded -- no YubiKey? rename `modules/nixos-modules/yubikey.nix` to `_yubikey.nix`):
 
 ```bash
+# persist this directory BEFORE creating the key file -- it lives under /home which
+# is backed by tmpfs. add ~/.config/Yubico to your preservation user directories first.
+
 mkdir -p ~/.config/Yubico
 pamu2fcfg > ~/.config/Yubico/u2f_keys
 
@@ -160,6 +253,7 @@ sudo echo "YubiKey working!"
 ```
 
 **verify:**
+
 - [ ] desktop loads
 - [ ] network works
 - [ ] audio works (`systemctl --user status pipewire`)
@@ -201,33 +295,27 @@ sudo reboot
 
 everything is managed with flake-parts and hjem. shareables (`modules/shareables/`) are wrapped packages with configs baked in, referenced via `inputs.self.packages`.
 
-adding new modules is ezpz. everything in `modules/` gets auto-imported -- drop a file and its in. files prefixed with `_` are skipped.
+adding new modules is ezpz. everything in `modules/hjem/` and `modules/nixos-modules/` gets auto-imported -- drop a file and its in. files prefixed with `_` are skipped. **shareables are different** -- `modules/shareables/bundle.nix` is a hardcoded import list, so new shareables need to be added there manually.
+
+new files need to be jj-snapshotted (`jj s`) before nix can see them -- flakes only see git-tracked files, and jj syncs to git on every command.
 
 **system modules** (`modules/nixos-modules/`) -- NixOS-level stuff. services, packages, kernel, networking:
 
 ```nix
-{ inputs, self, ... }:
-{
-  flake.nixosModules.my-new-thing = { config, lib, pkgs, ... }:
-    with lib; {
-      # your config here
-    };
+{ config, lib, pkgs, ... }: {
+  # your config here
 }
 ```
 
 **user config modules** (`modules/hjem/`) -- anything that goes in `~/.config` or `~/.local/share`:
 
 ```nix
-{...}: {
-  flake.nixosModules.my-app = { config, lib, pkgs, ... }: let
-    username = config.mySystem.user.name;
-  in with lib; {
-    config = {
-      hjem.users.${username}.xdg.config.files = {
-        "my-app/config".text = ''
-          # your config here
-        '';
-      };
+{ config, lib, pkgs, ... }:
+let username = config.mySystem.user.name; in
+{
+  config = {
+    hjem.users.${username} = {
+      # ...
     };
   };
 }
@@ -237,25 +325,243 @@ theres no feature toggle system. all modules load unconditionally. to disable so
 
 **adding packages:** user packages go in `modules/hjem/hjem-packages.nix`. system-wide stuff goes in the relevant module.
 
-new files need to be git-tracked before nix can see them -- flakes only see git-tracked files.
+<details>
+<summary>secrets (agenix)</summary>
+
+Secret management via [agenix](https://github.com/ryantm/agenix). Secrets are encrypted with your SSH keys, committed to git encrypted, and decrypted to `/run/agenix/` (tmpfs) at boot -- gone on reboot.
+
+**how it works:**
+
+- encrypted `.age` files live in `secrets/` and are safe to commit
+- `secrets/secrets.nix` maps each `.age` filename to its recipient public keys (what agenix reads)
+- `modules/nixos-modules/secrets.nix` wires secrets into the system config via `age.secrets.*`
+- identity path is `/persist/etc/ssh/ssh_host_ed25519_key` -- if that key is missing, agenix silently fails at boot
+- decrypts to `/run/agenix/` at boot
+
+**currently configured secrets:** tailscale-authkey, discord-token, radarr-api-key, sonarr-api-key, jellyfin-api-key.
+
+**create a secret:**
+
+```bash
+cd ~/repo/public/anomalos
+
+# create/edit the secret (opens $EDITOR)
+nix run github:ryantm/agenix -- -e secrets/my-secret.age
+
+# snapshot so nix can see it
+jj s
+```
+
+**declare it in the relevant module:**
+
+```nix
+age.secrets.my-secret = {
+  file = ./secrets/my-secret.age;
+  owner = "weegs";
+  mode = "400";
+};
+
+# reference the decrypted path:
+programs.something.passwordFile = config.age.secrets.my-secret.path;
+# resolves to: /run/agenix/my-secret
+```
+
+**add to `secrets/secrets.nix`** (the agenix recipient file):
+
+```nix
+let
+  weegs = "ssh-ed25519 AAAA... weegs@HX99G";
+  HX99G = "ssh-ed25519 AAAA... root@nixos";
+  allKeys = [weegs HX99G];
+in {
+  "secrets/my-secret.age".publicKeys = allKeys;
+}
+```
+
+**edit existing secret:**
+
+```bash
+nix run github:ryantm/agenix -- -e secrets/my-secret.age
+```
+
+**rekey (after changing SSH keys):**
+
+```bash
+nix run github:ryantm/agenix -- -r
+```
+
+**adding a new machine:**
+
+```bash
+# 1. get the new machine's host key
+sudo cat /etc/ssh/ssh_host_ed25519_key.pub
+
+# 2. add it to secrets/secrets.nix
+# 3. rekey all secrets
+nix run github:ryantm/agenix -- -r
+jj s
+```
+
+**troubleshooting:**
+
+```bash
+ssh-add -L                                                  # check loaded keys
+nix run github:ryantm/agenix -- -d secrets/my-secret.age   # try manual decrypt
+ls -la /run/agenix/                                         # check permissions
+grep -r "age.secrets" ~/repo/public/anomalos/modules/      # check declaration exists
+```
+
+YubiKey-backed SSH keys work fine at boot, but creating or editing secrets interactively can be flaky. if agenix hangs, use a regular SSH key instead.
+
+</details>
+
+## jujutsu workflow
+
+anomalos uses [jujutsu](https://jj-vcs.github.io/jj/latest/) in colocated mode (`.git/` is exposed so NixOS flakes can track files). all jj operations automatically sync to git.
+
+<details>
+<summary>jj reference</summary>
+
+**mental model:**
+
+- your working copy (@) IS a commit, not "dirty" state
+- changes are automatically tracked and amend @ commit
+- no staging area -- `jj n` finalizes current work and creates a new empty commit
+- bookmarks dont auto-move -- you move them explicitly
+
+**daily workflow:**
+
+```bash
+# make changes
+emacsclient -nw modules/hjem/something.nix
+
+# check what changed
+jj s
+jj d
+
+# describe and finalize
+jj dm "add wireguard configuration"
+jj n          # creates new empty commit (finalizes current)
+
+# test
+nrt
+
+# if broken, fix and squash
+jj sq
+
+# push to both remotes (GitHub + Codeberg)
+jj-push       # nushell def: fetch + push + fetch
+```
+
+**important:** run `jj s` before any `nix eval` or `repl` work. jj snapshots the working copy to git only when you run a jj command -- new files are invisible to flake evaluation until snapshotted.
+
+**core commands:**
+
+```bash
+# viewing
+jj s          # status
+jj l          # recent commits
+jj ll         # detailed log
+jj d          # diff working copy
+jj dp         # diff against parent (@-)
+jj ds         # diff stats
+
+# change management
+jj dm "msg"   # describe current commit
+jj n          # create new empty commit (finalizes current)
+
+# manipulation
+jj sq         # squash into parent
+jj sp         # split commit interactively
+jj spi        # split with interface
+
+# bookmarks
+jj bs <name> -r <rev>   # set bookmark to revision
+jj tug                   # move closest bookmark to @-
+
+# remotes
+jj f          # fetch from default remote
+jj p          # push
+jj-fetch      # nushell alias: jj git fetch --all-remotes
+jj-push       # nushell def: fetch + push + fetch (safe push workflow)
+jj-pull       # nushell def: fetch + move main bookmark to main@origin
+jj-commit     # nushell def: interactive split + bookmark move
+
+# recovery
+jj u          # undo last operation
+```
+
+everything is recoverable via operation log. `jj u` works for rebases, squashes, deletions, etc.
+
+**key aliases** (configured in `modules/hjem/jujutsu.nix`):
+
+| alias        | expands to                                                  |
+| ------------ | ----------------------------------------------------------- |
+| `s`          | status                                                      |
+| `d`          | diff                                                        |
+| `dp`         | diff against parent (@-)                                    |
+| `ds`         | diff stats                                                  |
+| `dm "msg"`   | describe                                                    |
+| `n`          | new commit                                                  |
+| `sq`         | squash                                                      |
+| `sp` / `spi` | split                                                       |
+| `p`          | push                                                        |
+| `f`          | fetch (default remote only -- use jj-fetch for all remotes) |
+| `u`          | undo                                                        |
+| `l` / `ll`   | log (short / detailed)                                      |
+| `bs`         | bookmark set                                                |
+| `tug`        | move closest bookmark to @-                                 |
+
+**nushell defs** (defined in `modules/hjem/nushell.nix`):
+
+| def         | what it does                              |
+| ----------- | ----------------------------------------- |
+| `jj-fetch`  | `jj git fetch --all-remotes`              |
+| `jj-push`   | fetch + push + fetch (safe push workflow) |
+| `jj-pull`   | fetch + move main bookmark to main@origin |
+| `jj-commit` | interactive split + bookmark move         |
+
+**git vs jj:**
+
+| git             | jj                        | notes                  |
+| --------------- | ------------------------- | ---------------------- |
+| `git status`    | `jj s`                    |                        |
+| `git diff`      | `jj d`                    |                        |
+| `git commit -m` | `jj dm "msg"` then `jj n` | describe then finalize |
+| `git push`      | `jj p`                    |                        |
+| `git fetch`     | `jj f`                    | no auto-merge          |
+| `git undo`      | `jj u`                    | undo last operation    |
+| `git branch`    | `jj bs`                   | set bookmark           |
+
+**NixOS flakes integration:** colocate mode exposes `.git/` so NixOS flakes can track files. files are automatically exported to git on every jj command. if flakes cant see new files: run `jj s` first, then check the file isnt in `.gitignore`.
+
+</details>
 
 ## maintenance
 
 ```bash
-nfu                                  # update all flake inputs
-nfu nixpkgs                          # update a single input (nixpkgs is an example -- use any input name from flake.nix)
-recycle                              # keep last 10 generations, GC the rest
-sudo nixos-rebuild switch --rollback # rollback
+nfu                    # update all flake inputs
+nfu nixpkgs            # update a single input
+nrt                    # test changes (safe -- reverts on reboot)
+nrs                    # apply changes + push closure to cachix
+nrbt                   # boot -- applies changes on next boot only
+nrbld                  # build without switching
+recycle                # keep last 10 generations, GC the rest
 ```
 
-garbage collection and store optimization both run automatically.
-
 **config broke everything:**
+
 ```bash
-cd ~/dotfiles
-jj log        # find the last working commit (or git log if youre not on jj)
+cd ~/repo/public/anomalos
+jj log        # find the last working commit
 jj edit <id>
 nrs
+```
+
+**rollback:**
+
+```bash
+sudo nixos-rebuild switch --rollback
 ```
 
 **YubiKey locked you out:** boot single-user mode, rename `modules/nixos-modules/yubikey.nix` to `_yubikey.nix`, rebuild.
@@ -264,6 +570,7 @@ nrs
 <summary>troubleshooting</summary>
 
 **build failures:**
+
 ```bash
 sudo nix-collect-garbage -d && nrt
 
@@ -273,47 +580,51 @@ nh os test -- --show-trace  # verbose output (nrt doesnt pass args through)
 ```
 
 **Hyprland wont start:**
+
 ```bash
 cat /tmp/hypr/$(ls -t /tmp/hypr/ | head -1)/hyprland.log
 echo $XDG_SESSION_TYPE  # should be "wayland"
 ```
 
 **noctalia missing:**
+
 ```bash
-systemctl --user restart noctalia
-journalctl --user -u noctalia
+noct-r
+journalctl --user -u noctalia-shell
 ```
 
 **audio:**
+
 ```bash
 systemctl --user restart pipewire pipewire-pulse wireplumber
 ```
 
 **general:**
+
 ```bash
 journalctl -xe
 systemctl --failed
 systemctl --user --failed
 ```
 
-help: [NixOS Discourse](https://discourse.nixos.org/) · [NixOS Wiki](https://nixos.wiki/) · [Issues](https://codeberg.org/weegs710/AnomalOS/issues)
+help: [NixOS Discourse](https://discourse.nixos.org/) -- [NixOS Wiki](https://nixos.wiki/) -- [Issues](https://codeberg.org/weegs710/AnomalOS/issues)
 
 </details>
 
 ## contributing
 
-feel free to fork this and do whatever. if you find bugs or have improvements, pull requests are welcome -- just run `nix develop` first so were using the same tools and formatter. the devshell has everything: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, and nushell.
+feel free to fork this and do whatever. if you find bugs or have improvements, pull requests are welcome -- just run `nix develop` first so were using the same tools and formatter. the devshell has everything: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, clippy, rust-analyzer, rustfmt, dprint, typescript, and nushell.
 
 but remember, this is primarily my personal config, and i am still fairly new to this stuff.
 
 ## credits
 
-| # | who | for |
-|---|-----|-----|
-| 0 | [iynaix](https://github.com/iynaix) | code examples, good practices, and logical thinking |
-| 1 | [jet](https://github.com/Michael-C-Buckley) | NixOS nuances and code snippets |
-| 2 | [ladas](https://github.com/Ladas552) | nagging me about stuff i can improve |
-| 3 | [vimjoyer](https://github.com/vimjoyer) | videos and his amazing discord server |
+| #   | who                                         | for                                                 |
+| --- | ------------------------------------------- | --------------------------------------------------- |
+| 0   | [iynaix](https://github.com/iynaix)         | code examples, good practices, and logical thinking |
+| 1   | [jet](https://github.com/Michael-C-Buckley) | NixOS nuances and code snippets                     |
+| 2   | [ladas](https://github.com/Ladas552)        | nagging me about stuff i can improve                |
+| 3   | [vimjoyer](https://github.com/vimjoyer)     | videos and his amazing discord server               |
 
 ## license
 
