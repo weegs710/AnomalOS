@@ -23,4 +23,8 @@ in
     weegs
     HX99G
   ];
+  "weechat-passphrase.age".publicKeys = [
+    weegs
+    HX99G
+  ];
 }

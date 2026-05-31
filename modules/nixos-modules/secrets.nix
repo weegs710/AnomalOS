@@ -33,6 +33,12 @@ in
       owner = config.mySystem.user.name;
     };
 
+    age.secrets.weechat-passphrase = {
+      file = ../../secrets/weechat-passphrase.age;
+      mode = "0400";
+      owner = config.mySystem.user.name;
+    };
+
     age.secrets.radarr-api-key = {
       file = ../../secrets/radarr-api-key.age;
       mode = "0400";

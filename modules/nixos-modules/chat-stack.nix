@@ -1,8 +1,7 @@
-{ pkgs, ... }:
+{ ... }:
 {
   services.bitlbee = {
     enable = true;
-    plugins = [ pkgs.bitlbee-steam ];
   };
 
   preservation.preserveAt."/persist".directories = [
