@@ -23,7 +23,7 @@ in
     weegs
     HX99G
   ];
-  "weechat-passphrase.age".publicKeys = [
+  "disroot-xmpp-password.age".publicKeys = [
     weegs
     HX99G
   ];

@@ -219,6 +219,7 @@ in
       -- comms
       hl.window_rule({ match = { title = "^(concord)$" },  workspace = "1" })
       hl.window_rule({ match = { title = "^(weechat)$" },  workspace = "1" })
+      hl.window_rule({ match = { title = "^(profanity)$" },  workspace = "1" })
 
       -- dev
       hl.window_rule({ match = { title = "^(ghostty)$" },  workspace = "2" })
