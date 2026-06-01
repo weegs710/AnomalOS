@@ -35,7 +35,7 @@ in
   ];
 
   hjem.users.${username}.files = {
-    ".local/share/profanity/themes/eldritch".text = ''
+    ".config/profanity/themes/eldritch".text = ''
       [colours]
       bkgnd=grey15
       titlebar=grey19
@@ -121,6 +121,17 @@ in
     '';
 
     ".local/share/profanity/scripts/libera-startup".text = ''
+      /notify chat on
+      /notify chat text on
+      /notify room mention on
+      /notify room trigger on
+      /notify remind 120
+      /presence room online
+      /color on
+      /correction on
+      /mam on
+      /strophe sm on
+      /save
       /join #technicalrenaissance%irc.libera.chat@irc.disroot.org
       /join #linux%irc.libera.chat@irc.disroot.org
       /join #gamingonlinux%irc.libera.chat@irc.disroot.org

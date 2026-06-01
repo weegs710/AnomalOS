@@ -64,6 +64,7 @@ let
       consult-lsp
       doom-modeline
       helpful
+      ligature
       marginalia
       nerd-icons
       projectile
@@ -441,8 +442,23 @@ in
       ;;; font
 
       (set-face-attribute 'default nil
-                          :font "JetBrainsMonoNL Nerd Font Mono"
-                          :height 120)
+                          :font "JetBrainsMono Nerd Font Mono"
+                          :height 100)
+
+      ;;; ligatures
+
+      (use-package ligature
+        :config
+        (ligature-set-ligatures 't
+          '("<---" "<--" "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
+            "<~~" "~~>" "~>" "<~" "~-" "-~"
+            "<$>" "<$" "$>" "<+>" "<+" "+>" "<*>" "<*" "*>"
+            "<!--" "</" "/>" "</>" "<|" "<|>" "|>" "||" "|-" "-|"
+            "==" "===" "!=" "!==" "<=" ">=" "<=>" "<==>" "<==="
+            "->>" "->>" "=>>" "==>" "<<==" "<<=" ">>" "<<" ">>>"
+            ":::" "::" ":=" "=:" "?:" ":>" ":<" "<:"
+            "/=" "/==" "++" "+++" "..." ".." "**"))
+        (global-ligature-mode t))
 
       ;;; theme
 
@@ -500,7 +516,7 @@ in
 
       (use-package nerd-icons
         :custom
-        (nerd-icons-font-family "JetBrainsMonoNL Nerd Font Mono"))
+        (nerd-icons-font-family "JetBrainsMono Nerd Font Mono"))
 
       ;;; doom-modeline
 
@@ -532,14 +548,38 @@ in
         :demand t
         :config
         (projectile-mode +1)
-        (setq projectile-project-search-path
-              '("~/repo/public/" "~/repo/private/")
+        (setq projectile-project-search-path '(("~/repo/" . 2))
               ;; stops projectile serializing known-projects on every file open
-              projectile-track-known-projects-automatically nil)
+              projectile-track-known-projects-automatically nil
+              projectile-require-project-root nil
+              projectile-switch-project-action #'my/projectile-restore-buffer)
         ;; projectile-find-file-hook-function visits TAGS table + updates cache on every file open -- useless with LSP
         (remove-hook 'find-file-hook #'projectile-find-file-hook-function)
         :bind-keymap
         ("C-c p" . projectile-command-map))
+
+      ;;; project session
+
+      (defvar my/project-buffer-history (make-hash-table :test 'equal))
+
+      (defun my/projectile-save-buffer ()
+        (when-let ((file (buffer-file-name))
+                   ((projectile-project-p)))
+          (puthash (projectile-project-root) file my/project-buffer-history)))
+
+      (defun my/projectile-restore-buffer ()
+        (let* ((root (projectile-project-root))
+               (saved (gethash root my/project-buffer-history)))
+          (if (and saved (file-exists-p saved))
+              (find-file saved)
+            (switch-to-buffer "*scratch*")
+            ;; anchor default-directory so treemacs-project-follow-mode detects the new project
+            (setq-local default-directory root)
+            ;; bypass the 1.5s idle debounce -- update treemacs immediately
+            (when (fboundp 'treemacs--do-follow-project)
+              (treemacs--do-follow-project)))))
+
+      (add-hook 'projectile-before-switch-project-hook #'my/projectile-save-buffer)
 
       ;;; treemacs
 
@@ -553,14 +593,17 @@ in
               treemacs-indentation 2
               treemacs-show-hidden-files nil)
         (treemacs-filewatch-mode t)
-        (treemacs-fringe-indicator-mode 'always))
+        (treemacs-fringe-indicator-mode 'always)
+        (treemacs-project-follow-mode 1))
 
       (use-package treemacs-projectile
         :after (treemacs projectile))
 
       (use-package treemacs-nerd-icons
         :after treemacs
-        :config (treemacs-load-theme "nerd-icons"))
+        :config
+        (setq treemacs-nerd-icons-icon-size 1.3)
+        (treemacs-load-theme "nerd-icons"))
 
       (add-hook 'emacs-startup-hook
                 (lambda ()
@@ -651,7 +694,9 @@ in
               lsp-lens-enable nil
               lsp-enable-symbol-highlighting nil
               ;; code-actions segment loads all-the-icons -- not worth it
-              lsp-modeline-code-actions-enable nil)
+              lsp-modeline-code-actions-enable nil
+              ;; use projectile root automatically -- no interactive prompt per new project
+              lsp-auto-guess-root t)
         ;; restrict to only languages in use -- lsp--require-packages loads all 100+ clients at first invocation
         (setq lsp-client-packages '(lsp-nix lsp-pyright lsp-rust lsp-javascript lsp-css lsp-json lsp-html lsp-nushell lsp-marksman))
         ;; rnix-lsp and nix-nil conflict with nixd -- nixd provides full anomalos flake context
@@ -845,12 +890,15 @@ in
       (use-package vterm
         :config
         (setq vterm-max-scrollback 10000
-              vterm-shell (executable-find "nu")))
+              vterm-shell (executable-find "nu"))
+        (add-hook 'vterm-mode-hook (lambda () (display-line-numbers-mode -1))))
 
       (use-package vterm-toggle
         :bind (("C-`" . vterm-toggle))
         :config
         (setq vterm-toggle-fullscreen-p nil)
+        ;; fallback to current window instead of splitting when no alist rule matches
+        (setq display-buffer-base-action '(display-buffer-same-window))
         (setq display-buffer-alist
               '(("\\*vterm\\*"
                  (display-buffer-in-side-window)

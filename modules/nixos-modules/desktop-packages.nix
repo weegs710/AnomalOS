@@ -53,7 +53,7 @@
     space-mono
     hack
     iosevka
-  ];
+  ] ++ [ pkgs.noto-fonts-color-emoji ];
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
     ".config/nemo"
