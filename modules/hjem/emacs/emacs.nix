@@ -157,14 +157,38 @@ in
     ];
   };
 
-  hjem.users.${username}.xdg.config.files = {
-    "emacs/early-init.el".source = ./early-init.el;
-    # not managed by noctalia's template system -- safe to edit directly
-    "emacs/themes/noctalia-theme.el".source = ./noctalia-theme.el;
-    "emacs/init.el".text =
-      lib.replaceStrings
-        [ "@FLAKE_PATH@" "@HOME@" "@NIX_SEARCH_TV@" ]
-        [ flakePath home "${pkgs.nix-search-tv}/bin/nix-search-tv" ]
-        (builtins.readFile ./init.el);
+  hjem.users.${username} = {
+    xdg.config.files = {
+      "emacs/early-init.el".text =
+        lib.replaceStrings
+          [ "@HOME@" ]
+          [ home ]
+          (builtins.readFile ./early-init.el);
+      # not managed by noctalia's template system -- safe to edit directly
+      "emacs/themes/noctalia-theme.el".source = ./noctalia-theme.el;
+      "emacs/init.el".text =
+        lib.replaceStrings
+          [ "@FLAKE_PATH@" "@HOME@" "@NIX_SEARCH_TV@" ]
+          [ flakePath home "${pkgs.nix-search-tv}/bin/nix-search-tv" ]
+          (builtins.readFile ./init.el);
+    };
+
+    xdg.data.files = {
+      "icons/kitchen-sink-emacs.png".source = ./kitchen-sink.png;
+      "applications/emacs.desktop".text = ''
+        [Desktop Entry]
+        Name=Emacs
+        GenericName=Text Editor
+        Comment=Edit text
+        MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
+        Exec=emacs %F
+        Icon=${home}/.local/share/icons/kitchen-sink-emacs.png
+        Type=Application
+        Terminal=false
+        Categories=Development;TextEditor;
+        StartupNotify=true
+        StartupWMClass=Emacs
+      '';
+    };
   };
 }
