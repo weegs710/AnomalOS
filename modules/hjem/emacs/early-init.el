@@ -12,9 +12,6 @@
           (lambda () (setq file-name-handler-alist my/file-name-handler-alist)))
 
 
-;; must be set before lsp-mode loads
-(setenv "LSP_USE_PLISTS" "true")
-
 ;; default 4KB causes thousands of syscalls per LSP JSON response
 (setq read-process-output-max (* 4 1024 1024))
 

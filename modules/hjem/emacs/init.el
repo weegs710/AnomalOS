@@ -5,7 +5,6 @@
 
 ;;; gc
 
-;; hands off GC management to gcmh after init
 (use-package gcmh
   :demand t
   :config (gcmh-mode 1))
@@ -31,7 +30,7 @@
 ;; save bookmarks on every change rather than only on quit
 (setq bookmark-save-flag 1)
 
-(global-set-key (kbd "<escape>") #'keyboard-quit)
+(keymap-set global-map "<escape>" #'keyboard-quit)
 (keymap-set minibuffer-local-map "<escape>" #'abort-minibuffers)
 
 (show-paren-mode 1)
@@ -41,8 +40,23 @@
       window-divider-default-bottom-width 2
       window-divider-default-places t)
 (window-divider-mode 1)
+(winner-mode 1)
 (setq vc-follow-symlinks t
       require-final-newline t)
+
+;; fallback to current window instead of splitting when no alist rule matches
+(setq display-buffer-base-action '(display-buffer-same-window))
+(setq display-buffer-alist
+      '(("\\*vterm\\*"
+         (display-buffer-in-side-window)
+         (side . bottom)
+         (slot . -1)
+         (window-height . 0.3))
+        ("\\*\\(Messages\\|Flycheck\\|compilation\\|Warnings\\|Help\\|helpful\\|xref\\|vc-diff\\|VC-log\\|lsp-help\\|lsp-log\\|Backtrace\\|Occur\\|grep\\|Agenda\\|Buffer List\\).*\\*"
+         (display-buffer-in-side-window)
+         (side . bottom)
+         (slot . 1)
+         (window-height . 0.3))))
 
 ;; prevents syntax highlight updates during keystrokes -- removes input lag
 (setq redisplay-skip-fontification-on-input t)
@@ -62,17 +76,16 @@
 
 (setq prettify-symbols-unprettify-at-point t)
 (setq-default prettify-symbols-alist
-  '(("==" . "≡") ("===" . "≣") ("!=" . "≠") ("!==" . "≢")
-    (">=" . "≥") ("<=" . "≤") ("->" . "→") ("<-" . "←")
-    ("<->" . "↔") ("<=>" . "⇔") ("->>" . "↠") ("<<-" . "↞")
-    ("~>" . "↝") ("|>" . "▷") ("<|" . "◁") ("map" . "↦")
-    ("lambda" . "λ") ("alpha" . "α") ("beta" . "β") ("gamma" . "γ")
-    ("delta" . "δ") ("pi" . "π") ("sum" . "∑") ("..." . "…")
-    ("::" . "∷") (">>" . "»") ("<<" . "«") ("sqrt" . "√")
-    ("integral" . "∫") ("forall" . "∀") ("exists" . "∃")))
+	      '(("==" . "≡") ("===" . "≣") ("!=" . "≠") ("!==" . "≢")
+		(">=" . "≥") ("<=" . "≤") ("->" . "→") ("<-" . "←")
+		("<->" . "↔") ("<=>" . "⇔") ("->>" . "↠") ("<<-" . "↞")
+		("~>" . "↝") ("|>" . "▷") ("<|" . "◁") ("map" . "↦")
+		("lambda" . "λ") ("alpha" . "α") ("beta" . "β") ("gamma" . "γ")
+		("delta" . "δ") ("pi" . "π") ("sum" . "∑") ("..." . "…")
+		("::" . "∷") (">>" . "»") ("<<" . "«") ("sqrt" . "√")
+		("integral" . "∫") ("forall" . "∀") ("exists" . "∃")))
 (add-hook 'prog-mode-hook #'prettify-symbols-mode)
 (add-hook 'org-mode-hook  #'prettify-symbols-mode)
-
 
 ;;; pulse
 
@@ -93,14 +106,14 @@
 (use-package ligature
   :config
   (ligature-set-ligatures 't
-    '("<---" "<--" "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
-      "<~~" "~~>" "~>" "<~" "~-" "-~"
-      "<$>" "<$" "$>" "<+>" "<+" "+>" "<*>" "<*" "*>"
-      "<!--" "</" "/>" "</>" "<|" "<|>" "|>" "||" "|-" "-|"
-      "==" "===" "!=" "!==" "<=" ">=" "<=>" "<==>" "<==="
-      "->>" "->>" "=>>" "==>" "<<==" "<<=" ">>" "<<" ">>>"
-      ":::" "::" ":=" "=:" "?:" ":>" ":<" "<:"
-      "/=" "/==" "++" "+++" "..." ".." "**"))
+			  '("<---" "<--" "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->"
+			    "<~~" "~~>" "~>" "<~" "~-" "-~"
+			    "<$>" "<$" "$>" "<+>" "<+" "+>" "<*>" "<*" "*>"
+			    "<!--" "</" "/>" "</>" "<|" "<|>" "|>" "||" "|-" "-|"
+			    "==" "===" "!=" "!==" "<=" ">=" "<=>" "<==>" "<==="
+			    "->>" "->>" "=>>" "==>" "<<==" "<<=" ">>" "<<" ">>>"
+			    ":::" "::" ":=" "=:" "?:" ":>" ":<" "<:"
+			    "/=" "/==" "++" "+++" "..." ".." "**"))
   (global-ligature-mode t))
 
 ;;; theme
@@ -175,7 +188,10 @@
         doom-modeline-vcs-max-length 24
         doom-modeline-check-simple-format t
         doom-modeline-env-enable-rust nil
-        doom-modeline-env-enable-python nil))
+        doom-modeline-env-enable-python nil)
+  ;; doom-modeline text-property keymaps override global-set-key -- advise the functions directly
+  (advice-add 'mouse-buffer-menu :override (lambda (&rest _) (consult-buffer)))
+  (advice-add 'mode-line-previous-buffer :override (lambda (&rest _) (consult-buffer))))
 
 ;;; helpful
 
@@ -198,6 +214,8 @@
         projectile-switch-project-action #'my/projectile-restore-buffer)
   ;; projectile-find-file-hook-function visits TAGS table + updates cache on every file open -- useless with LSP
   (remove-hook 'find-file-hook #'projectile-find-file-hook-function)
+  ;; populate known projects from search-path at startup -- auto-tracking is off so this won't happen otherwise
+  (projectile-discover-projects-in-search-path)
   :bind-keymap
   ("C-c p" . projectile-command-map))
 
@@ -282,8 +300,8 @@
   (set-face-attribute 'centaur-tabs-unselected nil :background "#212337")
   (centaur-tabs-headline-match)
   (dolist (hook '(vterm-mode-hook messages-buffer-mode-hook
-                  help-mode-hook compilation-mode-hook
-                  flycheck-error-list-mode-hook))
+				  help-mode-hook compilation-mode-hook
+				  flycheck-error-list-mode-hook))
     (add-hook hook #'centaur-tabs-local-mode))
   :bind (("C-<prior>" . centaur-tabs-backward)
          ("C-<next>"  . centaur-tabs-forward)
@@ -310,7 +328,9 @@
 ;;; lsp-mode
 
 (use-package lsp-mode
-  :commands (lsp lsp-deferred)
+  :commands (lsp lsp-deferred
+		 lsp-find-definition lsp-find-references lsp-find-implementation
+		 lsp-execute-code-action lsp-rename)
   :init
   (setq lsp-use-plists t)
   :hook ((nix-ts-mode        . lsp-deferred)
@@ -342,20 +362,21 @@
         ;; code-actions segment loads all-the-icons -- not worth it
         lsp-modeline-code-actions-enable nil
         ;; use projectile root automatically -- no interactive prompt per new project
-        lsp-auto-guess-root t)
-  ;; restrict to only languages in use -- lsp--require-packages loads all 100+ clients at first invocation
-  (setq lsp-client-packages '(lsp-nix lsp-pyright lsp-rust lsp-javascript lsp-css lsp-json lsp-html lsp-nushell lsp-marksman))
-  ;; rnix-lsp and nix-nil conflict with nixd -- nixd provides full anomalos flake context
-  (setq lsp-disabled-clients '(rnix-lsp nix-nil)
+        lsp-auto-guess-root t
+        ;; restrict to only languages in use -- lsp--require-packages loads all 100+ clients at first invocation
+        lsp-client-packages '(lsp-nix lsp-pyright lsp-rust lsp-javascript lsp-css lsp-json lsp-html lsp-nushell lsp-marksman)
+        ;; rnix-lsp and nix-nil conflict with nixd -- nixd provides full anomalos flake context
+        lsp-disabled-clients '(rnix-lsp nix-nil)
         lsp-nix-nixd-nixpkgs-expr
         "import (builtins.getFlake \"@FLAKE_PATH@\").inputs.nixpkgs {}"
         lsp-nix-nixd-nixos-options-expr
         "(builtins.getFlake \"@FLAKE_PATH@\").nixosConfigurations.HX99G.options"
-        lsp-nix-nixd-formatting-command ["nixfmt"])
-  (setq lsp-rust-analyzer-cargo-watch-command "clippy")
-  (setq lsp-pyright-langserver-command "basedpyright"))
+        lsp-nix-nixd-formatting-command ["nixfmt"]
+        lsp-rust-analyzer-cargo-watch-command "clippy"
+        lsp-pyright-langserver-command "basedpyright"))
 
 (use-package lsp-ui
+  :commands (lsp-ui-doc-glance)
   :after lsp-mode
   :config
   ;; sideline triggers redisplay on every buffer event -- too expensive
@@ -385,8 +406,8 @@
 (use-package consult-lsp
   :after (consult lsp-mode)
   :bind (:map lsp-mode-map
-         ("C-c l s" . consult-lsp-symbols)
-         ("C-c l d" . consult-lsp-diagnostics)))
+              ("C-c l s" . consult-lsp-symbols)
+              ("C-c l d" . consult-lsp-diagnostics)))
 
 ;;; language modes
 
@@ -481,17 +502,17 @@
     "Fetch all remotes then advance main to main@origin."
     (interactive)
     (majutsu-git--start '("fetch" "--all-remotes") nil
-      (lambda (_)
-        (majutsu-run-jj "bookmark" "move" "main" "-t" "main@origin"))))
+			(lambda (_)
+			  (majutsu-run-jj "bookmark" "move" "main" "-t" "main@origin"))))
 
   (defun my/jj-push ()
     "Fetch, push, then fetch again."
     (interactive)
     (majutsu-git--start '("fetch" "--all-remotes") nil
-      (lambda (_)
-        (majutsu-git--start '("push") "Pushed"
-          (lambda (_)
-            (majutsu-git--start '("fetch" "--all-remotes") "Done"))))))
+			(lambda (_)
+			  (majutsu-git--start '("push") "Pushed"
+					      (lambda (_)
+						(majutsu-git--start '("fetch" "--all-remotes") "Done"))))))
 
   (defun my/jj-commit ()
     "Split working copy interactively then advance the closest bookmark."
@@ -504,18 +525,18 @@
       (if (string-match-p "The working copy has no changes" status)
           (message "No changes to commit")
         (letrec
-          ((cancel-hook
-            (lambda ()
-              (remove-hook 'with-editor-post-finish-hook finish-hook)
-              (remove-hook 'with-editor-post-cancel-hook cancel-hook)))
-           (finish-hook
-            (lambda ()
-              (remove-hook 'with-editor-post-finish-hook finish-hook)
-              (remove-hook 'with-editor-post-cancel-hook cancel-hook)
-              (let ((default-directory root))
-                (majutsu-run-jj "bookmark" "move"
-                                "--from" "closest_bookmark(@-)"
-                                "--to" "@-")))))
+            ((cancel-hook
+              (lambda ()
+		(remove-hook 'with-editor-post-finish-hook finish-hook)
+		(remove-hook 'with-editor-post-cancel-hook cancel-hook)))
+             (finish-hook
+              (lambda ()
+		(remove-hook 'with-editor-post-finish-hook finish-hook)
+		(remove-hook 'with-editor-post-cancel-hook cancel-hook)
+		(let ((default-directory root))
+                  (majutsu-run-jj "bookmark" "move"
+                                  "--from" "closest_bookmark(@-)"
+                                  "--to" "@-")))))
           (add-hook 'with-editor-post-finish-hook finish-hook)
           (add-hook 'with-editor-post-cancel-hook cancel-hook))
         (majutsu-split))))
@@ -542,24 +563,7 @@
 (use-package vterm-toggle
   :bind (("C-`" . vterm-toggle))
   :config
-  (setq vterm-toggle-fullscreen-p nil)
-  ;; fallback to current window instead of splitting when no alist rule matches
-  (setq display-buffer-base-action '(display-buffer-same-window))
-  (setq display-buffer-alist
-        '(("\\*vterm\\*"
-           (display-buffer-in-side-window)
-           (side . bottom)
-           (slot . -1)
-           (window-height . 0.3))
-          ("\\*\\(Messages\\|Flycheck\\|compilation\\|Warnings\\|Help\\|helpful\\|xref\\|vc-diff\\|VC-log\\|lsp-help\\|lsp-log\\|Backtrace\\|Occur\\|grep\\|Agenda\\|Buffer List\\).*\\*"
-           (display-buffer-in-side-window)
-           (side . bottom)
-           (slot . 1)
-           (window-height . 0.3))))
-
-  ;; doom-modeline text-property keymaps override global-set-key -- advise the functions directly
-  (advice-add 'mouse-buffer-menu :override (lambda (&rest _) (consult-buffer)))
-  (advice-add 'mode-line-previous-buffer :override (lambda (&rest _) (consult-buffer))))
+  (setq vterm-toggle-fullscreen-p nil))
 
 ;;; avy
 
@@ -642,7 +646,39 @@
 
 (require 'transient)
 
-(winner-mode 1)
+(defface my/transient-desc
+  '((t (:foreground "#69f8b3")))
+  "Transient description text.")
+
+(use-package transient-posframe
+  :after transient
+  :config
+  (setq transient-posframe-border-width 2
+        transient-posframe-poshandler #'posframe-poshandler-frame-center
+        transient-minimal-frame-width 0)
+  (transient-posframe-mode 1))
+
+;; backspace = quit-one, esc = quit-all; :append t on description advice lets :face suffix slots win
+(with-eval-after-load 'transient
+  (keymap-set transient-base-map "<backspace>" #'transient-quit-one)
+  (keymap-set transient-base-map "<escape>" #'transient-quit-all)
+  (advice-add 'transient-format-description :filter-return
+              (lambda (desc)
+                (when (stringp desc)
+                  (let ((s (copy-sequence desc)))
+                    (add-face-text-property 0 (length s) 'my/transient-desc t s)
+                    s)))))
+
+;; posframe requires a graphical frame -- skip it in emacsclient -nw, fall back to default display
+(with-eval-after-load 'transient-posframe
+  (advice-add 'transient-posframe--show-buffer :before-while
+              (lambda (&rest _) (display-graphic-p)))
+  ;; pgtk child frames ignore internal-border-width -- window margins + blank lines fake the gap
+  (advice-add 'transient--show :after
+              (lambda (&rest _)
+                (when (and (display-graphic-p) (window-live-p transient--window))
+                  (set-window-margins transient--window 2 2)
+                  (transient--fit-window-to-buffer transient--window)))))
 
 (defun my/new-empty-buffer ()
   (interactive)
@@ -672,88 +708,111 @@
   (dired "@HOME@/repo/public/anomalos/modules/hjem/emacs/"))
 
 (transient-define-prefix my/hub-files ()
-  "Files."
-  [["Open"
-    ("n" "new empty" my/new-empty-buffer)
-    ("f" "open file" find-file)
-    ("d" "open directory" dired)
-    ("r" "recent files" consult-recent-file)
-    ("e" "emacs config" my/open-emacs-config)]
-   ["Save"
-    ("s" "save" save-buffer)
-    ("S" "save as" write-file)
-    ("a" "save all" save-some-buffers)]
-   ["Close"
-    ("v" "revert to saved" revert-buffer)
-    ("k" "close" kill-current-buffer)
-    ("K" "close all" my/kill-all-buffers)
-    ("q" "quit emacs" save-buffers-kill-emacs)]])
+			 "Files."
+			 [:pad-keys t
+				    ["Open"
+				     ("n" "new empty" my/new-empty-buffer)
+				     ("f" "open file" find-file)
+				     ("d" "open directory" dired)
+				     ("r" "recent files" consult-recent-file)
+				     ("e" "emacs config" my/open-emacs-config)]
+				    ["Save"
+				     ("s" "save" save-buffer)
+				     ("S" "save as" write-file)
+				     ("a" "save all" save-some-buffers)]
+				    ["Close"
+				     ("v" "revert to saved" revert-buffer)
+				     ("k" "close" kill-current-buffer)
+				     ("K" "close all" my/kill-all-buffers)
+				     ("q" "quit emacs" save-buffers-kill-emacs)]])
 
 (transient-define-prefix my/hub-buffers ()
-  "Buffers."
-  [["Switch"
-    ("b" "switch to any open file" consult-buffer)
-    ("n" "next open file" next-buffer)
-    ("p" "previous open file" previous-buffer)]
-   ["Close"
-    ("k" "close this" kill-current-buffer)
-    ("K" "close all others" my/kill-other-buffers)]
-   ["List"
-    ("l" "list all open files" ibuffer)]])
+			 "Buffers."
+			 [:pad-keys t
+				    ["Switch"
+				     ("b" "switch to any open file" consult-buffer)
+				     ("n" "next open file" next-buffer)
+				     ("p" "previous open file" previous-buffer)]
+				    ["Close"
+				     ("k" "close this" kill-current-buffer)
+				     ("K" "close all others" my/kill-other-buffers)]
+				    ["List"
+				     ("l" "list all open files" ibuffer)]])
+
+(transient-define-prefix my/hub-project ()
+			 "Project."
+			 [:pad-keys t
+				    ["Open"
+				     ("p" "switch project" projectile-switch-project)
+				     ("f" "find file" projectile-find-file)
+				     ("b" "switch buffer" projectile-switch-to-buffer)]
+				    ["Search"
+				     ("s" "search project" consult-ripgrep)
+				     ("r" "replace in project" projectile-replace)]
+				    ["Manage"
+				     ("k" "kill project buffers" projectile-kill-buffers)
+				     ("R" "refresh known projects" projectile-discover-projects-in-search-path)]])
 
 (transient-define-prefix my/hub-code ()
-  "Code (LSP)."
-  [["Navigate"
-    ("d" "go to definition" lsp-find-definition)
-    ("u" "find all usages" lsp-find-references)
-    ("i" "go to implementation" lsp-find-implementation)
-    ("h" "show docs" lsp-ui-doc-glance)]
-   ["Actions"
-    ("e" "show errors" consult-lsp-diagnostics)
-    ("a" "fix / code action" lsp-execute-code-action)
-    ("f" "format file" apheleia-format-buffer)
-    ("r" "rename symbol" lsp-rename)]])
+			 "Code (LSP)."
+			 [:pad-keys t
+				    ["Navigate"
+				     ("d" "go to definition" lsp-find-definition)
+				     ("u" "find all usages" lsp-find-references)
+				     ("i" "go to implementation" lsp-find-implementation)
+				     ("h" "show docs" lsp-ui-doc-glance)]
+				    ["Actions"
+				     ("e" "show errors" consult-lsp-diagnostics)
+				     ("a" "fix / code action" lsp-execute-code-action)
+				     ("f" "format file" apheleia-format-buffer)
+				     ("r" "rename symbol" lsp-rename)
+				     ("n" "nix package" my/nix-insert-package)]])
 
 (transient-define-prefix my/hub-search ()
-  "Search."
-  [["Search"
-    ("s" "in this file" consult-line)
-    ("p" "in project" consult-ripgrep)]
-   ["Replace"
-    ("r" "replace in file" query-replace)
-    ("R" "replace in project" projectile-replace)]])
+			 "Search."
+			 [:pad-keys t
+				    ["Search"
+				     ("s" "in this file" consult-line)
+				     ("p" "in project" consult-ripgrep)]
+				    ["Replace"
+				     ("r" "replace in file" query-replace)
+				     ("R" "replace in project" projectile-replace)]])
 
 (transient-define-prefix my/hub-layout ()
-  "Layout."
-  [["Panels"
-    ("t" "file tree" treemacs)
-    ("v" "terminal" vterm-toggle)]
-   ["Windows"
-    ("1" "one window" delete-other-windows)
-    ("2" "split side by side" split-window-right)
-    ("3" "split top/bottom" split-window-below)
-    ("z" "zoom / restore" my/zoom-window)
-    ("b" "balance splits" balance-windows)]])
+			 "Layout."
+			 [:pad-keys t
+				    ["Panels"
+				     ("t" "file tree" treemacs)
+				     ("v" "terminal" vterm-toggle)]
+				    ["Windows"
+				     ("1" "one window" delete-other-windows)
+				     ("2" "split side by side" split-window-right)
+				     ("3" "split top/bottom" split-window-below)
+				     ("z" "zoom / restore" my/zoom-window)
+				     ("b" "balance splits" balance-windows)]])
 
 (transient-define-prefix my/hub-help ()
-  "Help."
-  [["Help"
-    ("k" "what does this key do?" helpful-key)
-    ("f" "look up a function" helpful-callable)
-    ("v" "look up a variable" helpful-variable)
-    ("m" "describe current mode" describe-mode)
-    ("a" "search all help" apropos)]])
+			 "Help."
+			 [:pad-keys t
+				    ["Help"
+				     ("k" "what does this key do?" helpful-key)
+				     ("f" "look up a function" helpful-callable)
+				     ("v" "look up a variable" helpful-variable)
+				     ("m" "describe current mode" describe-mode)
+				     ("a" "search all help" apropos)]])
 
 (transient-define-prefix my/hub ()
-  "Editor hub."
-  [["Quick"
-    ("SPC" "command palette" execute-extended-command)]
-   ["Navigate"
-    ("f" "files" my/hub-files)
-    ("b" "buffers" my/hub-buffers)
-    ("c" "code" my/hub-code)
-    ("s" "search" my/hub-search)
-    ("l" "layout" my/hub-layout)
-    ("h" "help" my/hub-help)]])
+			 "Editor hub."
+			 [:pad-keys t
+				    ["Quick"
+				     ("SPC" "command palette" execute-extended-command)]
+				    ["Navigate"
+				     ("f" "files" my/hub-files)
+				     ("b" "buffers" my/hub-buffers)
+				     ("c" "code" my/hub-code)
+				     ("p" "project" my/hub-project)
+				     ("s" "search" my/hub-search)
+				     ("l" "layout" my/hub-layout)
+				     ("h" "help" my/hub-help)]])
 
 (keymap-global-set "C-c SPC" #'my/hub)

@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   username = config.mySystem.user.name;
   home = config.users.users.${username}.home;
@@ -70,6 +75,7 @@ let
       projectile
       treemacs
       treemacs-nerd-icons
+      transient-posframe
       treemacs-projectile
       vertico
       which-key
@@ -147,12 +153,13 @@ in
       ".config/emacs/history"
       ".config/emacs/recentf"
       ".config/emacs/bookmarks"
+      ".config/emacs/projectile-bookmarks.eld"
     ];
   };
 
   hjem.users.${username}.xdg.config.files = {
     "emacs/early-init.el".source = ./early-init.el;
-    # noctalia emacs template was never in activeTemplates -- we own this file, noctalia won't clobber it
+    # not managed by noctalia's template system -- safe to edit directly
     "emacs/themes/noctalia-theme.el".source = ./noctalia-theme.el;
     "emacs/init.el".text =
       lib.replaceStrings
