@@ -104,8 +104,8 @@ in
         [Added Associations]
 
         [Default Applications]
-        inode/directory=nemo.desktop
-        inode/mount-point=nemo.desktop
+        inode/directory=yazi.desktop
+        inode/mount-point=yazi.desktop
         application/pdf=org.pwmt.zathura-pdf-mupdf.desktop
         application/vnd.apple.mpegurl=rmpc-open.desktop
         application/x-7z-compressed=org.gnome.FileRoller.desktop
@@ -168,6 +168,19 @@ in
         Name=Default
         Comment=Default Cursor Theme
         Inherits=phinger-cursors-dark
+      '';
+
+      "applications/yazi.desktop".text = ''
+        [Desktop Entry]
+        Name=Yazi
+        GenericName=File Manager
+        Comment=Terminal file manager
+        Icon=yazi
+        Exec=ghostty -e yazi %u
+        Terminal=false
+        Type=Application
+        MimeType=inode/directory;inode/mount-point;
+        Categories=System;FileTools;FileManager;
       '';
 
       # Custom launchers — open apps into specific workspaces/layouts via hyprctl

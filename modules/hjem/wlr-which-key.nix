@@ -278,11 +278,6 @@ let
               cmd = "piper";
             }
             {
-              key = "n";
-              desc = "nemo";
-              cmd = "nemo";
-            }
-            {
               key = "p";
               desc = "gparted";
               cmd = "gparted";
