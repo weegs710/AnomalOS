@@ -13,11 +13,11 @@
 <details>
 <summary>desktop</summary>
 
-Hyprland with noctalia-shell for the bar, launcher, lock screen, and control center. config module at `modules/hjem/hyprland.nix`, which generates a Lua config at `hypr/hyprland.lua`.
+Hyprland with noctalia-shell for the bar, launcher, lock screen, and control center. config module at `modules/hjem/hyprland.nix`, which generates a Lua config at `~/.config/hypr/hyprland.lua` at runtime.
 
 **workspaces:**
 
-1. **comms** -- concord (Discord TUI), weechat+bitlbee (IRC/XMPP)
+1. **comms** -- concord (Discord TUI), gajim+biboumi (XMPP+IRC)
 2. **dev** -- ghostty, emacs
 3. **web** -- Zen Browser
 4. **games** -- steam, heroic
@@ -69,7 +69,7 @@ wlr-which-key is the primary navigation layer. Super tap opens it for app launch
 <details>
 <summary>development</summary>
 
-- **emacs** -- primary editor with LSP for nix, python, rust, hyprlang, nushell. full config in `modules/hjem/emacs.nix`.
+- **emacs** -- primary editor with LSP for nix, python, rust, hyprlang, nushell. full config in `modules/hjem/emacs/emacs.nix`.
 - **devshell** -- `nix develop` drops into nushell with: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, clippy, rust-analyzer, rustfmt, dprint, typescript, typescript-language-server, nushell. see [Contributing](#contributing).
 - **Claude Code** -- AI-assisted dev, `cc` alias launches `claude-launcher` with project selection.
 - **nix-search-tv** -- `ns` for fzf-powered package search.

@@ -19,6 +19,7 @@
       postPatch = "";
     }))
     protonup-qt
+    protontricks
   ];
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [

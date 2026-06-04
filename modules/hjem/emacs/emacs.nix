@@ -159,11 +159,9 @@ in
 
   hjem.users.${username} = {
     xdg.config.files = {
-      "emacs/early-init.el".text =
-        lib.replaceStrings
-          [ "@HOME@" ]
-          [ home ]
-          (builtins.readFile ./early-init.el);
+      "emacs/early-init.el".text = lib.replaceStrings [ "@HOME@" ] [ home ] (
+        builtins.readFile ./early-init.el
+      );
       # not managed by noctalia's template system -- safe to edit directly
       "emacs/themes/noctalia-theme.el".source = ./noctalia-theme.el;
       "emacs/init.el".text =

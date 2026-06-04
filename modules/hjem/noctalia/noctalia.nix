@@ -7,6 +7,7 @@
 }:
 let
   username = config.mySystem.user.name;
+  homeDir = config.users.users.${username}.home;
   system = pkgs.stdenv.hostPlatform.system;
   notificationHistoryAllowedApps = [ "helium" ];
   notificationAllowlist = pkgs.writeText "notification-allowlist" (
@@ -45,17 +46,15 @@ in
         XDG_RUNTIME_DIR=/run/user/$uid \
         ${pkgs.util-linux}/bin/runuser -u ${username} -- \
           ${pkgs.hyprland}/bin/hyprctl -i 0 dispatch exec \
-          "${pkgs.nushell}/bin/nu --config /home/${username}/.config/nushell/config.nu --env-config /home/${username}/.config/nushell/env.nu -c noct-r >> /home/${username}/.local/state/noctalia-restart.log 2>&1" || true
+          "${pkgs.nushell}/bin/nu --config ${homeDir}/.config/nushell/config.nu --env-config ${homeDir}/.config/nushell/env.nu -c noct-r >> ${homeDir}/.local/state/noctalia-restart.log 2>&1" || true
       fi
     '';
   };
 
   hjem.users.${username} = {
-    xdg.config.files."noctalia/settings.json" = {
-      source = ./settings.json;
-      type = "copy";
-      permissions = "0644";
-    };
+    xdg.config.files."noctalia/settings.json".text = builtins.replaceStrings [ "/home/weegs/" ] [ "${homeDir}/" ] (
+      builtins.readFile ./settings.json
+    );
 
     xdg.config.files."noctalia/notification-allowlist" = {
       source = notificationAllowlist;

@@ -10,7 +10,7 @@
       url = "path:/home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor";
       flake = false;
     };
-agenix = {
+    agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -49,20 +49,22 @@ agenix = {
     };
   };
 
-  outputs = inputs @ {flake-parts, ...}: let
-    inherit (inputs.nixpkgs.lib.fileset) toList fileFilter;
-    import-tree = path:
-      toList (fileFilter (file: file.name == "bundle.nix") path);
-  in
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux"];
+  outputs =
+    inputs@{ flake-parts, ... }:
+    let
+      inherit (inputs.nixpkgs.lib.fileset) toList fileFilter;
+      import-tree = path: toList (fileFilter (file: file.name == "bundle.nix") path);
+    in
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
 
-      imports =
-        [flake-parts.flakeModules.modules]
-        ++ import-tree ./modules
-        ++ [
-          ./modules/hosts/hx99g.nix
-          ./modules/devshell.nix
-        ];
+      imports = [
+        flake-parts.flakeModules.modules
+      ]
+      ++ import-tree ./modules
+      ++ [
+        ./modules/hosts/hx99g.nix
+        ./modules/devshell.nix
+      ];
     };
 }

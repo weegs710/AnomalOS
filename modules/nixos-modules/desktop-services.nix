@@ -10,7 +10,7 @@
     udisks2.enable = true;
     gvfs.enable = true;
     locate.enable = true;
-    speechd.enable = false;
+    speechd.enable = false; # pulled in as a gnome dependency, not needed
   };
 
   programs = {

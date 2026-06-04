@@ -14,5 +14,5 @@ glob scripts/plymouth/*.{script,plymouth} | each { cp $in $theme_dir } | ignore
 
 # Plymouth reads /usr/ paths from the descriptor; nix installs to store, not /usr/
 open --raw $"($theme_dir)/relaxed.plymouth"
-    | str replace --all "/usr/" $"($env.out)/"
-    | save --force $"($theme_dir)/relaxed.plymouth"
+| str replace --all "/usr/" $"($env.out)/"
+| save --force $"($theme_dir)/relaxed.plymouth"

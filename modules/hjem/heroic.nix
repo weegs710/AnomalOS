@@ -5,6 +5,7 @@
 }:
 let
   username = config.mySystem.user.name;
+  homeDir = config.users.users.${username}.home;
 in
 {
   users.users.${username}.packages = [ pkgs.heroic ];
@@ -28,7 +29,7 @@ in
         customWinePaths = [ ];
         defaultInstallPath = "/mnt/games/heroic";
         libraryTopSection = "disabled";
-        defaultSteamPath = "/home/weegs/.steam/steam";
+        defaultSteamPath = "${homeDir}/.steam/steam";
         defaultWinePrefix = "/mnt/games/heroic/Prefixes/default";
         hideChangelogsOnStartup = true;
         language = "en";
@@ -42,7 +43,7 @@ in
         wineCrossoverBottle = "Heroic";
         winePrefix = "/mnt/games/heroic/Prefixes/default";
         wineVersion = {
-          bin = "/home/weegs/.local/share/Steam/compatibilitytools.d/GE-Proton10-34/proton";
+          bin = "${homeDir}/.local/share/Steam/compatibilitytools.d/GE-Proton10-34/proton";
           name = "GE-Proton10-34";
           type = "proton";
         };

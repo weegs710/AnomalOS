@@ -45,15 +45,18 @@
     gparted = "sudo WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR gparted";
   };
 
-  fonts.packages = with pkgs.nerd-fonts; [
-    dejavu-sans-mono
-    jetbrains-mono
-    fira-code
-    terminess-ttf
-    space-mono
-    hack
-    iosevka
-  ] ++ [ pkgs.noto-fonts-color-emoji ];
+  fonts.packages =
+    with pkgs.nerd-fonts;
+    [
+      dejavu-sans-mono
+      jetbrains-mono
+      fira-code
+      terminess-ttf
+      space-mono
+      hack
+      iosevka
+    ]
+    ++ [ pkgs.noto-fonts-color-emoji ];
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
     ".config/nemo"

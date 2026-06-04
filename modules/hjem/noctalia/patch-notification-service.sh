@@ -36,12 +36,12 @@ in_fn && /^      return;$/ {
 ' "$FILE" >"$FILE.tmp" && mv "$FILE.tmp" "$FILE"
 
 grep -q "notificationAllowlistFile" "$FILE" ||
-    {
-        echo "patch-notification-service: FileView not inserted into $FILE" >&2
-        exit 1
-    }
+	{
+		echo "patch-notification-service: FileView not inserted into $FILE" >&2
+		exit 1
+	}
 grep -q "_allowed" "$FILE" ||
-    {
-        echo "patch-notification-service: allowlist gate not applied in $FILE" >&2
-        exit 1
-    }
+	{
+		echo "patch-notification-service: allowlist gate not applied in $FILE" >&2
+		exit 1
+	}

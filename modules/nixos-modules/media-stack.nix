@@ -110,7 +110,12 @@ in
           custom_formats = [
             {
               trash_ids = [ "4a3b087eea2ce012fcc1ce319259a3be" ]; # Anime Dual Audio
-              assign_scores_to = [ { name = "HD Bluray + WEB"; score = 10; } ];
+              assign_scores_to = [
+                {
+                  name = "HD Bluray + WEB";
+                  score = 10;
+                }
+              ];
             }
           ];
         };
@@ -143,7 +148,12 @@ in
           custom_formats = [
             {
               trash_ids = [ "418f50b10f1907201b6cfdf881f467b7" ]; # Anime Dual Audio
-              assign_scores_to = [ { name = "WEB-1080p"; score = 10; } ];
+              assign_scores_to = [
+                {
+                  name = "WEB-1080p";
+                  score = 10;
+                }
+              ];
             }
           ];
         };
@@ -154,7 +164,17 @@ in
   preservation.preserveAt."/persist".directories = [
     "/var/lib/radarr"
     "/var/lib/sonarr"
-    { directory = "/var/lib/bazarr"; user = "bazarr"; group = "media"; mode = "0755"; }
-    { directory = "/var/lib/prowlarr"; user = "prowlarr"; group = "prowlarr"; mode = "0755"; }
+    {
+      directory = "/var/lib/bazarr";
+      user = "bazarr";
+      group = "media";
+      mode = "0755";
+    }
+    {
+      directory = "/var/lib/prowlarr";
+      user = "prowlarr";
+      group = "prowlarr";
+      mode = "0755";
+    }
   ];
 }

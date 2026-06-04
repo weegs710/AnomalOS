@@ -26,7 +26,7 @@ in
       mode = "0400";
     };
 
-    # User-owned so the endcord bootstrap activation script reads it without privilege escalation.
+    # User-owned so the concord bootstrap activation script reads it without privilege escalation.
     age.secrets.discord-token = {
       file = ../../secrets/discord-token.age;
       mode = "0400";
@@ -38,7 +38,6 @@ in
       mode = "0400";
       owner = config.mySystem.user.name;
     };
-
 
     age.secrets.radarr-api-key = {
       file = ../../secrets/radarr-api-key.age;

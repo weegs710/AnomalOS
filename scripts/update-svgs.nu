@@ -165,7 +165,7 @@ def generate-overview [d: record] {
         ...(ov-top-card 70  "#a48cf2" "WM"       "Hyprland"       (svg-escape $d.hyprland_ver)),
         ...(ov-top-card 286 "#37f499" "SHELL"    "nu"             (svg-escape $d.nushell_ver)),
         ...(ov-top-card 502 "#04d1f9" "TERMINAL" "ghostty"        (svg-escape $d.ghostty_ver)),
-        ...(ov-top-card 718 "#e9f941" "EDITOR"   "fresh"          (svg-escape $d.fresh_ver)),
+        ...(ov-top-card 718 "#e9f941" "EDITOR"   "emacs"          (svg-escape $d.emacs_ver)),
         ...(ov-top-card 934 "#9071f4" "UI"       "Noctalia Shell"  (svg-escape $d.noctalia_ver)),
         ...(ov-hardware 70  255),
         ...(ov-fs       430 255),
@@ -566,7 +566,7 @@ def main [] {
         | each { $in | path basename }
         | sort
     )
-    let shareables_pkgs = ($shareables_files | each { $in | path parse | get stem })
+    let shareables_pkgs = ($shareables_files | where { $in != "bundle.nix" } | each { $in | path parse | get stem })
 
     let hjem_count         = ($hjem_files | length)
     let nixos_count        = ($nixos_files | length)
@@ -593,7 +593,7 @@ def main [] {
     print "  · hyprland version...";     let hyprland_ver  = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.hyprland.version")
     print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.nushell.version")
     print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.ghostty.version")
-    print "  · fresh-editor version..."; let fresh_ver     = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.fresh-editor.version")
+    print "  · emacs version..."; let emacs_ver = (nix-eval-raw $"($flake_ref)#nixosConfigurations.HX99G.pkgs.emacs30-pgtk.version")
     # noctalia-shell version from source (pkgs.version is stale nixpkgs metadata)
     print "  · noctalia-shell version..."
     let noctalia_node = ($flake_meta.locks.nodes | get "noctalia-shell")
@@ -642,7 +642,7 @@ def main [] {
         hyprland_ver:       $hyprland_ver
         nushell_ver:        $nushell_ver
         ghostty_ver:        $ghostty_ver
-        fresh_ver:          $fresh_ver
+        emacs_ver:          $emacs_ver
         noctalia_ver:       $noctalia_ver
         sys_pkg_count:      $sys_pkg_count
         user_pkg_count:     $user_pkg_count

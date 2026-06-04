@@ -24,7 +24,7 @@ let
     import requests
 
     JELLYFIN_URL = "http://localhost:8096"
-    JELLYFIN_USER_ID = "db57106d69264910bbc21a45dff572db"
+    JELLYFIN_USER_ID = "db57106d69264910bbc21a45dff572db"  # find via Jellyfin dashboard → Users → (click user) → check URL for UUID
     RADARR_URL = "http://localhost:7878"
     SONARR_URL = "http://localhost:8989"
     WATCHED_DAYS = 14

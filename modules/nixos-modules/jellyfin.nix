@@ -27,7 +27,12 @@
   networking.firewall.allowedTCPPorts = [ 8096 ];
 
   preservation.preserveAt."/persist".directories = [
-    { directory = "/var/lib/jellyfin"; user = "jellyfin"; group = "media"; mode = "0755"; }
+    {
+      directory = "/var/lib/jellyfin";
+      user = "jellyfin";
+      group = "media";
+      mode = "0755";
+    }
   ];
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [

@@ -69,9 +69,18 @@ in
           inInitrd = true;
         }
         # ssh-keygen does not use O_NOFOLLOW so symlinks are safe for host keys
-        { file = "/etc/ssh/ssh_host_ed25519_key"; how = "symlink"; }
-        { file = "/etc/ssh/ssh_host_ed25519_key.pub"; how = "symlink"; }
-        { file = "/etc/ly/save.txt"; how = "symlink"; }
+        {
+          file = "/etc/ssh/ssh_host_ed25519_key";
+          how = "symlink";
+        }
+        {
+          file = "/etc/ssh/ssh_host_ed25519_key.pub";
+          how = "symlink";
+        }
+        {
+          file = "/etc/ly/save.txt";
+          how = "symlink";
+        }
       ];
       users.${username} = {
         directories = [
@@ -151,7 +160,12 @@ in
       commonMountOptions = [ "x-gvfs-hide" ];
       directories = [
         "/var/lib/private/dnscrypt-proxy"
-        { directory = "/var/lib/suricata"; user = "suricata"; group = "suricata"; mode = "0755"; }
+        {
+          directory = "/var/lib/suricata";
+          user = "suricata";
+          group = "suricata";
+          mode = "0755";
+        }
         "/var/lib/libvirt"
       ];
       users.${username}.directories = [

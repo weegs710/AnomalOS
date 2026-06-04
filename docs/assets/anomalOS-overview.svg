@@ -11,7 +11,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="50" y="90" font-size="42" fill="#ebfafa" font-weight="700">anomalOS</text>
 <rect x="290" y="70" rx="6" width="72" height="22" fill="#04d1f9" opacity="0.15" stroke="#04d1f9" stroke-width="0.5"/>
 <text x="326" y="85" font-size="10" fill="#04d1f9" font-weight="600" text-anchor="middle">OVERVIEW</text>
-<text x="50" y="120" font-size="15" fill="#abb4da">NixOS 26.05 (Yarara)  ·  Linux 7.0.1-cachyos</text>
+<text x="50" y="120" font-size="15" fill="#abb4da">NixOS 26.11 (Zokor)  ·  Linux 7.0.1-cachyos</text>
 <rect x="70" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="73" y="193" rx="2" width="3" height="46" fill="#a48cf2"/>
 <text x="86" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">WM</text>
@@ -21,7 +21,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="289" y="193" rx="2" width="3" height="46" fill="#37f499"/>
 <text x="302" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">SHELL</text>
 <text x="302" y="221" font-size="15" fill="#ebfafa" font-weight="600">nu</text>
-<text x="302" y="237" font-size="10" fill="#37f499" opacity="0.6">0.112.2</text>
+<text x="302" y="237" font-size="10" fill="#37f499" opacity="0.6">0.113.0</text>
 <rect x="502" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="505" y="193" rx="2" width="3" height="46" fill="#04d1f9"/>
 <text x="518" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">TERMINAL</text>
@@ -30,8 +30,8 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="718" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="721" y="193" rx="2" width="3" height="46" fill="#e9f941"/>
 <text x="734" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">EDITOR</text>
-<text x="734" y="221" font-size="15" fill="#ebfafa" font-weight="600">fresh</text>
-<text x="734" y="237" font-size="10" fill="#e9f941" opacity="0.6">0.3.6</text>
+<text x="734" y="221" font-size="15" fill="#ebfafa" font-weight="600">emacs</text>
+<text x="734" y="237" font-size="10" fill="#e9f941" opacity="0.6">30.2</text>
 <rect x="934" y="185" rx="8" width="196" height="62" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="937" y="193" rx="2" width="3" height="46" fill="#9071f4"/>
 <text x="950" y="203" font-size="10" fill="#414868" font-weight="600" letter-spacing="1">UI</text>
@@ -86,24 +86,22 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="90" y="607" font-size="12" fill="#abb4da">Total declared</text>
 <text x="220" y="607" font-size="12" fill="#ebfafa">324</text>
 <text x="90" y="627" font-size="12" fill="#abb4da">Closure paths</text>
-<text x="220" y="627" font-size="12" fill="#ebfafa">3170</text>
+<text x="220" y="627" font-size="12" fill="#ebfafa">3172</text>
 <text x="90" y="647" font-size="12" fill="#abb4da">Closure size</text>
-<text x="220" y="647" font-size="12" fill="#ebfafa">21.7G</text>
+<text x="220" y="647" font-size="12" fill="#ebfafa">20.9G</text>
 <rect x="430" y="510" rx="12" width="340" height="240" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="430" y="520" rx="12" width="3" height="220" fill="#37f499"/>
 <text x="448" y="538" font-size="13" fill="#37f499" font-weight="700" letter-spacing="1">WRAPPED PKGS</text>
 <line x1="444" y1="548" x2="756" y2="548" stroke="#3b4261" stroke-width="1"/>
-<text x="450" y="562" font-size="12" fill="#ebfafa">▸ bundle</text>
-<text x="450" y="580" font-size="12" fill="#ebfafa">▸ concord</text>
-<text x="450" y="598" font-size="12" fill="#ebfafa">▸ crawl</text>
-<text x="450" y="616" font-size="12" fill="#ebfafa">▸ fastfetch</text>
-<text x="450" y="634" font-size="12" fill="#ebfafa">▸ fresh</text>
-<text x="450" y="652" font-size="12" fill="#ebfafa">▸ helium</text>
-<text x="450" y="670" font-size="12" fill="#ebfafa">▸ nushell</text>
-<text x="450" y="688" font-size="12" fill="#ebfafa">▸ retroarch</text>
-<text x="450" y="706" font-size="12" fill="#ebfafa">▸ steam</text>
-<text x="450" y="724" font-size="12" fill="#ebfafa">▸ yazi</text>
-<text x="450" y="742" font-size="12" fill="#ebfafa">▸ zen</text>
+<text x="450" y="562" font-size="12" fill="#ebfafa">▸ concord</text>
+<text x="450" y="580" font-size="12" fill="#ebfafa">▸ crawl</text>
+<text x="450" y="598" font-size="12" fill="#ebfafa">▸ fastfetch</text>
+<text x="450" y="616" font-size="12" fill="#ebfafa">▸ helium</text>
+<text x="450" y="634" font-size="12" fill="#ebfafa">▸ nushell</text>
+<text x="450" y="652" font-size="12" fill="#ebfafa">▸ retroarch</text>
+<text x="450" y="670" font-size="12" fill="#ebfafa">▸ steam</text>
+<text x="450" y="688" font-size="12" fill="#ebfafa">▸ yazi</text>
+<text x="450" y="706" font-size="12" fill="#ebfafa">▸ zen</text>
 <rect x="790" y="510" rx="12" width="340" height="240" fill="#212337" stroke="#3b4261" stroke-width="1"/>
 <rect x="790" y="520" rx="12" width="3" height="220" fill="#04d1f9"/>
 <text x="808" y="538" font-size="13" fill="#04d1f9" font-weight="700" letter-spacing="1">GAMING</text>

@@ -74,7 +74,7 @@
           };
         };
 
-        # kept to satisfy nixos module assertion; ignored at runtime since suricata starts with -q (NFQ mode)
+        # required by nixos module assertion; actual packet processing uses nfq mode below, not af-packet
         af-packet = [
           {
             interface = "enp5s0";
@@ -126,7 +126,11 @@
     };
 
     systemd.services.suricata = {
-      after = lib.mkForce [ "basic.target" "network.target" "nftables.service" ];
+      after = lib.mkForce [
+        "basic.target"
+        "network.target"
+        "nftables.service"
+      ];
       wants = lib.mkForce [ ];
       # multi-user.target infers After= from .wants/ symlinks; removing entry is the only way to unblock
       wantedBy = lib.mkForce [ ];
