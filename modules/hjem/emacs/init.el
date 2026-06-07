@@ -365,12 +365,12 @@
         lsp-auto-guess-root t
         ;; restrict to only languages in use -- lsp--require-packages loads all 100+ clients at first invocation
         lsp-client-packages '(lsp-nix lsp-pyright lsp-rust lsp-javascript lsp-css lsp-json lsp-html lsp-nushell lsp-marksman)
-        ;; rnix-lsp and nix-nil conflict with nixd -- nixd provides full anomalos flake context
+        ;; rnix-lsp and nix-nil conflict with nixd -- nixd provides full anomalos config context
         lsp-disabled-clients '(rnix-lsp nix-nil)
         lsp-nix-nixd-nixpkgs-expr
-        "import (builtins.getFlake \"@FLAKE_PATH@\").inputs.nixpkgs {}"
+        "import (import @REPO_PATH@/.tack).nixpkgs {}"
         lsp-nix-nixd-nixos-options-expr
-        "(builtins.getFlake \"@FLAKE_PATH@\").nixosConfigurations.HX99G.options"
+        "(import @REPO_PATH@/assemble.nix).HX99G.options"
         lsp-nix-nixd-formatting-command ["nixfmt"]
         lsp-rust-analyzer-cargo-watch-command "clippy"
         lsp-pyright-langserver-command "basedpyright"))

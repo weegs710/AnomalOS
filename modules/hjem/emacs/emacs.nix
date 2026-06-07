@@ -7,7 +7,7 @@
 let
   username = config.mySystem.user.name;
   home = config.users.users.${username}.home;
-  flakePath = "${home}/repo/public/anomalos";
+  repoPath = "${home}/repo/public/anomalos";
 
   # overrideScope propagates the patched lsp-mode to all dependent packages (lsp-ui, lsp-pyright, etc.)
   emacsPackages = (pkgs.emacsPackagesFor pkgs.emacs30-pgtk).overrideScope (
@@ -166,8 +166,8 @@ in
       "emacs/themes/noctalia-theme.el".source = ./noctalia-theme.el;
       "emacs/init.el".text =
         lib.replaceStrings
-          [ "@FLAKE_PATH@" "@HOME@" "@NIX_SEARCH_TV@" ]
-          [ flakePath home "${pkgs.nix-search-tv}/bin/nix-search-tv" ]
+          [ "@REPO_PATH@" "@HOME@" "@NIX_SEARCH_TV@" ]
+          [ repoPath home "${pkgs.nix-search-tv}/bin/nix-search-tv" ]
           (builtins.readFile ./init.el);
     };
 

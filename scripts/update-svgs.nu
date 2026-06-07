@@ -1,5 +1,5 @@
 #!/usr/bin/env nu
-# nix eval reads git-tracked state -- run `jj s` in ~/dotfiles first.
+# run `jj s` in ~/dotfiles first to snapshot the working copy before regenerating committed SVGs.
 
 # ─── String / math helpers ──────────────────────────────────────────────────
 
@@ -18,12 +18,12 @@ def format-bytes [b: int] {
     $"($whole).($frac)G"
 }
 
-def nix-eval-raw [attr: string] {
-    try { ^nix eval --raw $attr } catch { "?" }
+def nix-eval-raw [file: string attr: string] {
+    try { ^nix eval --impure --raw -f $file $attr } catch { "?" }
 }
 
-def nix-eval-count [attr: string] {
-    try { ^nix eval --json $attr --apply "builtins.length" | from json } catch { 0 }
+def nix-eval-count [file: string attr: string] {
+    try { ^nix eval --impure --json -f $file $attr --apply "builtins.length" | from json } catch { 0 }
 }
 
 def shareable-name [stem: string] {
@@ -206,8 +206,8 @@ def diag-header [nixos_ver: string total_files: int input_count: int] {
     [
         "<text x=\"50\" y=\"85\" font-size=\"36\" fill=\"#ebfafa\" font-weight=\"700\">anomalOS</text>"
         "<rect x=\"270\" y=\"68\" rx=\"6\" width=\"106\" height=\"22\" fill=\"#04d1f9\" opacity=\"0.15\" stroke=\"#04d1f9\" stroke-width=\"0.5\"/>"
-        "<text x=\"323\" y=\"83\" font-size=\"10\" fill=\"#04d1f9\" font-weight=\"600\" text-anchor=\"middle\">FLAKE DIAGRAM</text>"
-        $"<text x=\"50\" y=\"112\" font-size=\"14\" fill=\"#abb4da\">NixOS ($nixos_ver)  ·  /home/weegs/repo/public/anomalos  ·  ($total_files) files  ·  ($input_count) flake inputs</text>"
+        "<text x=\"323\" y=\"83\" font-size=\"10\" fill=\"#04d1f9\" font-weight=\"600\" text-anchor=\"middle\">ASSEMBLY</text>"
+        $"<text x=\"50\" y=\"112\" font-size=\"14\" fill=\"#abb4da\">NixOS ($nixos_ver)  ·  /home/weegs/repo/public/anomalos  ·  ($total_files) files  ·  ($input_count) tack pins</text>"
     ]
 }
 
@@ -309,26 +309,22 @@ def diag-module-box [x: int y: int label: string path: string files: list<string
 def diag-legend [y: int cx: int total_files: int input_count: int] {
     [
         $"<circle cx=\"($cx - 300)\" cy=\"($y)\" r=\"5\" fill=\"#04d1f9\"/>"
-        $"<text x=\"($cx - 288)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Flake Root</text>"
-        $"<circle cx=\"($cx - 155)\" cy=\"($y)\" r=\"5\" fill=\"#9071f4\"/>"
-        $"<text x=\"($cx - 143)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Input</text>"
-        $"<circle cx=\"($cx - 50)\" cy=\"($y)\" r=\"5\" fill=\"#37f499\"/>"
-        $"<text x=\"($cx - 38)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">REPL</text>"
+        $"<text x=\"($cx - 288)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Entry</text>"
+        $"<circle cx=\"($cx - 180)\" cy=\"($y)\" r=\"5\" fill=\"#9071f4\"/>"
+        $"<text x=\"($cx - 168)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Pin</text>"
+        $"<circle cx=\"($cx - 70)\" cy=\"($y)\" r=\"5\" fill=\"#37f499\"/>"
+        $"<text x=\"($cx - 58)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">REPL</text>"
         $"<circle cx=\"($cx + 45)\" cy=\"($y)\" r=\"5\" fill=\"#e9f941\"/>"
         $"<text x=\"($cx + 57)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Module</text>"
-        $"<circle cx=\"($cx + 155)\" cy=\"($y)\" r=\"5\" fill=\"#f265b5\"/>"
-        $"<text x=\"($cx + 167)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Non-flake</text>"
-        $"<rect x=\"($cx - 200)\" y=\"($y + 25)\" rx=\"6\" width=\"44\" height=\"14\" fill=\"#37f499\" opacity=\"0.18\"/>"
-        $"<text x=\"($cx - 178)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#37f499\" font-weight=\"600\" text-anchor=\"middle\">follows</text>"
-        $"<rect x=\"($cx - 140)\" y=\"($y + 25)\" rx=\"6\" width=\"38\" height=\"14\" fill=\"#e9f941\" opacity=\"0.18\"/>"
-        $"<text x=\"($cx - 121)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#e9f941\" font-weight=\"600\" text-anchor=\"middle\">pinned</text>"
-        $"<rect x=\"($cx - 86)\" y=\"($y + 25)\" rx=\"6\" width=\"50\" height=\"14\" fill=\"#f265b5\" opacity=\"0.18\"/>"
-        $"<text x=\"($cx - 61)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#f265b5\" font-weight=\"600\" text-anchor=\"middle\">non-flake</text>"
-        $"<rect x=\"($cx - 20)\" y=\"($y + 25)\" rx=\"6\" width=\"32\" height=\"14\" fill=\"#04d1f9\" opacity=\"0.18\"/>"
-        $"<text x=\"($cx - 4)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#04d1f9\" font-weight=\"600\" text-anchor=\"middle\">local</text>"
-        $"<rect x=\"($cx + 28)\" y=\"($y + 25)\" rx=\"6\" width=\"56\" height=\"14\" fill=\"#9071f4\" opacity=\"0.18\"/>"
-        $"<text x=\"($cx + 56)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#9071f4\" font-weight=\"600\" text-anchor=\"middle\">standalone</text>"
-        $"<text x=\"($cx)\" y=\"($y + 65)\" font-size=\"12\" fill=\"#abb4da\" text-anchor=\"middle\">($total_files) files  ·  ($input_count) flake inputs</text>"
+        $"<rect x=\"($cx - 170)\" y=\"($y + 25)\" rx=\"6\" width=\"44\" height=\"14\" fill=\"#37f499\" opacity=\"0.18\"/>"
+        $"<text x=\"($cx - 148)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#37f499\" font-weight=\"600\" text-anchor=\"middle\">follows</text>"
+        $"<rect x=\"($cx - 116)\" y=\"($y + 25)\" rx=\"6\" width=\"34\" height=\"14\" fill=\"#f265b5\" opacity=\"0.18\"/>"
+        $"<text x=\"($cx - 99)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#f265b5\" font-weight=\"600\" text-anchor=\"middle\">fetch</text>"
+        $"<rect x=\"($cx - 72)\" y=\"($y + 25)\" rx=\"6\" width=\"38\" height=\"14\" fill=\"#e9f941\" opacity=\"0.18\"/>"
+        $"<text x=\"($cx - 53)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#e9f941\" font-weight=\"600\" text-anchor=\"middle\">pinned</text>"
+        $"<rect x=\"($cx - 24)\" y=\"($y + 25)\" rx=\"6\" width=\"56\" height=\"14\" fill=\"#9071f4\" opacity=\"0.18\"/>"
+        $"<text x=\"($cx + 4)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#9071f4\" font-weight=\"600\" text-anchor=\"middle\">standalone</text>"
+        $"<text x=\"($cx)\" y=\"($y + 65)\" font-size=\"12\" fill=\"#abb4da\" text-anchor=\"middle\">($total_files) files  ·  ($input_count) tack pins</text>"
     ]
 }
 
@@ -339,55 +335,73 @@ def generate-diagram [d: record] {
     let group_x = [60, 408, 756, 1104]
     let group_y = 140
 
-    let g_follows    = (diag-input-group ($group_x | get 0) $group_y "FOLLOWS NIXPKGS" "#37f499" ($d.input_groups.follows))
-    let g_nonflake   = (diag-input-group ($group_x | get 1) $group_y "NON-FLAKE"        "#f265b5" ($d.input_groups.nonflake))
-    let g_pinned     = (diag-input-group ($group_x | get 2) $group_y "PINNED"           "#e9f941" ($d.input_groups.pinned))
-    let g_standalone = (diag-input-group ($group_x | get 3) $group_y "STANDALONE"       "#9071f4" ($d.input_groups.standalone))
+    let g_follows    = (diag-input-group ($group_x | get 0) $group_y "FOLLOWS"    "#37f499" ($d.input_groups.follows))
+    let g_fetch      = (diag-input-group ($group_x | get 1) $group_y "FETCH"      "#f265b5" ($d.input_groups.fetch))
+    let g_pinned     = (diag-input-group ($group_x | get 2) $group_y "PINNED"     "#e9f941" ($d.input_groups.pinned))
+    let g_standalone = (diag-input-group ($group_x | get 3) $group_y "STANDALONE" "#9071f4" ($d.input_groups.standalone))
 
-    let max_group_h   = ([$g_follows.height, $g_nonflake.height, $g_pinned.height, $g_standalone.height] | math max)
+    let max_group_h   = ([$g_follows.height, $g_fetch.height, $g_pinned.height, $g_standalone.height] | math max)
     let groups_bottom = $group_y + $max_group_h
 
-    # ── Central nodes ────────────────────────────────────────────────────────
+    # ── Central pipeline: pins → .tack → assemble.nix ────────────────────────
     let central_y = $groups_bottom + 40
-    let flake_x   = 540;  let flake_y = $central_y
-    let repl_x    = 860;  let repl_y  = $central_y
+    let tack_x    = 540;  let tack_y = $central_y
+    let repl_x    = 860;  let repl_y = $central_y
 
     let group_colors  = ["#37f499", "#f265b5", "#e9f941", "#9071f4"]
-    let group_heights = [$g_follows.height, $g_nonflake.height, $g_pinned.height, $g_standalone.height]
+    let group_heights = [$g_follows.height, $g_fetch.height, $g_pinned.height, $g_standalone.height]
     let group_centers = ($group_x | each { $in + 166 })
-    let flake_center_x = $flake_x + 130
-    let connectors = ($group_centers | enumerate | each {|it|
-        let gx    = $it.item
-        let gy    = $group_y + ($group_heights | get $it.index)
-        let color = ($group_colors | get $it.index)
-        $"<polyline points=\"($gx),($gy) ($gx),($gy + 16) ($flake_center_x),($flake_y - 4)\" stroke=\"($color)\" stroke-width=\"1.2\" fill=\"none\" opacity=\"0.3\"/>"
-    })
+    let tack_center_x = $tack_x + 130
+    # orthogonal bus (matches the module tree below): group drops → horizontal bus → single drop into .tack
+    let groups_bus_y  = $tack_y - 24
+    let connectors = [
+        ...($group_centers | enumerate | each {|it|
+            let gx    = $it.item
+            let gy    = $group_y + ($group_heights | get $it.index)
+            let color = ($group_colors | get $it.index)
+            $"<line x1=\"($gx)\" y1=\"($gy)\" x2=\"($gx)\" y2=\"($groups_bus_y)\" stroke=\"($color)\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        })
+        $"<line x1=\"($group_centers | get 0)\" y1=\"($groups_bus_y)\" x2=\"($group_centers | get 3)\" y2=\"($groups_bus_y)\" stroke=\"#04d1f9\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        $"<line x1=\"($tack_center_x)\" y1=\"($groups_bus_y)\" x2=\"($tack_center_x)\" y2=\"($tack_y)\" stroke=\"#04d1f9\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+    ]
+
+    let assemble_y        = $tack_y + 80
+    let assemble_x        = $tack_x
+    let assemble_center_x = $tack_center_x
 
     let central = [
-        $"<rect x=\"($flake_x)\" y=\"($flake_y)\" rx=\"12\" width=\"260\" height=\"54\" fill=\"#212337\" stroke=\"#04d1f9\" stroke-width=\"1.5\" filter=\"url\(#glow-cyan\)\"/>"
-        $"<rect x=\"($flake_x + 3)\" y=\"($flake_y + 8)\" rx=\"3\" width=\"4\" height=\"38\" fill=\"#04d1f9\"/>"
-        $"<circle cx=\"($flake_x + 22)\" cy=\"($flake_y + 20)\" r=\"5\" fill=\"#04d1f9\" opacity=\"0.2\"/>"
-        $"<circle cx=\"($flake_x + 22)\" cy=\"($flake_y + 20)\" r=\"3\" fill=\"#04d1f9\"/>"
-        $"<text x=\"($flake_x + 36)\" y=\"($flake_y + 24)\" font-size=\"13\" fill=\"#ebfafa\" font-weight=\"700\">flake.nix</text>"
-        $"<text x=\"($flake_x + 36)\" y=\"($flake_y + 40)\" font-size=\"10\" fill=\"#04d1f9\" opacity=\"0.7\">Flake Root</text>"
+        $"<rect x=\"($tack_x)\" y=\"($tack_y)\" rx=\"12\" width=\"260\" height=\"54\" fill=\"#212337\" stroke=\"#04d1f9\" stroke-width=\"1.5\" filter=\"url\(#glow-cyan\)\"/>"
+        $"<rect x=\"($tack_x + 3)\" y=\"($tack_y + 8)\" rx=\"3\" width=\"4\" height=\"38\" fill=\"#04d1f9\"/>"
+        $"<circle cx=\"($tack_x + 22)\" cy=\"($tack_y + 20)\" r=\"5\" fill=\"#04d1f9\" opacity=\"0.2\"/>"
+        $"<circle cx=\"($tack_x + 22)\" cy=\"($tack_y + 20)\" r=\"3\" fill=\"#04d1f9\"/>"
+        $"<text x=\"($tack_x + 36)\" y=\"($tack_y + 24)\" font-size=\"13\" fill=\"#ebfafa\" font-weight=\"700\">.tack</text>"
+        $"<text x=\"($tack_x + 36)\" y=\"($tack_y + 40)\" font-size=\"10\" fill=\"#04d1f9\" opacity=\"0.7\">pins → resolver</text>"
         $"<rect x=\"($repl_x)\" y=\"($repl_y)\" rx=\"12\" width=\"260\" height=\"54\" fill=\"#212337\" stroke=\"#37f499\" stroke-width=\"1.5\" filter=\"url\(#glow-green\)\"/>"
         $"<rect x=\"($repl_x + 3)\" y=\"($repl_y + 8)\" rx=\"3\" width=\"4\" height=\"38\" fill=\"#37f499\"/>"
         $"<circle cx=\"($repl_x + 22)\" cy=\"($repl_y + 20)\" r=\"5\" fill=\"#37f499\" opacity=\"0.2\"/>"
         $"<circle cx=\"($repl_x + 22)\" cy=\"($repl_y + 20)\" r=\"3\" fill=\"#37f499\"/>"
         $"<text x=\"($repl_x + 36)\" y=\"($repl_y + 24)\" font-size=\"13\" fill=\"#ebfafa\" font-weight=\"700\">repl.nix</text>"
-        $"<text x=\"($repl_x + 36)\" y=\"($repl_y + 40)\" font-size=\"10\" fill=\"#37f499\" opacity=\"0.7\">Nix REPL</text>"
-        $"<line x1=\"($flake_x + 260)\" y1=\"($flake_y + 27)\" x2=\"($repl_x)\" y2=\"($repl_y + 27)\" stroke=\"#04d1f9\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
-        $"<text x=\"($flake_x + 275)\" y=\"($flake_y + 23)\" font-size=\"8\" fill=\"#04d1f9\" opacity=\"0.35\">outputs</text>"
+        $"<text x=\"($repl_x + 36)\" y=\"($repl_y + 40)\" font-size=\"10\" fill=\"#37f499\" opacity=\"0.7\">import ./.tack</text>"
+        $"<line x1=\"($tack_x + 260)\" y1=\"($tack_y + 27)\" x2=\"($repl_x)\" y2=\"($repl_y + 27)\" stroke=\"#04d1f9\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        $"<text x=\"($tack_x + 275)\" y=\"($tack_y + 23)\" font-size=\"8\" fill=\"#04d1f9\" opacity=\"0.35\">import</text>"
+        $"<rect x=\"($assemble_x)\" y=\"($assemble_y)\" rx=\"12\" width=\"260\" height=\"54\" fill=\"#212337\" stroke=\"#04d1f9\" stroke-width=\"1.5\" filter=\"url\(#glow-cyan\)\"/>"
+        $"<rect x=\"($assemble_x + 3)\" y=\"($assemble_y + 8)\" rx=\"3\" width=\"4\" height=\"38\" fill=\"#04d1f9\"/>"
+        $"<circle cx=\"($assemble_x + 22)\" cy=\"($assemble_y + 20)\" r=\"5\" fill=\"#04d1f9\" opacity=\"0.2\"/>"
+        $"<circle cx=\"($assemble_x + 22)\" cy=\"($assemble_y + 20)\" r=\"3\" fill=\"#04d1f9\"/>"
+        $"<text x=\"($assemble_x + 36)\" y=\"($assemble_y + 24)\" font-size=\"13\" fill=\"#ebfafa\" font-weight=\"700\">assemble.nix</text>"
+        $"<text x=\"($assemble_x + 36)\" y=\"($assemble_y + 40)\" font-size=\"10\" fill=\"#04d1f9\" opacity=\"0.7\">nixosSystem</text>"
+        $"<line x1=\"($tack_center_x)\" y1=\"($tack_y + 54)\" x2=\"($assemble_center_x)\" y2=\"($assemble_y)\" stroke=\"#04d1f9\" stroke-width=\"1.5\" opacity=\"0.4\"/>"
+        $"<text x=\"($tack_center_x + 8)\" y=\"($tack_y + 70)\" font-size=\"8\" fill=\"#04d1f9\" opacity=\"0.35\">resolve</text>"
     ]
 
     # ── Modules root card ────────────────────────────────────────────────────
-    let mod_root_y     = $central_y + 80
-    let mod_root_x     = $flake_center_x - 130
+    let mod_root_y     = $assemble_y + 80
+    let mod_root_x     = $assemble_center_x - 130
     let mod_root_files = $d.modules_root_files
 
-    let flake_to_mod = [
-        $"<line x1=\"($flake_center_x)\" y1=\"($flake_y + 54)\" x2=\"($flake_center_x)\" y2=\"($mod_root_y)\" stroke=\"#e9f941\" stroke-width=\"1.5\" opacity=\"0.4\"/>"
-        $"<text x=\"($flake_center_x + 8)\" y=\"($flake_y + 70)\" font-size=\"8\" fill=\"#e9f941\" opacity=\"0.35\">imports</text>"
+    let assemble_to_mod = [
+        $"<line x1=\"($assemble_center_x)\" y1=\"($assemble_y + 54)\" x2=\"($assemble_center_x)\" y2=\"($mod_root_y)\" stroke=\"#e9f941\" stroke-width=\"1.5\" opacity=\"0.4\"/>"
+        $"<text x=\"($assemble_center_x + 8)\" y=\"($assemble_y + 70)\" font-size=\"8\" fill=\"#e9f941\" opacity=\"0.35\">imports</text>"
     ]
 
     let box_root        = (diag-module-box $mod_root_x $mod_root_y "modules" "modules" $mod_root_files $d.file_inputs "#e9f941")
@@ -409,7 +423,7 @@ def generate-diagram [d: record] {
     let mod_cxs = ($mod_xs | each { $in + ($box_w / 2 | into int) })
 
     let tree_lines = [
-        $"<line x1=\"($flake_center_x)\" y1=\"($tree_y)\" x2=\"($flake_center_x)\" y2=\"($bus_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        $"<line x1=\"($assemble_center_x)\" y1=\"($tree_y)\" x2=\"($assemble_center_x)\" y2=\"($bus_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
         $"<line x1=\"($mod_cxs | get 0)\" y1=\"($bus_y)\" x2=\"($mod_cxs | get 3)\" y2=\"($bus_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
         ...($mod_cxs | each {|cx|
             $"<line x1=\"($cx)\" y1=\"($bus_y)\" x2=\"($cx)\" y2=\"($mod_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
@@ -434,12 +448,12 @@ def generate-diagram [d: record] {
         $"<rect width=\"($canvas_w)\" height=\"($canvas_h)\" rx=\"16\" fill=\"url\(#grid\)\"/>"
         ...(diag-header (svg-escape $d.nixos_version) $d.total_files $d.input_count),
         ...$g_follows.elems,
-        ...$g_nonflake.elems,
+        ...$g_fetch.elems,
         ...$g_pinned.elems,
         ...$g_standalone.elems,
         ...$connectors,
         ...$central,
-        ...$flake_to_mod,
+        ...$assemble_to_mod,
         ...$box_root,
         ...$tree_lines,
         ...$box_hosts,
@@ -453,54 +467,45 @@ def generate-diagram [d: record] {
 
 # ─── Data collection ────────────────────────────────────────────────────────
 
-def classify-inputs [flake_meta: record] {
-    let root_inputs = ($flake_meta.locks.nodes.root.inputs | columns)
+def classify-inputs [pins: record] {
+    let inputs = ($pins.inputs)
+    let names  = ($inputs | columns)
 
-    let classified = ($root_inputs | each {|name|
-        let node_key = ($flake_meta.locks.nodes.root.inputs | get $name)
-        let is_list  = ($node_key | describe | str starts-with "list")
-        if $is_list {
-            # list type in lock means follows-redirect; root inputs shouldn't have this but be defensive
-            { name: $name, repo: $name, badges: [{ label: "follows", color: "#37f499" }], group: "follows" }
-        } else {
-            let node         = ($flake_meta.locks.nodes | get $node_key)
-            let orig         = ($node.original? | default {})
-            let inner_inputs = ($node.inputs? | default {})
+    let classified = ($names | each {|name|
+        let pin         = ($inputs | get $name)
+        let url         = ($pin.url? | default "")
+        let type        = ($pin.type? | default "flake")
+        let has_follows = ("follows" in ($pin | columns))
 
-            let url   = ($orig.url? | default "")
-            let owner = ($orig.owner? | default "")
-            let repo  = if ($url | str length) > 0 {
-                $url | str replace 'github:' '' | str replace 'git+https://' '' | str replace --regex '/flake.nix$' ''
-            } else if ($owner | str length) > 0 {
-                $"($owner)/($orig.repo? | default $name)"
-            } else { $name }
+        let repo = (
+            $url
+            | str replace 'github:' ''
+            | str replace 'git+https://' ''
+            | str replace 'git+ssh://' ''
+        )
 
-            let nxref       = ($inner_inputs.nixpkgs? | default null)
-            let is_follows  = ($nxref != null and ($nxref | describe | str starts-with "list"))
-            let is_nonflake = (($node.flake? | default true) == false)
-            let is_path     = (($orig.type? | default "") == "path")
-            let ref_pin     = ($orig.ref? | default "")
-            # pinned = has a ref (branch/tag) or the URL contains a commit hash
-            let is_pinned   = (($ref_pin | str length) > 0 or ($url =~ '/[0-9a-f]{40}$'))
+        let is_fetch  = ($type == "fetch")
+        let is_fixed  = ($type == "fixed")
+        # pinned = url ends in a 40-char commit hash
+        let is_pinned = ($url =~ '/[0-9a-f]{40}$')
 
-            mut badges = []
-            if $is_follows  { $badges = ($badges | append { label: "follows",   color: "#37f499" }) }
-            if $is_pinned   { $badges = ($badges | append { label: "pinned",    color: "#e9f941" }) }
-            if $is_nonflake { $badges = ($badges | append { label: "non-flake", color: "#f265b5" }) }
-            if $is_path     { $badges = ($badges | append { label: "local",     color: "#04d1f9" }) }
+        mut badges = []
+        if $has_follows { $badges = ($badges | append { label: "follows", color: "#37f499" }) }
+        if $is_fetch    { $badges = ($badges | append { label: "fetch",   color: "#f265b5" }) }
+        if $is_fixed    { $badges = ($badges | append { label: "fixed",   color: "#f7a258" }) }
+        if $is_pinned   { $badges = ($badges | append { label: "pinned",  color: "#e9f941" }) }
 
-            # primary group for layout (priority: nonflake > follows > pinned > standalone)
-            let group = if $is_nonflake { "nonflake" } else if $is_follows { "follows" } else if $is_pinned { "pinned" } else { "standalone" }
+        # primary group for layout (priority: fetch/fixed > follows > pinned > standalone)
+        let group = if ($is_fetch or $is_fixed) { "fetch" } else if $has_follows { "follows" } else if $is_pinned { "pinned" } else { "standalone" }
 
-            if ($badges | is-empty) { $badges = [{ label: "standalone", color: "#9071f4" }] }
+        if ($badges | is-empty) { $badges = [{ label: "standalone", color: "#9071f4" }] }
 
-            { name: $name, repo: $repo, badges: $badges, group: $group }
-        }
+        { name: $name, repo: $repo, badges: $badges, group: $group }
     })
 
     {
         follows:    ($classified | where { $in.group == "follows" }),
-        nonflake:   ($classified | where { $in.group == "nonflake" }),
+        fetch:      ($classified | where { $in.group == "fetch" }),
         pinned:     ($classified | where { $in.group == "pinned" }),
         standalone: ($classified | where { $in.group == "standalone" }),
     }
@@ -509,7 +514,6 @@ def classify-inputs [flake_meta: record] {
 def find-input-consumers [dotfiles: string input_names: list<string>] {
     mut result = {}
     for name in $input_names {
-        if $name == "flake-parts" { continue }  # framework input, not consumed by modules
         let files = (
             try {
                 ^rg -l $"inputs\\.($name)[^\\w-]" $"($dotfiles)/modules/" --type nix
@@ -534,7 +538,7 @@ def main [] {
         error make { msg: "CURRENT_FILE not set -- run this script directly: nu scripts/update-svgs.nu" }
     }
 
-    print "⚠  Remember: run `jj s` in ~/dotfiles first -- nix eval reads git-tracked state.\n"
+    print "⚠  Remember: run `jj s` in ~/dotfiles first -- snapshot the working copy before regenerating committed SVGs.\n"
 
     let dotfiles = ($env.CURRENT_FILE | path dirname | path join ".." | path expand)
 
@@ -575,12 +579,13 @@ def main [] {
     let modules_root_count = ($modules_root_files | length)
     let total_files        = $hjem_count + $nixos_count + $shareables_count + $hosts_count + $modules_root_count
 
-    print "→ Classifying flake inputs..."
-    let flake_meta  = (^nix flake metadata --json $dotfiles | from json)
-    let all_inputs  = ($flake_meta.locks.nodes.root.inputs | columns)
+    print "→ Classifying tack pins..."
+    let pins        = (open $"($dotfiles)/.tack/pins.toml")
+    let lock        = (open $"($dotfiles)/.tack/pins.lock.json")
+    let all_inputs  = ($pins.inputs | columns)
     let input_count = ($all_inputs | length)
 
-    let input_groups = (classify-inputs $flake_meta)
+    let input_groups = (classify-inputs $pins)
 
     print "→ Mapping input consumers..."
     let file_inputs = (find-input-consumers $dotfiles $all_inputs)
@@ -588,16 +593,15 @@ def main [] {
     # ── Slow: system data via nix eval ───────────────────────────────────────
     print "→ Collecting system data (30-90s per eval call)..."
 
-    let flake_ref = $dotfiles
+    let assemble = $"($dotfiles)/assemble.nix"
 
-    print "  · hyprland version...";     let hyprland_ver  = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.hyprland.version")
-    print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.nushell.version")
-    print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $"($flake_ref)#nixosConfigurations.HX99G.pkgs.ghostty.version")
-    print "  · emacs version..."; let emacs_ver = (nix-eval-raw $"($flake_ref)#nixosConfigurations.HX99G.pkgs.emacs30-pgtk.version")
+    print "  · hyprland version...";     let hyprland_ver  = (nix-eval-raw  $assemble "HX99G.pkgs.hyprland.version")
+    print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $assemble "HX99G.pkgs.nushell.version")
+    print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $assemble "HX99G.pkgs.ghostty.version")
+    print "  · emacs version..."; let emacs_ver = (nix-eval-raw $assemble "HX99G.pkgs.emacs30-pgtk.version")
     # noctalia-shell version from source (pkgs.version is stale nixpkgs metadata)
     print "  · noctalia-shell version..."
-    let noctalia_node = ($flake_meta.locks.nodes | get "noctalia-shell")
-    let noctalia_rev  = $noctalia_node.locked.rev
+    let noctalia_rev  = ($lock | get "noctalia-shell" | get rev)
     let noctalia_qml  = (
         try {
             ^gh api $"repos/noctalia-dev/noctalia-shell/contents/Services/Noctalia/UpdateService.qml?ref=($noctalia_rev)" --jq '.content'
@@ -618,8 +622,8 @@ def main [] {
             $"v($base)-git"
         } else { "?" }
     )
-    print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $"($flake_ref)#nixosConfigurations.HX99G.config.environment.systemPackages")
-    print "  · user package count...";   let user_pkg_count = (nix-eval-count $"($flake_ref)#nixosConfigurations.HX99G.config.users.users.weegs.packages")
+    print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $assemble "HX99G.config.environment.systemPackages")
+    print "  · user package count...";   let user_pkg_count = (nix-eval-count $assemble "HX99G.config.users.users.weegs.packages")
     let total_pkgs = $sys_pkg_count + $user_pkg_count
 
     print "  · closure size (slow)..."
@@ -630,9 +634,9 @@ def main [] {
     } catch { 0 })
     let closure_size = if $closure_bytes > 0 { format-bytes $closure_bytes } else { "?" }
 
-    print "  · nixos version...";   let nixos_release   = (nix-eval-raw $"($flake_ref)#nixosConfigurations.HX99G.config.system.nixos.release")
-    print "  · nixos codename...";  let nixos_codename  = (nix-eval-raw $"($flake_ref)#nixosConfigurations.HX99G.config.system.nixos.codeName")
-    print "  · kernel version...";  let linux_version   = (nix-eval-raw $"($flake_ref)#nixosConfigurations.HX99G.config.boot.kernelPackages.kernel.modDirVersion")
+    print "  · nixos version...";   let nixos_release   = (nix-eval-raw $assemble "HX99G.config.system.nixos.release")
+    print "  · nixos codename...";  let nixos_codename  = (nix-eval-raw $assemble "HX99G.config.system.nixos.codeName")
+    print "  · kernel version...";  let linux_version   = (nix-eval-raw $assemble "HX99G.config.boot.kernelPackages.kernel.modDirVersion")
     let nixos_version = $"($nixos_release) \(($nixos_codename)\)"
 
     # ── Assemble data record ──────────────────────────────────────────────────

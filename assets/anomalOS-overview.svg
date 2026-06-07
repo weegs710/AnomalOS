@@ -80,13 +80,13 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="88" y="538" font-size="13" fill="#9071f4" font-weight="700" letter-spacing="1">PACKAGES</text>
 <line x1="84" y1="548" x2="396" y2="548" stroke="#3b4261" stroke-width="1"/>
 <text x="90" y="567" font-size="12" fill="#abb4da">System</text>
-<text x="220" y="567" font-size="12" fill="#ebfafa">209</text>
+<text x="220" y="567" font-size="12" fill="#ebfafa">210</text>
 <text x="90" y="587" font-size="12" fill="#abb4da">User</text>
 <text x="220" y="587" font-size="12" fill="#ebfafa">113</text>
 <text x="90" y="607" font-size="12" fill="#abb4da">Total declared</text>
-<text x="220" y="607" font-size="12" fill="#ebfafa">322</text>
+<text x="220" y="607" font-size="12" fill="#ebfafa">323</text>
 <text x="90" y="627" font-size="12" fill="#abb4da">Closure paths</text>
-<text x="220" y="627" font-size="12" fill="#ebfafa">3159</text>
+<text x="220" y="627" font-size="12" fill="#ebfafa">3158</text>
 <text x="90" y="647" font-size="12" fill="#abb4da">Closure size</text>
 <text x="220" y="647" font-size="12" fill="#ebfafa">20.9G</text>
 <rect x="430" y="510" rx="12" width="340" height="240" fill="#212337" stroke="#3b4261" stroke-width="1"/>
