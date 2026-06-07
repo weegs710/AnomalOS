@@ -4,9 +4,9 @@
 
 > **Requirements**: nushell is required for this configuration. shell wrapper scripts and utilities are written in nushell and will not work without it. nushell is included in the flake, but if youre cherry-picking modules, make sure you have it installed. you have been warned.
 
-![anomalOS Overview](docs/assets/anomalOS-overview.svg)
+![anomalOS Overview](assets/anomalOS-overview.svg)
 
-![anomalOS Diagram](docs/assets/anomalOS-diagram.svg)
+![anomalOS Diagram](assets/anomalOS-diagram.svg)
 
 ## features
 

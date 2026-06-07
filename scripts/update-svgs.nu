@@ -202,12 +202,12 @@ def diag-defs [] {
     ]
 }
 
-def diag-header [total_files: int input_count: int] {
+def diag-header [nixos_ver: string total_files: int input_count: int] {
     [
         "<text x=\"50\" y=\"85\" font-size=\"36\" fill=\"#ebfafa\" font-weight=\"700\">anomalOS</text>"
         "<rect x=\"270\" y=\"68\" rx=\"6\" width=\"106\" height=\"22\" fill=\"#04d1f9\" opacity=\"0.15\" stroke=\"#04d1f9\" stroke-width=\"0.5\"/>"
         "<text x=\"323\" y=\"83\" font-size=\"10\" fill=\"#04d1f9\" font-weight=\"600\" text-anchor=\"middle\">FLAKE DIAGRAM</text>"
-        $"<text x=\"50\" y=\"112\" font-size=\"14\" fill=\"#abb4da\">NixOS 26.05  ·  /home/weegs/repo/public/anomalos  ·  ($total_files) files  ·  ($input_count) flake inputs</text>"
+        $"<text x=\"50\" y=\"112\" font-size=\"14\" fill=\"#abb4da\">NixOS ($nixos_ver)  ·  /home/weegs/repo/public/anomalos  ·  ($total_files) files  ·  ($input_count) flake inputs</text>"
     ]
 }
 
@@ -432,7 +432,7 @@ def generate-diagram [d: record] {
         ...(diag-defs),
         $"<rect width=\"($canvas_w)\" height=\"($canvas_h)\" rx=\"16\" fill=\"#171928\"/>"
         $"<rect width=\"($canvas_w)\" height=\"($canvas_h)\" rx=\"16\" fill=\"url\(#grid\)\"/>"
-        ...(diag-header $d.total_files $d.input_count),
+        ...(diag-header (svg-escape $d.nixos_version) $d.total_files $d.input_count),
         ...$g_follows.elems,
         ...$g_nonflake.elems,
         ...$g_pinned.elems,
@@ -547,8 +547,8 @@ def main [] {
         | sort
     )
     let nixos_files = (
-        glob $"($dotfiles)/modules/nixos-modules/*.nix"
-        | each { $in | path basename }
+        glob $"($dotfiles)/modules/nixos-modules/**/*.nix"
+        | each { $in | path relative-to $"($dotfiles)/modules/nixos-modules" }
         | sort
     )
     let shareables_files = (
@@ -662,7 +662,7 @@ def main [] {
     }
 
     # ── Generate and write ────────────────────────────────────────────────────
-    let out_dir = $"($dotfiles)/docs/assets"
+    let out_dir = $"($dotfiles)/assets"
 
     print "\n→ Writing anomalOS-overview.svg..."
     generate-overview $d | save --force $"($out_dir)/anomalOS-overview.svg"

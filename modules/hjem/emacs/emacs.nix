@@ -172,7 +172,7 @@ in
     };
 
     xdg.data.files = {
-      "icons/kitchen-sink-emacs.png".source = ./kitchen-sink.png;
+      "icons/kitchen-sink-emacs.png".source = ../../../assets/kitchen-sink.png;
       "applications/emacs.desktop".text = ''
         [Desktop Entry]
         Name=Emacs

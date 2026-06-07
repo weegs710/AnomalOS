@@ -1,4 +1,32 @@
 { pkgs, ... }:
+let
+  relaxed-plymouth = pkgs.stdenvNoCC.mkDerivation {
+    pname = "plymouth-relaxed";
+    version = "1.0";
+
+    src = pkgs.lib.fileset.toSource {
+      root = ../..;
+      fileset = pkgs.lib.fileset.unions [
+        ../../assets/relaxed.gif
+        ../../scripts/plymouth
+      ];
+    };
+
+    nativeBuildInputs = with pkgs; [
+      ffmpeg
+      imagemagick
+      nushell
+    ];
+
+    dontBuild = true;
+
+    installPhase = ''
+      runHook preInstall
+      nu scripts/plymouth/build.nu
+      runHook postInstall
+    '';
+  };
+in
 {
   console.font = "${pkgs.terminus_font}/share/consolefonts/ter-v18n.psf.gz";
 
@@ -9,6 +37,8 @@
   boot = {
     initrd.systemd.enable = true;
     plymouth.enable = true;
+    plymouth.theme = "relaxed";
+    plymouth.themePackages = [ relaxed-plymouth ];
     kernelParams = [ "quiet" ];
     consoleLogLevel = 0;
     initrd.verbose = false;
