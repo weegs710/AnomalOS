@@ -1,52 +1,22 @@
-# ============================================================================
-# Nix Build Outputs
-# ============================================================================
-
-# Build results
+# nix
 result
 result-*
-
-# Derivation files
 *.drv
-
-# Nix shell environments
 .envrc
 .direnv/
-
-# Nix profile links
 profile/
-
-# Nix REPL history
 .nix-repl-history
-
-# ============================================================================
-# NixOS Specific
-# ============================================================================
-
-# Machine-specific local overrides
 local.nix
 *-local.nix
 
-# ============================================================================
-# Home Manager
-# ============================================================================
-
-# Backup files created by home-manager
+# home-manager
 *.backup
 *.bak
 *.old
-
-# Home Manager result links
 home-manager-result
 hm-result
 
-# ============================================================================
-# Secrets & Sensitive Data
-# ============================================================================
-
-# Never commit unencrypted secrets!
-# Note: .age files are encrypted with agenix and SAFE to commit
-# Note: secrets.nix only contains public keys and is SAFE to commit
+# secrets -- .age (agenix-encrypted) and secrets.nix (public keys only) are safe to commit, never ignore them
 *.key
 *.pem
 *-password
@@ -54,20 +24,12 @@ hm-result
 credentials.json
 .env
 .env.*
-
-# SSH private keys (if accidentally placed here)
 id_rsa
 id_ed25519
-
-# GPG keys
 *.gpg
 *.asc
 
-# ============================================================================
-# Editor & IDE Files
-# ============================================================================
-
-# Vim
+# editors
 *.swp
 *.swo
 *~
@@ -80,41 +42,23 @@ id_ed25519
 [._]sw[a-p]
 Session.vim
 .netrwhist
-
-# Emacs
 \#*\#
 .\#*
 *.elc
 auto-save-list
 tramp
-.\#*
-
-# Fresh editor
-.fresh/
-
-# Nano
 *.save
-
-# VSCode / VSCodium
 .vscode/
 *.code-workspace
 .history/
-
-# JetBrains IDEs
 .idea/
 *.iml
 *.ipr
 *.iws
-
-# Sublime Text
 *.sublime-project
 *.sublime-workspace
 
-# ============================================================================
-# OS Specific Files
-# ============================================================================
-
-# macOS
+# os
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -132,8 +76,6 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-
-# Windows
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
@@ -142,35 +84,19 @@ ehthumbs_vista.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
 *.lnk
-
-# Linux
 .directory
 .Trash-*
 .nfs*
 
-# ============================================================================
-# Cache & Temporary Files
-# ============================================================================
-
-# General cache
+# caches & build artifacts
 .cache/
 cache/
 *.cache
-
-# Temporary files
 tmp/
 temp/
 *.tmp
-
-# Log files
 *.log
 logs/
-
-# ============================================================================
-# Development & Build Artifacts
-# ============================================================================
-
-# Compiled files
 *.o
 *.so
 *.a
@@ -178,8 +104,6 @@ logs/
 *.dll
 *.dylib
 *.exe
-
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -187,47 +111,23 @@ __pycache__/
 .venv/
 venv/
 ENV/
-
-# Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .npm
 .eslintcache
-
-# Rust
 target/
 Cargo.lock
-
-# Go
 *.test
 *.out
 go.work
 
-# ============================================================================
-# Project Specific
-# ============================================================================
+# extracted from commercial games -- not for public distribution
+modules/hjem/desktop/xdg/fft-ivalice-hyprcursor/hyprcursors/
 
-# Cursor assets extracted from commercial games — not for public distribution
-modules/hjem/xdg/fft-ivalice-hyprcursor/hyprcursors/
-
-# Local testing
 test-result
 test-output/
-
-# Documentation builds
-site/
-_build/
-docs/_build/
-
-# ============================================================================
-# Git Specific
-# ============================================================================
-
-# Patches
 *.patch
 *.diff
-
-# Conflict files
 *.orig
