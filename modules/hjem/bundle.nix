@@ -7,7 +7,5 @@ let
   );
 in
 {
-  flake.nixosModules.hjem = {
-    imports = [ inputs.hjem.nixosModules.default ] ++ modules;
-  };
+  imports = [ inputs.hjem.nixosModules.default ] ++ modules;
 }

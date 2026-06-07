@@ -2,11 +2,12 @@
   config,
   pkgs,
   inputs,
+  packages,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  wrappedZen = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.zen;
+  wrappedZen = packages.zen;
 in
 {
   users.users.${username}.packages = [ wrappedZen ];

@@ -205,42 +205,18 @@ else
 fi
 sudo mount --mkdir -t zfs zroot/persist /mnt/persist
 
-# get repo to install from
-read -rp "Enter flake URL (default: git+https://codeberg.org/weegs710/AnomalOS): " repo
-repo="${repo:-git+https://codeberg.org/weegs710/AnomalOS}"
+# this script runs from inside your clone (see README "getting started")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# only relevant for AnomalOS
-if [[ $repo == "git+https://codeberg.org/weegs710/AnomalOS" ]]; then
-	hosts=("HX99G")
+read -rp "Which host to install? (default: HX99G): " host
+host="${host:-HX99G}"
 
-	echo "Available hosts:"
-	for i in "${!hosts[@]}"; do
-		printf "%d) %s\n" $((i + 1)) "${hosts[i]}"
-	done
-
-	while true; do
-		echo ""
-		read -rp "Enter the number of the host to install: " selection
-		if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 1 ] && [ "$selection" -le ${#hosts[@]} ]; then
-			host="${hosts[$selection - 1]}"
-			break
-		else
-			echo "Invalid selection. Please enter a number between 1 and ${#hosts[@]}."
-		fi
-	done
-else
-	# non AnomalOS, prompt for host
-	read -rp "Which host to install?" host
-fi
-
-read -rp "Enter git rev for flake (default: main): " git_rev
+echo "Building $host from $SCRIPT_DIR (pure tack -- no flake)"
+# the tack resolver uses builtins.fetchTree, which needs the flakes feature even under nix-build
+system=$(sudo nix-build "$SCRIPT_DIR/assemble.nix" -A "$host.config.system.build.toplevel" --no-out-link --extra-experimental-features "nix-command flakes")
 
 echo "Installing NixOS"
-if [[ $repo == "git+https://codeberg.org/weegs710/AnomalOS" ]]; then
-	# root password is irrelevant if initialPassword is set in the config
-	sudo nixos-install --no-root-password --flake "$repo/${git_rev:-main}#$host" --option tarball-ttl 0
-else
-	sudo nixos-install --flake "$repo/${git_rev:-main}#$host" --option tarball-ttl 0
-fi
+# root password is irrelevant if initialPassword is set in the config
+sudo nixos-install --no-root-password --system "$system" --no-channel-copy
 
 echo "Installation complete. It is now safe to reboot."

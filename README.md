@@ -2,7 +2,7 @@
 
 > **Important**: this is a hobbyist project. im learning as i go. if somethings broken or stupid, thats why. this config is designed for my machine and my workflow. it might work on your system, it might not. there are no guarantees. youre welcome to use the whole thing or just steal bits and pieces. its all FOSS, so do whatever you want with it.
 
-> **Requirements**: nushell is required for this configuration. shell wrapper scripts and utilities are written in nushell and will not work without it. nushell is included in the flake, but if youre cherry-picking modules, make sure you have it installed. you have been warned.
+> **Requirements**: nushell is required for this configuration. shell wrapper scripts and utilities are written in nushell and will not work without it. nushell is included in the config, but if youre cherry-picking modules, make sure you have it installed. you have been warned.
 
 ![anomalOS Overview](assets/anomalOS-overview.svg)
 
@@ -207,13 +207,13 @@ zfs list -t all | grep <snapshot-name>
 
 > **Important**: this config is for my machine. might work on yours, might not. no guarantees.
 
-**fork before you build.** there is one flake input pointing to an absolute path on my machine:
+**fork before you build.** `assemble.nix` injects one local path pointing at an absolute location on my machine:
 
 ```nix
-fft-ivalice-cursor = { url = "path:/home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor"; ... };
+fft-ivalice-cursor = /home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor;
 ```
 
-this is consumed by `modules/hjem/xdg/xdg.nix`. nix will blow up evaluating the flake if that path doesnt exist on your machine. fork the repo, remove the input from `flake.nix`, and remove `inputs.fft-ivalice-cursor` from `xdg.nix`. or swap it for a cursor theme you have.
+this is consumed by `modules/hjem/desktop/xdg/xdg.nix`. nix will blow up evaluating the system if that path doesnt exist on your machine. fork the repo, remove the `fft-ivalice-cursor` injection from `assemble.nix`, and remove `inputs.fft-ivalice-cursor` from `xdg.nix`. or swap it for a cursor theme you have.
 
 **hardware:** x86_64 with AVX2, BMI2, and XSAVE (x86_64-v3 -- most CPUs from 2013+ are fine, not all). AMD-only hardware config. Intel users need to change `boot.zfs.devNodes` from `"/dev/disk/by-partuuid"` to `"/dev/disk/by-id"` in `modules/hosts/hx99g-hardware.nix` and drop the AMD microcode stuff. internet, at least 100GB free.
 
@@ -283,7 +283,7 @@ sudo mount -t zfs zroot/cache /mnt/cache
 
 sudo nixos-enter --root /mnt
 
-nixos-rebuild switch --flake /home/YOUR_USERNAME/dotfiles#YOUR_HOSTNAME
+nh os switch --file /home/YOUR_USERNAME/dotfiles/assemble.nix YOUR_HOSTNAME
 exit
 
 sudo reboot
@@ -293,11 +293,11 @@ sudo reboot
 
 ## how it works
 
-everything is managed with flake-parts and hjem. shareables (`modules/shareables/`) are wrapped packages with configs baked in, referenced via `inputs.self.packages`.
+everything is managed with [tack](https://github.com/manic-systems/tack) and hjem -- no flakes. inputs are pinned in `.tack/pins.toml`, and `assemble.nix` builds the system via `nixpkgs.lib.nixosSystem`. shareables (`modules/shareables/`) are wrapped packages with configs baked in, threaded to consumers via the `packages` specialArg.
 
-adding new modules is ezpz. everything in `modules/hjem/` and `modules/nixos-modules/` gets auto-imported -- drop a file and its in. files prefixed with `_` are skipped. **shareables are different** -- `modules/shareables/bundle.nix` is a hardcoded import list, so new shareables need to be added there manually.
+adding new modules is ezpz. everything in `modules/hjem/`, `modules/nixos-modules/`, and `modules/shareables/` gets auto-discovered -- drop a file and its in. files prefixed with `_` are skipped. shareables autodiscover too now (each returns `{ name = drv; }`), so theyre no longer a special case.
 
-new files need to be jj-snapshotted (`jj s`) before nix can see them -- flakes only see git-tracked files, and jj syncs to git on every command.
+nix reads the working copy directly (plain `import`, not flake eval), so new files are visible immediately -- no `jj s` needed before a build, unlike flakes. you still snapshot for version control, just not to make nix see your edits.
 
 **system modules** (`modules/nixos-modules/`) -- NixOS-level stuff. services, packages, kernel, networking:
 
@@ -417,7 +417,7 @@ YubiKey-backed SSH keys work fine at boot, but creating or editing secrets inter
 
 ## jujutsu workflow
 
-anomalos uses [jujutsu](https://jj-vcs.github.io/jj/latest/) in colocated mode (`.git/` is exposed so NixOS flakes can track files). all jj operations automatically sync to git.
+anomalos uses [jujutsu](https://jj-vcs.github.io/jj/latest/) in colocated mode (`.git/` is exposed so the GitHub/Codeberg remotes work). all jj operations automatically sync to git.
 
 <details>
 <summary>jj reference</summary>
@@ -453,7 +453,7 @@ jj sq
 jj-push       # nushell def: fetch + push + fetch
 ```
 
-**important:** run `jj s` before any `nix eval` or `repl` work. jj snapshots the working copy to git only when you run a jj command -- new files are invisible to flake evaluation until snapshotted.
+**note:** under pure tack, nix reads the working copy directly -- no `jj s` needed before `nix eval` or `repl` (that was a flakes-only requirement). snapshot when you want a version-control checkpoint, not to make nix see your edits.
 
 **core commands:**
 
@@ -533,15 +533,16 @@ everything is recoverable via operation log. `jj u` works for rebases, squashes,
 | `git undo`      | `jj u`                    | undo last operation    |
 | `git branch`    | `jj bs`                   | set bookmark           |
 
-**NixOS flakes integration:** colocate mode exposes `.git/` so NixOS flakes can track files. files are automatically exported to git on every jj command. if flakes cant see new files: run `jj s` first, then check the file isnt in `.gitignore`.
+**git remotes:** colocate mode exposes `.git/` so the GitHub/Codeberg remotes work. files are automatically exported to git on every jj command.
 
 </details>
 
 ## maintenance
 
 ```bash
-nfu                    # update all flake inputs
-nfu nixpkgs            # update a single input
+tu                     # tack update -- refresh all pins
+tu nixpkgs             # update a single pin
+tl                     # tack look -- pins with newer upstream
 nrt                    # test changes (safe -- reverts on reboot)
 nrs                    # apply changes + push closure to cachix
 nrbt                   # boot -- applies changes on next boot only
@@ -574,7 +575,7 @@ sudo nixos-rebuild switch --rollback
 ```bash
 sudo nix-collect-garbage -d && nrt
 
-nix flake update nixpkgs   # hash mismatch
+tu nixpkgs                 # refresh a pin / hash mismatch
 rm -rf ~/.cache/nix         # clear eval cache
 nh os test -- --show-trace  # verbose output (nrt doesnt pass args through)
 ```

@@ -2,10 +2,11 @@
   config,
   pkgs,
   inputs,
+  packages,
   ...
 }:
 let
-  wrappedSteam = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.steam;
+  wrappedSteam = packages.steam;
 
   dmemcg-booster = pkgs.rustPlatform.buildRustPackage {
     pname = "dmemcg-booster";

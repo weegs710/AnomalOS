@@ -44,5 +44,6 @@
     git
     nh
     wget
+    inputs.tack.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }

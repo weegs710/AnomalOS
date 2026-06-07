@@ -3,10 +3,11 @@
   pkgs,
   lib,
   inputs,
+  packages,
   ...
 }:
 let
-  wrappedNushell = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.nushell;
+  wrappedNushell = packages.nushell;
 
   nushellPlugins = with pkgs.nushellPlugins; [
     formats
@@ -320,12 +321,21 @@ in
           nh os build
         }
 
-        def nfu [...inputs: string] {
+        def tu [...inputs: string] {
           cd ~/repo/public/anomalos/
           if ($inputs | is-empty) {
-            ^nix flake update
+            ^tack update
           } else {
-            ^nix flake update ...$inputs
+            ^tack update ...$inputs
+          }
+        }
+
+        def tl [...inputs: string] {
+          cd ~/repo/public/anomalos/
+          if ($inputs | is-empty) {
+            ^tack look
+          } else {
+            ^tack look ...$inputs
           }
         }
 

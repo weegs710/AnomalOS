@@ -1,0 +1,50 @@
+# tack pins. nix reads pins.lock.json; this file drives `tack update`.
+# follows mirror the original flake.nix topology 1:1 (intentionally no [all_follow]
+# so preservation / kernels keep their own nixpkgs, exactly as before).
+
+[inputs.nixpkgs]
+url = "github:NixOS/nixpkgs/nixos-unstable"
+
+[inputs.nix-cachyos-kernel]
+url = "github:xddxdd/nix-cachyos-kernel/1fd4933833e225698364785198b27f2c2337e846"
+
+[inputs.nixpkgs-kernel]
+url = "github:NixOS/nixpkgs/370045a56d68e7127ce54e0906ab33c3abd387a5"
+
+[inputs.agenix]
+url = "github:ryantm/agenix"
+follows = { nixpkgs = "nixpkgs" }
+
+[inputs.preservation]
+url = "github:nix-community/preservation"
+
+[inputs.hjem]
+url = "github:feel-co/hjem"
+follows = { nixpkgs = "nixpkgs" }
+
+[inputs.noctalia-qs]
+url = "github:noctalia-dev/noctalia-qs"
+follows = { nixpkgs = "nixpkgs" }
+
+[inputs.noctalia-shell]
+url = "github:noctalia-dev/noctalia-shell"
+follows = { nixpkgs = "nixpkgs", noctalia-qs = "noctalia-qs" }
+
+[inputs.lix]
+url = "git+https://git.lix.systems/lix-project/lix"
+type = "fetch"
+
+[inputs.lix-module]
+url = "git+https://git.lix.systems/lix-project/nixos-module"
+follows = { lix = "lix", nixpkgs = "nixpkgs" }
+
+[inputs.nix-index-database]
+url = "github:nix-community/nix-index-database"
+follows = { nixpkgs = "nixpkgs" }
+
+[inputs.concord]
+url = "github:chojs23/concord"
+follows = { nixpkgs = "nixpkgs" }
+
+[inputs.tack]
+url = "github:manic-systems/tack"

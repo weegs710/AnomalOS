@@ -2,11 +2,12 @@
   config,
   pkgs,
   inputs,
+  packages,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  wrappedSteam = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.steam;
+  wrappedSteam = packages.steam;
 in
 {
   # Create directories for decky

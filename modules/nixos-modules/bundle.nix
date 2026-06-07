@@ -7,17 +7,5 @@ let
   );
 in
 {
-  # Prevents per-shareable nixpkgs re-imports for unfree -- each costs ~2s eval time
-  perSystem =
-    { system, ... }:
-    {
-      _module.args.pkgs = import inputs.nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-    };
-
-  flake.nixosModules.nixos-modules = {
-    imports = modules;
-  };
+  imports = modules;
 }

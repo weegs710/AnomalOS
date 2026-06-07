@@ -2,11 +2,12 @@
   config,
   pkgs,
   inputs,
+  packages,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  wrappedRetroArch = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.retroarch;
+  wrappedRetroArch = packages.retroarch;
 in
 {
   users.users.${username}.packages = [ wrappedRetroArch ];

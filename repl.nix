@@ -1,4 +1,4 @@
-# Better repl with preloaded functions and libs already loaded
+# Better repl with preloaded config and libs.
 # https://bmcgee.ie/posts/2023/01/nix-and-its-slow-feedback-loop/#how-you-should-use-the-repl
 # Usage: nix repl --expr 'import ./repl.nix {}'
 #   or:  nix repl --expr 'import ./repl.nix { host = "HX99G"; }'
@@ -7,34 +7,37 @@
   ...
 }:
 let
-  user = "weegs";
-  flake = builtins.getFlake (toString ./.);
-  inherit (flake.inputs.nixpkgs) lib;
+  inputs = import ./.tack;
+  inherit (inputs.nixpkgs) lib;
+  hosts = import ./assemble.nix;
 
-  # Build attrs for each nixosConfiguration
+  # Build attrs for each host: <name> = config, <name>Opts = mySystem
   hostAttrs = lib.mergeAttrsList (
     map (
       name:
       let
-        cfg = flake.nixosConfigurations.${name}.config;
+        cfg = hosts.${name}.config;
       in
       {
         "${name}" = cfg;
         "${name}Opts" = cfg.mySystem;
       }
-    ) (lib.attrNames flake.nixosConfigurations)
+    ) (lib.attrNames hosts)
   );
 in
 hostAttrs
 // rec {
-  inherit lib;
-  inherit (flake) inputs;
-  inherit flake host user;
-  self = flake;
+  inherit
+    lib
+    inputs
+    host
+    hosts
+    ;
+  user = "weegs";
 
   # default host shortcuts
-  inherit (flake.nixosConfigurations.${host}) pkgs;
-  c = flake.nixosConfigurations.${host}.config;
+  inherit (hosts.${host}) pkgs;
+  c = hosts.${host}.config;
   config = c;
   opts = c.mySystem;
 }
