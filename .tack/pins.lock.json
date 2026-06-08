@@ -8,11 +8,11 @@
     "type": "github"
   },
   "concord": {
-    "lastModified": 1780804059,
-    "narHash": "sha256-WyRMTnlRnfw/LUxw+g7xuGdd8Jp2xHkCGMYoKdk7OQg=",
+    "lastModified": 1780848880,
+    "narHash": "sha256-MyKnbU4iB6H9qH0QKIvMIvimZvWBPkXmkvKfDkoRCvo=",
     "owner": "chojs23",
     "repo": "concord",
-    "rev": "3ac1713d5cbab5503e5536e22c2904f4bdbbe6bb",
+    "rev": "5a3f3bf6ce62f2cbea6c0964011a0a3efec60945",
     "type": "github"
   },
   "hjem": {
@@ -48,19 +48,19 @@
     "type": "github"
   },
   "nix-index-database": {
-    "lastModified": 1780210899,
-    "narHash": "sha256-4axz3OBPTKa6LIkXV8n0lc63MQU+et2CB5DGobEAi6k=",
+    "lastModified": 1780816331,
+    "narHash": "sha256-0BYqs8yKWkOz2Q7+SP18N5E5gmDKSo6LSxIVIa0wWes=",
     "owner": "nix-community",
     "repo": "nix-index-database",
-    "rev": "97df9dc0b7c924344b793a15c1e8e4522ebb854e",
+    "rev": "1a2ea89c917781e88508d9fd2b507f2d2a0e173c",
     "type": "github"
   },
   "nixpkgs": {
-    "lastModified": 1780243769,
-    "narHash": "sha256-x5UQuRsH3MqI0U9afaXSNqzTPSeZlRLvFAav2Ux1pNw=",
+    "lastModified": 1780749050,
+    "narHash": "sha256-3av0pIjlOWQ6rDbNOmpUSvbNnJkGORQKKjb4LtCZsIY=",
     "owner": "NixOS",
     "repo": "nixpkgs",
-    "rev": "331800de5053fcebacf6813adb5db9c9dca22a0c",
+    "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
     "type": "github"
   },
   "nixpkgs-kernel": {
