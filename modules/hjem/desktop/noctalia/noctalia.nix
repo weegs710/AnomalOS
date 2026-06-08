@@ -61,5 +61,11 @@ in
       type = "copy";
       permissions = "0644";
     };
+
+    # qt6ct is the Qt platform theme but ships no config; without an icon theme Qt resolves named tray icons to the missing-icon checker
+    xdg.config.files."qt6ct/qt6ct.conf".text = ''
+      [Appearance]
+      icon_theme=Adwaita
+    '';
   };
 }

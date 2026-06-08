@@ -40,6 +40,13 @@ in
     hyprFocus
     pinToggle
   ];
+  # graphical-session.target has RefuseManualStart; this bound target is started from the lua start hook to activate it as a dependency
+  systemd.user.targets.hyprland-session = {
+    description = "Hyprland session";
+    bindsTo = [ "graphical-session.target" ];
+    wants = [ "graphical-session-pre.target" ];
+    after = [ "graphical-session-pre.target" ];
+  };
   hjem.users.${username} = {
     xdg.config.files."hypr/hyprland.lua".text = ''
       -- noctalia colors hardcoded until v5 ships noctalia-colors.lua; swap to dofile() then
@@ -64,9 +71,8 @@ in
       -- autostart
       -- hl.on("hyprland.start", function() hl.exec_cmd("cmd") end)
       hl.on("hyprland.start", function()
-          hl.exec_cmd("dbus-update-activation-environment --systemd --all")
+          hl.exec_cmd("dbus-update-activation-environment --systemd --all && systemctl --user start hyprland-session.target")
           hl.exec_cmd("noctalia-shell")
-          hl.exec_cmd("kdeconnect-indicator")
       end)
 
       -- colors

@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   # Decky-Loader derivation (moved from decky.nix)
-  deckyVersion = "3.2.1";
+  deckyVersion = "3.2.4";
 
   decky-loader = pkgs.stdenv.mkDerivation {
     pname = "decky-loader";
@@ -9,7 +9,7 @@ let
 
     src = pkgs.fetchurl {
       url = "https://github.com/SteamDeckHomebrew/decky-loader/releases/download/v${deckyVersion}/PluginLoader";
-      hash = "sha256-LiqNn/zg8zdP3IvAW7dSgWiRjIPFvQccD8L61G5FAXc=";
+      hash = "sha256-Z3FW/xat3jQ7+Lp51SAylg8xPsJfKnJJEYAPQPwgipg=";
     };
 
     dontUnpack = true;
@@ -54,7 +54,7 @@ let
           | get hash
           | first)
 
-        let file = $"($nu.home-path)/dotfiles/modules/shareables/wrapped-steam.nix"
+        let file = $"($nu.home-path)/repo/public/anomalos/modules/shareables/wrapped-steam.nix"
         open --raw $file
           | str replace --regex 'deckyVersion = "[^"]*"' $'deckyVersion = "($version)"'
           | str replace --regex 'hash = (?:"[^"]*"|lib\.fakeHash)' $'hash = "($hash)"'
