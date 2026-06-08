@@ -86,7 +86,6 @@ in
         directories = [
           # top-level home dirs
           ".ssh"
-          ".concord"
           ".crawl"
           ".var"
           ".claude"

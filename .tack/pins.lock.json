@@ -7,14 +7,6 @@
     "rev": "b027ee29d959fda4b60b57566d64c98a202e0feb",
     "type": "github"
   },
-  "concord": {
-    "lastModified": 1780848880,
-    "narHash": "sha256-MyKnbU4iB6H9qH0QKIvMIvimZvWBPkXmkvKfDkoRCvo=",
-    "owner": "chojs23",
-    "repo": "concord",
-    "rev": "5a3f3bf6ce62f2cbea6c0964011a0a3efec60945",
-    "type": "github"
-  },
   "hjem": {
     "lastModified": 1780199518,
     "narHash": "sha256-NhtWx0youXYRvcqtL+sjdqoZinMcnjcwRsh6eBJUZLg=",
@@ -80,11 +72,11 @@
     "type": "github"
   },
   "noctalia-shell": {
-    "lastModified": 1780803063,
-    "narHash": "sha256-pthUzeY81Gx1PTKCP4gYTwZYUxNpKZh2pOLPa9ZyofI=",
+    "lastModified": 1780889763,
+    "narHash": "sha256-18kh968u0hhtDyECo0FBnlEnJLDxs0uB5H5QbWA9P3I=",
     "owner": "noctalia-dev",
     "repo": "noctalia-shell",
-    "rev": "5311e14d2000af2f523789c76a3d869dcb42f130",
+    "rev": "57be32b0a81471ef6c5dceff6faad23b534ec7f8",
     "type": "github"
   },
   "preservation": {

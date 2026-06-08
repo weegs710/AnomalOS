@@ -17,7 +17,7 @@ Hyprland with noctalia-shell for the bar, launcher, lock screen, and control cen
 
 **workspaces:**
 
-1. **comms** -- concord (Discord TUI), gajim+biboumi (XMPP+IRC)
+1. **comms** -- Discord (Zen web app), gajim+biboumi (XMPP+IRC)
 2. **dev** -- ghostty, emacs
 3. **web** -- Zen Browser
 4. **games** -- steam, heroic

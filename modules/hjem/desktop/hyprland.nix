@@ -223,8 +223,8 @@ in
       hl.window_rule({ match = { initial_title = "Picture in picture" }, float = true, pin = true, size = {512, 288}, move = {2034, 62} })
 
       -- comms
-      hl.window_rule({ match = { title = "^(concord)$" },  workspace = "1" })
       hl.window_rule({ match = { class = "^(org.gajim.Gajim)$" }, workspace = "1" })
+      hl.window_rule({ match = { class = "^(zen-discord)$" }, workspace = "1" })
 
       -- dev
       hl.window_rule({ match = { title = "^(ghostty)$" },  workspace = "2" })

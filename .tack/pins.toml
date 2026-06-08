@@ -42,9 +42,5 @@ follows = { lix = "lix", nixpkgs = "nixpkgs" }
 url = "github:nix-community/nix-index-database"
 follows = { nixpkgs = "nixpkgs" }
 
-[inputs.concord]
-url = "github:chojs23/concord"
-follows = { nixpkgs = "nixpkgs" }
-
 [inputs.tack]
 url = "github:manic-systems/tack"

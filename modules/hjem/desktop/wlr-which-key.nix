@@ -10,7 +10,7 @@ let
   yamlFormat = pkgs.formats.yaml { };
 
   jellyfinCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('env MOZ_APP_LAUNCHER=zen-jellyfin zen --kiosk --profile ${homeDir}/.local/share/zen-jellyfin --no-remote http://localhost:8096', { workspace = '5' })\"";
-  concordCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=concord -e /etc/profiles/per-user/${username}/bin/concord')\"";
+  discordCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('env MOZ_APP_LAUNCHER=zen-discord zen --profile ${homeDir}/.local/share/zen-discord --no-remote https://discord.com/app', { workspace = '1' })\"";
   gajimCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('/etc/profiles/per-user/${username}/bin/gajim')\"";
   gorguruCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=gorguru -e ${homeDir}/repo/private/weegs.dev/dist/gorguru', { workspace = 'special:stash' })\"";
   btopCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=btop -e btop', { float = true, size = {1600, 900}, move = {531, 262} })\"";
@@ -127,14 +127,14 @@ let
           desc = "comms";
           submenu = [
             {
-              key = "c";
-              desc = "concord";
-              cmd = concordCmd;
-            }
-            {
               key = "g";
               desc = "gajim";
               cmd = gajimCmd;
+            }
+            {
+              key = "d";
+              desc = "discord";
+              cmd = discordCmd;
             }
             {
               key = "f";

@@ -2,12 +2,10 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  concord = inputs.concord.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   gajim = pkgs.gajim.overrideAttrs (old: {
     # gst-plugins-rs provides gtk4paintablesink -- without it the animated image pipeline fails and GIFs open twice
@@ -41,52 +39,34 @@ let
         }
     }
   '';
+
+  # makes the zen-discord kiosk profile chromeless -- hides toolbar + vertical tab sidebar so it reads as an app, not a browser
+  zenDiscordUserChrome = pkgs.writeText "zen-discord-userChrome.css" ''
+    #navigator-toolbox,
+    #zen-sidebar-splitter,
+    #zen-sidebar-top-buttons,
+    #zen-appcontent-navbar-wrapper,
+    .zen-toolbar-background,
+    .titlebar-buttonbox-container {
+      display: none !important;
+    }
+  '';
+
+  # legacyUserProfileCustomizations is required for userChrome.css to load at all
+  zenDiscordUserJs = pkgs.writeText "zen-discord-user.js" ''
+    user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
+    user_pref("sidebar.visibility", "hide-sidebar");
+  '';
 in
 {
   users.users.${username}.packages = [
-    concord
     gajim
   ];
 
-  hjem.users.${username}.files.".config/concord/config.toml".text = ''
-    [display]
-    disable_image_preview = false
-    show_avatars = true
-    show_images = true
-    image_preview_quality = "high"
-    show_custom_emoji = true
-
-    [notifications]
-    desktop_notifications = true
-
-    [voice]
-    voice_output_volume = 100
-    self_mute = false
-    self_deaf = false
-    allow_microphone_transmit = true
-    microphone_sensitivity = -60
-  '';
-
-  system.activationScripts.concord-credential = lib.stringAfter [ "agenix" ] ''
-    cred_dir="/persist/home/${username}/.config/concord"
-    cred_path="$cred_dir/credential"
-
-    mkdir -p "$cred_dir"
-    chown ${username}: "$cred_dir"
-    chmod 700 "$cred_dir"
-
-    if [ ! -f "$cred_path" ]; then
-      token=$(cat ${config.age.secrets.discord-token.path})
-      printf '%s' "$token" > "$cred_path"
-      chmod 600 "$cred_path"
-      chown ${username}: "$cred_path"
-    fi
-  '';
-
   preservation.preserveAt."/persist".users.${username}.directories = [
-    ".config/concord"
     ".local/share/gajim"
     ".config/gajim"
+    ".local/share/zen-discord"
   ];
 
   # force ConfigPasswordStorage -- no gnome-keyring/kwallet on this system
@@ -101,5 +81,16 @@ in
     chmod 700 "$data_dir"
     ${pkgs.nushell}/bin/nu ${gajimBootstrap}
     chown ${username}: "$data_dir/settings.db" 2>/dev/null || true
+  '';
+
+  system.activationScripts.zen-discord-setup = lib.stringAfter [ "users" ] ''
+    profile_dir="/persist/home/${username}/.local/share/zen-discord"
+    chrome_dir="$profile_dir/chrome"
+
+    mkdir -p "$chrome_dir"
+    cp ${zenDiscordUserChrome} "$chrome_dir/userChrome.css"
+    cp ${zenDiscordUserJs} "$profile_dir/user.js"
+    chmod 644 "$chrome_dir/userChrome.css" "$profile_dir/user.js"
+    chown -R ${username}: "$profile_dir"
   '';
 }
