@@ -2,12 +2,12 @@
   config,
   pkgs,
   inputs,
-  packages,
+  weegsware,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  wrappedRetroArch = packages.retroarch;
+  wrappedRetroArch = weegsware.retroarch;
 in
 {
   users.users.${username}.packages = [ wrappedRetroArch ];

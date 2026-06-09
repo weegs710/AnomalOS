@@ -2,11 +2,11 @@
   config,
   pkgs,
   inputs,
-  packages,
+  weegsware,
   ...
 }:
 let
-  wrappedSteam = packages.steam;
+  wrappedSteam = weegsware.steam;
 
   dmemcg-booster = pkgs.rustPlatform.buildRustPackage {
     pname = "dmemcg-booster";

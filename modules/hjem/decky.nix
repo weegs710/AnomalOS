@@ -1,13 +1,13 @@
 {
   config,
   pkgs,
-  packages,
+  weegsware,
   ...
 }:
 let
   username = config.mySystem.user.name;
   homebrew = "/home/${username}/homebrew";
-  decky-loader = packages.steam.passthru.decky-loader;
+  decky-loader = weegsware.steam.passthru.decky-loader;
 in
 {
   # decky self-creates these on first run; pre-make them user-owned so they aren't created root-owned

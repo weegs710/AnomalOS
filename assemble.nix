@@ -5,18 +5,8 @@ let
   system = "x86_64-linux";
   lib = inputs.nixpkgs.lib;
   inherit (lib.fileset) toList fileFilter;
-  inherit (lib) hasPrefix;
 
-  # One allowUnfree pkgs shared by every shareable -- avoids ~2s nixpkgs re-import per package.
-  pkgs = import inputs.nixpkgs {
-    inherit system;
-    config.allowUnfree = true;
-  };
-
-  # Shareables: discover leaf files, merge into a package set. `_`-prefix disables, autodiscovery stays.
-  packages = lib.foldl' (acc: f: acc // import f { inherit pkgs inputs lib; }) { } (
-    toList (fileFilter (f: f.hasExt "nix" && !(hasPrefix "_" f.name)) ./modules/shareables)
-  );
+  weegsware = inputs.pkgs.packages.${system};
 
   # Module bundles: every bundle.nix under modules/ (hjem, nixos-modules), each returns a NixOS module.
   moduleBundles = map (b: import b { inherit inputs; }) (
@@ -33,7 +23,7 @@ in
     inherit system;
     specialArgs = {
       inputs = inputs';
-      inherit packages;
+      inherit weegsware;
     };
     modules = moduleBundles ++ [
       inputs.lix-module.nixosModules.default

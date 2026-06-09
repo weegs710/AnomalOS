@@ -3,11 +3,11 @@
   pkgs,
   lib,
   inputs,
-  packages,
+  weegsware,
   ...
 }:
 let
-  wrappedNushell = packages.nushell;
+  wrappedNushell = weegsware.nushell;
 
   nushellPlugins = with pkgs.nushellPlugins; [
     formats

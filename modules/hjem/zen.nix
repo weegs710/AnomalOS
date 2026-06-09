@@ -2,12 +2,12 @@
   config,
   pkgs,
   inputs,
-  packages,
+  weegsware,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  wrappedZen = packages.zen;
+  wrappedZen = weegsware.zen;
 in
 {
   users.users.${username}.packages = [ wrappedZen ];

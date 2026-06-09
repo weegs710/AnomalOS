@@ -42,5 +42,9 @@ follows = { lix = "lix", nixpkgs = "nixpkgs" }
 url = "github:nix-community/nix-index-database"
 follows = { nixpkgs = "nixpkgs" }
 
+[inputs.pkgs]
+url = "git+https://codeberg.org/weegs710/pkgs"
+follows = { nixpkgs = "nixpkgs" }
+
 [inputs.tack]
 url = "github:manic-systems/tack"

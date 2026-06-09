@@ -5,7 +5,7 @@
 }:
 let
   ghostty = pkgs.ghostty.overrideAttrs (old: {
-    patches = (old.patches or [ ]) ++ [ ../../shareables/patches/ghostty-cursor-debounce-patch ];
+    patches = (old.patches or [ ]) ++ [ ./ghostty-cursor-debounce-patch ];
   });
 in
 {

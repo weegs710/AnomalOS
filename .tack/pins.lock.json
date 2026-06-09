@@ -79,6 +79,14 @@
     "rev": "57be32b0a81471ef6c5dceff6faad23b534ec7f8",
     "type": "github"
   },
+  "pkgs": {
+    "lastModified": 1780987805,
+    "narHash": "sha256-0eDVuAcUNvlQQ1F8VfsUWpoUBZdtaaImEqxJD/sHCdA=",
+    "ref": "refs/heads/main",
+    "rev": "53a3b32c513b6e2e978d3dcd98f3843ba9bcbd47",
+    "type": "git",
+    "url": "https://codeberg.org/weegs710/pkgs"
+  },
   "preservation": {
     "lastModified": 1757436102,
     "narHash": "sha256-mMI9IanU+Xw+pVogD2oT0I2kTmvz2Un/Apc5+CwUpEY=",
