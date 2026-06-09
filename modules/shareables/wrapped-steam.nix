@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   # Decky-Loader derivation (moved from decky.nix)
-  deckyVersion = "3.2.4";
+  deckyVersion = "3.2.5-pre1";
 
   decky-loader = pkgs.stdenv.mkDerivation {
     pname = "decky-loader";
@@ -9,7 +9,7 @@ let
 
     src = pkgs.fetchurl {
       url = "https://github.com/SteamDeckHomebrew/decky-loader/releases/download/v${deckyVersion}/PluginLoader";
-      hash = "sha256-Z3FW/xat3jQ7+Lp51SAylg8xPsJfKnJJEYAPQPwgipg=";
+      hash = "sha256-Jwx9P1h9lNiosDCUS7BEeREbI46JxZqdui9RNS0oP2E=";
     };
 
     dontUnpack = true;
