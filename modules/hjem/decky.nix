@@ -1,62 +1,33 @@
 {
   config,
   pkgs,
-  inputs,
   packages,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  wrappedSteam = packages.steam;
+  homebrew = "/home/${username}/homebrew";
+  decky-loader = packages.steam.passthru.decky-loader;
 in
 {
-  # Create directories for decky
+  # decky self-creates these on first run; pre-make them user-owned so they aren't created root-owned
   systemd.tmpfiles.rules = [
-    "d /home/${username}/homebrew 0755 ${username} users -"
-    "d /home/${username}/homebrew/services 0755 ${username} users -"
-    "d /home/${username}/homebrew/plugins 0755 ${username} users -"
+    "d ${homebrew} 0755 ${username} users -"
+    "d ${homebrew}/plugins 0755 ${username} users -"
   ];
 
-  # Setup service that creates CEF debug files, symlinks the binary
-  systemd.user.services.decky-loader-setup = {
-    description = "Decky Loader Setup";
-    before = [ "decky-loader.service" ];
-    wantedBy = [ "default.target" ];
-
-    script = ''
-      # Create CEF remote debugging files
-      mkdir -p $HOME/.steam/steam
-      touch $HOME/.steam/steam/.cef-enable-remote-debugging
-      mkdir -p $HOME/.var/app/com.valvesoftware.Steam/data/Steam
-      touch $HOME/.var/app/com.valvesoftware.Steam/data/Steam/.cef-enable-remote-debugging
-
-      # Symlink decky loader binary
-      ln -sf ${wrappedSteam.passthru.decky-loader}/bin/PluginLoader $HOME/homebrew/services/PluginLoader
-    '';
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-  };
+  # Steam reads this at launch to expose its CEF debugger on :8080, which decky and every plugin hook into
+  systemd.user.tmpfiles.rules = [
+    "f %h/.local/share/Steam/.cef-enable-remote-debugging 0644 - - -"
+  ];
 
   systemd.user.services.decky-loader = {
     description = "Decky Loader - Steam Deck plugin system";
-    after = [
-      "graphical-session.target"
-      "decky-loader-setup.service"
-    ];
+    after = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
-    requires = [ "decky-loader-setup.service" ];
     wantedBy = [ "default.target" ];
 
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "/home/${username}/homebrew/services/PluginLoader";
-      Restart = "on-failure";
-      RestartSec = "5s";
-    };
-
+    # plugins shell out to these at runtime
     path = [
       pkgs.python3
       pkgs.systemd
@@ -65,13 +36,20 @@ in
       pkgs.git
     ];
 
+    # point decky at the preserved ~/homebrew tree instead of its /home/deck default
     environment = {
-      PLUGIN_PATH = "/home/${username}/homebrew/plugins";
+      UNPRIVILEGED_PATH = homebrew;
+      UNPRIVILEGED_USER = username;
+      PLUGIN_PATH = "${homebrew}/plugins";
       LOG_LEVEL = "INFO";
     };
-  };
 
-  preservation.preserveAt."/persist".users.${username}.directories = [
-    ".config/decky-loader"
-  ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${decky-loader}/bin/decky-loader";
+      WorkingDirectory = homebrew;
+      Restart = "always";
+      RestartSec = "5s";
+    };
+  };
 }

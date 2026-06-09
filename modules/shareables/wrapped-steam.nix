@@ -1,71 +1,89 @@
 { pkgs, ... }:
 let
-  # Decky-Loader derivation (moved from decky.nix)
-  deckyVersion = "3.2.5-pre1";
-
-  decky-loader = pkgs.stdenv.mkDerivation {
+  # Built from source so nix owns the binary and plugins get a real python env; pinned to the 3.2.5-pre1 prerelease for the june 2026 steam-beta errorboundary fix
+  # See: https://github.com/Jovian-Experiments/Jovian-NixOS/blob/master/pkgs/decky-loader/prerelease.nix
+  decky-loader = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "decky-loader";
-    version = deckyVersion;
+    version = "3.2.5-pre1";
 
-    src = pkgs.fetchurl {
-      url = "https://github.com/SteamDeckHomebrew/decky-loader/releases/download/v${deckyVersion}/PluginLoader";
-      hash = "sha256-Jwx9P1h9lNiosDCUS7BEeREbI46JxZqdui9RNS0oP2E=";
+    src = pkgs.fetchFromGitHub {
+      owner = "SteamDeckHomebrew";
+      repo = "decky-loader";
+      rev = "v${version}";
+      hash = "sha256-TTaDvpKzbSn14JPdMUqYppwnP/GmTc3p4PQY9y0QtmY=";
     };
 
-    dontUnpack = true;
-    dontBuild = true;
-
-    nativeBuildInputs = [ pkgs.autoPatchelfHook ];
-    buildInputs = [
-      pkgs.zlib
-      pkgs.stdenv.cc.cc.lib
-    ];
-
-    installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/PluginLoader
-      chmod +x $out/bin/PluginLoader
+    # pnpm-workspace.yaml confuses the pnpm fetcher and build
+    postPatch = ''
+      rm frontend/pnpm-workspace.yaml
     '';
 
-    meta = with pkgs.lib; {
-      description = "Plugin loader for Steam Deck";
-      homepage = "https://github.com/SteamDeckHomebrew/decky-loader";
-      license = licenses.gpl2;
-      platforms = platforms.linux;
+    pnpmDeps = pkgs.fetchPnpmDeps {
+      inherit pname version src;
+      pnpm = pkgs.pnpm_9;
+      fetcherVersion = 3;
+      sourceRoot = "${src.name}/frontend";
+      postPatch = ''
+        rm pnpm-workspace.yaml
+      '';
+      hash = "sha256-WgKycKbaZv9lovoo0IaCuV41qS4zUqm4vZxsMQBUdNk=";
     };
 
-    passthru.updateScript = pkgs.writeTextFile {
-      name = "update-decky-loader";
-      executable = true;
-      text = ''
-        #!${pkgs.nushell}/bin/nu
+    pyproject = true;
+    pnpmRoot = "frontend";
 
-        let version = http get "https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases/latest"
-          | get tag_name
-          | str replace --regex '^v' ""
+    nativeBuildInputs = [
+      pkgs.nodejs
+      pkgs.pnpm_9
+      pkgs.pnpmConfigHook
+    ];
 
-        let url = $"https://github.com/SteamDeckHomebrew/decky-loader/releases/download/v($version)/PluginLoader"
-        let hash = (^${pkgs.nurl}/bin/nurl $url
-          | lines
-          | where { |l| $l | str contains 'hash = "' }
-          | first
-          | str trim
-          | parse 'hash = "{hash}";'
-          | get hash
-          | first)
+    preBuild = ''
+      cd frontend
+      pnpm build
+      cd ../backend
+    '';
 
-        let file = $"($nu.home-path)/repo/public/anomalos/modules/shareables/wrapped-steam.nix"
-        open --raw $file
-          | str replace --regex 'deckyVersion = "[^"]*"' $'deckyVersion = "($version)"'
-          | str replace --regex 'hash = (?:"[^"]*"|lib\.fakeHash)' $'hash = "($hash)"'
-          | save --force $file
+    build-system = with pkgs.python3.pkgs; [
+      poetry-core
+      poetry-dynamic-versioning
+    ];
 
-        print $"Updated Decky Loader to ($version) with hash ($hash)"
-      '';
+    dependencies = with pkgs.python3.pkgs; [
+      aiohttp
+      aiohttp-cors
+      aiohttp-jinja2
+      certifi
+      multidict
+      packaging
+      setproctitle
+      watchdog
+    ];
+
+    # plugins shell out to these at runtime
+    makeWrapperArgs = [
+      "--prefix PATH : ${
+        pkgs.lib.makeBinPath [
+          pkgs.coreutils
+          pkgs.psmisc
+        ]
+      }"
+    ];
+
+    pythonRelaxDeps = [
+      "aiohttp-cors"
+      "packaging"
+      "watchdog"
+    ];
+
+    meta = with pkgs.lib; {
+      description = "Plugin loader for Steam Deck, built from source";
+      homepage = "https://github.com/SteamDeckHomebrew/decky-loader";
+      license = licenses.gpl2Only;
+      platforms = platforms.linux;
     };
   };
 
-  # Wrap Steam with Decky in FHS environment
   wrappedSteam =
     let
       base = pkgs.steam.override {
