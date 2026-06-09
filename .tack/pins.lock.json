@@ -8,18 +8,18 @@
     "type": "github"
   },
   "hjem": {
-    "lastModified": 1780199518,
-    "narHash": "sha256-NhtWx0youXYRvcqtL+sjdqoZinMcnjcwRsh6eBJUZLg=",
+    "lastModified": 1780971222,
+    "narHash": "sha256-q4+HMlbi80dbN4KfFxhO84MEBMQE0E87ShbNKXOKLao=",
     "owner": "feel-co",
     "repo": "hjem",
-    "rev": "ffa433dd86e761de45ef985d4293f31a4d2a775d",
+    "rev": "3aaf5f238fb3b2f9efdc926e6024730636f0de23",
     "type": "github"
   },
   "lix": {
-    "lastModified": 1780760960,
-    "narHash": "sha256-brF2m/L2rpWN/KshLSceMEjIDY9DFBWla5F4axKR8i8=",
+    "lastModified": 1780922839,
+    "narHash": "sha256-UnC2xDhvRYCeh0Iqw794a03kM4u5fSf+3ZgC++NO7Sk=",
     "ref": "refs/heads/main",
-    "rev": "1396012a030fee90bfeeec508f9cd771ca1f655c",
+    "rev": "daa2bc82bc0ddc17fd2b72781f1c740a5a7b264c",
     "type": "git",
     "url": "https://git.lix.systems/lix-project/lix"
   },
