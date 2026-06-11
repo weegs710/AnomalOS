@@ -32,11 +32,11 @@
     "url": "https://git.lix.systems/lix-project/nixos-module"
   },
   "nix-cachyos-kernel": {
-    "lastModified": 1777143710,
-    "narHash": "sha256-vKkMI0EeTCKSjvKLyIk4Kr4SMwAztvtYt8Ju6M8ktqY=",
+    "lastModified": 1780771919,
+    "narHash": "sha256-cbace1ZTWYFG0luPL7OFlUxDh/t9lmPj+Isvg9hLN0k=",
     "owner": "xddxdd",
     "repo": "nix-cachyos-kernel",
-    "rev": "1fd4933833e225698364785198b27f2c2337e846",
+    "rev": "3d940a534da0ba6bce60e345ff2c9c7b062087fb",
     "type": "github"
   },
   "nix-index-database": {
@@ -53,14 +53,6 @@
     "owner": "NixOS",
     "repo": "nixpkgs",
     "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
-    "type": "github"
-  },
-  "nixpkgs-kernel": {
-    "lastModified": 1777100098,
-    "narHash": "sha256-m9HxywMUYWroIRrQHKE+wxE17gBfum99i9H5bBdsxYI=",
-    "owner": "NixOS",
-    "repo": "nixpkgs",
-    "rev": "370045a56d68e7127ce54e0906ab33c3abd387a5",
     "type": "github"
   },
   "noctalia-qs": {

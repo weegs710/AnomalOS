@@ -6,22 +6,9 @@
   ...
 }:
 let
-  kernelPkgs = import inputs.nixpkgs-kernel {
-    system = pkgs.stdenv.hostPlatform.system;
-    overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ];
-  };
-  customKernel = kernelPkgs.cachyosKernels.linux-cachyos-latest-x86_64-v3.override {
-    bbr3 = true;
-    argsOverride = {
-      # Inject architecture-specific flags for v3 performance
-      extraMakeFlags = [ "KCFLAGS=-march=x86-64-v3 -O2" ];
-    };
-    structuredExtraConfig = with kernelPkgs.lib.kernel; {
-      # Enable Zstandard compression to keep closure lean
-      MODULE_COMPRESS_ZSTD = yes;
-    };
-  };
-  basePackages = kernelPkgs.linuxKernel.packagesFor customKernel;
+  # Unmodified so it resolves to xddxdd's cached build -- any .override forces a local recompile.
+  # See: https://github.com/xddxdd/nix-cachyos-kernel
+  cachyPkgs = (pkgs.extend inputs.nix-cachyos-kernel.overlays.pinned).cachyosKernels;
 in
 {
   boot = {
@@ -40,18 +27,10 @@ in
     ];
     extraModulePackages = [ ];
     zfs.devNodes = "/dev/disk/by-partuuid";
-    kernelPackages = basePackages.extend (
-      self: super: {
-        zfs_cachyos = kernelPkgs.cachyosKernels.zfs-cachyos.override {
-          kernel = customKernel;
-        };
-      }
-    );
+    kernelPackages = cachyPkgs.linuxPackages-cachyos-latest;
     kernelParams = [ "hid_apple.fnmode=2" ];
     supportedFilesystems.zfs = true;
-    zfs.package = kernelPkgs.cachyosKernels.zfs-cachyos.override {
-      kernel = config.boot.kernelPackages.kernel;
-    };
+    zfs.package = config.boot.kernelPackages.zfs_cachyos;
   };
 
   networking.useDHCP = lib.mkDefault true;

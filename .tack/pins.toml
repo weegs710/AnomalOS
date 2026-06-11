@@ -1,33 +1,31 @@
-# tack pins. nix reads pins.lock.json; this file drives `tack update`.
-# follows mirror the original flake.nix topology 1:1 (intentionally no [all_follow]
-# so preservation / kernels keep their own nixpkgs, exactly as before).
+[shorturls]
+gh = "github:{path}"
+cb = "git+https://codeberg.org/{path}"
 
 [inputs.nixpkgs]
-url = "github:NixOS/nixpkgs/nixos-unstable"
+url = "gh:NixOS/nixpkgs/nixos-unstable"
 
+# Not followed -- the cached build is keyed to its own pinned nixpkgs; following forces a local recompile.
 [inputs.nix-cachyos-kernel]
-url = "github:xddxdd/nix-cachyos-kernel/1fd4933833e225698364785198b27f2c2337e846"
-
-[inputs.nixpkgs-kernel]
-url = "github:NixOS/nixpkgs/370045a56d68e7127ce54e0906ab33c3abd387a5"
+url = "gh:xddxdd/nix-cachyos-kernel/release"
 
 [inputs.agenix]
-url = "github:ryantm/agenix"
+url = "gh:ryantm/agenix"
 follows = { nixpkgs = "nixpkgs" }
 
 [inputs.preservation]
-url = "github:nix-community/preservation"
+url = "gh:nix-community/preservation"
 
 [inputs.hjem]
-url = "github:feel-co/hjem"
+url = "gh:feel-co/hjem"
 follows = { nixpkgs = "nixpkgs" }
 
 [inputs.noctalia-qs]
-url = "github:noctalia-dev/noctalia-qs"
+url = "gh:noctalia-dev/noctalia-qs"
 follows = { nixpkgs = "nixpkgs" }
 
 [inputs.noctalia-shell]
-url = "github:noctalia-dev/noctalia-shell"
+url = "gh:noctalia-dev/noctalia-shell"
 follows = { nixpkgs = "nixpkgs", noctalia-qs = "noctalia-qs" }
 
 [inputs.lix]
@@ -39,12 +37,12 @@ url = "git+https://git.lix.systems/lix-project/nixos-module"
 follows = { lix = "lix", nixpkgs = "nixpkgs" }
 
 [inputs.nix-index-database]
-url = "github:nix-community/nix-index-database"
+url = "gh:nix-community/nix-index-database"
 follows = { nixpkgs = "nixpkgs" }
 
 [inputs.pkgs]
-url = "git+https://codeberg.org/weegs710/pkgs"
+url = "cb:weegs710/pkgs"
 follows = { nixpkgs = "nixpkgs" }
 
 [inputs.tack]
-url = "github:manic-systems/tack"
+url = "gh:manic-systems/tack"
