@@ -26,12 +26,19 @@ def nix-eval-count [file: string attr: string] {
     try { ^nix eval --impure --json -f $file $attr --apply "builtins.length" | from json } catch { 0 }
 }
 
-def shareable-name [stem: string] {
-    $stem
-    | str replace --regex '^_'   ''
-    | str replace 'wrapped-'     ''
-    | str replace '-editor'      ''
-    | str replace '-shell'       ''
+def nix-eval-bool [file: string attr: string] {
+    let r = (^nix eval --impure -f $file $attr | complete)
+    ($r.exit_code == 0) and (($r.stdout | str trim) == "true")
+}
+
+def gpu-clean [line: string] {
+    # greedy .* grabs the LAST [..] (the device name), not the [AMD/ATI] vendor tag
+    let br = ($line | parse --regex '.*\[(?<n>[^\]]+)\]' | get -o n.0 | default ($line | str replace --regex '.*: ' ''))
+    let prefix = (if ($br =~ 'RX') { "RX" } else if ($br =~ 'Radeon') { "Radeon" } else { "" })
+    # prefer a mobile (...M) model token from the slash-list, else first numeric model
+    let model = ($br | parse --regex '(?<m>[0-9]{3,}[A-Za-z]*M)\b' | get -o m.0
+        | default ($br | parse --regex '(?<m>[0-9]{3,}[A-Za-z]*)' | get -o m.0 | default ""))
+    if ($prefix | is-empty) or ($model | is-empty) { $br } else { $"($prefix) ($model)" }
 }
 
 # ─── Overview SVG helpers ────────────────────────────────────────────────────
@@ -47,7 +54,7 @@ def ov-header [nixos_ver: string linux_ver: string] {
 
 def ov-top-card [x: int color: string label: string name: string ver: string] {
     [
-        $"<rect x=\"($x)\" y=\"185\" rx=\"8\" width=\"196\" height=\"62\" fill=\"#212337\" stroke=\"#3b4261\" stroke-width=\"1\"/>"
+        $"<rect x=\"($x)\" y=\"185\" rx=\"8\" width=\"196\" height=\"62\" fill=\"#212337\" stroke=\"#414868\" stroke-width=\"1\"/>"
         $"<rect x=\"($x + 3)\" y=\"193\" rx=\"2\" width=\"3\" height=\"46\" fill=\"($color)\"/>"
         $"<text x=\"($x + 16)\" y=\"203\" font-size=\"10\" fill=\"#414868\" font-weight=\"600\" letter-spacing=\"1\">($label)</text>"
         $"<text x=\"($x + 16)\" y=\"221\" font-size=\"15\" fill=\"#ebfafa\" font-weight=\"600\">($name)</text>"
@@ -57,10 +64,10 @@ def ov-top-card [x: int color: string label: string name: string ver: string] {
 
 def ov-section-box [x: int y: int w: int h: int color: string label: string] {
     [
-        $"<rect x=\"($x)\" y=\"($y)\" rx=\"12\" width=\"($w)\" height=\"($h)\" fill=\"#212337\" stroke=\"#3b4261\" stroke-width=\"1\"/>"
+        $"<rect x=\"($x)\" y=\"($y)\" rx=\"12\" width=\"($w)\" height=\"($h)\" fill=\"#212337\" stroke=\"#414868\" stroke-width=\"1\"/>"
         $"<rect x=\"($x)\" y=\"($y + 10)\" rx=\"12\" width=\"3\" height=\"($h - 20)\" fill=\"($color)\"/>"
         $"<text x=\"($x + 18)\" y=\"($y + 28)\" font-size=\"13\" fill=\"($color)\" font-weight=\"700\" letter-spacing=\"1\">($label)</text>"
-        $"<line x1=\"($x + 14)\" y1=\"($y + 38)\" x2=\"($x + $w - 14)\" y2=\"($y + 38)\" stroke=\"#3b4261\" stroke-width=\"1\"/>"
+        $"<line x1=\"($x + 14)\" y1=\"($y + 38)\" x2=\"($x + $w - 14)\" y2=\"($y + 38)\" stroke=\"#414868\" stroke-width=\"1\"/>"
     ]
 }
 
@@ -71,14 +78,15 @@ def ov-kv [x: int y: int lx: int label: string value: string] {
     ]
 }
 
-def ov-hardware [x: int y: int] {
+def ov-hardware [x: int y: int hw: record] {
     let lx = $x + 150
     [
         ...(ov-section-box $x $y 340 240 "#f265b5" "HARDWARE"),
-        ...(ov-kv ($x + 20) ($y + 57)  $lx "CPU"     "Ryzen 9 6900HX"),
-        ...(ov-kv ($x + 20) ($y + 77)  $lx "Memory"  "62 GB"),
-        ...(ov-kv ($x + 20) ($y + 97)  $lx "GPU"     "RX 6600M"),
-        ...(ov-kv ($x + 20) ($y + 117) $lx "Monitor" "2560×1440 @ 144Hz"),
+        ...(ov-kv ($x + 20) ($y + 57)  $lx "CPU"     (svg-escape $hw.cpu)),
+        ...(ov-kv ($x + 20) ($y + 77)  $lx "Memory"  (svg-escape $hw.mem)),
+        ...(ov-kv ($x + 20) ($y + 97)  $lx "GPU"     (svg-escape $hw.gpu)),
+        ...(ov-kv ($x + 20) ($y + 117) $lx "iGPU"    (svg-escape $hw.igpu)),
+        ...(ov-kv ($x + 20) ($y + 137) $lx "Monitor" (svg-escape $hw.monitor)),
     ]
 }
 
@@ -86,7 +94,7 @@ def ov-fs [x: int y: int] {
     let pool_x    = $x + 20
     let dataset_x = $x + 36
     [
-        ...(ov-section-box $x $y 340 240 "#e9f941" "FS"),
+        ...(ov-section-box $x $y 340 240 "#f1fc79" "FS"),
         $"<text x=\"($pool_x)\" y=\"($y + 57)\"  font-size=\"12\" fill=\"#ebfafa\" font-weight=\"600\">zroot</text>"
         $"<text x=\"($dataset_x)\" y=\"($y + 75)\"  font-size=\"11\" fill=\"#abb4da\">persist</text>"
         $"<text x=\"($dataset_x)\" y=\"($y + 91)\"  font-size=\"11\" fill=\"#abb4da\">nix</text>"
@@ -98,22 +106,22 @@ def ov-fs [x: int y: int] {
     ]
 }
 
-def ov-system [x: int y: int] {
+def ov-system [x: int y: int sys: record] {
     let lx = $x + 150
     [
-        ...(ov-section-box $x $y 340 240 "#69f8b3" "SYSTEM"),
-        ...(ov-kv ($x + 20) ($y + 57)  $lx "Display Mgr"  "ly"),
-        ...(ov-kv ($x + 20) ($y + 77)  $lx "Bootloader"   "systemd-boot"),
-        ...(ov-kv ($x + 20) ($y + 97)  $lx "Users"        "weegs"),
-        ...(ov-kv ($x + 20) ($y + 117) $lx "Nix Optimise" "daily"),
-        ...(ov-kv ($x + 20) ($y + 137) $lx "Nix GC"       "daily · 90d"),
+        ...(ov-section-box $x $y 340 240 "#33c57f" "SYSTEM"),
+        ...(ov-kv ($x + 20) ($y + 57)  $lx "Display Mgr"  (svg-escape $sys.dm)),
+        ...(ov-kv ($x + 20) ($y + 77)  $lx "Bootloader"   (svg-escape $sys.bootloader)),
+        ...(ov-kv ($x + 20) ($y + 97)  $lx "User"         (svg-escape $sys.user)),
+        ...(ov-kv ($x + 20) ($y + 117) $lx "Nix Optimise" (svg-escape $sys.optimise)),
+        ...(ov-kv ($x + 20) ($y + 137) $lx "Nix GC"       (svg-escape $sys.gc)),
     ]
 }
 
 def ov-packages [x: int y: int sys_count: int user_count: int total: int paths: int size: string] {
     let lx = $x + 150
     [
-        ...(ov-section-box $x $y 340 240 "#9071f4" "PACKAGES"),
+        ...(ov-section-box $x $y 340 240 "#a48cf2" "PACKAGES"),
         ...(ov-kv ($x + 20) ($y + 57)  $lx "System"         ($sys_count | into string)),
         ...(ov-kv ($x + 20) ($y + 77)  $lx "User"           ($user_count | into string)),
         ...(ov-kv ($x + 20) ($y + 97)  $lx "Total declared" ($total | into string)),
@@ -134,21 +142,23 @@ def ov-wrapped-pkgs [x: int y: int pkgs: list<string>] {
     ]
 }
 
-def ov-gaming [x: int y: int] {
+def ov-gaming [x: int y: int items: list<string>] {
+    let lx    = $x + 20
+    let iy    = $y + 52
+    let arrow = (char -u '25b8')
+    let rows = ($items | enumerate | each {|it|
+        $"<text x=\"($lx)\" y=\"($iy + ($it.index * 18))\" font-size=\"12\" fill=\"#ebfafa\">($arrow) ($it.item)</text>"
+    })
     [
         ...(ov-section-box $x $y 340 240 "#04d1f9" "GAMING"),
-        $"<text x=\"($x + 20)\" y=\"($y + 57)\"  font-size=\"12\" fill=\"#ebfafa\">▸ Steam + Decky Loader</text>"
-        $"<text x=\"($x + 20)\" y=\"($y + 77)\"  font-size=\"12\" fill=\"#ebfafa\">▸ RetroArch</text>"
-        $"<text x=\"($x + 20)\" y=\"($y + 97)\"  font-size=\"12\" fill=\"#ebfafa\">▸ ProtonUp-Qt</text>"
-        $"<text x=\"($x + 20)\" y=\"($y + 117)\" font-size=\"12\" fill=\"#ebfafa\">▸ OpenRA</text>"
-        $"<text x=\"($x + 20)\" y=\"($y + 137)\" font-size=\"12\" fill=\"#ebfafa\">▸ Renegade X</text>"
+        ...$rows,
     ]
 }
 
 def generate-overview [d: record] {
     let w    = 1200
     let h    = 800
-    let pkgs = ($d.shareables_pkgs | each { shareable-name $in } | sort)
+    let pkgs = ($d.weegsware_pkgs | sort)
 
     [
         $"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"($w)\" height=\"($h)\" viewBox=\"0 0 ($w) ($h)\">"
@@ -165,14 +175,14 @@ def generate-overview [d: record] {
         ...(ov-top-card 70  "#a48cf2" "WM"       "Hyprland"       (svg-escape $d.hyprland_ver)),
         ...(ov-top-card 286 "#37f499" "SHELL"    "nu"             (svg-escape $d.nushell_ver)),
         ...(ov-top-card 502 "#04d1f9" "TERMINAL" "ghostty"        (svg-escape $d.ghostty_ver)),
-        ...(ov-top-card 718 "#e9f941" "EDITOR"   "emacs"          (svg-escape $d.emacs_ver)),
-        ...(ov-top-card 934 "#9071f4" "UI"       "Noctalia Shell"  (svg-escape $d.noctalia_ver)),
-        ...(ov-hardware 70  255),
+        ...(ov-top-card 718 "#f1fc79" "EDITOR"   "emacs"          (svg-escape $d.emacs_ver)),
+        ...(ov-top-card 934 "#a48cf2" "UI"       "Noctalia Shell"  (svg-escape $d.noctalia_ver)),
+        ...(ov-hardware 70  255 $d.hardware),
         ...(ov-fs       430 255),
-        ...(ov-system   790 255),
+        ...(ov-system   790 255 $d.system),
         ...(ov-packages 70  510 $d.sys_pkg_count $d.user_pkg_count $d.total_pkgs $d.closure_paths $d.closure_size),
         ...(ov-wrapped-pkgs 430 510 $pkgs),
-        ...(ov-gaming   790 510),
+        ...(ov-gaming   790 510 $d.gaming),
         "</svg>",
     ] | str join "\n"
 }
@@ -183,6 +193,11 @@ def box-height [n: int] {
     60 + ($n * 18)
 }
 
+# pill width sized to content: JetBrains Mono advance is ~0.6em, pills render at font-size 7
+def pill-w [label: string] {
+    ((($label | str length) * 4.2 + 10) | math round)
+}
+
 def diag-defs [] {
     [
         "<defs>"
@@ -191,9 +206,9 @@ def diag-defs [] {
         "text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace; }"
         "</style>"
         "<filter id=\"glow-cyan\"   x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#04d1f9\" flood-opacity=\"0.15\"/></filter>"
-        "<filter id=\"glow-purple\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#9071f4\" flood-opacity=\"0.15\"/></filter>"
+        "<filter id=\"glow-purple\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#a48cf2\" flood-opacity=\"0.15\"/></filter>"
         "<filter id=\"glow-green\"  x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#37f499\" flood-opacity=\"0.15\"/></filter>"
-        "<filter id=\"glow-yellow\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#e9f941\" flood-opacity=\"0.15\"/></filter>"
+        "<filter id=\"glow-yellow\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#f1fc79\" flood-opacity=\"0.15\"/></filter>"
         "<filter id=\"glow-pink\"   x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#f265b5\" flood-opacity=\"0.15\"/></filter>"
         "<pattern id=\"grid\" width=\"30\" height=\"30\" patternUnits=\"userSpaceOnUse\">"
         "<circle cx=\"15\" cy=\"15\" r=\"0.5\" fill=\"#414868\" opacity=\"0.15\"/>"
@@ -212,7 +227,7 @@ def diag-header [nixos_ver: string total_files: int input_count: int] {
 }
 
 def diag-badge [x: int y: int label: string color: string] {
-    let tw = ($label | str length) * 6 + 8
+    let tw = (pill-w $label)
     [
         $"<rect x=\"($x)\" y=\"($y)\" rx=\"6\" width=\"($tw)\" height=\"14\" fill=\"($color)\" opacity=\"0.18\"/>"
         $"<text x=\"($x + ($tw / 2))\" y=\"($y + 10)\" font-size=\"7\" fill=\"($color)\" font-weight=\"600\" text-anchor=\"middle\">($label)</text>"
@@ -221,17 +236,17 @@ def diag-badge [x: int y: int label: string color: string] {
 
 def diag-input-card [x: int y: int name: string repo: string badges: list<record>] {
     let card = [
-        $"<rect x=\"($x)\" y=\"($y)\" rx=\"10\" width=\"300\" height=\"48\" fill=\"#212337\" stroke=\"#9071f4\" stroke-width=\"1\" filter=\"url\(#glow-purple\)\"/>"
-        $"<rect x=\"($x + 3)\" y=\"($y + 8)\" rx=\"3\" width=\"3\" height=\"32\" fill=\"#9071f4\"/>"
-        $"<circle cx=\"($x + 18)\" cy=\"($y + 18)\" r=\"5\" fill=\"#9071f4\" opacity=\"0.2\"/>"
-        $"<circle cx=\"($x + 18)\" cy=\"($y + 18)\" r=\"3\" fill=\"#9071f4\"/>"
+        $"<rect x=\"($x)\" y=\"($y)\" rx=\"10\" width=\"300\" height=\"48\" fill=\"#212337\" stroke=\"#a48cf2\" stroke-width=\"1\" filter=\"url\(#glow-purple\)\"/>"
+        $"<rect x=\"($x + 3)\" y=\"($y + 8)\" rx=\"3\" width=\"3\" height=\"32\" fill=\"#a48cf2\"/>"
+        $"<circle cx=\"($x + 18)\" cy=\"($y + 18)\" r=\"5\" fill=\"#a48cf2\" opacity=\"0.2\"/>"
+        $"<circle cx=\"($x + 18)\" cy=\"($y + 18)\" r=\"3\" fill=\"#a48cf2\"/>"
         $"<text x=\"($x + 30)\" y=\"($y + 21)\" font-size=\"12\" fill=\"#ebfafa\" font-weight=\"700\">($name)</text>"
         $"<text x=\"($x + 30)\" y=\"($y + 36)\" font-size=\"8\" fill=\"#abb4da\" opacity=\"0.5\">($repo)</text>"
     ]
     mut badge_elems = []
     mut bx = $x + 294
     for b in ($badges | reverse) {
-        let tw = ($b.label | str length) * 6 + 8
+        let tw = (pill-w $b.label)
         $bx = $bx - $tw - 4
         $badge_elems = ($badge_elems | append (diag-badge $bx ($y + 4) $b.label $b.color))
     }
@@ -259,13 +274,13 @@ def diag-input-group [x: int y: int label: string color: string inputs: list<rec
     { elems: ([$box, $cards] | flatten), height: $h }
 }
 
-def diag-module-box [x: int y: int label: string path: string files: list<string> file_inputs: record color: string] {
+def diag-module-box [x: int y: int label: string path: string files: list<string> file_inputs: record color: string --unit: string = "file"] {
     let n          = ($files | length)
     let h          = (box-height $n)
     let w          = 330
     let badge_x    = $x + $w - 52
     let badge_cx   = $x + $w - 30
-    let badge_text = if $n == 1 { "1 file" } else { $"($n) files" }
+    let badge_text = if $n == 1 { $"1 ($unit)" } else { $"($n) ($unit)s" }
 
     let header = [
         $"<rect x=\"($x)\" y=\"($y)\" rx=\"12\" width=\"($w)\" height=\"($h)\" fill=\"#212337\" stroke=\"($color)\" stroke-width=\"1.5\" filter=\"url\(#glow-yellow\)\"/>"
@@ -290,9 +305,9 @@ def diag-module-box [x: int y: int label: string path: string files: list<string
             mut tags = []
             mut tx = $x + $w - 10
             for inp in ($consumed | reverse) {
-                let tw      = ($inp | str length) * 5 + 10
+                let tw      = (pill-w $inp)
                 $tx         = $tx - $tw - 3
-                let tag_color = "#9071f4"
+                let tag_color = "#a48cf2"
                 let tcx     = $tx + ($tw / 2 | into int)
                 $tags = ($tags | append [
                     $"<rect x=\"($tx)\" y=\"($iy - 11)\" rx=\"4\" width=\"($tw)\" height=\"14\" fill=\"($tag_color)\" opacity=\"0.15\"/>"
@@ -310,20 +325,20 @@ def diag-legend [y: int cx: int total_files: int input_count: int] {
     [
         $"<circle cx=\"($cx - 300)\" cy=\"($y)\" r=\"5\" fill=\"#04d1f9\"/>"
         $"<text x=\"($cx - 288)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Entry</text>"
-        $"<circle cx=\"($cx - 180)\" cy=\"($y)\" r=\"5\" fill=\"#9071f4\"/>"
+        $"<circle cx=\"($cx - 180)\" cy=\"($y)\" r=\"5\" fill=\"#a48cf2\"/>"
         $"<text x=\"($cx - 168)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Pin</text>"
         $"<circle cx=\"($cx - 70)\" cy=\"($y)\" r=\"5\" fill=\"#37f499\"/>"
         $"<text x=\"($cx - 58)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">REPL</text>"
-        $"<circle cx=\"($cx + 45)\" cy=\"($y)\" r=\"5\" fill=\"#e9f941\"/>"
+        $"<circle cx=\"($cx + 45)\" cy=\"($y)\" r=\"5\" fill=\"#f1fc79\"/>"
         $"<text x=\"($cx + 57)\" y=\"($y + 4)\" font-size=\"11\" fill=\"#abb4da\">Module</text>"
         $"<rect x=\"($cx - 170)\" y=\"($y + 25)\" rx=\"6\" width=\"44\" height=\"14\" fill=\"#37f499\" opacity=\"0.18\"/>"
         $"<text x=\"($cx - 148)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#37f499\" font-weight=\"600\" text-anchor=\"middle\">follows</text>"
         $"<rect x=\"($cx - 116)\" y=\"($y + 25)\" rx=\"6\" width=\"34\" height=\"14\" fill=\"#f265b5\" opacity=\"0.18\"/>"
         $"<text x=\"($cx - 99)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#f265b5\" font-weight=\"600\" text-anchor=\"middle\">fetch</text>"
-        $"<rect x=\"($cx - 72)\" y=\"($y + 25)\" rx=\"6\" width=\"38\" height=\"14\" fill=\"#e9f941\" opacity=\"0.18\"/>"
-        $"<text x=\"($cx - 53)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#e9f941\" font-weight=\"600\" text-anchor=\"middle\">pinned</text>"
-        $"<rect x=\"($cx - 24)\" y=\"($y + 25)\" rx=\"6\" width=\"56\" height=\"14\" fill=\"#9071f4\" opacity=\"0.18\"/>"
-        $"<text x=\"($cx + 4)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#9071f4\" font-weight=\"600\" text-anchor=\"middle\">standalone</text>"
+        $"<rect x=\"($cx - 72)\" y=\"($y + 25)\" rx=\"6\" width=\"38\" height=\"14\" fill=\"#f1fc79\" opacity=\"0.18\"/>"
+        $"<text x=\"($cx - 53)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#f1fc79\" font-weight=\"600\" text-anchor=\"middle\">pinned</text>"
+        $"<rect x=\"($cx - 24)\" y=\"($y + 25)\" rx=\"6\" width=\"56\" height=\"14\" fill=\"#a48cf2\" opacity=\"0.18\"/>"
+        $"<text x=\"($cx + 4)\" y=\"($y + 35)\" font-size=\"7\" fill=\"#a48cf2\" font-weight=\"600\" text-anchor=\"middle\">standalone</text>"
         $"<text x=\"($cx)\" y=\"($y + 65)\" font-size=\"12\" fill=\"#abb4da\" text-anchor=\"middle\">($total_files) files  ·  ($input_count) tack pins</text>"
     ]
 }
@@ -335,12 +350,20 @@ def generate-diagram [d: record] {
     let group_x = [60, 408, 756, 1104]
     let group_y = 140
 
-    let g_follows    = (diag-input-group ($group_x | get 0) $group_y "FOLLOWS"    "#37f499" ($d.input_groups.follows))
-    let g_fetch      = (diag-input-group ($group_x | get 1) $group_y "FETCH"      "#f265b5" ($d.input_groups.fetch))
-    let g_pinned     = (diag-input-group ($group_x | get 2) $group_y "PINNED"     "#e9f941" ($d.input_groups.pinned))
-    let g_standalone = (diag-input-group ($group_x | get 3) $group_y "STANDALONE" "#9071f4" ($d.input_groups.standalone))
+    let active_groups = ([
+        { label: "FOLLOWS",    color: "#37f499", inputs: $d.input_groups.follows }
+        { label: "FETCH",      color: "#f265b5", inputs: $d.input_groups.fetch }
+        { label: "PINNED",     color: "#f1fc79", inputs: $d.input_groups.pinned }
+        { label: "STANDALONE", color: "#a48cf2", inputs: $d.input_groups.standalone }
+    ] | where { ($in.inputs | length) > 0 })
 
-    let max_group_h   = ([$g_follows.height, $g_fetch.height, $g_pinned.height, $g_standalone.height] | math max)
+    let groups = ($active_groups | enumerate | each {|it|
+        let gx = ($group_x | get $it.index)
+        let g  = (diag-input-group $gx $group_y $it.item.label $it.item.color $it.item.inputs)
+        { center: ($gx + 166), height: $g.height, color: $it.item.color, elems: $g.elems }
+    })
+    let group_elems   = ($groups | each { $in.elems } | flatten)
+    let max_group_h   = ($groups | each { $in.height } | math max)
     let groups_bottom = $group_y + $max_group_h
 
     # ── Central pipeline: pins → .tack → assemble.nix ────────────────────────
@@ -348,20 +371,14 @@ def generate-diagram [d: record] {
     let tack_x    = 540;  let tack_y = $central_y
     let repl_x    = 860;  let repl_y = $central_y
 
-    let group_colors  = ["#37f499", "#f265b5", "#e9f941", "#9071f4"]
-    let group_heights = [$g_follows.height, $g_fetch.height, $g_pinned.height, $g_standalone.height]
-    let group_centers = ($group_x | each { $in + 166 })
     let tack_center_x = $tack_x + 130
-    # orthogonal bus (matches the module tree below): group drops → horizontal bus → single drop into .tack
+    # orthogonal bus: each non-empty group drops -> horizontal bus -> single drop into .tack
     let groups_bus_y  = $tack_y - 24
     let connectors = [
-        ...($group_centers | enumerate | each {|it|
-            let gx    = $it.item
-            let gy    = $group_y + ($group_heights | get $it.index)
-            let color = ($group_colors | get $it.index)
-            $"<line x1=\"($gx)\" y1=\"($gy)\" x2=\"($gx)\" y2=\"($groups_bus_y)\" stroke=\"($color)\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        ...($groups | each {|r|
+            $"<line x1=\"($r.center)\" y1=\"($group_y + $r.height)\" x2=\"($r.center)\" y2=\"($groups_bus_y)\" stroke=\"($r.color)\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
         })
-        $"<line x1=\"($group_centers | get 0)\" y1=\"($groups_bus_y)\" x2=\"($group_centers | get 3)\" y2=\"($groups_bus_y)\" stroke=\"#04d1f9\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        $"<line x1=\"(($groups | first).center)\" y1=\"($groups_bus_y)\" x2=\"(($groups | last).center)\" y2=\"($groups_bus_y)\" stroke=\"#04d1f9\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
         $"<line x1=\"($tack_center_x)\" y1=\"($groups_bus_y)\" x2=\"($tack_center_x)\" y2=\"($tack_y)\" stroke=\"#04d1f9\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
     ]
 
@@ -400,11 +417,11 @@ def generate-diagram [d: record] {
     let mod_root_files = $d.modules_root_files
 
     let assemble_to_mod = [
-        $"<line x1=\"($assemble_center_x)\" y1=\"($assemble_y + 54)\" x2=\"($assemble_center_x)\" y2=\"($mod_root_y)\" stroke=\"#e9f941\" stroke-width=\"1.5\" opacity=\"0.4\"/>"
-        $"<text x=\"($assemble_center_x + 8)\" y=\"($assemble_y + 70)\" font-size=\"8\" fill=\"#e9f941\" opacity=\"0.35\">imports</text>"
+        $"<line x1=\"($assemble_center_x)\" y1=\"($assemble_y + 54)\" x2=\"($assemble_center_x)\" y2=\"($mod_root_y)\" stroke=\"#f1fc79\" stroke-width=\"1.5\" opacity=\"0.4\"/>"
+        $"<text x=\"($assemble_center_x + 8)\" y=\"($assemble_y + 70)\" font-size=\"8\" fill=\"#f1fc79\" opacity=\"0.35\">imports</text>"
     ]
 
-    let box_root        = (diag-module-box $mod_root_x $mod_root_y "modules" "modules" $mod_root_files $d.file_inputs "#e9f941")
+    let box_root        = (diag-module-box $mod_root_x $mod_root_y "modules" "modules" $mod_root_files $d.file_inputs "#f1fc79")
     let mod_root_bottom = $mod_root_y + (box-height ($mod_root_files | length))
 
     # ── Module boxes (4 columns) ─────────────────────────────────────────────
@@ -412,10 +429,10 @@ def generate-diagram [d: record] {
     let mod_xs = [40, 396, 752, 1108]
     let mod_y  = $mod_root_bottom + 40
 
-    let box_hosts = (diag-module-box ($mod_xs | get 0) $mod_y "hosts"         "modules/hosts"         $d.hosts_files      $d.file_inputs "#e9f941")
-    let box_hjem  = (diag-module-box ($mod_xs | get 1) $mod_y "hjem"          "modules/hjem"          $d.hjem_files       $d.file_inputs "#e9f941")
-    let box_nixos = (diag-module-box ($mod_xs | get 2) $mod_y "nixos-modules" "modules/nixos-modules" $d.nixos_files      $d.file_inputs "#e9f941")
-    let box_shar  = (diag-module-box ($mod_xs | get 3) $mod_y "shareables"    "modules/shareables"    $d.shareables_files $d.file_inputs "#e9f941")
+    let box_hosts = (diag-module-box ($mod_xs | get 0) $mod_y "hosts"         "modules/hosts"         $d.hosts_files      $d.file_inputs "#f1fc79")
+    let box_hjem  = (diag-module-box ($mod_xs | get 1) $mod_y "hjem"          "modules/hjem"          $d.hjem_files       $d.file_inputs "#f1fc79")
+    let box_nixos = (diag-module-box ($mod_xs | get 2) $mod_y "nixos-modules" "modules/nixos-modules" $d.nixos_files      $d.file_inputs "#f1fc79")
+    let box_weegsware = (diag-module-box ($mod_xs | get 3) $mod_y "weegsware" "inputs.pkgs" $d.weegsware_pkgs {} "#a48cf2" --unit "pkg")
 
     # ── Tree lines: modules root → child dirs ────────────────────────────────
     let tree_y  = $mod_root_bottom + 4
@@ -423,10 +440,10 @@ def generate-diagram [d: record] {
     let mod_cxs = ($mod_xs | each { $in + ($box_w / 2 | into int) })
 
     let tree_lines = [
-        $"<line x1=\"($assemble_center_x)\" y1=\"($tree_y)\" x2=\"($assemble_center_x)\" y2=\"($bus_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
-        $"<line x1=\"($mod_cxs | get 0)\" y1=\"($bus_y)\" x2=\"($mod_cxs | get 3)\" y2=\"($bus_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        $"<line x1=\"($assemble_center_x)\" y1=\"($tree_y)\" x2=\"($assemble_center_x)\" y2=\"($bus_y)\" stroke=\"#f1fc79\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+        $"<line x1=\"($mod_cxs | get 0)\" y1=\"($bus_y)\" x2=\"($mod_cxs | get 3)\" y2=\"($bus_y)\" stroke=\"#f1fc79\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
         ...($mod_cxs | each {|cx|
-            $"<line x1=\"($cx)\" y1=\"($bus_y)\" x2=\"($cx)\" y2=\"($mod_y)\" stroke=\"#e9f941\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
+            $"<line x1=\"($cx)\" y1=\"($bus_y)\" x2=\"($cx)\" y2=\"($mod_y)\" stroke=\"#f1fc79\" stroke-width=\"1.2\" opacity=\"0.3\"/>"
         })
     ]
 
@@ -434,8 +451,8 @@ def generate-diagram [d: record] {
     let hosts_bottom = $mod_y + (box-height ($d.hosts_files | length))
     let hjem_bottom  = $mod_y + (box-height ($d.hjem_files | length))
     let nixos_bottom = $mod_y + (box-height ($d.nixos_files | length))
-    let shar_bottom  = $mod_y + (box-height ($d.shareables_files | length))
-    let max_bottom   = ([$hosts_bottom, $hjem_bottom, $nixos_bottom, $shar_bottom] | math max)
+    let weegsware_bottom = $mod_y + (box-height ($d.weegsware_pkgs | length))
+    let max_bottom   = ([$hosts_bottom, $hjem_bottom, $nixos_bottom, $weegsware_bottom] | math max)
 
     let legend_y = $max_bottom + 50
     let canvas_h = $legend_y + 90
@@ -447,10 +464,7 @@ def generate-diagram [d: record] {
         $"<rect width=\"($canvas_w)\" height=\"($canvas_h)\" rx=\"16\" fill=\"#171928\"/>"
         $"<rect width=\"($canvas_w)\" height=\"($canvas_h)\" rx=\"16\" fill=\"url\(#grid\)\"/>"
         ...(diag-header (svg-escape $d.nixos_version) $d.total_files $d.input_count),
-        ...$g_follows.elems,
-        ...$g_fetch.elems,
-        ...$g_pinned.elems,
-        ...$g_standalone.elems,
+        ...$group_elems,
         ...$connectors,
         ...$central,
         ...$assemble_to_mod,
@@ -459,7 +473,7 @@ def generate-diagram [d: record] {
         ...$box_hosts,
         ...$box_hjem,
         ...$box_nixos,
-        ...$box_shar,
+        ...$box_weegsware,
         ...(diag-legend $legend_y $center_x $d.total_files $d.input_count),
         "</svg>",
     ] | str join "\n"
@@ -492,13 +506,13 @@ def classify-inputs [pins: record] {
         mut badges = []
         if $has_follows { $badges = ($badges | append { label: "follows", color: "#37f499" }) }
         if $is_fetch    { $badges = ($badges | append { label: "fetch",   color: "#f265b5" }) }
-        if $is_fixed    { $badges = ($badges | append { label: "fixed",   color: "#f7a258" }) }
-        if $is_pinned   { $badges = ($badges | append { label: "pinned",  color: "#e9f941" }) }
+        if $is_fixed    { $badges = ($badges | append { label: "fixed",   color: "#f7c67f" }) }
+        if $is_pinned   { $badges = ($badges | append { label: "pinned",  color: "#f1fc79" }) }
 
         # primary group for layout (priority: fetch/fixed > follows > pinned > standalone)
         let group = if ($is_fetch or $is_fixed) { "fetch" } else if $has_follows { "follows" } else if $is_pinned { "pinned" } else { "standalone" }
 
-        if ($badges | is-empty) { $badges = [{ label: "standalone", color: "#9071f4" }] }
+        if ($badges | is-empty) { $badges = [{ label: "standalone", color: "#a48cf2" }] }
 
         { name: $name, repo: $repo, badges: $badges, group: $group }
     })
@@ -555,11 +569,6 @@ def main [] {
         | each { $in | path relative-to $"($dotfiles)/modules/nixos-modules" }
         | sort
     )
-    let shareables_files = (
-        glob $"($dotfiles)/modules/shareables/*.nix"
-        | each { $in | path basename }
-        | sort
-    )
     let hosts_files = (
         glob $"($dotfiles)/modules/hosts/*.nix"
         | each { $in | path basename }
@@ -570,14 +579,11 @@ def main [] {
         | each { $in | path basename }
         | sort
     )
-    let shareables_pkgs = ($shareables_files | where { $in != "bundle.nix" } | each { $in | path parse | get stem })
-
     let hjem_count         = ($hjem_files | length)
     let nixos_count        = ($nixos_files | length)
-    let shareables_count   = ($shareables_files | length)
     let hosts_count        = ($hosts_files | length)
     let modules_root_count = ($modules_root_files | length)
-    let total_files        = $hjem_count + $nixos_count + $shareables_count + $hosts_count + $modules_root_count
+    let total_files        = $hjem_count + $nixos_count + $hosts_count + $modules_root_count
 
     print "→ Classifying tack pins..."
     let pins        = (open $"($dotfiles)/.tack/pins.toml")
@@ -639,6 +645,47 @@ def main [] {
     print "  · kernel version...";  let linux_version   = (nix-eval-raw $assemble "HX99G.config.boot.kernelPackages.kernel.modDirVersion")
     let nixos_version = $"($nixos_release) \(($nixos_codename)\)"
 
+    # ── Live hardware probe (runs on the rig itself) ──────────────────────────
+    print "→ Probing hardware..."
+    let cpu = (^cat /proc/cpuinfo | lines | where { $in =~ 'model name' } | first
+        | str replace --regex '.*:\s*' '' | str replace 'AMD ' '' | str replace ' with Radeon Graphics' '' | str trim)
+    let mem_kb = (^cat /proc/meminfo | lines | where { $in =~ '^MemTotal' } | first
+        | parse --regex 'MemTotal:\s+(?<kb>\d+)' | get kb.0 | into int)
+    let vga = (^lspci | lines | where { $in =~ '(VGA|3D|Display)' })
+    let igpu_line = ($vga | where { $in =~ '(Rembrandt|Raphael|Phoenix|680M|780M)' } | get -o 0 | default "")
+    let disc_line = ($vga | where { $in !~ '(Rembrandt|Raphael|Phoenix|680M|780M)' } | get -o 0 | default ($vga | get -o 0 | default ""))
+    let hardware = {
+        cpu:     $cpu
+        mem:     $"(($mem_kb / 1048576) | math round) GB"
+        gpu:     (if ($disc_line | is-empty) { "?" } else { gpu-clean $disc_line })
+        igpu:    (if ($igpu_line | is-empty) { "-" } else { gpu-clean $igpu_line })
+        monitor: (try { ^hyprctl monitors -j | from json | each {|m| $"($m.width)(char -u 'd7')($m.height) @ (($m.refreshRate) | math round)Hz" } | str join ", " } catch { "?" })
+    }
+
+    # ── System / gaming / weegsware (config eval) ─────────────────────────────
+    print "→ Evaluating system / gaming / weegsware..."
+    let dm = (["ly" "gdm" "sddm" "greetd"] | where {|d|
+        let r = (^nix eval --impure -f $assemble $"HX99G.config.services.displayManager.($d).enable" | complete)
+        ($r.exit_code == 0) and (($r.stdout | str trim) == "true")
+    } | get -o 0 | default "?")
+    let gc_days = (nix-eval-raw $assemble "HX99G.config.nix.gc.options" | parse --regex '(?<d>[0-9]+d)' | get -o d.0 | default "")
+    let system = {
+        dm:         $dm
+        bootloader: (if (nix-eval-bool $assemble "HX99G.config.boot.loader.systemd-boot.enable") { "systemd-boot" } else if (nix-eval-bool $assemble "HX99G.config.boot.loader.grub.enable") { "grub" } else { "?" })
+        user:       (nix-eval-raw $assemble "HX99G.config.mySystem.user.name")
+        optimise:   (if (nix-eval-bool $assemble "HX99G.config.nix.optimise.automatic") { "daily" } else { "off" })
+        gc:         (if (nix-eval-bool $assemble "HX99G.config.nix.gc.automatic") { (if ($gc_days | is-empty) { "daily" } else { $"daily (char -u '00b7') ($gc_days)" }) } else { "off" })
+    }
+
+    let weegsware_pkgs = (try { ^nix eval --impure --json --expr $"\(import ($dotfiles)/.tack\).pkgs.packages.x86_64-linux" --apply 'builtins.attrNames' | from json | sort } catch { [] })
+
+    let gmods = (glob $"($dotfiles)/modules/hjem/gaming/*.nix" | each { $in | path parse | get stem } | sort)
+    mut gaming = $gmods
+    if ("steam" in $weegsware_pkgs) { $gaming = ($gaming | append "steam") }
+    if ($"($dotfiles)/modules/hjem/decky.nix" | path exists) { $gaming = ($gaming | append "decky") }
+    if (nix-eval-bool $assemble "HX99G.config.programs.gamescope.enable") { $gaming = ($gaming | append "gamescope") }
+    if (nix-eval-bool $assemble "HX99G.config.programs.gamemode.enable") { $gaming = ($gaming | append "gamemode") }
+
     # ── Assemble data record ──────────────────────────────────────────────────
     let d = {
         nixos_version:      $nixos_version
@@ -653,14 +700,16 @@ def main [] {
         total_pkgs:         $total_pkgs
         closure_paths:      $closure_paths
         closure_size:       $closure_size
-        shareables_pkgs:    $shareables_pkgs
+        weegsware_pkgs:     $weegsware_pkgs
+        gaming:             $gaming
+        hardware:           $hardware
+        system:             $system
         total_files:        $total_files
         input_count:        $input_count
         input_groups:       $input_groups
         file_inputs:        $file_inputs
         hjem_files:         $hjem_files
         nixos_files:        $nixos_files
-        shareables_files:   $shareables_files
         hosts_files:        $hosts_files
         modules_root_files: $modules_root_files
     }
