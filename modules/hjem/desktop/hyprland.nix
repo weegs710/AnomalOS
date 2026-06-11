@@ -225,6 +225,7 @@ in
       -- comms
       hl.window_rule({ match = { class = "^(org.gajim.Gajim)$" }, workspace = "1" })
       hl.window_rule({ match = { class = "^(zen-discord)$" }, workspace = "1" })
+      hl.window_rule({ match = { class = "^(zen-steamchat)$" }, workspace = "1" })
 
       -- dev
       hl.window_rule({ match = { title = "^(ghostty)$" },  workspace = "2" })

@@ -11,6 +11,7 @@ let
 
   jellyfinCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('env MOZ_APP_LAUNCHER=zen-jellyfin zen --kiosk --profile ${homeDir}/.local/share/zen-jellyfin --no-remote http://localhost:8096', { workspace = '5' })\"";
   discordCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('env MOZ_APP_LAUNCHER=zen-discord zen --profile ${homeDir}/.local/share/zen-discord --no-remote https://discord.com/app', { workspace = '1' })\"";
+  steamchatCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('env MOZ_APP_LAUNCHER=zen-steamchat zen --profile ${homeDir}/.local/share/zen-steamchat --no-remote https://steamcommunity.com/chat', { workspace = '1' })\"";
   gajimCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('/etc/profiles/per-user/${username}/bin/gajim')\"";
   gorguruCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=gorguru -e ${homeDir}/repo/private/weegs.dev/dist/gorguru', { workspace = 'special:stash' })\"";
   btopCmd = "hyprctl dispatch \"hl.dsp.exec_cmd('ghostty --title=btop -e btop', { float = true, size = {1600, 900}, move = {531, 262} })\"";
@@ -135,6 +136,11 @@ let
               key = "d";
               desc = "discord";
               cmd = discordCmd;
+            }
+            {
+              key = "s";
+              desc = "steam chat";
+              cmd = steamchatCmd;
             }
             {
               key = "f";
