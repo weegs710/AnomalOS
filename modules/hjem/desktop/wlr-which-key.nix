@@ -79,7 +79,7 @@ let
   clipScreenCmd = "nu ${clipStartScript} screen";
   stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
 
-  # noctalia colorscheme change requires updating these hex values -- See: ~/.config/noctalia/colors.json
+  # hardcoded to match noctalia's Eldritch palette -- update these hex if the colorscheme changes
   commonSettings = {
     font = "JetBrainsMono Nerd Font 12";
     background = "#212337e6";
@@ -314,7 +314,7 @@ let
         {
           key = "space";
           desc = "launcher";
-          cmd = "noctalia-shell ipc call launcher toggle";
+          cmd = "noctalia msg panel-toggle launcher";
         }
       ];
     };
@@ -390,7 +390,7 @@ let
         {
           key = "l";
           desc = "lock";
-          cmd = "noctalia-shell ipc call lockScreen lock";
+          cmd = "noctalia msg session lock";
         }
         {
           key = "r";

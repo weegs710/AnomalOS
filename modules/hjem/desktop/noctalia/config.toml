@@ -1,0 +1,167 @@
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Eldritch"
+
+[theme.templates]
+enable_builtin_templates = true
+builtin_ids = [
+  "btop",
+  "emacs",
+  "gtk3",
+  "gtk4",
+  "ghostty",
+  "hyprland",
+  "kcolorscheme",
+  "qt",
+]
+enable_community_templates = false
+community_ids = []
+
+[shell]
+font_family = "Terminess Nerd Font"
+ui_scale = 1.2
+telemetry_enabled = false
+clipboard_enabled = true
+avatar_path = "~/.local/share/wallpapers/cyberstoner.webp"
+
+[shell.animation]
+enabled = true
+speed = 1.0
+
+[shell.panel]
+transparency_mode = "soft"
+borders = true
+shadow = true
+launcher_placement = "centered"
+clipboard_placement = "centered"
+control_center_placement = "centered"
+wallpaper_placement = "attached"
+session_placement = "centered"
+
+[wallpaper]
+enabled = true
+fill_mode = "crop"
+directory = "~/.local/share/wallpapers"
+transition = ["stripes"]
+transition_duration = 2000
+transition_on_startup = false
+edge_smoothness = 0.05
+
+[wallpaper.automation]
+enabled = true
+interval_seconds = 300
+order = "random"
+recursive = true
+
+[nightlight]
+enabled = true
+force = true
+temperature_day = 6500
+temperature_night = 4000
+
+[weather]
+enabled = true
+unit = "fahrenheit"
+refresh_minutes = 30
+effects = true
+
+[location]
+auto_locate = false
+address = "43567"
+
+[audio]
+enable_overdrive = false
+enable_sounds = false
+sound_volume = 0.5
+
+[brightness]
+enable_ddcutil = false
+
+[notification]
+enable_daemon = true
+show_app_name = true
+show_actions = true
+layer = "overlay"
+scale = 1.0
+background_opacity = 1.0
+
+[osd]
+position = "top_center"
+orientation = "horizontal"
+scale = 1.0
+background_opacity = 1.0
+
+[osd.kinds]
+volume = true
+volume_output = true
+volume_input = true
+brightness = true
+wifi = true
+bluetooth = true
+power_profile = true
+
+[lockscreen]
+enabled = true
+blurred_desktop = false
+blur_intensity = 0.0
+tint_intensity = 0.0
+
+[system.monitor]
+enabled = true
+
+[idle.behavior.lock]
+enabled = false
+timeout = 660
+command = "noctalia:session lock"
+
+[idle.behavior.screen-off]
+enabled = false
+timeout = 600
+command = "noctalia:dpms-off"
+resume_command = "noctalia:dpms-on"
+
+[bar.main]
+position = "top"
+thickness = 47
+background_opacity = 0.0
+radius = 12
+margin_ends = 5
+margin_edge = 5
+padding = 5
+widget_spacing = 10
+scale = 1.38
+shadow = true
+auto_hide = false
+reserve_space = true
+capsule = true
+capsule_opacity = 0.75
+capsule_border = "primary"
+capsule_radius = 5
+
+start = ["workspaces"]
+center = ["active_window", "notifications"]
+end = ["audio_visualizer", "volume", "tray", "clock"]
+
+[widget.workspaces]
+display = "name"
+max_label_chars = 10
+pill_scale = 1.0
+hide_when_empty = false
+focused_color = "primary"
+occupied_color = "secondary"
+empty_color = "secondary"
+
+[widget.active_window]
+max_length = 300
+title_scroll = "always"
+
+[widget.audio_visualizer]
+width = 200
+
+[widget.volume]
+device = "output"
+show_label = false
+
+[widget.clock]
+format = "{:%-I:%M %p}\n{:%a, %d %b %Y}"

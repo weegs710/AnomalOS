@@ -49,8 +49,6 @@ in
   };
   hjem.users.${username} = {
     xdg.config.files."hypr/hyprland.lua".text = ''
-      -- noctalia colors hardcoded until v5 ships noctalia-colors.lua; swap to dofile() then
-
       local terminal = "ghostty --title=ghostty"
       local mainMod  = "SUPER"
 
@@ -72,7 +70,6 @@ in
       -- hl.on("hyprland.start", function() hl.exec_cmd("cmd") end)
       hl.on("hyprland.start", function()
           hl.exec_cmd("dbus-update-activation-environment --systemd --all && systemctl --user start hyprland-session.target")
-          hl.exec_cmd("noctalia-shell")
       end)
 
       -- colors
@@ -184,11 +181,11 @@ in
 
       -- workspaces
       -- hl.workspace_rule({ workspace = "N", default_name = "name", layout = "dwindle", persistent = true })
-      hl.workspace_rule({ workspace = "1",                     default_name = "comms", gaps_in = 5, gaps_out = 10, persistent = true })
-      hl.workspace_rule({ workspace = "2",                     default_name = "dev",   gaps_in = 5, gaps_out = 10, persistent = true, layout = "scrolling" })
-      hl.workspace_rule({ workspace = "3",                     default_name = "web",   gaps_in = 5, gaps_out = 10, persistent = true, layout = "master" })
-      hl.workspace_rule({ workspace = "4",                     default_name = "games", gaps_in = 0, gaps_out = 0,  persistent = true, layout = "monocle", no_rounding = true })
-      hl.workspace_rule({ workspace = "5",                     default_name = "media", gaps_in = 5, gaps_out = 10, persistent = true, layout = "monocle" })
+      hl.workspace_rule({ workspace = "1",                     default_name = "COMMS", gaps_in = 5, gaps_out = 10, persistent = true })
+      hl.workspace_rule({ workspace = "2",                     default_name = "DEV",   gaps_in = 5, gaps_out = 10, persistent = true, layout = "scrolling" })
+      hl.workspace_rule({ workspace = "3",                     default_name = "WEB",   gaps_in = 5, gaps_out = 10, persistent = true, layout = "master" })
+      hl.workspace_rule({ workspace = "4",                     default_name = "GAMES", gaps_in = 0, gaps_out = 0,  persistent = true, layout = "monocle", no_rounding = true })
+      hl.workspace_rule({ workspace = "5",                     default_name = "MEDIA", gaps_in = 5, gaps_out = 10, persistent = true, layout = "monocle" })
       hl.workspace_rule({ workspace = "special:control-panel",                         gaps_in = 5, gaps_out = 10, layout = "scrolling" })
 
       -- window rules
@@ -334,8 +331,8 @@ in
       hl.bind("SUPER + Super_L",     hl.dsp.exec_cmd("wlr-which-key"),                                { release = true })
       hl.bind("Print",               hl.dsp.exec_cmd("wlr-which-key capture"))
       hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("wlr-which-key power"))
-      hl.bind("CTRL + ALT + L",      hl.dsp.exec_cmd("noctalia-shell ipc call lockScreen lock"),      { release = true })
-      hl.bind(mainMod .. " + tab",   hl.dsp.exec_cmd("noctalia-shell ipc call controlCenter toggle"), { release = true })
+      hl.bind("CTRL + ALT + L",      hl.dsp.exec_cmd("noctalia msg session lock"),                   { release = true })
+      hl.bind(mainMod .. " + tab",   hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"),    { release = true })
 
       -- resize submap
       hl.define_submap("resize", function()

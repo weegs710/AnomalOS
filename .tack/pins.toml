@@ -20,14 +20,6 @@ url = "gh:nix-community/preservation"
 url = "gh:feel-co/hjem"
 follows = { nixpkgs = "nixpkgs" }
 
-[inputs.noctalia-qs]
-url = "gh:noctalia-dev/noctalia-qs"
-follows = { nixpkgs = "nixpkgs" }
-
-[inputs.noctalia-shell]
-url = "gh:noctalia-dev/noctalia-shell"
-follows = { nixpkgs = "nixpkgs", noctalia-qs = "noctalia-qs" }
-
 [inputs.lix]
 url = "git+https://git.lix.systems/lix-project/lix"
 type = "fetch"
@@ -46,3 +38,6 @@ follows = { nixpkgs = "nixpkgs" }
 
 [inputs.tack]
 url = "gh:manic-systems/tack"
+
+[inputs.noctalia]
+url = "gh:noctalia-dev/noctalia"

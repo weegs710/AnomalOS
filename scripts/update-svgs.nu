@@ -605,27 +605,27 @@ def main [] {
     print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $assemble "HX99G.pkgs.nushell.version")
     print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $assemble "HX99G.pkgs.ghostty.version")
     print "  · emacs version..."; let emacs_ver = (nix-eval-raw $assemble "HX99G.pkgs.emacs30-pgtk.version")
-    # noctalia-shell version from source (pkgs.version is stale nixpkgs metadata)
-    print "  · noctalia-shell version..."
-    let noctalia_rev  = ($lock | get "noctalia-shell" | get rev)
-    let noctalia_qml  = (
+    # noctalia version from meson.build at the locked rev (pkgs.version is stale nixpkgs metadata)
+    print "  · noctalia version..."
+    let noctalia_rev  = ($lock | get "noctalia" | get rev)
+    let noctalia_meson = (
         try {
-            ^gh api $"repos/noctalia-dev/noctalia-shell/contents/Services/Noctalia/UpdateService.qml?ref=($noctalia_rev)" --jq '.content'
+            ^gh api $"repos/noctalia-dev/noctalia/contents/meson.build?ref=($noctalia_rev)" --jq '.content'
             | ^base64 -d
         } catch { "" }
     )
     let noctalia_ver  = (
-        if ($noctalia_qml | str length) > 0 {
+        if ($noctalia_meson | str length) > 0 {
             let base = (
-                $noctalia_qml
+                $noctalia_meson
                 | lines
-                | where { $in =~ 'readonly property string baseVersion:' }
+                | where { ($in | str contains "version") and ($in | str contains "'") and (not ($in | str contains "meson_version")) }
                 | first
-                | parse --regex 'baseVersion: "(?P<ver>[^"]+)"'
+                | parse --regex "'(?P<ver>[0-9][^']*)'"
                 | get ver
                 | first
             )
-            $"v($base)-git"
+            $"v($base)"
         } else { "?" }
     )
     print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $assemble "HX99G.config.environment.systemPackages")

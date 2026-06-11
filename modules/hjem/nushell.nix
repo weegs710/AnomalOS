@@ -396,10 +396,12 @@ in
         }
 
         def noct-r [] {
-          if (pkill quickshell | complete).exit_code != 0 { return }
-          pkill -x wlsunset
-          sleep 500ms
-          tmux new-session -d noctalia-shell
+          systemctl --user restart noctalia
+        }
+
+        # promote noctalia gui changes (state overlay) into the declared repo config so they survive rebuilds + get vcs history
+        def noct-s [] {
+          noctalia config export merged | complete | get stdout | save --force ~/repo/public/anomalos/modules/hjem/desktop/noctalia/config.toml
         }
 
         alias repl = nix repl --expr 'import ~/repo/public/anomalos/repl.nix {}'

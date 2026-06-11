@@ -1,68 +1,22 @@
 {
   config,
-  lib,
-  pkgs,
-  inputs,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  homeDir = config.users.users.${username}.home;
-  system = pkgs.stdenv.hostPlatform.system;
-  notificationHistoryAllowedApps = [ "helium" ];
-  notificationAllowlist = pkgs.writeText "notification-allowlist" (
-    lib.concatStringsSep "\n" notificationHistoryAllowedApps
-  );
-  patchedNoctalia = inputs.noctalia-shell.packages.${system}.default.overrideAttrs (prev: {
-    postPatch = (prev.postPatch or "") + ''
-      bash ${./patch-notification-service.sh}
-    '';
-  });
-  noctalia-shell = pkgs.symlinkJoin {
-    name = "noctalia-shell";
-    paths = [ patchedNoctalia ];
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/noctalia-shell \
-        --prefix QT_PLUGIN_PATH : ${pkgs.qt6Packages.qtimageformats}/lib/qt-6/plugins
-    '';
-  };
 in
 {
-  users.users.${username}.packages = [
-    noctalia-shell
-    inputs.noctalia-qs.packages.${system}.default
-    pkgs.qt6Packages.qt6ct
-  ];
-
   environment.sessionVariables = {
     QT_QPA_PLATFORMTHEME = "qt6ct";
   };
 
-  system.activationScripts.noctaliaRestartTrigger = {
-    text = ''
-      uid=$(${pkgs.coreutils}/bin/id -u ${username} 2>/dev/null)
-      if [ -n "$uid" ] && [ -d /run/user/$uid/hypr ]; then
-        XDG_RUNTIME_DIR=/run/user/$uid \
-        ${pkgs.util-linux}/bin/runuser -u ${username} -- \
-          ${pkgs.hyprland}/bin/hyprctl -i 0 dispatch exec \
-          "${pkgs.nushell}/bin/nu --config ${homeDir}/.config/nushell/config.nu --env-config ${homeDir}/.config/nushell/env.nu -c noct-r >> ${homeDir}/.local/state/noctalia-restart.log 2>&1" || true
-      fi
-    '';
-  };
+  # noctalia writes runtime state + git-cloned plugin/palette caches here; persist it so the tmpfs root reboot doesn't re-clone every boot
+  preservation.preserveAt."/persist".users.${username}.directories = [
+    ".local/state/noctalia"
+  ];
 
   hjem.users.${username} = {
-    xdg.config.files."noctalia/settings.json".text =
-      builtins.replaceStrings [ "/home/weegs/" ] [ "${homeDir}/" ]
-        (builtins.readFile ./settings.json);
-
-    xdg.config.files."noctalia/notification-allowlist" = {
-      source = notificationAllowlist;
-      type = "copy";
-      permissions = "0644";
-    };
-
-    # qt6ct is the Qt platform theme but ships no config; without an icon theme Qt resolves named tray icons to the missing-icon checker
+    # qt6ct ships no config; without an icon theme Qt resolves named icons to the missing-icon checker
     xdg.config.files."qt6ct/qt6ct.conf".text = ''
       [Appearance]
       icon_theme=Adwaita
