@@ -1,11 +1,14 @@
 {
   config,
+  inputs,
   ...
 }:
 let
   username = config.mySystem.user.name;
 in
 {
+  hjem.extraModules = [ inputs.noctalia.hjemModules.default ];
+
   environment.sessionVariables = {
     QT_QPA_PLATFORMTHEME = "qt6ct";
   };
@@ -16,6 +19,17 @@ in
   ];
 
   hjem.users.${username} = {
+    programs.noctalia = {
+      enable = true;
+      systemd.enable = true;
+    };
+
+    # settings left empty so config.toml stays a standalone first-class file (copied, not nix-generated); v5 hot-reloads it via inotify
+    xdg.config.files."noctalia/config.toml" = {
+      source = ./config.toml;
+      type = "copy";
+    };
+
     # qt6ct ships no config; without an icon theme Qt resolves named icons to the missing-icon checker
     xdg.config.files."qt6ct/qt6ct.conf".text = ''
       [Appearance]
