@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Ghostty
+Comment=Fast, feature-rich terminal emulator
+Keywords=shell;prompt;command;commandline;cmd;
+Icon=com.mitchellh.ghostty
+StartupWMClass=com.mitchellh.ghostty
+TryExec=ghostty
+Exec=ghostty
+Type=Application
+Categories=System;TerminalEmulator;Utility;
+Terminal=false

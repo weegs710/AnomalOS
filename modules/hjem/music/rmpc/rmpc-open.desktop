@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=rmpc
+GenericName=Music Player Client
+Comment=Add and play audio files in MPD via rmpc
+Exec=rmpc-open %F
+Terminal=false
+Categories=AudioVideo;Audio;Player;Music;
+MimeType=audio/aac;audio/flac;audio/mpeg;audio/ogg;audio/opus;audio/wav;audio/webm;audio/mp4;audio/mpegurl;audio/x-mpegurl;audio/x-opus+ogg;audio/x-vorbis+ogg;audio/x-m4a;audio/x-wav;audio/x-aiff;audio/aiff;
+NoDisplay=true

@@ -11,6 +11,7 @@ in
   users.users.${username}.packages = [ pkgs.heroic ];
 
   hjem.users.${username} = {
+    # kept as a nix attrset, not an extracted json: the attrset is the source, json would just be its generated output
     xdg.config.files."heroic/config.json".text = builtins.toJSON {
       version = "v0";
       defaultSettings = {

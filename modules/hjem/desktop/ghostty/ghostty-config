@@ -1,0 +1,19 @@
+font-size = 10
+
+scroll-to-bottom = keystroke
+copy-on-select = clipboard
+window-show-tab-bar = never
+theme = noctalia
+
+keybind = ctrl+shift+v=paste_from_clipboard
+
+# Unbind terminal shortcuts that conflict with editors
+keybind = ctrl+q=unbind
+keybind = ctrl+w=unbind
+keybind = shift+page_up=unbind
+keybind = shift+page_down=unbind
+keybind = shift+home=unbind
+keybind = shift+end=unbind
+
+custom-shader = ~/.config/ghostty/shaders/cursor_tail.glsl
+custom-shader-animation = always

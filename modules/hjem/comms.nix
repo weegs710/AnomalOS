@@ -88,7 +88,7 @@ in
     ".local/share/zen-steamchat"
   ];
 
-  # force ConfigPasswordStorage -- no gnome-keyring/kwallet on this system
+  # kept as a nix attrset, not an extracted json: the attrset is the source, json would just be its generated output
   environment.etc."gajim/app-overrides.json".text = builtins.toJSON {
     use_keyring = false;
   };

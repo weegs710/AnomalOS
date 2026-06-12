@@ -1,0 +1,8 @@
+stella_console = "auto"
+stella_filter = "disabled"
+stella_mix_frames = "disabled"
+stella_ntsc_aspect = "par"
+stella_palette = "standard"
+stella_phosphor = "auto"
+stella_stelladaptor_1 = "auto"
+stella_stelladaptor_2 = "auto"

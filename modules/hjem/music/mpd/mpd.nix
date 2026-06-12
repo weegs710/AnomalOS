@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }:
 let
@@ -13,21 +14,9 @@ in
   ];
 
   hjem.users.${username} = {
-    xdg.config.files."mpd/mpd.conf".text = ''
-      music_directory    "/home/${username}/Music"
-      playlist_directory "/home/${username}/Music/playlists"
-      bind_to_address    "/home/${username}/.config/mpd/socket"
-
-      db_file            "/home/${username}/.local/share/mpd/database"
-      state_file         "/home/${username}/.local/share/mpd/state"
-      sticker_file       "/home/${username}/.local/share/mpd/sticker.sql"
-      pid_file           "/home/${username}/.local/share/mpd/pid"
-
-      audio_output {
-        type "pipewire"
-        name "PipeWire Sound Server"
-      }
-    '';
+    xdg.config.files."mpd/mpd.conf".text = lib.replaceStrings [ "@USER@" ] [ username ] (
+      builtins.readFile ./mpd.conf
+    );
   };
 
   # Use NixOS's systemd.user.services instead of trying to create service file via Hjem

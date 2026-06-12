@@ -1,0 +1,101 @@
+[[opener.video]]
+run = "mpv \"$@\""
+orphan = true
+desc = "mpv"
+for = "unix"
+
+[[opener.audio]]
+run = "rmpc-open \"$@\""
+orphan = true
+desc = "rmpc"
+for = "unix"
+
+[[opener.image]]
+run = "qview \"$@\""
+orphan = true
+desc = "qView"
+for = "unix"
+
+[[opener.pdf]]
+run = "zathura \"$@\""
+orphan = true
+desc = "Zathura"
+for = "unix"
+
+[[opener.archive]]
+run = "file-roller \"$@\""
+orphan = true
+desc = "File Roller"
+for = "unix"
+
+[[opener.edit]]
+run = "emacsclient --reuse-frame --no-wait --alternate-editor= \"$@\""
+orphan = true
+desc = "Emacs"
+for = "unix"
+
+[[opener.browser]]
+run = "zen \"$@\""
+orphan = true
+desc = "Zen"
+for = "unix"
+
+[[open.rules]]
+mime = "video/*"
+use = "video"
+
+[[open.rules]]
+mime = "audio/*"
+use = "audio"
+
+[[open.rules]]
+mime = "image/*"
+use = "image"
+
+[[open.rules]]
+mime = "application/pdf"
+use = "pdf"
+
+[[open.rules]]
+mime = "application/zip"
+use = "archive"
+
+[[open.rules]]
+mime = "application/x-tar"
+use = "archive"
+
+[[open.rules]]
+mime = "application/gzip"
+use = "archive"
+
+[[open.rules]]
+mime = "application/x-7z-compressed"
+use = "archive"
+
+[[open.rules]]
+mime = "application/x-rar"
+use = "archive"
+
+[[open.rules]]
+mime = "application/vnd.rar"
+use = "archive"
+
+[[open.rules]]
+mime = "application/x-xz"
+use = "archive"
+
+[[open.rules]]
+mime = "application/x-bzip2"
+use = "archive"
+
+[[open.rules]]
+mime = "text/html"
+use = ["edit", "browser"]
+
+[[open.rules]]
+mime = "text/*"
+use = "edit"
+
+[[open.rules]]
+mime = "*/*"
+use = "edit"

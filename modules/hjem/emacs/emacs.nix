@@ -173,20 +173,9 @@ in
 
     xdg.data.files = {
       "icons/kitchen-sink-emacs.png".source = ../../../assets/kitchen-sink.png;
-      "applications/emacs.desktop".text = ''
-        [Desktop Entry]
-        Name=Emacs
-        GenericName=Text Editor
-        Comment=Edit text
-        MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
-        Exec=emacs %F
-        Icon=${home}/.local/share/icons/kitchen-sink-emacs.png
-        Type=Application
-        Terminal=false
-        Categories=Development;TextEditor;
-        StartupNotify=true
-        StartupWMClass=Emacs
-      '';
+      "applications/emacs.desktop".text = lib.replaceStrings [ "@HOME@" ] [ home ] (
+        builtins.readFile ./emacs.desktop
+      );
     };
   };
 }

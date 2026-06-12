@@ -13,8 +13,6 @@ in
   ];
 
   hjem.users.${username} = {
-    xdg.data.files."pandoc/defaults.yaml".text = ''
-      pdf-engine: weasyprint
-    '';
+    xdg.data.files."pandoc/defaults.yaml".source = ./pandoc-defaults.yaml;
   };
 }

@@ -1,0 +1,5 @@
+[filechooser]
+cmd=/home/@USER@/.config/xdg-desktop-portal-termfilechooser/yazi-wrapper.nu
+default_dir=$HOME
+create_help_file=0
+save_mode=last
