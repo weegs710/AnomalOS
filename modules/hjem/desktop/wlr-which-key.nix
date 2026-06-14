@@ -195,6 +195,11 @@ let
               cmd = "retroarch";
             }
             {
+              key = "m";
+              desc = "AM2R";
+              cmd = "am2r";
+            }
+            {
               key = "n";
               desc = "non-steam";
               submenu = [

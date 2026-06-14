@@ -188,6 +188,7 @@ hl.window_rule({ match = { class = "^(heroic)$" },       workspace = "4" })
 hl.window_rule({ match = { class = "^(steam)$" },        workspace = "4", opacity = "1.0 override 1.0 override 1.0 override" })
 hl.window_rule({ match = { class = "^(steam_app_.*)$" }, workspace = "4", opacity = "1.0 override 1.0 override 1.0 override", focus_on_activate = true })
 hl.window_rule({ match = { class = "^(crawl-tiles)$" },  workspace = "4" })
+hl.window_rule({ match = { title = "^(AM2R)$" },         workspace = "4" })
 hl.window_rule({ match = { class = "^(gamescope)$" },    workspace = "4", fullscreen = true, opacity = "1.0 override 1.0 override 1.0 override", focus_on_activate = true })
 
 -- media
