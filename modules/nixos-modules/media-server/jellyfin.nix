@@ -17,10 +17,21 @@
     "video"
   ];
 
+  # the 700 home dir blocks jellyfin from reaching ~/Music directly
+  fileSystems."/mnt/media/music" = {
+    device = "/persist/home/${config.mySystem.user.name}/Music";
+    fsType = "none";
+    options = [
+      "bind"
+      "ro"
+    ];
+  };
+
   # Jellyfin has no reason to write to the media library; transcoding cache stays in /var/lib/jellyfin
   systemd.services.jellyfin.serviceConfig.ReadOnlyPaths = [
     "/mnt/media/movies"
     "/mnt/media/tv"
+    "/mnt/media/music"
   ];
 
   # only Jellyfin hits the LAN; management UIs stay localhost-only
