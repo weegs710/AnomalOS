@@ -166,14 +166,7 @@ def --env --wrapped __zoxide_z [...rest: string] {
     let path = match $rest {
         [] => { '~' }
         ['-'] => { '-' }
-        [$arg] if (
-# Fixed name so --keep-revisions rotates over revisions of the same pin, not unique pins that never evict.
-
-# promote noctalia gui changes (state overlay) into the declared repo config so they survive rebuilds + get vcs history
-
-# Zoxide integration (migrated from Fish 'z' plugin)
-
-$arg | path expand | path type) == 'dir' => { $arg }
+        [$arg] if ($arg | path expand | path type) == 'dir' => { $arg }
         _ => {
             ^zoxide query --exclude $env.PWD -- ...$rest | str trim -r -c "\n"
         }
