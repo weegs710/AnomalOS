@@ -8,18 +8,18 @@
     "type": "github"
   },
   "hjem": {
-    "lastModified": 1780971222,
-    "narHash": "sha256-q4+HMlbi80dbN4KfFxhO84MEBMQE0E87ShbNKXOKLao=",
+    "lastModified": 1782267080,
+    "narHash": "sha256-so1hIImuLtTKTVUokJ/6C2D2b2D4znCx+/PAjMSAnpw=",
     "owner": "feel-co",
     "repo": "hjem",
-    "rev": "3aaf5f238fb3b2f9efdc926e6024730636f0de23",
+    "rev": "dd0ba9e22fb46581f843e6121de33ca7a4a80224",
     "type": "github"
   },
   "lix": {
-    "lastModified": 1781188256,
-    "narHash": "sha256-byG4WdIQedN0EVQYqs1kibIbzMhhMYYZultROwlENW4=",
+    "lastModified": 1782421389,
+    "narHash": "sha256-IbPX4fo8sTjo1baDsw19JdHMlR6a7Jj5DDYLtM/mWfg=",
     "ref": "refs/heads/main",
-    "rev": "abfe9d0c3efc2204b0f88ff87a642c174a09ff09",
+    "rev": "fce63f6dbf4d1de8fdabde6531f536529c41ab03",
     "type": "git",
     "url": "https://git.lix.systems/lix-project/lix"
   },
@@ -32,35 +32,35 @@
     "url": "https://git.lix.systems/lix-project/nixos-module"
   },
   "nix-cachyos-kernel": {
-    "lastModified": 1780771919,
-    "narHash": "sha256-cbace1ZTWYFG0luPL7OFlUxDh/t9lmPj+Isvg9hLN0k=",
+    "lastModified": 1782415778,
+    "narHash": "sha256-Qts73QQA+lADfxWjonL3Q1JcZssVZPsQI38L3qZyS0o=",
     "owner": "xddxdd",
     "repo": "nix-cachyos-kernel",
-    "rev": "3d940a534da0ba6bce60e345ff2c9c7b062087fb",
+    "rev": "1740ec90e7b07730c212a3a1ff5e71af08a5270b",
     "type": "github"
   },
   "nix-index-database": {
-    "lastModified": 1780816331,
-    "narHash": "sha256-0BYqs8yKWkOz2Q7+SP18N5E5gmDKSo6LSxIVIa0wWes=",
+    "lastModified": 1782030356,
+    "narHash": "sha256-h4WpMr455AfRub0FXBaon6Vcpe0waUyJ4GivIW6oyd4=",
     "owner": "nix-community",
     "repo": "nix-index-database",
-    "rev": "1a2ea89c917781e88508d9fd2b507f2d2a0e173c",
+    "rev": "3017088b49efd404f78e3b104f553b97e4af786b",
     "type": "github"
   },
   "nixpkgs": {
-    "lastModified": 1780749050,
-    "narHash": "sha256-3av0pIjlOWQ6rDbNOmpUSvbNnJkGORQKKjb4LtCZsIY=",
+    "lastModified": 1782467914,
+    "narHash": "sha256-pGvFkM8N0xEkIIXDe5YYfbEAvHrk4IxBrjB/x8OomhE=",
     "owner": "NixOS",
     "repo": "nixpkgs",
-    "rev": "a799d3e3886da994fa307f817a6bc705ae538eeb",
+    "rev": "e73de5be04e0eff4190a1432b946d469c794e7b4",
     "type": "github"
   },
   "noctalia": {
-    "lastModified": 1781217812,
-    "narHash": "sha256-fY9P8i3J09lovCQIHjU9dgvFaMVOHSNgVJAarqjrcjQ=",
+    "lastModified": 1782579392,
+    "narHash": "sha256-OWXJUaqtsLSHYKyQk3E0AVH3J4XWBvkaT7XCORHcHUo=",
     "owner": "noctalia-dev",
     "repo": "noctalia",
-    "rev": "20ff813ad9e613d497019167f6539b73b55cae57",
+    "rev": "ebf763a9bc18d8859c5e4f78f5f387137f0caa54",
     "type": "github"
   },
   "pkgs": {
@@ -80,11 +80,11 @@
     "type": "github"
   },
   "tack": {
-    "lastModified": 1780213242,
-    "narHash": "sha256-5dYWCjKBwjHOCJBlQK9iBKJxoUosTGQvI62vPBdQUgs=",
+    "lastModified": 1782581568,
+    "narHash": "sha256-8KDskLCvtSt2UQ2O4o5CSj9zphkGuywuI5DzpEy8pYs=",
     "owner": "manic-systems",
     "repo": "tack",
-    "rev": "8c574901340af860979500f24495417ce7e53cdc",
+    "rev": "50675c9e13b17d00f6fb36bf87a80ad805e56431",
     "type": "github"
   }
 }
