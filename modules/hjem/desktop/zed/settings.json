@@ -1,0 +1,86 @@
+// declared baseline for zed; gui edits get pulled back into the repo with `zed-s` (copy-type, see nushell/config.nu)
+{
+  "project_panel": {
+    "dock": "left"
+  },
+  "theme": "Noctalia Dark Transparent",
+  "format_on_save": "on",
+
+  // grammar + adapter wasm for non-core languages (html auto-installs by zed default)
+  "auto_install_extensions": {
+    "nix": true,
+    "nu": true,
+    "marksman": true
+  },
+
+  "languages": {
+    "Nix": {
+      "language_servers": ["nixd", "!nil", "..."],
+      "formatter": { "external": { "command": "nixfmt", "arguments": [] } }
+    },
+    "Nu": {
+      "formatter": {
+        "external": { "command": "nufmt", "arguments": ["--stdin"] }
+      }
+    },
+    "CSS": {
+      "prettier": { "allowed": false },
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "HTML": {
+      "prettier": { "allowed": false },
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "TypeScript": {
+      "language_servers": ["typescript-language-server", "!vtsls", "..."],
+      "prettier": { "allowed": false },
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "TSX": {
+      "language_servers": ["typescript-language-server", "!vtsls", "..."],
+      "prettier": { "allowed": false },
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "JavaScript": {
+      "language_servers": ["typescript-language-server", "!vtsls", "..."],
+      "prettier": { "allowed": false },
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "Markdown": {
+      "format_on_save": "on",
+      "language_servers": ["marksman", "..."],
+      "prettier": { "allowed": false },
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    }
+  }
+}

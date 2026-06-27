@@ -29,9 +29,9 @@ desc = "File Roller"
 for = "unix"
 
 [[opener.edit]]
-run = "emacsclient --reuse-frame --no-wait --alternate-editor= \"$@\""
+run = "zeditor \"$@\""
 orphan = true
-desc = "Emacs"
+desc = "Zed"
 for = "unix"
 
 [[opener.browser]]

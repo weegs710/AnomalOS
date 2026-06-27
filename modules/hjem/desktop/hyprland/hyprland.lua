@@ -176,7 +176,7 @@ hl.window_rule({ match = { class = "^(zen-steamchat)$" }, workspace = "1" })
 -- dev
 hl.window_rule({ match = { title = "^(ghostty)$" },  workspace = "2" })
 
-hl.window_rule({ match = { class = "^(emacs)$" },    workspace = "2" })
+hl.window_rule({ match = { class = "^(dev%.zed%.Zed)$" }, workspace = "2" })
 
 -- browser
 hl.window_rule({ match = { class = "^(zen)$", initial_title = "^(Zen Browser)$" }, workspace = "3" })

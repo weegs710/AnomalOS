@@ -108,11 +108,6 @@ let
           cmd = rmpcCmd;
         }
         {
-          key = "e";
-          desc = "weegsmacs";
-          cmd = "emacs";
-        }
-        {
           key = "z";
           desc = "zen";
           cmd = "zen";
@@ -162,6 +157,11 @@ let
               key = "y";
               desc = "yazi";
               cmd = fileManagerCmd;
+            }
+            {
+              key = "z";
+              desc = "zed";
+              cmd = "zeditor";
             }
           ];
         }

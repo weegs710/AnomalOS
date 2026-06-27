@@ -1,58 +1,79 @@
-[theme]
-mode = "dark"
-source = "builtin"
-builtin = "Eldritch"
+[audio]
+enable_overdrive = false
+enable_sounds = false
+sound_volume = 0.5
 
-[theme.templates]
-enable_builtin_templates = true
-builtin_ids = [
-  "btop",
-  "emacs",
-  "gtk3",
-  "gtk4",
-  "ghostty",
-  "hyprland",
-  "kcolorscheme",
-  "qt",
-]
-enable_community_templates = false
-community_ids = []
-
-[shell]
-font_family = "Terminess Nerd Font"
-ui_scale = 1.2
-telemetry_enabled = false
-clipboard_enabled = true
-avatar_path = "~/.local/share/wallpapers/cyberstoner.webp"
-
-[shell.animation]
-enabled = true
-speed = 1.0
-
-[shell.panel]
-transparency_mode = "soft"
-borders = true
+[bar.main]
+auto_hide = false
+background_opacity = 0.0
+capsule = true
+capsule_border = "primary"
+capsule_opacity = 0.75
+capsule_radius = 5
+center = [ "active_window", "notifications" ]
+end = [ "audio_visualizer", "volume", "tray", "clock" ]
+margin_edge = 5
+margin_ends = 5
+padding = 5
+position = "top"
+radius = 12
+reserve_space = true
+scale = 1.3799999999999999
 shadow = true
-launcher_placement = "centered"
-clipboard_placement = "centered"
-control_center_placement = "centered"
-wallpaper_placement = "attached"
-session_placement = "centered"
+start = [ "workspaces" ]
+thickness = 47
+widget_spacing = 10
 
-[wallpaper]
-enabled = true
-fill_mode = "crop"
-directory = "~/.local/share/wallpapers"
-transition = ["stripes"]
-transition_duration = 2000
-transition_on_startup = false
-edge_smoothness = 0.05
+[brightness]
+enable_ddcutil = false
 
-[wallpaper.automation]
+[idle.behavior.lock]
+command = "noctalia:session lock"
+enabled = false
+timeout = 660
+
+[idle.behavior.screen-off]
+command = "noctalia:dpms-off"
+enabled = false
+resume_command = "noctalia:dpms-on"
+timeout = 600
+
+[location]
+address = "43567"
+auto_locate = false
+
+[lockscreen]
+blur_intensity = 0.0
+blurred_desktop = false
 enabled = true
-interval_seconds = 300
-order = "random"
-recursive = true
+tint_intensity = 0.0
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [ "lockscreen-login-box@HDMI-A-2" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2"]
+    box_height = 0.0
+    box_width = 0.0
+    cx = 1280.0
+    cy = 1317.0
+    output = "HDMI-A-2"
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        input_opacity = 1.0
+        input_radius = 6.0
+        show_login_button = true
 
 [nightlight]
 enabled = true
@@ -60,97 +81,96 @@ force = true
 temperature_day = 6500
 temperature_night = 4000
 
-[weather]
-enabled = true
-unit = "fahrenheit"
-refresh_minutes = 30
-effects = true
-
-[location]
-auto_locate = false
-address = "43567"
-
-[audio]
-enable_overdrive = false
-enable_sounds = false
-sound_volume = 0.5
-
-[brightness]
-enable_ddcutil = false
-
 [notification]
+background_opacity = 1.0
 enable_daemon = true
-show_app_name = true
-show_actions = true
 layer = "overlay"
 scale = 1.0
-background_opacity = 1.0
+show_actions = true
+show_app_name = true
 
 [osd]
-position = "top_center"
-orientation = "horizontal"
-scale = 1.0
 background_opacity = 1.0
+orientation = "horizontal"
+position = "top_center"
+scale = 1.0
 
-[osd.kinds]
-volume = true
-volume_output = true
-volume_input = true
-brightness = true
-wifi = true
-bluetooth = true
-power_profile = true
+    [osd.kinds]
+    bluetooth = true
+    brightness = true
+    power_profile = true
+    volume = true
+    volume_input = true
+    volume_output = true
+    wifi = true
 
-[lockscreen]
-enabled = true
-blurred_desktop = false
-blur_intensity = 0.0
-tint_intensity = 0.0
+[plugins]
+enabled = [ "noctalia/screen_recorder" ]
+
+[shell]
+avatar_path = "~/.local/share/wallpapers/cyberstoner.webp"
+clipboard_enabled = true
+font_family = "Terminess Nerd Font"
+telemetry_enabled = false
+ui_scale = 1.2
+
+    [shell.animation]
+    enabled = true
+    speed = 1.0
+
+    [shell.panel]
+    borders = true
+    clipboard_placement = "centered"
+    control_center_placement = "centered"
+    launcher_placement = "centered"
+    session_placement = "centered"
+    shadow = true
+    transparency_mode = "soft"
+    wallpaper_placement = "attached"
 
 [system.monitor]
 enabled = true
 
-[idle.behavior.lock]
-enabled = false
-timeout = 660
-command = "noctalia:session lock"
+[theme]
+builtin = "Eldritch"
+mode = "dark"
+source = "builtin"
 
-[idle.behavior.screen-off]
-enabled = false
-timeout = 600
-command = "noctalia:dpms-off"
-resume_command = "noctalia:dpms-on"
+    [theme.templates]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "hyprland", "kcolorscheme", "qt" ]
+    community_ids = [ "zen-browser", "zed", "yazi", "hyprtoolkit" ]
+    enable_builtin_templates = true
+    enable_community_templates = true
 
-[bar.main]
-position = "top"
-thickness = 47
-background_opacity = 0.0
-radius = 12
-margin_ends = 5
-margin_edge = 5
-padding = 5
-widget_spacing = 10
-scale = 1.38
-shadow = true
-auto_hide = false
-reserve_space = true
-capsule = true
-capsule_opacity = 0.75
-capsule_border = "primary"
-capsule_radius = 5
+[wallpaper]
+directory = "~/.local/share/wallpapers"
+edge_smoothness = 0.050000000000000003
+enabled = true
+fill_mode = "crop"
+transition = [ "stripes" ]
+transition_duration = 100
+transition_on_startup = false
 
-start = ["workspaces"]
-center = ["active_window", "notifications"]
-end = ["audio_visualizer", "volume", "tray", "clock"]
+    [wallpaper.automation]
+    enabled = true
+    interval_seconds = 300
+    order = "random"
+    recursive = true
 
-[widget.workspaces]
-display = "name"
-max_label_chars = 10
-pill_scale = 1.0
-hide_when_empty = false
-focused_color = "primary"
-occupied_color = "secondary"
-empty_color = "secondary"
+    [wallpaper.default]
+    path = "/home/weegs/.local/share/wallpapers/Login Screen.webp"
+
+    [wallpaper.last]
+    path = "/home/weegs/.local/share/wallpapers/Login Screen.webp"
+
+    [wallpaper.monitors.HDMI-A-2]
+    path = "/home/weegs/.local/share/wallpapers/Login Screen.webp"
+
+[weather]
+effects = true
+enabled = true
+refresh_minutes = 30
+unit = "imperial"
 
 [widget.active_window]
 max_length = 300
@@ -159,9 +179,19 @@ title_scroll = "always"
 [widget.audio_visualizer]
 width = 200
 
+[widget.clock]
+format = """{:%-I:%M %p}
+{:%a, %d %b %Y}"""
+
 [widget.volume]
 device = "output"
 show_label = false
 
-[widget.clock]
-format = "{:%-I:%M %p}\n{:%a, %d %b %Y}"
+[widget.workspaces]
+display = "name"
+empty_color = "secondary"
+focused_color = "primary"
+hide_when_empty = false
+max_label_chars = 10
+occupied_color = "secondary"
+pill_scale = 1.0

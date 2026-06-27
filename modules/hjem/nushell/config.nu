@@ -111,6 +111,11 @@ def noct-s [] {
     noctalia config export merged | complete | get stdout | save --force ~/repo/public/anomalos/modules/hjem/desktop/noctalia/config.toml
 }
 
+# pull gui-edited zed settings back into the repo (reverse of the copy-type rebuild); --raw keeps jsonc comments verbatim
+def zed-s [] {
+    open --raw ~/.config/zed/settings.json | save --force ~/repo/public/anomalos/modules/hjem/desktop/zed/settings.json
+}
+
 alias repl = nix repl --expr 'import ~/repo/public/anomalos/repl.nix {}'
 alias cc = claude-launcher
 alias hex = claude-launcher hex

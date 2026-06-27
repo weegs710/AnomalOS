@@ -18,7 +18,7 @@ Hyprland with noctalia-shell for the bar, launcher, lock screen, and control cen
 **workspaces:**
 
 1. **comms** -- Discord (Zen web app), gajim+biboumi (XMPP+IRC)
-2. **dev** -- ghostty, emacs
+2. **dev** -- ghostty, zed
 3. **web** -- Zen Browser
 4. **games** -- steam, heroic
 5. **media** -- Jellyfin (Zen kiosk), mpv, gimp, inkscape, rmpc
@@ -69,7 +69,7 @@ wlr-which-key is the primary navigation layer. Super tap opens it for app launch
 <details>
 <summary>development</summary>
 
-- **emacs** -- primary editor with LSP for nix, python, rust, hyprlang, nushell. full config in `modules/hjem/emacs/emacs.nix`.
+- **zed** -- primary editor with LSP for nix, css, html, ts, nu, md and prettier/nixfmt/nufmt formatting. config in `modules/hjem/desktop/zed/`.
 - **devshell** -- `nix develop` drops into nushell with: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, clippy, rust-analyzer, rustfmt, dprint, typescript, typescript-language-server, nushell. see [Contributing](#contributing).
 - **Claude Code** -- AI-assisted dev, `cc` alias launches `claude-launcher` with project selection.
 - **nix-search-tv** -- `ns` for fzf-powered package search.
@@ -433,7 +433,7 @@ anomalos uses [jujutsu](https://jj-vcs.github.io/jj/latest/) in colocated mode (
 
 ```bash
 # make changes
-emacsclient -nw modules/hjem/something.nix
+zeditor modules/hjem/something.nix
 
 # check what changed
 jj s

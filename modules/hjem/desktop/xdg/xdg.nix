@@ -57,10 +57,10 @@ in
   ];
 
   environment.sessionVariables = {
-    EDITOR = "emacsclient -nw";
+    EDITOR = "zeditor --wait";
     NIXOS_OZONE_WL = "1";
     TERMINAL = "ghostty";
-    VISUAL = "emacsclient";
+    VISUAL = "zeditor --wait";
     XDG_TERMINAL_EDITOR = "ghostty";
     XDG_DATA_DIRS = [
       "$HOME/.local/share"

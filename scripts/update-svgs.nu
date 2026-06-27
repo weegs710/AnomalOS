@@ -175,7 +175,7 @@ def generate-overview [d: record] {
         ...(ov-top-card 70  "#a48cf2" "WM"       "Hyprland"       (svg-escape $d.hyprland_ver)),
         ...(ov-top-card 286 "#37f499" "SHELL"    "nu"             (svg-escape $d.nushell_ver)),
         ...(ov-top-card 502 "#04d1f9" "TERMINAL" "ghostty"        (svg-escape $d.ghostty_ver)),
-        ...(ov-top-card 718 "#f1fc79" "EDITOR"   "emacs"          (svg-escape $d.emacs_ver)),
+        ...(ov-top-card 718 "#f1fc79" "EDITOR"   "zed"            (svg-escape $d.zed_ver)),
         ...(ov-top-card 934 "#a48cf2" "UI"       "Noctalia Shell"  (svg-escape $d.noctalia_ver)),
         ...(ov-hardware 70  255 $d.hardware),
         ...(ov-fs       430 255),
@@ -604,7 +604,7 @@ def main [] {
     print "  · hyprland version...";     let hyprland_ver  = (nix-eval-raw  $assemble "HX99G.pkgs.hyprland.version")
     print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $assemble "HX99G.pkgs.nushell.version")
     print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $assemble "HX99G.pkgs.ghostty.version")
-    print "  · emacs version..."; let emacs_ver = (nix-eval-raw $assemble "HX99G.pkgs.emacs30-pgtk.version")
+    print "  · zed version..."; let zed_ver = (nix-eval-raw $assemble "HX99G.pkgs.zed-editor.version")
     # noctalia version from meson.build at the locked rev (pkgs.version is stale nixpkgs metadata)
     print "  · noctalia version..."
     let noctalia_rev  = ($lock | get "noctalia" | get rev)
@@ -693,7 +693,7 @@ def main [] {
         hyprland_ver:       $hyprland_ver
         nushell_ver:        $nushell_ver
         ghostty_ver:        $ghostty_ver
-        emacs_ver:          $emacs_ver
+        zed_ver:            $zed_ver
         noctalia_ver:       $noctalia_ver
         sys_pkg_count:      $sys_pkg_count
         user_pkg_count:     $user_pkg_count

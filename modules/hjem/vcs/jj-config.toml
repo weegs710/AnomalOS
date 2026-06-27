@@ -6,7 +6,7 @@ email = "weegs@tutamail.com"
 
 [ui]
 pager = ":builtin"
-editor = "emacsclient -nw --alternate-editor="
+editor = "zeditor --wait"
 
 [git]
 auto-local-branch = true

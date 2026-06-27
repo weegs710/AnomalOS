@@ -18,7 +18,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="50" y="85" font-size="36" fill="#ebfafa" font-weight="700">anomalOS</text>
 <rect x="270" y="68" rx="6" width="106" height="22" fill="#04d1f9" opacity="0.15" stroke="#04d1f9" stroke-width="0.5"/>
 <text x="323" y="83" font-size="10" fill="#04d1f9" font-weight="600" text-anchor="middle">ASSEMBLY</text>
-<text x="50" y="112" font-size="14" fill="#abb4da">NixOS 26.11 (Zokor)  ·  /home/weegs/repo/public/anomalos  ·  57 files  ·  11 tack pins</text>
+<text x="50" y="112" font-size="14" fill="#abb4da">NixOS 26.11 (Zokor)  ·  /home/weegs/repo/public/anomalos  ·  58 files  ·  11 tack pins</text>
 <rect x="60" y="140" rx="12" width="332" height="320" fill="none" stroke="#37f499" stroke-width="1" stroke-dasharray="4,3" opacity="0.4"/>
 <text x="76" y="160" font-size="10" fill="#37f499" font-weight="700" letter-spacing="1">FOLLOWS</text>
 <rect x="76" y="172" rx="10" width="300" height="48" fill="#212337" stroke="#a48cf2" stroke-width="1" filter="url(#glow-purple)"/>
@@ -171,13 +171,13 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="314" y="818" font-size="7" fill="#a48cf2" opacity="0.7" text-anchor="middle">nix-cachyos-kernel</text>
 <text x="56" y="838" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="68" y="838" font-size="10" fill="#abb4da">hx99g-zfs.nix</text>
 <text x="56" y="856" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="68" y="856" font-size="10" fill="#abb4da">hx99g.nix</text>
-<rect x="396" y="760" rx="12" width="330" height="510" fill="#212337" stroke="#f1fc79" stroke-width="1.5" filter="url(#glow-yellow)"/>
-<rect x="399" y="770" rx="3" width="4" height="490" fill="#f1fc79"/>
+<rect x="396" y="760" rx="12" width="330" height="528" fill="#212337" stroke="#f1fc79" stroke-width="1.5" filter="url(#glow-yellow)"/>
+<rect x="399" y="770" rx="3" width="4" height="508" fill="#f1fc79"/>
 <circle cx="418" cy="782" r="7" fill="#f1fc79" opacity="0.2"/>
 <circle cx="418" cy="782" r="4" fill="#f1fc79"/>
 <text x="434" y="786" font-size="13" fill="#ebfafa" font-weight="700">hjem</text>
 <rect x="674" y="766" rx="8" width="44" height="18" fill="#f1fc79" opacity="0.18"/>
-<text x="696" y="779" font-size="10" fill="#f1fc79" font-weight="600" text-anchor="middle">25 files</text>
+<text x="696" y="779" font-size="10" fill="#f1fc79" font-weight="600" text-anchor="middle">26 files</text>
 <text x="442" y="801" font-size="10" fill="#f1fc79" opacity="0.6">modules/hjem</text>
 <line x1="408" y1="806" x2="714" y2="806" stroke="#f1fc79" stroke-width="0.5" opacity="0.2"/>
 <text x="412" y="820" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="820" font-size="10" fill="#abb4da">bash/bash.nix</text>
@@ -188,29 +188,30 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="663" y="836" font-size="7" fill="#a48cf2" opacity="0.7" text-anchor="middle">nixpkgs</text>
 <text x="412" y="856" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="856" font-size="10" fill="#abb4da">comms.nix</text>
 <text x="412" y="874" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="874" font-size="10" fill="#abb4da">decky.nix</text>
-<text x="412" y="892" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="892" font-size="10" fill="#abb4da">desktop/ghostty.nix</text>
-<text x="412" y="910" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="910" font-size="10" fill="#abb4da">desktop/hyprland.nix</text>
-<text x="412" y="928" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="928" font-size="10" fill="#abb4da">desktop/noctalia/noctalia-v5.nix</text>
+<text x="412" y="892" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="892" font-size="10" fill="#abb4da">desktop/ghostty/ghostty.nix</text>
+<text x="412" y="910" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="910" font-size="10" fill="#abb4da">desktop/hyprland/hyprland.nix</text>
+<text x="412" y="928" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="928" font-size="10" fill="#abb4da">desktop/noctalia/noctalia.nix</text>
 <rect x="669" y="917" rx="4" width="44" height="14" fill="#a48cf2" opacity="0.15"/>
 <text x="691" y="926" font-size="7" fill="#a48cf2" opacity="0.7" text-anchor="middle">noctalia</text>
-<text x="412" y="946" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="946" font-size="10" fill="#abb4da">desktop/noctalia/noctalia.nix</text>
-<text x="412" y="964" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="964" font-size="10" fill="#abb4da">desktop/wlr-which-key.nix</text>
-<text x="412" y="982" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="982" font-size="10" fill="#abb4da">desktop/xdg/xdg.nix</text>
-<text x="412" y="1000" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1000" font-size="10" fill="#abb4da">emacs/emacs.nix</text>
-<text x="412" y="1018" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1018" font-size="10" fill="#abb4da">fastfetch.nix</text>
-<text x="412" y="1036" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1036" font-size="10" fill="#abb4da">gaming/dcss.nix</text>
-<text x="412" y="1054" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1054" font-size="10" fill="#abb4da">gaming/heroic.nix</text>
-<text x="412" y="1072" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1072" font-size="10" fill="#abb4da">gaming/mangohud.nix</text>
-<text x="412" y="1090" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1090" font-size="10" fill="#abb4da">gaming/retroarch.nix</text>
-<text x="412" y="1108" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1108" font-size="10" fill="#abb4da">music/mpd.nix</text>
-<text x="412" y="1126" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1126" font-size="10" fill="#abb4da">music/mpv.nix</text>
-<text x="412" y="1144" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1144" font-size="10" fill="#abb4da">music/rmpc.nix</text>
-<text x="412" y="1162" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1162" font-size="10" fill="#abb4da">nushell.nix</text>
-<text x="412" y="1180" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1180" font-size="10" fill="#abb4da">services.nix</text>
-<text x="412" y="1198" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1198" font-size="10" fill="#abb4da">vcs.nix</text>
-<text x="412" y="1216" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1216" font-size="10" fill="#abb4da">writing-tools.nix</text>
-<text x="412" y="1234" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1234" font-size="10" fill="#abb4da">yazi.nix</text>
-<text x="412" y="1252" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1252" font-size="10" fill="#abb4da">zen.nix</text>
+<text x="412" y="946" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="946" font-size="10" fill="#abb4da">desktop/wlr-which-key.nix</text>
+<text x="412" y="964" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="964" font-size="10" fill="#abb4da">desktop/xdg/xdg.nix</text>
+<text x="412" y="982" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="982" font-size="10" fill="#abb4da">desktop/zed/zed.nix</text>
+<text x="412" y="1000" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1000" font-size="10" fill="#abb4da">fastfetch.nix</text>
+<text x="412" y="1018" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1018" font-size="10" fill="#abb4da">gaming/am2r/am2r.nix</text>
+<text x="412" y="1036" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1036" font-size="10" fill="#abb4da">gaming/d2launcher/d2launcher.nix</text>
+<text x="412" y="1054" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1054" font-size="10" fill="#abb4da">gaming/dcss/dcss.nix</text>
+<text x="412" y="1072" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1072" font-size="10" fill="#abb4da">gaming/heroic.nix</text>
+<text x="412" y="1090" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1090" font-size="10" fill="#abb4da">gaming/mangohud/mangohud.nix</text>
+<text x="412" y="1108" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1108" font-size="10" fill="#abb4da">gaming/retroarch/retroarch.nix</text>
+<text x="412" y="1126" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1126" font-size="10" fill="#abb4da">music/mpd/mpd.nix</text>
+<text x="412" y="1144" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1144" font-size="10" fill="#abb4da">music/mpv/mpv.nix</text>
+<text x="412" y="1162" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1162" font-size="10" fill="#abb4da">music/rmpc/rmpc.nix</text>
+<text x="412" y="1180" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1180" font-size="10" fill="#abb4da">nushell/nushell.nix</text>
+<text x="412" y="1198" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1198" font-size="10" fill="#abb4da">services.nix</text>
+<text x="412" y="1216" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1216" font-size="10" fill="#abb4da">vcs/vcs.nix</text>
+<text x="412" y="1234" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1234" font-size="10" fill="#abb4da">writing-tools/writing-tools.nix</text>
+<text x="412" y="1252" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1252" font-size="10" fill="#abb4da">yazi/yazi.nix</text>
+<text x="412" y="1270" font-size="8" fill="#f1fc79" opacity="0.4">●</text><text x="424" y="1270" font-size="10" fill="#abb4da">zen.nix</text>
 <rect x="752" y="760" rx="12" width="330" height="582" fill="#212337" stroke="#f1fc79" stroke-width="1.5" filter="url(#glow-yellow)"/>
 <rect x="755" y="770" rx="3" width="4" height="562" fill="#f1fc79"/>
 <circle cx="774" cy="782" r="7" fill="#f1fc79" opacity="0.2"/>
@@ -290,5 +291,5 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="697" y="1427" font-size="7" fill="#f1fc79" font-weight="600" text-anchor="middle">pinned</text>
 <rect x="726" y="1417" rx="6" width="56" height="14" fill="#a48cf2" opacity="0.18"/>
 <text x="754" y="1427" font-size="7" fill="#a48cf2" font-weight="600" text-anchor="middle">standalone</text>
-<text x="750" y="1457" font-size="12" fill="#abb4da" text-anchor="middle">57 files  ·  11 tack pins</text>
+<text x="750" y="1457" font-size="12" fill="#abb4da" text-anchor="middle">58 files  ·  11 tack pins</text>
 </svg>
