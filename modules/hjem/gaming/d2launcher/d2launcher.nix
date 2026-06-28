@@ -7,8 +7,56 @@
 let
   username = config.mySystem.user.name;
 
-  # nixpkgs wine; the launcher's self-downloaded proton has no FHS loader on NixOS
-  wine = pkgs.wineWow64Packages.stable;
+  # MXL's Fog.dll stack-overflows on wine 10/11; nixpkgs ships 11, so wrap Kron4ek proton-8.0-2 (wine-staging 8.0) in an FHS env that supplies the 32-bit loader + freetype a bare run lacks
+  wineKron = pkgs.stdenvNoCC.mkDerivation {
+    pname = "wine-proton-kron4ek";
+    version = "8.0-2";
+    src = pkgs.fetchurl {
+      url = "https://github.com/Kron4ek/Wine-Builds/releases/download/proton-8.0-2/wine-proton-8.0-2-amd64.tar.xz";
+      hash = "sha256-+8gLGn81n3Kln1SIIJHT2LhZ1FC0kxNthRzIOC6h2V0=";
+    };
+    dontConfigure = true;
+    dontBuild = true;
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      cp -r . $out/
+      runHook postInstall
+    '';
+  };
+
+  wineFhsLibs =
+    p: with p; [
+      freetype
+      fontconfig
+      libx11
+      libxext
+      libxcursor
+      libxrandr
+      libxi
+      libxrender
+      libxfixes
+      libxcomposite
+      libxcb
+      libxxf86vm
+      libGL
+      libglvnd
+      vulkan-loader
+      alsa-lib
+      libpulseaudio
+      gnutls
+      zlib
+      stdenv.cc.cc.lib
+    ];
+
+  # multiArch=true is what installs the 32-bit ld-linux the proton build's 32-bit wine needs
+  wine = pkgs.buildFHSEnv {
+    name = "wine";
+    multiArch = true;
+    targetPkgs = wineFhsLibs;
+    multiPkgs = wineFhsLibs;
+    runScript = "${wineKron}/bin/wine";
+  };
 
   zenity = pkgs.zenity;
 
@@ -49,9 +97,21 @@ let
     installPhase = ''
       runHook preInstall
 
-      mkdir -p $out/bin $out/share/d2launcher
+      mkdir -p $out/bin $out/share/d2launcher $out/share/applications
       cp -r res $out/share/d2launcher/res
       install -Dm755 d2launcher $out/bin/d2launcher
+
+      # lives inside the package so Exec/Icon always point at the current build, never a stale hash
+      cat > $out/share/applications/d2launcher.desktop <<EOF
+      [Desktop Entry]
+      Name=Diablo II
+      Icon=$out/share/d2launcher/res/icon.svg
+      Exec=$out/bin/d2launcher
+      Type=Application
+      Terminal=false
+      StartupWMClass=zenity
+      Categories=Game;
+      EOF
 
       # zenity is called by absolute path: the script's own zenity() wrapper function shadows the bare name and breaks command -v
       substituteInPlace $out/bin/d2launcher \
@@ -61,8 +121,7 @@ let
         --replace-fail '/usr/bin/zenity' '${zenity}/bin/zenity' \
         --replace-fail '/bin/notify-send' 'notify-send' \
         --replace-fail 'SCRIPT_RES_DIR="$WORKING_DIR/res"' 'SCRIPT_RES_DIR="'$out'/share/d2launcher/res"' \
-        --replace-fail 'wine_default="$WINE_NATIVE_BIN"' 'wine_default="${wine}/bin/wine"' \
-        --replace-fail 'wine_user="$WINE_NATIVE_USERNAME"' 'wine_user="$USER"'
+        --replace-fail 'wine_default="$WINE_NATIVE_BIN"' 'wine_default="${wine}/bin/wine"'
 
       runHook postInstall
     '';
