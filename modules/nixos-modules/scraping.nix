@@ -111,58 +111,83 @@ let
         }
     }
 
-    def build-args [url: string, mode: string, is_playlist: bool, video_dir: string, playlist_dir: string]: nothing -> list<string> {
-        let format = if $mode == "lite" {
-            'bestvideo[height<=1080][height>=720]+bestaudio/bestvideo[height<=1080]+bestaudio/best[height<=1080]'
-        } else {
-            'bestvideo[vcodec^=avc]+bestaudio[acodec^=mp4a]/best'
-        }
-
+    def build-args [url: string, is_playlist: bool, staging_dir: string]: nothing -> list<string> {
         let ext = '%(ext)s'
-        let output_flags = if $is_playlist {
-            let base = [$video_dir, "playlists", $playlist_dir] | path join
-            let item = '%(playlist_index)s - %(title)s'
-            [
-                "-o" $"($base)/($item).($ext)"
-                "-o" $"description:($base)/playlist info/($item)/($item).($ext)"
-                "-o" $"infojson:($base)/playlist info/($item)/($item).($ext)"
-                "-o" $"subtitle:($base)/playlist info/($item)/($item).($ext)"
-            ]
-        } else {
-            let title = '%(title)s'
-            ["-o" $"($video_dir)/singles/($title)/($title).($ext)"]
-        }
+        let item = if $is_playlist { '%(playlist_index)s - %(title)s' } else { '%(title)s' }
+        let template = $"($staging_dir)/($item).($ext)"
 
         [
-            "-f" $format
-            "--merge-output-format" "mp4"
+            "-f" 'bestvideo[height<=1080]+bestaudio/best[height<=1080]/best'
+            "--merge-output-format" "mkv"
             "--ignore-errors"
             "--force-overwrites"
             "--no-write-playlist-metafiles"
-            "--write-description"
+            "--write-subs"
             "--write-auto-subs"
             "--sub-langs" "en"
-            "--sub-format" "srt"
+            "--convert-subs" "srt"
+            "--embed-subs"
             "--embed-metadata"
-        ] ++ $output_flags ++ [$url]
+            "--embed-chapters"
+            "--no-embed-info-json"
+            "--write-thumbnail"
+            "--convert-thumbnails" "jpg"
+            "-o" $template
+            $url
+        ]
     }
 
-    def print-intro [video_dir: string, mode: string]: nothing -> nothing {
+    # Thumbnail is re-attached rather than copied -- a copied cover stream loses its matroska attachment flag.
+    def encode-file [src: string, dest: string, log_file: string]: nothing -> bool {
+        cd /tmp
+        let stem = ($src | path parse | get stem)
+        let thumb = ($src | path dirname | path join $"($stem).jpg")
+        let attach = if ($thumb | path exists) {
+            ["-attach" $thumb "-metadata:s:t:0" "mimetype=image/jpeg" "-metadata:s:t:0" "filename=cover.jpg"]
+        } else { [] }
+
+        let args = (
+            [
+                "-hide_banner" "-loglevel" "error" "-i" $src
+                "-map" "0:v:0" "-map" "0:a" "-map" "0:s?"
+                "-c" "copy"
+                "-c:v:0" "libsvtav1" "-preset" "6" "-crf" "28" "-pix_fmt" "yuv420p10le" "-filter:v:0" "scale=-2:720"
+                "-c:a" "libopus" "-b:a" "192k" "-ac" "2"
+                "-map_metadata" "0" "-map_chapters" "0"
+            ]
+            | append $attach
+            | append ["-y" $dest]
+        )
+
+        let r = (^nix run nixpkgs#ffmpeg -- ...$args | complete)
+        if $r.exit_code != 0 {
+            let tail = ($r.stderr | lines | last 8 | str join "\n")
+            $"ENCODE FAILED ($src):\n($tail)" | write-log $log_file
+            print $"  (ansi red)encode failed:(ansi reset) ($stem)"
+            print $"  ($tail)"
+            false
+        } else {
+            print $"  (ansi green)done(ansi reset) ($dest | path basename)"
+            true
+        }
+    }
+
+    def print-intro [video_dir: string]: nothing -> nothing {
         let line = "" | fill -c '=' -w 8
-        let mode_label = if $mode == "lite" { "Lite (720-1080p, MP4)" } else { "Max (H.264, best res, MP4)" }
         print $"\n  (ansi blue)($line)(ansi reset)"
         print $"(ansi blue_bold)  Yoink!(ansi reset)"
         print $"  (ansi blue)($line)(ansi reset)"
         print "\n  YouTube Video Downloader"
-        print $"  Mode:   (ansi cyan)($mode_label)(ansi reset)"
+        print $"  Format: (ansi cyan)720p AV1 + stereo Opus, MKV (embedded subs/thumb/metadata/chapters)(ansi reset)"
         print $"  Output: (ansi cyan)($video_dir)(ansi reset)"
         print $"  For detailed usage: (ansi green)yoink --help(ansi reset)"
     }
 
-    def run-download [url: string, mode: string, verbose: bool, do_log: bool, video_dir: string]: nothing -> nothing {
+    def run-download [url: string, verbose: bool, do_log: bool, video_dir: string]: nothing -> nothing {
         let info = extract-info $url
+        let is_playlist = ($info.count > 1)
 
-        if $info.count > 1 {
+        if $is_playlist {
             print $"\n  (ansi yellow)Playlist detected: ($info.count) videos(ansi reset)"
             if not (ask-bool $"Download all ($info.count) videos?") {
                 print $"  (ansi yellow)Cancelled.(ansi reset)"
@@ -177,71 +202,74 @@ let
         let log_file = if $do_log { setup-log-file $LOG_DIR $info.title } else { "" }
 
         let sep = "" | fill -c '=' -w 48
-        let mode_label = if $mode == "lite" { "720-1080p H.264/AAC, MP4" } else { "H.264 max res + AAC, MP4" }
         print $"\n  (ansi blue)($sep)(ansi reset)"
-        if $info.count > 1 {
+        if $is_playlist {
             print $"  (ansi blue_underline)(ansi attr_bold)Playlist(ansi reset)(ansi blue) : (ansi cyan)($info.playlist_title)(ansi reset)"
             print $"  (ansi blue_underline)(ansi attr_bold)Videos(ansi reset)(ansi blue)   : (ansi cyan)($info.count)(ansi reset)"
         } else {
             print $"  (ansi blue_underline)(ansi attr_bold)Title(ansi reset)(ansi blue)    : (ansi cyan)($info.title)(ansi reset)"
         }
-        print $"  (ansi blue_underline)(ansi attr_bold)Mode(ansi reset)(ansi blue)     : (ansi cyan)($mode_label)(ansi reset)"
+        print $"  (ansi blue_underline)(ansi attr_bold)Format(ansi reset)(ansi blue)   : (ansi cyan)720p AV1 + stereo Opus, MKV(ansi reset)"
         print $"  (ansi blue_underline)(ansi attr_bold)Output(ansi reset)(ansi blue)   : (ansi cyan)($video_dir)(ansi reset)"
         print $"  (ansi blue)($sep)(ansi reset)"
 
-        let args = build-args $url $mode ($info.count > 1) $video_dir $playlist_dir
+        let staging_dir = [$video_dir, ".yoink-staging"] | path join
+        rm --recursive --force $staging_dir
+        mkdir $staging_dir
+
+        let args = build-args $url $is_playlist $staging_dir
         $"CMD: yt-dlp ($args | str join ' ')" | write-log $log_file
 
         let exit_code = run-ytdlp-stream $args $verbose $log_file
 
-        if $exit_code == 0 {
-            let info_dir = if $info.count > 1 {
-                [$video_dir, "playlists", $playlist_dir, "playlist info"] | path join
-            } else {
-                # yt-dlp sanitizes some title chars (e.g. ? → ？) so $info.title won't match the actual dir
-                ls ([$video_dir, "singles"] | path join) | where type == dir | sort-by modified --reverse | first | get name
-            }
-            let info_files = if $info.count > 1 {
-                ls $info_dir | where type == dir | each { |d|
-                    ls $d.name | where type == file | get name
-                } | flatten
-            } else {
-                ls $info_dir | where type == file | get name
-            }
-            $info_files | each { |f|
-                if ($f | str ends-with ".description") {
-                    mv $f ($f | str replace --regex '\.description$' '.description.txt')
-                } else if ($f | str ends-with ".srt") {
-                    mv $f ($f | str replace --regex '\.en\.srt$' '.transcript.txt')
-                }
-            } | ignore
-            let html = $"<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=($url)\"></head></html>"
-            if $info.count > 1 {
-                $html | save --force ([$video_dir, "playlists", $playlist_dir, "source.html"] | path join)
-            } else {
-                $html | save --force ([$info_dir, "source.html"] | path join)
-            }
-
-            print $"\n  (ansi green)Done!(ansi reset)"
-            print $"  Saved to:  ($video_dir)"
-            if ($log_file | is-not-empty) { print $"  Log: ($log_file)" }
-        } else {
+        if $exit_code != 0 {
             print $"\n  (ansi red)yt-dlp exited with code ($exit_code)(ansi reset)"
             if ($log_file | is-not-empty) { print $"  (ansi yellow)Check log: ($log_file)(ansi reset)" }
+            rm --recursive --force $staging_dir
             exit $exit_code
         }
+
+        let staged = (ls $staging_dir | where type == file | where name =~ '\.mkv$' | get name | sort)
+        if ($staged | is-empty) {
+            print $"\n  (ansi red)No video files were downloaded.(ansi reset)"
+            rm --recursive --force $staging_dir
+            return
+        }
+
+        let dest_dir = if $is_playlist {
+            [$video_dir, "playlists", $playlist_dir] | path join
+        } else {
+            [$video_dir, "singles"] | path join
+        }
+        mkdir $dest_dir
+
+        print $"\n  (ansi blue)Encoding ($staged | length) file\(s\) to 720p AV1...(ansi reset)"
+        let results = ($staged | each {|src|
+            let stem = ($src | path parse | get stem)
+            let dest = [$dest_dir, $"($stem).mkv"] | path join
+            encode-file $src $dest $log_file
+        })
+
+        rm --recursive --force $staging_dir
+
+        let n_ok = ($results | where {|b| $b } | length)
+        let n_fail = ($staged | length) - $n_ok
+        if $n_fail > 0 {
+            print $"\n  (ansi red)($n_fail) of ($staged | length) file\(s\) failed to encode.(ansi reset)"
+        }
+        print $"\n  (ansi green)Done!(ansi reset)"
+        print $"  Saved to:  ($dest_dir)"
+        if ($log_file | is-not-empty) { print $"  Log: ($log_file)" }
     }
 
     # Yoink! - YouTube Video Downloader
     def main [
         url?: string       # YouTube URL (video or playlist)
-        --lite (-l)        # 720-1080p, smaller filesize (default: max res H.264)
         --verbose (-v)     # Enable verbose yt-dlp output
         --no-log           # Disable logging to ~/.config/yoink/logs/
         --set-dir: string  # Set a new persistent default output directory
     ] {
         let video_dir = load-config $CONFIG_FILE "video_dir" $DEFAULT_VIDEO_DIR
-        let mode = if $lite { "lite" } else { "max" }
 
         if $set_dir != null {
             let new_path = $set_dir | path expand
@@ -253,7 +281,7 @@ let
 
         match $url {
             null => {
-                print-intro $video_dir $mode
+                print-intro $video_dir
 
                 mut entered_url = ""
                 loop {
@@ -263,9 +291,9 @@ let
                 }
 
                 let be_verbose = ask-bool "Enable verbose output?"
-                run-download $entered_url $mode $be_verbose true $video_dir
+                run-download $entered_url $be_verbose true $video_dir
             }
-            _ => { run-download $url $mode $verbose (not $no_log) $video_dir }
+            _ => { run-download $url $verbose (not $no_log) $video_dir }
         }
     }
   '';
