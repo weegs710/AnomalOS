@@ -155,6 +155,7 @@ hl.window_rule({ match = { title = "^(Rename)(.*)$" },        float = true })
 hl.window_rule({ match = { title = "^(Delete)(.*)$" },        float = true })
 hl.window_rule({ match = { title = "^(.*[Dd]ialog.*)$" },     float = true })
 hl.window_rule({ match = { title = "^(.*[Pp]opup.*)$" },      float = true })
+hl.window_rule({ match = { class = "^(zenity)$" },            float = true })
 
 -- auth
 hl.window_rule({ match = { class = "^(gcr-prompter)$" }, stay_focused = true, focus_on_activate = true })
@@ -190,6 +191,8 @@ hl.window_rule({ match = { class = "^(steam_app_.*)$" }, workspace = "4", opacit
 hl.window_rule({ match = { class = "^(crawl-tiles)$" },  workspace = "4" })
 hl.window_rule({ match = { title = "^(AM2R)$" },         workspace = "4" })
 hl.window_rule({ match = { class = "^(gamescope)$" },    workspace = "4", fullscreen = true, opacity = "1.0 override 1.0 override 1.0 override", focus_on_activate = true })
+hl.window_rule({ match = { class = "^(steam_proton)$", title = "^(Diablo II)$" }, workspace = "4" })
+hl.window_rule({ match = { class = "^(steam_proton)$", title = "^(D2Stats.*)$" }, float = true })
 
 -- media
 hl.window_rule({ match = { class = "^(zen-jellyfin)$" },           workspace = "5" })
