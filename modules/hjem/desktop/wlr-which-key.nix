@@ -120,7 +120,7 @@ let
         {
           key = "d";
           desc = "Median XL";
-          cmd = d2launcher;
+          cmd = "d2launcher";
         }
         # Category menus
         {
