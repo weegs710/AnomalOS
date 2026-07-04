@@ -282,8 +282,8 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- system / UI
 hl.bind("SUPER + Super_L",     hl.dsp.exec_cmd("wlr-which-key"),                                { release = true })
-hl.bind("Print",               hl.dsp.exec_cmd("wlr-which-key capture"))
-hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("wlr-which-key power"))
+hl.bind("Print",               hl.dsp.exec_cmd("wlr-which-key -k s"))
+hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("wlr-which-key -k q"))
 hl.bind("CTRL + ALT + L",      hl.dsp.exec_cmd("noctalia msg session lock"),                   { release = true })
 hl.bind(mainMod .. " + tab",   hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"),    { release = true })
 
