@@ -4,9 +4,11 @@
     system = "x86_64-linux";
     config.allowUnfree = true;
   },
+  weegsware ? (import ./.tack).pkgs.packages."x86_64-linux",
 }:
 pkgs.mkShell {
-  shellPackage = pkgs.nushell;
+  # wrapped nu so editor terminals loading this devshell keep atuin/zoxide/etc on PATH; bare pkgs.nushell shadows it and breaks the atuin hooks
+  shellPackage = weegsware.nushell;
 
   buildInputs = with pkgs; [
     basedpyright
@@ -20,7 +22,7 @@ pkgs.mkShell {
     nixd
     nixfmt
     nufmt
-    nushell
+    weegsware.nushell
     ruff
     rust-analyzer
     rustfmt

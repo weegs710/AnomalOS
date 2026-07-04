@@ -118,7 +118,7 @@ let
           cmd = jellyfinCmd;
         }
         {
-          key = "d";
+          key = "x";
           desc = "Median XL";
           cmd = "d2launcher";
         }
