@@ -117,6 +117,11 @@ let
           desc = "jellyfin";
           cmd = jellyfinCmd;
         }
+        {
+          key = "d";
+          desc = "Median XL";
+          cmd = d2launcher;
+        }
         # Category menus
         {
           key = "c";
