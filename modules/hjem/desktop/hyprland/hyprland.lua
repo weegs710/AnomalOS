@@ -1,4 +1,3 @@
-local terminal = "ghostty --title=ghostty"
 local mainMod  = "SUPER"
 
 -- monitors
@@ -170,6 +169,10 @@ hl.window_rule({ match = { initial_title = "Picture in picture" }, float = true,
 hl.window_rule({ match = { class = "^(zen-discord)$" }, workspace = "1" })
 hl.window_rule({ match = { class = "^(zen-steamchat)$" }, workspace = "1" })
 
+-- dev
+-- zeditor remotes into a running zed daemon (no exec token), oneshot only covers cold launch
+hl.window_rule({ match = { class = "^(dev%.zed%.Zed)$" }, workspace = "2" })
+
 -- browser
 hl.window_rule({ match = { class = "^(zen)$", initial_title = "^(Zen Browser)$" }, workspace = "3" })
 hl.window_rule({ match = { class = "^(zen)$" }, focus_on_activate = true })
@@ -213,7 +216,6 @@ hl.bind(mainMod .. " + O",         hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + backslash", hl.dsp.exec_cmd("hypr-pin-toggle"))
 
 -- launch
-hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal, { workspace = "2" }))
 hl.bind(mainMod .. " + Space",  hl.dsp.exec_cmd("ghostty -e yazi", { float = true, size = {1600, 900}, move = {531, 262} }))
 
 -- submap entry
@@ -243,12 +245,6 @@ hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + grave",         hl.dsp.workspace.toggle_special("stash"))
 hl.bind(mainMod .. " + SHIFT + grave", hl.dsp.window.move({ workspace = "special:stash" }))
 
--- audio
-hl.bind(mainMod .. " + pause", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"))
-hl.bind("CTRL + pause",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"))
-hl.bind(mainMod .. " + home",  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind(mainMod .. " + end",   hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
-
 -- focus movement (hypr-focus cycles layout in monocle, directional focus otherwise)
 hl.bind(mainMod .. " + left",  hl.dsp.exec_cmd("hypr-focus l"), { repeating = true })
 hl.bind(mainMod .. " + right", hl.dsp.exec_cmd("hypr-focus r"), { repeating = true })
@@ -269,7 +265,6 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind("SUPER + Super_L",     hl.dsp.exec_cmd("wlr-which-key"),                                { release = true })
 hl.bind("Print",               hl.dsp.exec_cmd("wlr-which-key -k s"))
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("wlr-which-key -k q"))
-hl.bind("CTRL + ALT + L",      hl.dsp.exec_cmd("noctalia msg session lock"),                   { release = true })
 hl.bind(mainMod .. " + tab",   hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"),    { release = true })
 
 -- resize submap
