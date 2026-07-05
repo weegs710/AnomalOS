@@ -163,21 +163,12 @@ hl.window_rule({ match = { class = "^(gcr-prompter)$" }, stay_focused = true, fo
 -- file chooser
 hl.window_rule({ match = { title = "^(termfilechooser)$" }, float = true, size = {1600, 900}, move = {531, 262}, opacity = "1.0 override 1.0 override 1.0 override" })
 
--- screenshots
-hl.window_rule({ match = { title = "^(name-shot|name-clip)$" }, float = true, size = {360, 130}, center = true, stay_focused = true, focus_on_activate = true })
-
 -- picture in picture
 hl.window_rule({ match = { initial_title = "Picture in picture" }, float = true, pin = true, size = {512, 288}, move = {2034, 62} })
 
 -- comms
-hl.window_rule({ match = { class = "^(org.gajim.Gajim)$" }, workspace = "1" })
 hl.window_rule({ match = { class = "^(zen-discord)$" }, workspace = "1" })
 hl.window_rule({ match = { class = "^(zen-steamchat)$" }, workspace = "1" })
-
--- dev
-hl.window_rule({ match = { title = "^(ghostty)$" },  workspace = "2" })
-
-hl.window_rule({ match = { class = "^(dev%.zed%.Zed)$" }, workspace = "2" })
 
 -- browser
 hl.window_rule({ match = { class = "^(zen)$", initial_title = "^(Zen Browser)$" }, workspace = "3" })
@@ -185,11 +176,8 @@ hl.window_rule({ match = { class = "^(zen)$" }, focus_on_activate = true })
 hl.window_rule({ match = { class = "^(zen)$" }, opacity = "1.0 override 1.0 override 1.0 override" })
 
 -- gaming
-hl.window_rule({ match = { class = "^(heroic)$" },       workspace = "4" })
 hl.window_rule({ match = { class = "^(steam)$" },        workspace = "4", opacity = "1.0 override 1.0 override 1.0 override" })
 hl.window_rule({ match = { class = "^(steam_app_.*)$" }, workspace = "4", opacity = "1.0 override 1.0 override 1.0 override", focus_on_activate = true })
-hl.window_rule({ match = { class = "^(crawl-tiles)$" },  workspace = "4" })
-hl.window_rule({ match = { title = "^(AM2R)$" },         workspace = "4" })
 hl.window_rule({ match = { class = "^(gamescope)$" },    workspace = "4", fullscreen = true, opacity = "1.0 override 1.0 override 1.0 override", focus_on_activate = true })
 hl.window_rule({ match = { class = "^(steam_proton)$", title = "^(Diablo II)$" }, workspace = "4" })
 hl.window_rule({ match = { class = "^(steam_proton)$", title = "^(D2Stats.*)$" }, float = true })
@@ -200,7 +188,6 @@ hl.window_rule({ match = { class = "^(zen)$", title = ".*Jellyfin.*" }, workspac
 hl.window_rule({ match = { class = "^(mpv)$" },                    workspace = "5" })
 hl.window_rule({ match = { class = "^(gimp)$" },                   workspace = "5" })
 hl.window_rule({ match = { class = "^(org%.inkscape%.Inkscape)$" }, workspace = "5" })
-hl.window_rule({ match = { title = "^(rmpc)$" },                   workspace = "5" })
 
 -- stash
 hl.window_rule({ match = { class = "^(pavucontrol)$" },                      tile = true, workspace = "special:stash" })
@@ -208,9 +195,7 @@ hl.window_rule({ match = { class = "^(org%.pulseaudio%.pavucontrol)$" },      ti
 hl.window_rule({ match = { title = "^(pulsemixer)$" },                        tile = true, workspace = "special:stash" })
 hl.window_rule({ match = { title = "^(nmtui)$" },                             tile = true, workspace = "special:stash" })
 hl.window_rule({ match = { title = "^(blueman-manager)$" },                   tile = true, workspace = "special:stash" })
-hl.window_rule({ match = { class = "^(io%.github%.ilya_zlobintsev%.LACT)$" }, float = true, workspace = "special:stash" })
 hl.window_rule({ match = { class = "^(cliphist)$" },                           float = true, workspace = "special:stash" })
-hl.window_rule({ match = { class = "^(piper)$" },                              float = true, workspace = "special:stash" })
 hl.window_rule({ match = { title = "^(btop)$" },                               float = true, workspace = "special:stash" })
 
 -- dev workspace opacity (pinned windows re-trigger dynamically)
@@ -228,7 +213,7 @@ hl.bind(mainMod .. " + O",         hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + backslash", hl.dsp.exec_cmd("hypr-pin-toggle"))
 
 -- launch
-hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal, { workspace = "2" }))
 hl.bind(mainMod .. " + Space",  hl.dsp.exec_cmd("ghostty -e yazi", { float = true, size = {1600, 900}, move = {531, 262} }))
 
 -- submap entry

@@ -26,19 +26,24 @@ let
   # sized for the polkit text prompt, not general output
   authFloat = "{ float = true, size = {900, 320}, move = {830, 560} }";
   stash = "{ workspace = 'special:stash' }";
+  stashFloat = "{ float = true, workspace = 'special:stash' }";
+  stashTile = "{ tile = true, workspace = 'special:stash' }";
+  # mirrors the name-shot/name-clip global rule in hyprland.lua
+  shotFloat = "{ float = true, size = {360, 130}, center = true, stay_focused = true, focus_on_activate = true }";
+  ws = n: "{ workspace = '${toString n}' }";
 
   noct = cmd: "noctalia msg ${cmd}";
 
-  terminalCmd = "ghostty --title=ghostty";
-  hexCmd = "ghostty --title=hex -e claude-launcher hex";
+  terminalCmd = hyprExec "ghostty --title=ghostty" (ws 2);
+  hexCmd = hyprExec "ghostty --title=hex -e claude-launcher hex" stashTile;
   jellyfinCmd = hyprExec "env MOZ_APP_LAUNCHER=zen-jellyfin zen --kiosk --profile ${homeDir}/.local/share/zen-jellyfin --no-remote http://localhost:8096" "{ workspace = '5' }";
   discordCmd = hyprExec "ghostty -e nix run nixpkgs#concord-tui" "{ workspace = '1' }";
   steamchatCmd = hyprExec "env MOZ_APP_LAUNCHER=zen-steamchat zen --profile ${homeDir}/.local/share/zen-steamchat --no-remote https://steamcommunity.com/chat" "{ workspace = '1' }";
-  facebookCmd = hyprExec "zen --no-remote --new-window https://www.facebook.com" "{ workspace = 1 }";
-  gajimCmd = hyprExec "/etc/profiles/per-user/${username}/bin/gajim" "";
+  facebookCmd = hyprExec "zen --no-remote --new-window https://www.facebook.com" (ws 1);
+  gajimCmd = hyprExec "/etc/profiles/per-user/${username}/bin/gajim" (ws 1);
   gorguruCmd = hyprExec "ghostty --title=gorguru -e ${homeDir}/repo/private/weegs.dev/dist/gorguru" stash;
-  btopCmd = hyprExec "ghostty --title=btop -e btop" bigFloat;
-  rmpcCmd = hyprExec "ghostty --title=rmpc -e rmpc" "";
+  btopCmd = hyprExec "ghostty --title=btop -e btop" stashFloat;
+  rmpcCmd = hyprExec "ghostty --title=rmpc -e rmpc" (ws 5);
   fileManagerCmd = hyprExec "ghostty -e yazi" bigFloat;
   tremcCmd = hyprExec "ghostty --title=tremc -e tremc" bigFloat;
   camListCmd = hyprExec "ghostty --title=cam-list -e nu ${./run-pause.nu} andcam-list" midFloat;
@@ -50,9 +55,9 @@ let
   shotRegionClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m region -z --clipboard-only'";
   shotWindowClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m window -z --clipboard-only'";
   shotScreenClipCmd = "nu -c 'sleep 500ms; ^hyprshot -m output -z --clipboard-only'";
-  shotRegionSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m region -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${./shot-save.nu} $fn' '';
-  shotWindowSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m window -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${./shot-save.nu} $fn' '';
-  shotScreenSaveCmd = ''nu -c 'sleep 500ms; let fn = $"/tmp/wkshot_(random int).png"; ^hyprshot -m output -z --raw | save --raw $fn; ^ghostty --title=name-shot -e nu ${./shot-save.nu} $fn' '';
+  shotRegionSaveCmd = "nu ${./shot-file.nu} region ${./shot-save.nu}";
+  shotWindowSaveCmd = "nu ${./shot-file.nu} window ${./shot-save.nu}";
+  shotScreenSaveCmd = "nu ${./shot-file.nu} output ${./shot-save.nu}";
   clipScreenCmd = "nu ${./clip-start.nu} screen";
   stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
 
@@ -163,8 +168,8 @@ let
         # hot path
         (run "Return" "ghostty" terminalCmd)
         (run "space" "launcher" (noct "panel-toggle launcher"))
-        (run "z" "zen" "zen")
-        (run "e" "zed" "zeditor")
+        (run "z" "zen" (hyprExec "zen" (ws 3)))
+        (run "e" "zed" (hyprExec "zeditor" (ws 2)))
         (run "h" "hex" hexCmd)
         (run "r" "rmpc" rmpcCmd)
         (run "j" "jellyfin" jellyfinCmd)
@@ -177,37 +182,39 @@ let
           (run "f" "facebook" facebookCmd)
         ])
         (sub "g" "games" [
-          (run "s" "steam" "steam")
-          (run "h" "heroic" "heroic")
+          (run "s" "steam" (
+            hyprExec "steam" "{ workspace = '4', opacity = '1.0 override 1.0 override 1.0 override' }"
+          ))
+          (run "h" "heroic" (hyprExec "heroic" (ws 4)))
           (run "g" "gorguru" gorguruCmd)
-          (run "c" "Dungeon Crawl Stone Soup" "crawl-tiles")
-          (run "r" "retroarch" "retroarch")
-          (run "m" "AM2R" "am2r")
+          (run "c" "Dungeon Crawl Stone Soup" (hyprExec "crawl-tiles" (ws 4)))
+          (run "r" "retroarch" (hyprExec "retroarch" (ws 4)))
+          (run "m" "AM2R" (hyprExec "am2r" (ws 4)))
           (run "x" "renegade x" "steam steam://rungameid/14947236508015263744")
           (sub "o" "openra" [
-            (run "d" "Dune 2000" "openra-d2k")
-            (run "r" "Red Alert" "openra-ra")
-            (run "c" "Tiberian Dawn" "openra-cnc")
+            (run "d" "Dune 2000" (hyprExec "openra-d2k" (ws 4)))
+            (run "r" "Red Alert" (hyprExec "openra-ra" (ws 4)))
+            (run "c" "Tiberian Dawn" (hyprExec "openra-cnc" (ws 4)))
           ])
         ])
         (sub "m" "media" [
-          (run "i" "inkscape" "inkscape")
-          (run "g" "gimp" "gimp")
-          (run "z" "zathura" "zathura")
+          (run "i" "inkscape" (hyprExec "inkscape" (ws 5)))
+          (run "g" "gimp" (hyprExec "gimp" (ws 5)))
+          (run "z" "zathura" (hyprExec "zathura" (ws 5)))
         ])
         (sub "t" "tools" [
           (run "b" "btop" btopCmd)
           (run "y" "yazi" fileManagerCmd)
-          (run "l" "lact" "lact gui")
-          (run "m" "piper" "piper")
-          (run "p" "gparted" "gparted")
-          (run "t" "protontricks" "protontricks --no-term --gui")
-          (run "u" "protonup-qt" "protonup-qt")
+          (run "l" "lact" (hyprExec "lact gui" stashFloat))
+          (run "m" "piper" (hyprExec "piper" stashFloat))
+          (run "p" "gparted" (hyprExec "gparted" stashFloat))
+          (run "t" "protontricks" (hyprExec "protontricks --no-term --gui" stashFloat))
+          (run "u" "protonup-qt" (hyprExec "protonup-qt" stashFloat))
           (run "x" "transmission" tremcCmd)
           (sub "c" "cam" [
-            (run "o" "cam on" "andcam-start")
+            (run "o" "cam on" (hyprExec "andcam-start" stashFloat))
             (run "x" "cam off" "pkill scrcpy")
-            (run "d" "cam daemon" "andcam-daemon")
+            (run "d" "cam daemon" (hyprExec "andcam-daemon" stashFloat))
             (run "l" "cam list" camListCmd)
           ])
         ])
@@ -269,7 +276,7 @@ let
 
     "post-record" = commonSettings // {
       menu = [
-        (run "s" "save clip" "ghostty --title=name-clip -e nu ${./clip-save.nu}")
+        (run "s" "save clip" (hyprExec "ghostty --title=name-clip -e nu ${./clip-save.nu}" shotFloat))
         (run "d" "discard" "rm -f /tmp/gsr_clip.mp4")
       ];
     };
