@@ -1,5 +1,10 @@
+// ghostty passes sRGB but the shader pipeline operates in linear color space
+vec3 sRGBToLinear(vec3 c) {
+    return mix(c / 12.92, pow((c + 0.055) / 1.055, vec3(2.4)), step(vec3(0.04045), c));
+}
+
 // -- CONFIGURATION --
-vec4 TRAIL_COLOR = iCurrentCursorColor;
+vec4 TRAIL_COLOR = vec4(sRGBToLinear(iCurrentCursorColor.rgb), iCurrentCursorColor.a);
 const float DURATION = 0.09;
 const float MAX_TRAIL_LENGTH = 0.2;
 const float THRESHOLD_MIN_DISTANCE = 0.0;
@@ -77,7 +82,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     float minDist = currentCursor.w * THRESHOLD_MIN_DISTANCE;
     float progress = clamp((iTime - iTimeCursorChange) / DURATION, 0.0, 1.0);
 
-    if (lineLength > minDist) {
+    // gate on progress: the collapsed trail otherwise draws a permanent cursor-sized ring that lingers at stale positions
+    // gate on iCursorVisible: cursor uniforms freeze at the last visible spot while a TUI hides the cursor (civis)
+    if (iCursorVisible != 0 && progress < 1.0 && lineLength > minDist) {
         float tail_delay_factor = MAX_TRAIL_LENGTH / lineLength;
         float isLongMove = step(MAX_TRAIL_LENGTH, lineLength);
 
