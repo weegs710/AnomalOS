@@ -20,14 +20,6 @@ url = "gh:nix-community/preservation"
 url = "gh:feel-co/hjem"
 follows = { nixpkgs = "nixpkgs" }
 
-[inputs.lix]
-url = "git+https://git.lix.systems/lix-project/lix"
-type = "fetch"
-
-[inputs.lix-module]
-url = "git+https://git.lix.systems/lix-project/nixos-module"
-follows = { lix = "lix", nixpkgs = "nixpkgs" }
-
 [inputs.nix-index-database]
 url = "gh:nix-community/nix-index-database"
 follows = { nixpkgs = "nixpkgs" }

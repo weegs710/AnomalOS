@@ -26,7 +26,6 @@ in
       inherit weegsware;
     };
     modules = moduleBundles ++ [
-      inputs.lix-module.nixosModules.default
       ./modules/hosts/hx99g-hardware.nix
       ./modules/hosts/hx99g-zfs.nix
       ./modules/hosts/hx99g.nix
