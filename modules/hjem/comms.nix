@@ -102,6 +102,17 @@ in
     chown ${username}: "$data_dir/settings.db" 2>/dev/null || true
   '';
 
+  # symlink to the tmpfs secret keeps the plaintext token off persisted disk
+  systemd.user.services.concord-credential = {
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p -m 700 %h/.local/state/concord";
+      ExecStart = "${pkgs.coreutils}/bin/ln -sfn ${config.age.secrets.concord-credential.path} %h/.local/state/concord/credentials.toml";
+    };
+  };
+
   system.activationScripts.zen-discord-setup = lib.stringAfter [ "users" ] ''
     profile_dir="/persist/home/${username}/.local/share/zen-discord"
     chrome_dir="$profile_dir/chrome"

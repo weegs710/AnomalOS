@@ -32,6 +32,12 @@ in
       owner = config.mySystem.user.name;
     };
 
+    age.secrets.concord-credential = {
+      file = ../../../secrets/concord-credential.age;
+      mode = "0400";
+      owner = config.mySystem.user.name;
+    };
+
     age.secrets.radarr-api-key = {
       file = ../../../secrets/radarr-api-key.age;
       mode = "0400";

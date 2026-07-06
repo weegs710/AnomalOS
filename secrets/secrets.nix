@@ -23,4 +23,8 @@ in
     weegs
     HX99G
   ];
+  "concord-credential.age".publicKeys = [
+    weegs
+    HX99G
+  ];
 }
