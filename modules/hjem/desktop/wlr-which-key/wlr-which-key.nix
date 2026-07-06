@@ -168,8 +168,8 @@ let
         # hot path
         (run "Return" "ghostty" terminalCmd)
         (run "space" "launcher" (noct "panel-toggle launcher"))
-        (run "z" "zen" (hyprExec "zen" (ws 3)))
-        (run "e" "zed" (hyprExec "zeditor" (ws 2)))
+        (run "z" "zen" "zen")
+        (run "e" "zed" "zeditor")
         (run "h" "hex" hexCmd)
         (run "r" "rmpc" rmpcCmd)
         (run "j" "jellyfin" jellyfinCmd)

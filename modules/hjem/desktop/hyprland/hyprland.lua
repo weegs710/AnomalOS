@@ -170,8 +170,8 @@ hl.window_rule({ match = { class = "^(zen-discord)$" }, workspace = "1" })
 hl.window_rule({ match = { class = "^(zen-steamchat)$" }, workspace = "1" })
 
 -- dev
--- zeditor remotes into a running zed daemon (no exec token), oneshot only covers cold launch
-hl.window_rule({ match = { class = "^(dev%.zed%.Zed)$" }, workspace = "2" })
+-- zed's window is opened by its daemon, not the launched process, so it carries no exec-rule token and can't be placed by a menu oneshot -- needs this class rule
+hl.window_rule({ match = { class = "^(dev.zed.Zed)$" }, workspace = "2" })
 
 -- browser
 hl.window_rule({ match = { class = "^(zen)$", initial_title = "^(Zen Browser)$" }, workspace = "3" })
@@ -190,11 +190,11 @@ hl.window_rule({ match = { class = "^(zen-jellyfin)$" },           workspace = "
 hl.window_rule({ match = { class = "^(zen)$", title = ".*Jellyfin.*" }, workspace = "5" })
 hl.window_rule({ match = { class = "^(mpv)$" },                    workspace = "5" })
 hl.window_rule({ match = { class = "^(gimp)$" },                   workspace = "5" })
-hl.window_rule({ match = { class = "^(org%.inkscape%.Inkscape)$" }, workspace = "5" })
+hl.window_rule({ match = { class = "^(org.inkscape.Inkscape)$" }, workspace = "5" })
 
 -- stash
 hl.window_rule({ match = { class = "^(pavucontrol)$" },                      tile = true, workspace = "special:stash" })
-hl.window_rule({ match = { class = "^(org%.pulseaudio%.pavucontrol)$" },      tile = true, workspace = "special:stash" })
+hl.window_rule({ match = { class = "^(org.pulseaudio.pavucontrol)$" },      tile = true, workspace = "special:stash" })
 hl.window_rule({ match = { title = "^(pulsemixer)$" },                        tile = true, workspace = "special:stash" })
 hl.window_rule({ match = { title = "^(nmtui)$" },                             tile = true, workspace = "special:stash" })
 hl.window_rule({ match = { title = "^(blueman-manager)$" },                   tile = true, workspace = "special:stash" })
