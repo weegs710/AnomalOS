@@ -19,9 +19,9 @@
     "type": "github",
     "owner": "xddxdd",
     "repo": "nix-cachyos-kernel",
-    "rev": "02b8219a7dc6dd9db5660718382555ef25fce02c",
-    "narHash": "sha256-55yKik8EoFm4istFFri5OzXxwk3ik4erB4Tn2BoOlQc=",
-    "lastModified": 1783190258
+    "rev": "cf393892e55698ed5ac49377a24476d87bd880d4",
+    "narHash": "sha256-7+9RDZQxflIV5AuRqxIh+ZK+GrFUgngAzo5wPyhxBP4=",
+    "lastModified": 1783276891
   },
   "nix-index-database": {
     "type": "github",
@@ -43,9 +43,9 @@
     "type": "github",
     "owner": "noctalia-dev",
     "repo": "noctalia",
-    "rev": "87db64f1ad856ded71a09bfae971025640a6034d",
-    "narHash": "sha256-Xeb4OSx42L2zAVACmdmMZ0veG3Ksk8c7i0mdBEMu7JU=",
-    "lastModified": 1783264446
+    "rev": "831c513f1ea0396ed4671b8d4704c0ed6bab83f4",
+    "narHash": "sha256-D4Rug29rQuvFey2BHuOb/haBfLd/8i7CrmmavbytARE=",
+    "lastModified": 1783398147
   },
   "pkgs": {
     "type": "git",
