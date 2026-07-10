@@ -115,8 +115,6 @@ in
           ".config/age"
           ".config/gh"
           ".config/jj"
-          # apps with no dedicated module yet
-          ".config/yazi"
           # emulators (saves preserved, no dedicated module)
           ".config/Ryujinx"
           ".config/ppsspp"
