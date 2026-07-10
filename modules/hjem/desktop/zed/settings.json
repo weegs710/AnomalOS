@@ -1,7 +1,32 @@
 // declared baseline for zed; gui edits get pulled back into the repo with `zed-s` (copy-type, see nushell/config.nu)
 {
+  "proxy": "",
+  "show_whitespaces": "all",
+  "toolbar": {
+    "agent_review": false,
+  },
+  "minimap": {
+    "thumb_border": "none",
+    "thumb": "hover",
+  },
+  "which_key": {
+    "enabled": true,
+  },
+  "icon_theme": "Zed (Default)",
+  "buffer_font_size": 13.0,
+  "ui_font_family": "Terminess Nerd Font",
+  "buffer_line_height": "standard",
+  "buffer_font_family": "Terminess Nerd Font Mono",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false,
+  },
+  "terminal": {
+    "font_family": "Terminess Nerd Font Mono",
+  },
   "project_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "theme": "Noctalia Dark Transparent",
   "format_on_save": "on",
@@ -10,36 +35,42 @@
   "auto_install_extensions": {
     "nix": true,
     "nu": true,
-    "marksman": true
+    "marksman": true,
   },
-
+  "title_bar": {
+    "show_branch_status_icon": true,
+    "show_onboarding_banner": false,
+    "show_sign_in": false,
+    "show_user_menu": false,
+    "show_user_picture": false,
+  },
   "languages": {
     "Nix": {
       "language_servers": ["nixd", "!nil", "..."],
-      "formatter": { "external": { "command": "nixfmt", "arguments": [] } }
+      "formatter": { "external": { "command": "nixfmt", "arguments": [] } },
     },
     "Nu": {
       "formatter": {
-        "external": { "command": "nufmt", "arguments": ["--stdin"] }
-      }
+        "external": { "command": "nufmt", "arguments": ["--stdin"] },
+      },
     },
     "CSS": {
       "prettier": { "allowed": false },
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "HTML": {
       "prettier": { "allowed": false },
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "TypeScript": {
       "language_servers": ["typescript-language-server", "!vtsls", "..."],
@@ -47,9 +78,9 @@
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "TSX": {
       "language_servers": ["typescript-language-server", "!vtsls", "..."],
@@ -57,9 +88,9 @@
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "JavaScript": {
       "language_servers": ["typescript-language-server", "!vtsls", "..."],
@@ -67,9 +98,9 @@
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "Markdown": {
       "format_on_save": "on",
@@ -78,9 +109,9 @@
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
-    }
-  }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
+    },
+  },
 }
