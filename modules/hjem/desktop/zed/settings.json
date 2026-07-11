@@ -1,5 +1,6 @@
 // declared baseline for zed; gui edits get pulled back into the repo with `zed-s` (copy-type, see nushell/config.nu)
 {
+  "vertical_scroll_margin": 999.0,
   "proxy": "",
   "show_whitespaces": "all",
   "toolbar": {
