@@ -19,6 +19,7 @@ in
   hjem.users.${username}.xdg.config.files."zed/settings.json" = {
     source = ./settings.json;
     type = "copy";
+    clobber = false;
   };
 
   # grammar/adapter wasm + the marksman binary are fetched once into .local/share/zed; persist so the tmpfs reboot doesn't re-download every boot

@@ -34,6 +34,7 @@ in
       source = wrapperScript;
       type = "copy";
       permissions = "0755";
+      clobber = false;
     };
   };
 }

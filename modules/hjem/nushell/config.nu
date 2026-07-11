@@ -102,6 +102,17 @@ def jj-commit [] {
     jj bookmark move --from 'closest_bookmark(@-)' --to @-
 }
 
+def tngl-pull [] {
+    jj git fetch --remote tangled
+    jj bookmark move main --to main@tangled
+}
+
+def tngl-push [] {
+    jj git fetch --remote tangled
+    jj git push --remote tangled
+    jj git fetch --remote tangled
+}
+
 def noct-r [] {
     systemctl --user restart noctalia
 }
@@ -129,6 +140,7 @@ alias cam-off = pkill scrcpy
 alias cam-on = andcam-start
 alias gparted = gparted-safe
 alias jj-fetch = jj git fetch --all-remotes
+alias tngl-fetch = jj git fetch --remote tangled
 alias pixel = ssh -p 8022 u0_a267@100.121.71.20
 
 def nu_greeting [] {

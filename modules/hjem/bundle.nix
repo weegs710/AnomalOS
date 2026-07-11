@@ -8,4 +8,5 @@ let
 in
 {
   imports = [ inputs.hjem.nixosModules.default ] ++ modules;
+  hjem.clobberByDefault = true;
 }

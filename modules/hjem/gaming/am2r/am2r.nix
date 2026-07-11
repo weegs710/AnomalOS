@@ -33,6 +33,7 @@ in
   hjem.users.${username}.xdg.config.files."AM2R/config.ini" = {
     source = ./config.ini;
     type = "copy";
+    clobber = false;
   };
 
   preservation.preserveAt."/persist".users.${username}.directories = [ ".config/AM2R" ];

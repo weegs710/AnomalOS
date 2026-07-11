@@ -28,6 +28,7 @@ in
     xdg.config.files."noctalia/config.toml" = {
       source = ./config.toml;
       type = "copy";
+      clobber = false;
     };
 
     # qt6ct ships no config; without an icon theme Qt resolves named icons to the missing-icon checker
