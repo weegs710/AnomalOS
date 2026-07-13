@@ -100,7 +100,6 @@ in
           "homebrew"
           "claude-projects"
           # XDG / desktop cross-cutting (no single owning module)
-          ".config/concord"
           ".config/dconf"
           ".config/gtk-3.0"
           ".config/gtk-4.0"

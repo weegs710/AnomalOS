@@ -37,7 +37,7 @@ let
   terminalCmd = hyprExec "ghostty --title=ghostty" (ws 2);
   hexCmd = hyprExec "ghostty --title=hex -e claude-launcher hex" stashTile;
   jellyfinCmd = hyprExec "env MOZ_APP_LAUNCHER=zen-jellyfin zen --kiosk --profile ${homeDir}/.local/share/zen-jellyfin --no-remote http://localhost:8096" "{ workspace = '5' }";
-  discordCmd = hyprExec "ghostty -e nix run nixpkgs#concord-tui" "{ workspace = '1' }";
+  discordCmd = hyprExec "/etc/profiles/per-user/${username}/bin/vesktop" (ws 1);
   steamchatCmd = hyprExec "env MOZ_APP_LAUNCHER=zen-steamchat zen --profile ${homeDir}/.local/share/zen-steamchat --no-remote https://steamcommunity.com/chat" "{ workspace = '1' }";
   facebookCmd = hyprExec "zen --no-remote --new-window https://www.facebook.com" (ws 1);
   gajimCmd = hyprExec "/etc/profiles/per-user/${username}/bin/gajim" (ws 1);

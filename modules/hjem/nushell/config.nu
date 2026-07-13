@@ -127,6 +127,12 @@ def zed-s [] {
     open --raw ~/.config/zed/settings.json | save --force ~/repo/public/anomalos/modules/hjem/desktop/zed/settings.json
 }
 
+# pull gui-edited vesktop + vencord settings back into the repo (reverse of the copy-type rebuild)
+def vesk-s [] {
+    open --raw ~/.config/vesktop/settings.json | save --force ~/repo/public/anomalos/modules/hjem/comms/vesktop/settings.json
+    open --raw ~/.config/vesktop/settings/settings.json | save --force ~/repo/public/anomalos/modules/hjem/comms/vesktop/vencord-settings.json
+}
+
 alias repl = nix repl --expr 'import ~/repo/public/anomalos/repl.nix {}'
 alias cc = claude-launcher
 alias hex = claude-launcher hex

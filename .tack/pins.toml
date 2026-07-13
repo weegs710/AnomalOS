@@ -33,3 +33,7 @@ url = "gh:manic-systems/tack"
 
 [inputs.noctalia]
 url = "gh:noctalia-dev/noctalia"
+
+[inputs.concord]
+url = "gh:chojs23/concord"
+follows = { nixpkgs = "nixpkgs" }

@@ -1,0 +1,7 @@
+# text-only: zed's terminal has no sixel/kitty graphics, so all image rendering is off -- attachments + emojis render as text placeholders
+[display]
+show_images = false
+disable_image_preview = true
+show_avatars = false
+media_playback = false
+show_custom_emoji = false
