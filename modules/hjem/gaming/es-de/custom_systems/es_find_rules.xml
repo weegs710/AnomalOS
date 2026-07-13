@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleList>
+  <core name="RETROARCH">
+    <rule type="corepath">
+      <entry>/etc/profiles/per-user/@USER@/lib/retroarch/cores</entry>
+    </rule>
+  </core>
+</ruleList>

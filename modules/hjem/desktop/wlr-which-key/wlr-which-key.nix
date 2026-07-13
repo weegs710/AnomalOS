@@ -188,7 +188,7 @@ let
           (run "h" "heroic" (hyprExec "heroic" (ws 4)))
           (run "g" "gorguru" gorguruCmd)
           (run "c" "Dungeon Crawl Stone Soup" (hyprExec "crawl-tiles" (ws 4)))
-          (run "r" "retroarch" (hyprExec "retroarch" (ws 4)))
+          (run "e" "ES-DE" "es-de")
           (run "m" "AM2R" (hyprExec "am2r" (ws 4)))
           (run "x" "renegade x" "steam steam://rungameid/14947236508015263744")
           (sub "o" "openra" [

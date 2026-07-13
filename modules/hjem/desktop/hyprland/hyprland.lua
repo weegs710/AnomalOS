@@ -184,6 +184,8 @@ hl.window_rule({ match = { class = "^(steam_app_.*)$" }, workspace = "4", opacit
 hl.window_rule({ match = { class = "^(gamescope)$" },    workspace = "4", fullscreen = true, opacity = "1.0 override 1.0 override 1.0 override", focus_on_activate = true })
 hl.window_rule({ match = { class = "^(steam_proton)$", title = "^(Diablo II)$" }, workspace = "4" })
 hl.window_rule({ match = { class = "^(steam_proton)$", title = "^(D2Stats.*)$" }, float = true })
+-- appimage wrapper execs es-de as a child, so the launched process has no window to carry the menu exec-rule token -- needs a class rule like zed
+hl.window_rule({ match = { class = "^(es-de)$" }, workspace = "4" })
 
 -- media
 hl.window_rule({ match = { class = "^(zen-jellyfin)$" },           workspace = "5" })

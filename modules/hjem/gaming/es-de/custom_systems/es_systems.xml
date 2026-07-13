@@ -1,0 +1,400 @@
+<?xml version="1.0"?>
+<loadExclusive />
+<systemList>
+  <system>
+    <name>amiga</name>
+    <fullname>Commodore Amiga</fullname>
+    <path>%ROMPATH%/amiga</path>
+    <extension>.adf .ADF .adz .ADZ .ccd .CCD .chd .CHD .cue .CUE .dms .DMS .fdi .FDI .hdf .HDF .hdz .HDZ .ipf .IPF .iso .ISO .lha .LHA .m3u .M3U .mds .MDS .nrg .NRG .rp9 .RP9 .uae .UAE .7z .7Z .zip .ZIP</extension>
+    <platform>amiga</platform>
+    <theme>amiga</theme>
+    <command label="puae">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/puae_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>atari2600</name>
+    <fullname>Atari 2600</fullname>
+    <path>%ROMPATH%/atari2600</path>
+    <extension>.a26 .A26 .bin .BIN .7z .7Z .zip .ZIP</extension>
+    <platform>atari2600</platform>
+    <theme>atari2600</theme>
+    <command label="stella">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/stella_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>atari5200</name>
+    <fullname>Atari 5200</fullname>
+    <path>%ROMPATH%/atari5200</path>
+    <extension>.a52 .A52 .atr .ATR .atx .ATX .bin .BIN .car .CAR .cas .CAS .cdm .CDM .com .COM .rom .ROM .xex .XEX .xfd .XFD .7z .7Z .zip .ZIP</extension>
+    <platform>atari5200</platform>
+    <theme>atari5200</theme>
+    <command label="atari800">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/atari800_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>atari7800</name>
+    <fullname>Atari 7800 ProSystem</fullname>
+    <path>%ROMPATH%/atari7800</path>
+    <extension>.a78 .A78 .bin .BIN .7z .7Z .zip .ZIP</extension>
+    <platform>atari7800</platform>
+    <theme>atari7800</theme>
+    <command label="prosystem">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/prosystem_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>atari800</name>
+    <fullname>Atari 800</fullname>
+    <path>%ROMPATH%/atari800</path>
+    <extension>.a52 .A52 .atr .ATR .atx .ATX .bin .BIN .car .CAR .cas .CAS .cdm .CDM .com .COM .rom .ROM .xex .XEX .xfd .XFD .7z .7Z .zip .ZIP</extension>
+    <platform>atari800</platform>
+    <theme>atari800</theme>
+    <command label="atari800">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/atari800_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>atarijaguar</name>
+    <fullname>Atari Jaguar</fullname>
+    <path>%ROMPATH%/atarijaguar</path>
+    <extension>.abs .ABS .bigpimg .BIGPIMG .bin .BIN .cdi .CDI .cof .COF .cue .CUE .j64 .J64 .jag .JAG .prg .PRG .rom .ROM .7z .7Z .zip .ZIP</extension>
+    <platform>atarijaguar</platform>
+    <theme>atarijaguar</theme>
+    <command label="virtualjaguar">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/virtualjaguar_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>atarilynx</name>
+    <fullname>Atari Lynx</fullname>
+    <path>%ROMPATH%/atarilynx</path>
+    <extension>.lnx .LNX .lyx .LYX .o .O .7z .7Z .zip .ZIP</extension>
+    <platform>atarilynx</platform>
+    <theme>atarilynx</theme>
+    <command label="handy">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/handy_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>atarist</name>
+    <fullname>Atari ST</fullname>
+    <path>%ROMPATH%/atarist</path>
+    <extension>.st .ST .msa .MSA .stx .STX .dim .DIM .ipf .IPF .m3u .M3U .7z .7Z .zip .ZIP</extension>
+    <platform>atarist</platform>
+    <theme>atarist</theme>
+    <command label="hatari">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/hatari_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>c64</name>
+    <fullname>Commodore 64</fullname>
+    <path>%ROMPATH%/c64</path>
+    <extension>.bin .BIN .cmd .CMD .crt .CRT .d2m .D2M .d4m .D4M .d64 .D64 .d6z .D6Z .d71 .D71 .d7z .D7Z .d80 .D80 .d81 .D81 .d82 .D82 .d8z .D8Z .g41 .G41 .g4z .G4Z .g64 .G64 .g6z .G6Z .gz .GZ .lnx .LNX .m3u .M3U .nbz .NBZ .nib .NIB .p00 .P00 .prg .PRG .t64 .T64 .tap .TAP .vfl .VFL .vsf .VSF .x64 .X64 .x6z .X6Z .7z .7Z .zip .ZIP</extension>
+    <platform>c64</platform>
+    <theme>c64</theme>
+    <command label="vice_x64">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/vice_x64_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>colecovision</name>
+    <fullname>Coleco ColecoVision</fullname>
+    <path>%ROMPATH%/colecovision</path>
+    <extension>.bin .BIN .cas .CAS .col .COL .cv .CV .dsk .DSK .m3u .M3U .mx1 .MX1 .mx2 .MX2 .myv .MYV .ri .RI .rom .ROM .sc .SC .sg .SG .7z .7Z .zip .ZIP</extension>
+    <platform>colecovision</platform>
+    <theme>colecovision</theme>
+    <command label="bluemsx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bluemsx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>fds</name>
+    <fullname>Nintendo Famicom Disk System</fullname>
+    <path>%ROMPATH%/fds</path>
+    <extension>.nes .NES .fds .FDS .unf .UNF .UNIF .UNIF .7z .7Z .zip .ZIP</extension>
+    <platform>fds</platform>
+    <theme>fds</theme>
+    <command label="nestopia">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/nestopia_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>gameandwatch</name>
+    <fullname>Nintendo Game and Watch</fullname>
+    <path>%ROMPATH%/gameandwatch</path>
+    <extension>.mgw .MGW .7z .7Z .zip .ZIP</extension>
+    <platform>gameandwatch</platform>
+    <theme>gameandwatch</theme>
+    <command label="gw">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/gw_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>gamegear</name>
+    <fullname>Sega Game Gear</fullname>
+    <path>%ROMPATH%/gamegear</path>
+    <extension>.68k .68K .bin .BIN .bms .BMS .chd .CHD .col .COL .cue .CUE .gen .GEN .gg .GG .iso .ISO .m3u .M3U .md .MD .mdx .MDX .rom .ROM .sg .SG .sgd .SGD .smd .SMD .sms .SMS .7z .7Z .zip .ZIP</extension>
+    <platform>gamegear</platform>
+    <theme>gamegear</theme>
+    <command label="genesis_plus_gx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/genesis_plus_gx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>gb</name>
+    <fullname>Nintendo Game Boy</fullname>
+    <path>%ROMPATH%/gb</path>
+    <extension>.bs .BS .cgb .CGB .dmg .DMG .gb .GB .gbc .GBC .gbx .GBX .sgb .SGB .sfc .SFC .smc .SMC .7z .7Z .zip .ZIP</extension>
+    <platform>gb</platform>
+    <theme>gb</theme>
+    <command label="gambatte">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/gambatte_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>gba</name>
+    <fullname>Nintendo Game Boy Advance</fullname>
+    <path>%ROMPATH%/gba</path>
+    <extension>.agb .AGB .bin .BIN .cgb .CGB .dmg .DMG .gb .GB .gba .GBA .gbc .GBC .gbx .GBX .sgb .SGB .7z .7Z .zip .ZIP</extension>
+    <platform>gba</platform>
+    <theme>gba</theme>
+    <command label="mgba">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mgba_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>gbc</name>
+    <fullname>Nintendo Game Boy Color</fullname>
+    <path>%ROMPATH%/gbc</path>
+    <extension>.bs .BS .cgb .CGB .dmg .DMG .gb .GB .gbc .GBC .gbx .GBX .sgb .SGB .sfc .SFC .smc .SMC .7z .7Z .zip .ZIP</extension>
+    <platform>gbc</platform>
+    <theme>gbc</theme>
+    <command label="gambatte">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/gambatte_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>genesis</name>
+    <fullname>Sega Genesis</fullname>
+    <path>%ROMPATH%/genesis</path>
+    <extension>.32x .32X .68k .68K .bin .BIN .bms .BMS .chd .CHD .cue .CUE .gen .GEN .gg .GG .iso .ISO .m3u .M3U .md .MD .mdx .MDX .sg .SG .sgd .SGD .smd .SMD .sms .SMS .7z .7Z .zip .ZIP</extension>
+    <platform>genesis</platform>
+    <theme>genesis</theme>
+    <command label="genesis_plus_gx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/genesis_plus_gx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>intellivision</name>
+    <fullname>Mattel Electronics Intellivision</fullname>
+    <path>%ROMPATH%/intellivision</path>
+    <extension>.bin .BIN .int .INT .rom .ROM .7z .7Z .zip .ZIP</extension>
+    <platform>intellivision</platform>
+    <theme>intellivision</theme>
+    <command label="freeintv">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/freeintv_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>mastersystem</name>
+    <fullname>Sega Master System</fullname>
+    <path>%ROMPATH%/mastersystem</path>
+    <extension>.68k .68K .bin .BIN .bms .BMS .chd .CHD .col .COL .cue .CUE .gen .GEN .gg .GG .iso .ISO .m3u .M3U .md .MD .mdx .MDX .rom .ROM .sg .SG .sgd .SGD .smd .SMD .sms .SMS .7z .7Z .zip .ZIP</extension>
+    <platform>mastersystem</platform>
+    <theme>mastersystem</theme>
+    <command label="genesis_plus_gx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/genesis_plus_gx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>msx</name>
+    <fullname>MSX</fullname>
+    <path>%ROMPATH%/msx</path>
+    <extension>.cas .CAS .col .COL .di1 .DI1 .di2 .DI2 .dmk .DMK .dsk .DSK .fd1 .FD1 .fd2 .FD2 .m3u .M3U .mx1 .MX1 .mx2 .MX2 .ogv .OGV .ri .RI .rom .ROM .sc .SC .sg .SG .wav .WAV .xsa .XSA .7z .7Z .zip .ZIP</extension>
+    <platform>msx</platform>
+    <theme>msx</theme>
+    <command label="bluemsx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bluemsx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>msx2</name>
+    <fullname>MSX2</fullname>
+    <path>%ROMPATH%/msx2</path>
+    <extension>.cas .CAS .col .COL .di1 .DI1 .di2 .DI2 .dmk .DMK .dsk .DSK .fd1 .FD1 .fd2 .FD2 .m3u .M3U .mx1 .MX1 .mx2 .MX2 .ogv .OGV .ri .RI .rom .ROM .sc .SC .sg .SG .wav .WAV .xsa .XSA .7z .7Z .zip .ZIP</extension>
+    <platform>msx2</platform>
+    <theme>msx2</theme>
+    <command label="bluemsx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bluemsx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>n64</name>
+    <fullname>Nintendo 64</fullname>
+    <path>%ROMPATH%/n64</path>
+    <extension>.AppImage .bin .BIN .d64 .D64 .desktop .n64 .N64 .ndd .NDD .sh .u1 .U1 .v64 .V64 .z64 .Z64 .7z .7Z .zip .ZIP</extension>
+    <platform>n64</platform>
+    <theme>n64</theme>
+    <command label="mupen64plus_next">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mupen64plus_next_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>n64dd</name>
+    <fullname>Nintendo 64DD</fullname>
+    <path>%ROMPATH%/n64dd</path>
+    <extension>.bin .BIN .d64 .D64 .n64 .N64 .ndd .NDD .u1 .U1 .v64 .V64 .z64 .Z64 .7z .7Z .zip .ZIP</extension>
+    <platform>n64</platform>
+    <theme>n64dd</theme>
+    <command label="mupen64plus_next">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mupen64plus_next_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>nes</name>
+    <fullname>Nintendo Entertainment System</fullname>
+    <path>%ROMPATH%/nes</path>
+    <extension>.3dsen .3DSEN .fds .FDS .nes .NES .unf .UNF .unif .UNIF .7z .7Z .zip .ZIP</extension>
+    <platform>nes</platform>
+    <theme>nes</theme>
+    <command label="nestopia">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/nestopia_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>ngp</name>
+    <fullname>SNK Neo Geo Pocket</fullname>
+    <path>%ROMPATH%/ngp</path>
+    <extension>.ngc .NGC .ngp .NGP .ngpc .NGPC .npc .NPC .7z .7Z .zip .ZIP</extension>
+    <platform>ngp</platform>
+    <theme>ngp</theme>
+    <command label="mednafen_ngp">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mednafen_ngp_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>ngpc</name>
+    <fullname>SNK Neo Geo Pocket Color</fullname>
+    <path>%ROMPATH%/ngpc</path>
+    <extension>.ngc .NGC .ngp .NGP .ngpc .NGPC .npc .NPC .7z .7Z .zip .ZIP</extension>
+    <platform>ngpc</platform>
+    <theme>ngpc</theme>
+    <command label="mednafen_ngp">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mednafen_ngp_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>odyssey2</name>
+    <fullname>Magnavox Odyssey 2</fullname>
+    <path>%ROMPATH%/odyssey2</path>
+    <extension>.bin .BIN .7z .7Z .zip .ZIP</extension>
+    <platform>odyssey2</platform>
+    <theme>odyssey2</theme>
+    <command label="o2em">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/o2em_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>pc98</name>
+    <fullname>NEC PC-9800 Series</fullname>
+    <path>%ROMPATH%/pc98</path>
+    <extension>.2hd .2HD .88d .88D .98d .98D .d88 .D88 .d98 .D98 .cmd .CMD .dup .DUP .fdd .FDD .fdi .FDI .hdd .HDD .hdi .HDI .hdm .HDM .hdn .HDN .m3u .M3U .nhd .NHD .tfd .TFD .thd .THD .xdf .XDF .7z .7Z .zip .ZIP</extension>
+    <platform>pc98</platform>
+    <theme>pc98</theme>
+    <command label="np2kai">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/np2kai_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>pcengine</name>
+    <fullname>NEC PC Engine</fullname>
+    <path>%ROMPATH%/pcengine</path>
+    <extension>.ccd .CCD .chd .CHD .cue .CUE .img .IMG .iso .ISO .m3u .M3U .pce .PCE .rom .ROM .sgx .SGX .toc .TOC .7z .7Z .zip .ZIP</extension>
+    <platform>pcengine</platform>
+    <theme>pcengine</theme>
+    <command label="mednafen_pce_fast">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mednafen_pce_fast_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>plus4</name>
+    <fullname>Commodore Plus/4</fullname>
+    <path>%ROMPATH%/plus4</path>
+    <extension>.bin .BIN .cmd .CMD .crt .CRT .d2m .D2M .d4m .D4M .d64 .D64 .d6z .D6Z .d71 .D71 .d7z .D7Z .d80 .D80 .d81 .D81 .d82 .D82 .d8z .D8Z .g41 .G41 .g4z .G4Z .g64 .G64 .g6z .G6Z .gz .GZ .lnx .LNX .m3u .M3U .nbz .NBZ .nib .NIB .p00 .P00 .prg .PRG .t64 .T64 .tap .TAP .vfl .VFL .vsf .VSF .x64 .X64 .x6z .X6Z .7z .7Z .zip .ZIP</extension>
+    <platform>plus4</platform>
+    <theme>plus4</theme>
+    <command label="vice_xplus4">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/vice_xplus4_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>pokemini</name>
+    <fullname>Nintendo Pokémon Mini</fullname>
+    <path>%ROMPATH%/pokemini</path>
+    <extension>.min .MIN .7z .7Z .zip .ZIP</extension>
+    <platform>pokemini</platform>
+    <theme>pokemini</theme>
+    <command label="pokemini">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/pokemini_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>satellaview</name>
+    <fullname>Nintendo Satellaview</fullname>
+    <path>%ROMPATH%/satellaview</path>
+    <extension>.bml .BML .bs .BS .fig .FIG .sfc .SFC .smc .SMC .swc .SWC .st .ST .7z .7Z .zip .ZIP</extension>
+    <platform>satellaview</platform>
+    <theme>satellaview</theme>
+    <command label="bsnes">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bsnes_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>sega32x</name>
+    <fullname>Sega Mega Drive 32X</fullname>
+    <path>%ROMPATH%/sega32x</path>
+    <extension>.32x .32X .68k .68K .bin .BIN .chd .CHD .cue .CUE .gen .GEN .iso .ISO .m3u .M3U .md .MD .smd .SMD .sms .SMS .7z .7Z .zip .ZIP</extension>
+    <platform>sega32x</platform>
+    <theme>sega32x</theme>
+    <command label="picodrive">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/picodrive_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>sg-1000</name>
+    <fullname>Sega SG-1000</fullname>
+    <path>%ROMPATH%/sg-1000</path>
+    <extension>.68k .68K .bin .BIN .bms .BMS .chd .CHD .cue .CUE .gen .GEN .gg .GG .iso .ISO .m3u .M3U .md .MD .mdx .MDX .ri .RI .rom .ROM .sg .SG .sgd .SGD .smd .SMD .sms .SMS .7z .7Z .zip .ZIP</extension>
+    <platform>sg-1000</platform>
+    <theme>sg-1000</theme>
+    <command label="genesis_plus_gx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/genesis_plus_gx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>snes</name>
+    <fullname>Nintendo SNES (Super Nintendo)</fullname>
+    <path>%ROMPATH%/snes</path>
+    <extension>.bin .BIN .bml .BML .bs .BS .bsx .BSX .dx2 .DX2 .fig .FIG .gd3 .GD3 .gd7 .GD7 .mgd .MGD .sfc .SFC .smc .SMC .st .ST .swc .SWC .7z .7Z .zip .ZIP</extension>
+    <platform>snes</platform>
+    <theme>snes</theme>
+    <command label="bsnes">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bsnes_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>sufami</name>
+    <fullname>Bandai SuFami Turbo</fullname>
+    <path>%ROMPATH%/sufami</path>
+    <extension>.bml .BML .bs .BS .fig .FIG .sfc .SFC .smc .SMC .st .ST .7z .7Z .zip .ZIP</extension>
+    <platform>sufami</platform>
+    <theme>sufami</theme>
+    <command label="bsnes">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bsnes_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>supergrafx</name>
+    <fullname>NEC SuperGrafx</fullname>
+    <path>%ROMPATH%/supergrafx</path>
+    <extension>.ccd .CCD .chd .CHD .cue .CUE .pce .PCE .rom .ROM .sgx .SGX .7z .7Z .zip .ZIP</extension>
+    <platform>supergrafx</platform>
+    <theme>supergrafx</theme>
+    <command label="mednafen_supergrafx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mednafen_supergrafx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>vectrex</name>
+    <fullname>GCE Vectrex</fullname>
+    <path>%ROMPATH%/vectrex</path>
+    <extension>.bin .BIN .gam .GAM .vc .VC .vec .VEC .7z .7Z .zip .ZIP</extension>
+    <platform>vectrex</platform>
+    <theme>vectrex</theme>
+    <command label="vecx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/vecx_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>vic20</name>
+    <fullname>Commodore VIC-20</fullname>
+    <path>%ROMPATH%/vic20</path>
+    <extension>.a0 .A0 .b0 .B0 .bin .BIN .cmd .CMD .crt .CRT .d2m .D2M .d4m .D4M .d64 .D64 .d6z .D6Z .d71 .D71 .d7z .D7Z .d80 .D80 .d81 .D81 .d82 .D82 .d8z .D8Z .g41 .G41 .g4z .G4Z .g64 .G64 .g6z .G6Z .gz .GZ .lnx .LNX .m3u .M3U .nbz .NBZ .nib .NIB .p00 .P00 .prg .PRG .rom .ROM .t64 .T64 .tap .TAP .vfl .VFL .vsf .VSF .x64 .X64 .x6z .X6Z .7z .7Z .zip .ZIP</extension>
+    <platform>vic20</platform>
+    <theme>vic20</theme>
+    <command label="vice_xvic">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/vice_xvic_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>videopac</name>
+    <fullname>Philips Videopac G7000</fullname>
+    <path>%ROMPATH%/videopac</path>
+    <extension>.bin .BIN .7z .7Z .zip .ZIP</extension>
+    <platform>odyssey2</platform>
+    <theme>videopac</theme>
+    <command label="o2em">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/o2em_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>virtualboy</name>
+    <fullname>Nintendo Virtual Boy</fullname>
+    <path>%ROMPATH%/virtualboy</path>
+    <extension>.bin .BIN .vb .VB .vboy .VBOY .7z .7Z .zip .ZIP</extension>
+    <platform>virtualboy</platform>
+    <theme>virtualboy</theme>
+    <command label="mednafen_vb">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mednafen_vb_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>wonderswan</name>
+    <fullname>Bandai WonderSwan</fullname>
+    <path>%ROMPATH%/wonderswan</path>
+    <extension>.pc2 .PC2 .ws .WS .7z .7Z .zip .ZIP</extension>
+    <platform>wonderswan</platform>
+    <theme>wonderswan</theme>
+    <command label="mednafen_wswan">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mednafen_wswan_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>wonderswancolor</name>
+    <fullname>Bandai WonderSwan Color</fullname>
+    <path>%ROMPATH%/wonderswancolor</path>
+    <extension>.pc2 .PC2 .ws .WS .wsc .WSC .7z .7Z .zip .ZIP</extension>
+    <platform>wonderswancolor</platform>
+    <theme>wonderswancolor</theme>
+    <command label="mednafen_wswan">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mednafen_wswan_libretro.so %ROM%</command>
+  </system>
+  <system>
+    <name>zxspectrum</name>
+    <fullname>Sinclair ZX Spectrum</fullname>
+    <path>%ROMPATH%/zxspectrum</path>
+    <extension>.dsk .DSK .gz .GZ .img .IMG .mgt .MGT .rzx .RZX .scl .SCL .sh .SH .sna .SNA .szx .SZX .tap .TAP .trd .TRD .tzx .TZX .udi .UDI .z80 .Z80 .7z .7Z .zip .ZIP</extension>
+    <platform>zxspectrum</platform>
+    <theme>zxspectrum</theme>
+    <command label="fuse">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/fuse_libretro.so %ROM%</command>
+  </system>
+</systemList>

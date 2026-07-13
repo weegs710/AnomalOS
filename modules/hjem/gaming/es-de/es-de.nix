@@ -1,18 +1,76 @@
 {
   config,
+  lib,
   pkgs,
-  inputs,
-  weegsware,
   ...
 }:
 let
   username = config.mySystem.user.name;
-  wrappedRetroArch = weegsware.retroarch;
+  wrappedRetroArch = pkgs.wrapRetroArch {
+    cores = with pkgs.libretro; [
+      nestopia
+      bsnes
+      mupen64plus
+      gambatte
+      mgba
+      melonds
+      genesis-plus-gx
+      picodrive
+      beetle-saturn
+      flycast
+      beetle-psx-hw
+      pcsx2
+      ppsspp
+      stella
+      beetle-pce-fast
+      beetle-supergrafx
+      atari800
+      prosystem
+      handy
+      virtualjaguar
+      hatari
+      beetle-vb
+      gw
+      pokemini
+      beetle-ngp
+      beetle-wswan
+      bluemsx
+      vice-x64
+      vice-xplus4
+      vice-xvic
+      puae
+      freeintv
+      vecx
+      o2em
+      np2kai
+      fuse
+    ];
+  };
+
+  esde = pkgs.appimageTools.wrapType2 {
+    pname = "es-de";
+    version = "3.4.1";
+    src = pkgs.fetchurl {
+      name = "ES-DE_x64.AppImage";
+      url = "https://gitlab.com/es-de/emulationstation-de/-/package_files/288156961/download";
+      sha256 = "109mfa3aag6x4gf08326cbgs09dl403ygvaqm8yicmcdfd6s8q9w";
+    };
+    extraPkgs = pkgs: [ ];
+  };
 in
 {
-  users.users.${username}.packages = [ wrappedRetroArch ];
+  users.users.${username}.packages = [
+    wrappedRetroArch
+    esde
+  ];
 
   hjem.users.${username} = {
+    files = {
+      "ES-DE/custom_systems/es_systems.xml".source = ./custom_systems/es_systems.xml;
+      "ES-DE/custom_systems/es_find_rules.xml".text =
+        lib.replaceStrings [ "@USER@" ] [ username ] (builtins.readFile ./custom_systems/es_find_rules.xml);
+    };
+
     xdg.config.files = {
       # Nestopia (NES) - docs: https://docs.libretro.com/library/nestopia/
       "retroarch/config/Nestopia UE/Nestopia UE.opt".source = ./opts/nestopia.opt;
@@ -60,5 +118,16 @@ in
 
   preservation.preserveAt."/persist".users.${username}.directories = [
     ".config/retroarch"
+    "ES-DE/settings"
+    "ES-DE/gamelists"
+    "ES-DE/downloaded_media"
+    "ES-DE/collections"
+    "ES-DE/themes"
+    "ES-DE/controllers"
+  ];
+
+  # ES-DE's default rom dir is ~/ROMs; symlink it to the collection so es_settings stays ES-DE-owned
+  systemd.user.tmpfiles.rules = [
+    "L+ %h/ROMs - - - - /mnt/games/1g1r/ROMs"
   ];
 }

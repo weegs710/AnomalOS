@@ -51,9 +51,9 @@
     "type": "git",
     "url": "https://codeberg.org/weegs710/pkgs",
     "ref": "HEAD",
-    "rev": "8610eee70e694a3e007519cb8cf2ba188d0e3941",
-    "narHash": "sha256-0olLvOQYS90sF8k6ZWEvN5dP81O2nks+CeFg4S9Fll8=",
-    "lastModified": 1783272377
+    "rev": "d72851a54c851ba74b034b339dc4bc43f0584e53",
+    "narHash": "sha256-UKjjH4kJ8c3P+iIOhJDZPAyFUp0EAlATN5FC3Mjiq4c=",
+    "lastModified": 1783918228
   },
   "preservation": {
     "type": "github",
