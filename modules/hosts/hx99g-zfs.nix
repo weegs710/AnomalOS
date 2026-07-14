@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   services.sanoid.datasets = {
     "zroot/persist" = {

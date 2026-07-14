@@ -4,13 +4,6 @@
   inputs,
   ...
 }:
-let
-  weegs = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGK6aaA7gOoqrFHRWpQi5+oQnP3cpknLLesBJHO+lGh weegs@HX99G";
-  HX99G = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAXWwfdmR+kA67bNI93fekq22tJZMqaQUgV93P5YERNf root@HX99G";
-  users = [ weegs ];
-  systems = [ HX99G ];
-  allKeys = users ++ systems;
-in
 {
   imports = [ inputs.agenix.nixosModules.default ];
   config = {

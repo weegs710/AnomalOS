@@ -55,7 +55,7 @@ let
       url = "https://gitlab.com/es-de/emulationstation-de/-/package_files/288156961/download";
       sha256 = "109mfa3aag6x4gf08326cbgs09dl403ygvaqm8yicmcdfd6s8q9w";
     };
-    extraPkgs = pkgs: [ ];
+    extraPkgs = _pkgs: [ ];
   };
 in
 {
@@ -67,8 +67,9 @@ in
   hjem.users.${username} = {
     files = {
       "ES-DE/custom_systems/es_systems.xml".source = ./custom_systems/es_systems.xml;
-      "ES-DE/custom_systems/es_find_rules.xml".text =
-        lib.replaceStrings [ "@USER@" ] [ username ] (builtins.readFile ./custom_systems/es_find_rules.xml);
+      "ES-DE/custom_systems/es_find_rules.xml".text = lib.replaceStrings [ "@USER@" ] [ username ] (
+        builtins.readFile ./custom_systems/es_find_rules.xml
+      );
     };
 
     xdg.config.files = {

@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  inputs,
   weegsware,
   ...
 }:
@@ -39,7 +38,7 @@ in
   };
 
   users.users.${config.mySystem.user.name}.packages = with pkgs; [
-    (openraPackages.engines.bleed.overrideAttrs (old: {
+    (openraPackages.engines.bleed.overrideAttrs (_old: {
       postPatch = "";
     }))
     protonup-qt

@@ -34,12 +34,14 @@ def main():
     changed = False
     for va, old, new, label in PATCHES:
         off = va - VA_BASE
-        actual = bytes(data[off:off + len(old)])
+        actual = bytes(data[off : off + len(old)])
         if actual == new:
             continue
         if actual != old:
-            sys.exit(f"FAIL {label} @0x{va:x}: expected {old.hex()} or {new.hex()} found {actual.hex()}")
-        data[off:off + len(new)] = new
+            sys.exit(
+                f"FAIL {label} @0x{va:x}: expected {old.hex()} or {new.hex()} found {actual.hex()}"
+            )
+        data[off : off + len(new)] = new
         changed = True
 
     if changed or os.path.abspath(src) != os.path.abspath(dst):
