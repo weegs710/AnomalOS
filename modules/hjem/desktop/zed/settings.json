@@ -1,5 +1,7 @@
 // declared baseline for zed; gui edits get pulled back into the repo with `zed-s` (copy-type, see nushell/config.nu)
 {
+  "preferred_line_length": 80,
+  "horizontal_scroll_margin": 999.0,
   "vertical_scroll_margin": 999.0,
   "proxy": "",
   "show_whitespaces": "all",
@@ -12,72 +14,77 @@
   "tab_size": 2,
   "diff_view_style": "unified",
   "image_viewer": {
-    "unit": "decimal"
+    "unit": "decimal",
   },
   "diagnostics": {
     "inline": {
       "enabled": true,
-      "max_severity": "error"
-    }
+      "max_severity": "error",
+    },
   },
   "indent_guides": {
+    "background_coloring": "indent_aware",
     "active_line_width": 3,
     "coloring": "indent_aware",
-    "line_width": 1
+    "line_width": 1,
   },
   "toolbar": {
     "agent_review": false,
     "breadcrumbs": false,
-    "quick_actions": false
+    "quick_actions": false,
   },
   "minimap": {
     "thumb_border": "none",
-    "thumb": "hover"
+    "thumb": "hover",
   },
   "which_key": {
-    "enabled": true
+    "delay_ms": 0,
+    "enabled": true,
   },
   "icon_theme": "Light Charmed Icons",
-  "buffer_font_size": 20.0,
-  "ui_font_size": 22.0,
+  "buffer_font_size": 16.0,
+  "ui_font_size": 18.0,
   "ui_font_family": "Terminess Nerd Font",
   "buffer_line_height": "standard",
   "buffer_font_family": "Terminess Nerd Font Mono",
   "telemetry": {
     "diagnostics": false,
     "metrics": false,
-    "anthropic_retention": false
+    "anthropic_retention": false,
   },
   "terminal": {
+    "copy_on_select": false,
+    "blinking": "on",
+    "cursor_shape": "bar",
     "font_family": "Terminess Nerd Font Mono",
-    "font_size": 16.0
+    "font_size": 14.0,
   },
   "collaboration_panel": {
-    "button": false
+    "button": false,
   },
   "outline_panel": {
-    "button": false
+    "button": false,
   },
   "git_panel": {
-    "button": false
+    "button": false,
   },
   "tab_bar": {
     "show_nav_history_buttons": false,
-    "show_tab_bar_buttons": false
+    "show_tab_bar_buttons": false,
   },
   "tabs": {
     "activate_on_close": "neighbour",
     "file_icons": true,
     "git_status": false,
-    "show_diagnostics": "errors"
+    "show_diagnostics": "errors",
   },
   "project_panel": {
     "dock": "left",
     "git_status": false,
     "hide_root": true,
     "scrollbar": {
-      "show": "never"
-    }
+      "show": "never",
+    },
   },
   "theme": "Noctalia Dark Transparent",
   "format_on_save": "on",
@@ -87,14 +94,14 @@
     "nix": true,
     "nu": true,
     "marksman": true,
-    "charmed-icons": true
+    "charmed-icons": true,
   },
   "title_bar": {
     "show_branch_status_icon": true,
     "show_onboarding_banner": false,
     "show_sign_in": false,
     "show_user_menu": false,
-    "show_user_picture": false
+    "show_user_picture": false,
   },
   "theme_overrides": {
     "Noctalia Dark Transparent": {
@@ -102,37 +109,37 @@
         "constant.comment.todo": { "color": "#fb923c" },
         "keyword.comment.warn": { "color": "#fde047" },
         "property.comment.error": { "color": "#ef4444" },
-        "string.comment.info": { "color": "#22c55e" }
-      }
-    }
+        "string.comment.info": { "color": "#22c55e" },
+      },
+    },
   },
   "languages": {
     "Nix": {
       "language_servers": ["nixd", "nil", "..."],
-      "formatter": { "external": { "command": "nixfmt", "arguments": [] } }
+      "formatter": { "external": { "command": "nixfmt", "arguments": [] } },
     },
     "Nu": {
       "formatter": {
-        "external": { "command": "nufmt", "arguments": ["--stdin"] }
-      }
+        "external": { "command": "nufmt", "arguments": ["--stdin"] },
+      },
     },
     "CSS": {
       "prettier": { "allowed": false },
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "HTML": {
       "prettier": { "allowed": false },
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "TypeScript": {
       "language_servers": ["typescript-language-server", "!vtsls", "..."],
@@ -140,9 +147,9 @@
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "TSX": {
       "language_servers": ["typescript-language-server", "!vtsls", "..."],
@@ -150,9 +157,9 @@
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "JavaScript": {
       "language_servers": ["typescript-language-server", "!vtsls", "..."],
@@ -160,9 +167,9 @@
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "Markdown": {
       "format_on_save": "on",
@@ -171,9 +178,9 @@
       "formatter": {
         "external": {
           "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"]
-        }
-      }
-    }
-  }
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
+    },
+  },
 }
