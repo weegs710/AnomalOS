@@ -214,7 +214,7 @@ hl.bind(mainMod .. " + escape",    hl.dsp.window.close())
 hl.bind(mainMod .. " + F",         hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + G",         hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + P",         hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + O",         hl.dsp.layout("togglesplit"))
+hl.bind(mainMod .. " + O",         hl.dsp.exec_cmd("hypr-split-toggle"))
 hl.bind(mainMod .. " + backslash", hl.dsp.exec_cmd("hypr-pin-toggle"))
 
 -- launch
