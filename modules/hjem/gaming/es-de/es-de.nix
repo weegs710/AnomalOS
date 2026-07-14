@@ -73,7 +73,7 @@ in
 
     xdg.config.files = {
       # Nestopia (NES) - docs: https://docs.libretro.com/library/nestopia/
-      "retroarch/config/Nestopia UE/Nestopia UE.opt".source = ./opts/nestopia.opt;
+      "retroarch/config/Nestopia/Nestopia.opt".source = ./opts/nestopia.opt;
 
       # bsnes (SNES) - docs: https://docs.libretro.com/library/bsnes_accuracy/
       "retroarch/config/bsnes/bsnes.opt".source = ./opts/bsnes.opt;
@@ -129,5 +129,7 @@ in
   # ES-DE's default rom dir is ~/ROMs; symlink it to the collection so es_settings stays ES-DE-owned
   systemd.user.tmpfiles.rules = [
     "L+ %h/ROMs - - - - /mnt/games/1g1r/ROMs"
+    # --set-shader paths resolve relative to the shader dir, so the slang pack lives here
+    "L+ %h/.config/retroarch/shaders/shaders_slang - - - - ${pkgs.libretro-shaders-slang}/share/libretro/shaders/shaders_slang"
   ];
 }

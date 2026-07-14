@@ -1,4 +1,4 @@
-nestopia_blargg_ntsc_filter = "composite"
+nestopia_blargg_ntsc_filter = "disabled"
 nestopia_palette = "cxa2025as"
 nestopia_overscan_v = "enabled"
 nestopia_overscan_h = "disabled"
