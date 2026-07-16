@@ -133,6 +133,14 @@ def vesk-s [] {
     open --raw ~/.config/vesktop/settings/settings.json | save --force ~/repo/public/anomalos/modules/hjem/comms/vesktop/vencord-settings.json
 }
 
+def space [] {
+    df -h | detect columns --guess
+}
+
+def room [] {
+    df -h . | detect columns --guess
+}
+
 alias repl = nix repl --expr 'import ~/repo/public/anomalos/repl.nix {}'
 alias cc = claude-launcher
 alias hex = claude-launcher hex
@@ -166,25 +174,6 @@ def nu_greeting [] {
 }
 
 # Zoxide integration (migrated from Fish 'z' plugin)
-export-env {
-  $env.config = (
-    $env.config?
-    | default {}
-    | upsert hooks { default {} }
-    | upsert hooks.env_change { default {} }
-    | upsert hooks.env_change.PWD { default [] }
-  )
-  let __zoxide_hooked = (
-    $env.config.hooks.env_change.PWD | any { try { get __zoxide_hook } catch { false } }
-  )
-  if not $__zoxide_hooked {
-    $env.config.hooks.env_change.PWD = ($env.config.hooks.env_change.PWD | append {
-      __zoxide_hook: true,
-      code: {|_, dir| ^zoxide add -- $dir}
-    })
-  }
-}
-
 def --env --wrapped __zoxide_z [...rest: string] {
     let path = match $rest {
         [] => { '~' }
@@ -233,6 +222,9 @@ $env.config = {
                 {
                     condition: {|before, after| $before == null }
                     code: {|| nu_greeting }
+                }
+                {
+                    code: {|_, dir| ^zoxide add -- $dir }
                 }
             ]
         }
