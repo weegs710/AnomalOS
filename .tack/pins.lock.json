@@ -11,17 +11,17 @@
     "type": "github",
     "owner": "chojs23",
     "repo": "concord",
-    "rev": "22697f5901833870a8e351979b631285205d46fe",
-    "narHash": "sha256-na2AzIQL3BtaEEhBIsXh7gGEnMhTnYcFaa/b/lX4MC0=",
-    "lastModified": 1783916384
+    "rev": "5b31996fb69b5733ddc024375414bdd0f3ee1286",
+    "narHash": "sha256-3c5jxpJrBr6vYnbcJIYD06d932Da94hXUZA5FLa3kkU=",
+    "lastModified": 1784127889
   },
   "hjem": {
     "type": "github",
     "owner": "feel-co",
     "repo": "hjem",
-    "rev": "dd0ba9e22fb46581f843e6121de33ca7a4a80224",
-    "narHash": "sha256-so1hIImuLtTKTVUokJ/6C2D2b2D4znCx+/PAjMSAnpw=",
-    "lastModified": 1782267080
+    "rev": "57f1dacffe7a2d7ad803ad224a0efa1817aa4d07",
+    "narHash": "sha256-EyBAHpQYuXAdQlIx/sja+Auw9IpHJGjE4PZ9g39I7sQ=",
+    "lastModified": 1784171173
   },
   "nix-cachyos-kernel": {
     "type": "github",
@@ -43,25 +43,25 @@
     "type": "github",
     "owner": "NixOS",
     "repo": "nixpkgs",
-    "rev": "e7a3ca8092b61ff85b6a45bf863ea2b2d6a661b3",
-    "narHash": "sha256-UgCQzxeWI75XM8G+hPrPh+MKzEPjG3SpAj7dtqSbksA=",
-    "lastModified": 1783776592
+    "rev": "753cc8a3a87467296ddd1fa93f0cc3e81120ee46",
+    "narHash": "sha256-KesHgItiZPgGX740axSiQLcIQ8D24MDqNpkKYWIek8k=",
+    "lastModified": 1784120854
   },
   "noctalia": {
     "type": "github",
     "owner": "noctalia-dev",
     "repo": "noctalia",
-    "rev": "74d16614b139a4f602c665d47ea0ce82446142fd",
-    "narHash": "sha256-sDECfE6YIdY4X2/E8WPGGU+Sz5yvgyVCavyM+9O2CGI=",
-    "lastModified": 1783973423
+    "rev": "a336b7d1b9d5175af3dd222a4571fe3e51427211",
+    "narHash": "sha256-gtwefTrgOhRoZVImkvKccqctx/dlC6Ai2wmmg1kbdX8=",
+    "lastModified": 1784257912
   },
   "pkgs": {
     "type": "git",
     "url": "https://codeberg.org/weegs710/pkgs",
     "ref": "HEAD",
-    "rev": "d72851a54c851ba74b034b339dc4bc43f0584e53",
-    "narHash": "sha256-UKjjH4kJ8c3P+iIOhJDZPAyFUp0EAlATN5FC3Mjiq4c=",
-    "lastModified": 1783918228
+    "rev": "76f9a3ec63dbc5f3065d55e6f0d2a6d5e3acbeb4",
+    "narHash": "sha256-A+PdOS1llLE2XEG5NyY5NyzedmAFfZTHjjsIZ/bwVjg=",
+    "lastModified": 1784262398
   },
   "preservation": {
     "type": "github",
