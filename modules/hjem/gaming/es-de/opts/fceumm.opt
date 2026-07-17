@@ -1,0 +1,7 @@
+fceumm_ntsc_filter = "disabled"
+fceumm_palette = "sony-cxa2025as-us"
+fceumm_overscan = "disabled"
+fceumm_overscan_v_top = "8"
+fceumm_overscan_v_bottom = "8"
+fceumm_nospritelimit = "disabled"
+fceumm_aspect = "4:3"

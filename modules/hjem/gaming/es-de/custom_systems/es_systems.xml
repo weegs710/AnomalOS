@@ -98,7 +98,7 @@
     <extension>.nes .NES .fds .FDS .unf .UNF .UNIF .UNIF .7z .7Z .zip .ZIP</extension>
     <platform>fds</platform>
     <theme>fds</theme>
-    <command label="nestopia">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/nestopia_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
+    <command label="fceumm">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/fceumm_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
   </system>
   <system>
     <name>gameandwatch</name>
@@ -209,13 +209,22 @@
     <command label="mupen64plus_next">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mupen64plus_next_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
   </system>
   <system>
+    <name>nds</name>
+    <fullname>Nintendo DS</fullname>
+    <path>%ROMPATH%/nds</path>
+    <extension>.app .APP .bin .BIN .dsi .DSI .ids .IDS .nds .NDS .7z .7Z .zip .ZIP</extension>
+    <platform>nds</platform>
+    <theme>nds</theme>
+    <command label="melonds">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/melonds_libretro.so --set-shader shaders_slang/handheld/nds-lcd-grid-v2.slangp %ROM%</command>
+  </system>
+  <system>
     <name>nes</name>
     <fullname>Nintendo Entertainment System</fullname>
     <path>%ROMPATH%/nes</path>
     <extension>.3dsen .3DSEN .fds .FDS .nes .NES .unf .UNF .unif .UNIF .7z .7Z .zip .ZIP</extension>
     <platform>nes</platform>
     <theme>nes</theme>
-    <command label="nestopia">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/nestopia_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
+    <command label="fceumm">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/fceumm_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
   </system>
   <system>
     <name>ngp</name>
@@ -287,7 +296,7 @@
     <extension>.bml .BML .bs .BS .fig .FIG .sfc .SFC .smc .SMC .swc .SWC .st .ST .7z .7Z .zip .ZIP</extension>
     <platform>satellaview</platform>
     <theme>satellaview</theme>
-    <command label="bsnes">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bsnes_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
+    <command label="snes9x">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/snes9x_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
   </system>
   <system>
     <name>sega32x</name>
@@ -314,7 +323,7 @@
     <extension>.bin .BIN .bml .BML .bs .BS .bsx .BSX .dx2 .DX2 .fig .FIG .gd3 .GD3 .gd7 .GD7 .mgd .MGD .sfc .SFC .smc .SMC .st .ST .swc .SWC .7z .7Z .zip .ZIP</extension>
     <platform>snes</platform>
     <theme>snes</theme>
-    <command label="bsnes">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bsnes_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
+    <command label="snes9x">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/snes9x_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
   </system>
   <system>
     <name>sufami</name>
@@ -323,7 +332,7 @@
     <extension>.bml .BML .bs .BS .fig .FIG .sfc .SFC .smc .SMC .st .ST .7z .7Z .zip .ZIP</extension>
     <platform>sufami</platform>
     <theme>sufami</theme>
-    <command label="bsnes">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bsnes_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
+    <command label="snes9x">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/snes9x_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
   </system>
   <system>
     <name>supergrafx</name>

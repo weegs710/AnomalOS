@@ -6,14 +6,18 @@
 }:
 let
   username = config.mySystem.user.name;
+  # upstream melonds ships an executable-stack .so (GNU_STACK RWE) this host refuses to dlopen; force noexec so retroarch can load the DS core
+  melondsFixed = pkgs.libretro.melonds.overrideAttrs (old: {
+    NIX_LDFLAGS = (old.NIX_LDFLAGS or "") + " -z noexecstack";
+  });
   wrappedRetroArch = pkgs.wrapRetroArch {
     cores = with pkgs.libretro; [
-      nestopia
-      bsnes
+      fceumm
+      snes9x
       mupen64plus
       gambatte
       mgba
-      melonds
+      melondsFixed
       genesis-plus-gx
       picodrive
       beetle-saturn
@@ -73,11 +77,12 @@ in
     };
 
     xdg.config.files = {
-      # Nestopia (NES) - docs: https://docs.libretro.com/library/nestopia/
-      "retroarch/config/Nestopia/Nestopia.opt".source = ./opts/nestopia.opt;
 
-      # bsnes (SNES) - docs: https://docs.libretro.com/library/bsnes_accuracy/
-      "retroarch/config/bsnes/bsnes.opt".source = ./opts/bsnes.opt;
+      # FCEUmm (NES) - docs: https://docs.libretro.com/library/fceumm/
+      "retroarch/config/FCEUmm/FCEUmm.opt".source = ./opts/fceumm.opt;
+
+      # Snes9x (SNES) - docs: https://docs.libretro.com/library/snes9x/
+      "retroarch/config/Snes9x/Snes9x.opt".source = ./opts/snes9x.opt;
 
       # Mupen64Plus-Next (N64) - docs: https://docs.libretro.com/library/mupen64plus/
       "retroarch/config/Mupen64Plus-Next/Mupen64Plus-Next.opt".source = ./opts/mupen64plus-next.opt;

@@ -1,0 +1,3 @@
+snes9x_aspect = "4:3"
+snes9x_overscan = "disabled"
+snes9x_hires_blend = "disabled"
