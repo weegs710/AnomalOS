@@ -54,7 +54,7 @@ let
     }
 
     def ask-bool [prompt: string]: nothing -> bool {
-        input $"  (ansi attr_bold)[?](ansi reset) ($prompt) [y/N]: " | str trim | str downcase | str starts-with "y"
+        input $"  (ansi attr_bold)[?](ansi reset) ($prompt) [y/N]: " | str trim | str lowercase | str starts-with "y"
     }
 
     def shell-quote []: string -> string {
@@ -367,7 +367,7 @@ let
 
         mut result = ""
         loop {
-            let choice = input $"  (ansi attr_bold)Your choice:(ansi reset) " | str trim | str downcase
+            let choice = input $"  (ansi attr_bold)Your choice:(ansi reset) " | str trim | str lowercase
             match $choice {
                 "s" => { $result = "skip";      break }
                 "o" => { $result = "overwrite"; break }
