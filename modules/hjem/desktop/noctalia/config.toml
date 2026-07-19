@@ -134,7 +134,8 @@ enabled = true
 [theme]
 builtin = "Eldritch"
 mode = "dark"
-source = "builtin"
+source = "custom"
+custom_palette = "Twilight"
 
 [theme.templates]
 builtin_ids = [

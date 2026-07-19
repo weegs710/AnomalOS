@@ -33,5 +33,10 @@ in
 
     # qt6ct ships no config; without an icon theme Qt resolves named icons to the missing-icon checker
     xdg.config.files."qt6ct/qt6ct.conf".source = ./qt6ct.conf;
+
+    xdg.config.files."noctalia/palettes/Twilight.json".source = ./palettes/Twilight.json;
+    xdg.config.files."noctalia/palettes/Plasm.json".source = ./palettes/Plasm.json;
+    xdg.config.files."noctalia/palettes/Great-Below.json".source = ./palettes/Great-Below.json;
+    xdg.config.files."noctalia/palettes/Cold-Wind.json".source = ./palettes/Cold-Wind.json;
   };
 }

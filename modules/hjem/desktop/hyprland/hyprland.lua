@@ -20,13 +20,6 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("dbus-update-activation-environment --systemd --all && systemctl --user start hyprland-session.target")
 end)
 
--- colors
--- local color = "rgb(rrggbb)"
-local primary   = "rgb(37f499)"
-local surface   = "rgb(212337)"
-local secondary = "rgb(04d1f9)"
-local error_col = "rgb(f16c75)"
-
 -- config
 -- hl.config({ section = { key = value } })
 hl.config({
@@ -37,27 +30,6 @@ hl.config({
         resize_on_border = false,
         allow_tearing    = false,
         layout           = "dwindle",
-        col = {
-            active_border   = primary,
-            inactive_border = surface,
-        },
-    },
-
-    group = {
-        col = {
-            border_active          = secondary,
-            border_inactive        = surface,
-            border_locked_active   = error_col,
-            border_locked_inactive = surface,
-        },
-        groupbar = {
-            col = {
-                active          = secondary,
-                inactive        = surface,
-                locked_active   = error_col,
-                locked_inactive = surface,
-            },
-        },
     },
 
     dwindle = {
@@ -278,3 +250,6 @@ hl.define_submap("resize", function()
     hl.bind("escape", hl.dsp.submap("reset"))
     hl.bind("return", hl.dsp.submap("reset"))
 end)
+
+-- pull border colors from the active noctalia palette instead of hardcoding
+pcall(function() require("noctalia").apply_theme() end)
