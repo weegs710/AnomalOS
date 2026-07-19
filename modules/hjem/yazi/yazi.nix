@@ -21,7 +21,6 @@ in
     "yazi/keymap.toml".source = ./keymap.toml;
     "yazi/theme.toml".source = ./theme.toml;
     "yazi/package.toml".source = ./package.toml;
-    "yazi/flavors".source = ./flavors;
 
     "xdg-desktop-portal-termfilechooser/config".text = lib.replaceStrings [ "@USER@" ] [ username ] (
       builtins.readFile ./termfilechooser-config
