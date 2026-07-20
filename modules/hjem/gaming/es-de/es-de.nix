@@ -61,11 +61,21 @@ let
     };
     extraPkgs = _pkgs: [ ];
   };
+
+  # flat display makes crt-geom's default barrel curvature read as distortion, not CRT
+  mameBgfxFlat = pkgs.runCommand "mame-bgfx-flat" { } ''
+    cp -rs ${pkgs.mame}/opt/mame/bgfx $out
+    chmod -R u+w $out
+    rm $out/chains/crt-geom.json
+    ${pkgs.jq}/bin/jq '(.sliders[] | select(.name == "curvature" or .name == "cornersize")).default = 0.0' \
+      ${pkgs.mame}/opt/mame/bgfx/chains/crt-geom.json > $out/chains/crt-geom.json
+  '';
 in
 {
   users.users.${username}.packages = [
     wrappedRetroArch
     esde
+    pkgs.mame
   ];
 
   hjem.users.${username} = {
@@ -74,6 +84,12 @@ in
       "ES-DE/custom_systems/es_find_rules.xml".text = lib.replaceStrings [ "@USER@" ] [ username ] (
         builtins.readFile ./custom_systems/es_find_rules.xml
       );
+
+      ".mame/mame.ini".text = ''
+        video                bgfx
+        bgfx_screen_chains   crt-geom
+        bgfx_path            ${mameBgfxFlat}
+      '';
     };
 
     xdg.config.files = {
@@ -130,6 +146,7 @@ in
     "ES-DE/collections"
     "ES-DE/themes"
     "ES-DE/controllers"
+    ".mame"
   ];
 
   # ES-DE's default rom dir is ~/ROMs; symlink it to the collection so es_settings stays ES-DE-owned

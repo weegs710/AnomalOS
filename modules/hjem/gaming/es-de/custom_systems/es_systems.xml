@@ -406,4 +406,13 @@
     <theme>zxspectrum</theme>
     <command label="fuse">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/fuse_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-pal.slangp %ROM%</command>
   </system>
+  <system>
+    <name>mame</name>
+    <fullname>Multiple Arcade Machine Emulator</fullname>
+    <path>%ROMPATH%/mame</path>
+    <extension>.zip .ZIP .7z .7Z</extension>
+    <platform>arcade</platform>
+    <theme>mame</theme>
+    <command label="MAME (Standalone)">%STARTDIR%=~/.mame %EMULATOR_MAME% -rompath %GAMEDIR%\;%ROMPATH%/mame %BASENAME%</command>
+  </system>
 </systemList>
