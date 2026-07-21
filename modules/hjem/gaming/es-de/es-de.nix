@@ -89,6 +89,9 @@ in
         video                bgfx
         bgfx_screen_chains   crt-geom
         bgfx_path            ${mameBgfxFlat}
+        mouse                1
+        lightgun             1
+        lightgun_device      mouse
       '';
     };
 
