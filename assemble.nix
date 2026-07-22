@@ -14,7 +14,13 @@ sprinkles.new {
       lib = inputs.nixpkgs.lib;
       inherit (lib.fileset) toList fileFilter;
 
-      weegsware = inputs.pkgs.packages.${system};
+      weegswarePkgs = import inputs.nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+      weegsware = lib.foldl' (acc: f: acc // import f { pkgs = weegswarePkgs; inherit lib; }) { } (
+        toList (fileFilter (f: f.hasExt "nix" && !(lib.hasPrefix "_" f.name)) ./weegsware)
+      );
 
       moduleBundles = map (b: import b { inherit inputs; }) (
         toList (fileFilter (f: f.name == "bundle.nix") ./modules)

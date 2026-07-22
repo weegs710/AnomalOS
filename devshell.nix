@@ -4,7 +4,7 @@
     system = "x86_64-linux";
     config.allowUnfree = true;
   },
-  weegsware ? (import ./.tack).pkgs.packages."x86_64-linux",
+  weegsware ? (import ./assemble.nix { }).packages."x86_64-linux",
 }:
 pkgs.mkShell {
   # wrapped nu so editor terminals loading this devshell keep atuin/zoxide/etc on PATH; bare pkgs.nushell shadows it and breaks the atuin hooks

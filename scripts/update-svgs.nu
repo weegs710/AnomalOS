@@ -432,7 +432,7 @@ def generate-diagram [d: record] {
     let box_hosts = (diag-module-box ($mod_xs | get 0) $mod_y "hosts"         "modules/hosts"         $d.hosts_files      $d.file_inputs "#f1fc79")
     let box_hjem  = (diag-module-box ($mod_xs | get 1) $mod_y "hjem"          "modules/hjem"          $d.hjem_files       $d.file_inputs "#f1fc79")
     let box_nixos = (diag-module-box ($mod_xs | get 2) $mod_y "nixos-modules" "modules/nixos-modules" $d.nixos_files      $d.file_inputs "#f1fc79")
-    let box_weegsware = (diag-module-box ($mod_xs | get 3) $mod_y "weegsware" "inputs.pkgs" $d.weegsware_pkgs {} "#a48cf2" --unit "pkg")
+    let box_weegsware = (diag-module-box ($mod_xs | get 3) $mod_y "weegsware" "./weegsware" $d.weegsware_pkgs {} "#a48cf2" --unit "pkg")
 
     # ── Tree lines: modules root → child dirs ────────────────────────────────
     let tree_y  = $mod_root_bottom + 4
@@ -677,7 +677,7 @@ def main [] {
         gc:         (if (nix-eval-bool $assemble "nixosConfigurations.HX99G.config.nix.gc.automatic") { (if ($gc_days | is-empty) { "daily" } else { $"daily (char -u '00b7') ($gc_days)" }) } else { "off" })
     }
 
-    let weegsware_pkgs = (try { ^nix eval --impure --json --expr $"\(import ($dotfiles)/.tack\).pkgs.packages.x86_64-linux" --apply 'builtins.attrNames' | from json | sort } catch { [] })
+    let weegsware_pkgs = (try { ^nix eval --impure --json -f $assemble packages.x86_64-linux --apply 'builtins.attrNames' | from json | sort } catch { [] })
 
     let gmods = (glob $"($dotfiles)/modules/hjem/gaming/*.nix" | each { $in | path parse | get stem } | sort)
     mut gaming = $gmods

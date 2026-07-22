@@ -24,10 +24,6 @@ follows = { nixpkgs = "nixpkgs" }
 url = "gh:nix-community/nix-index-database"
 follows = { nixpkgs = "nixpkgs" }
 
-[inputs.pkgs]
-url = "cb:weegs710/pkgs"
-follows = { nixpkgs = "nixpkgs" }
-
 [inputs.tack]
 url = "gh:manic-systems/tack"
 

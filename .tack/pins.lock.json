@@ -55,14 +55,6 @@
     "narHash": "sha256-gtwefTrgOhRoZVImkvKccqctx/dlC6Ai2wmmg1kbdX8=",
     "lastModified": 1784257912
   },
-  "pkgs": {
-    "type": "git",
-    "url": "https://codeberg.org/weegs710/pkgs",
-    "ref": "HEAD",
-    "rev": "76f9a3ec63dbc5f3065d55e6f0d2a6d5e3acbeb4",
-    "narHash": "sha256-A+PdOS1llLE2XEG5NyY5NyzedmAFfZTHjjsIZ/bwVjg=",
-    "lastModified": 1784262398
-  },
   "preservation": {
     "type": "github",
     "owner": "nix-community",
