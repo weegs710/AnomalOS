@@ -2,27 +2,28 @@
 gh = "github:{path}"
 cb = "git+https://codeberg.org/{path}"
 
+[all_follow]
+nixpkgs = "nixpkgs"
+
 [inputs.nixpkgs]
 url = "gh:NixOS/nixpkgs/nixos-unstable"
 
 # Not followed -- the cached build is keyed to its own pinned nixpkgs; following forces a local recompile.
 [inputs.nix-cachyos-kernel]
 url = "gh:xddxdd/nix-cachyos-kernel/release"
+exclude_follow = ["nixpkgs"]
 
 [inputs.agenix]
 url = "gh:ryantm/agenix"
-follows = { nixpkgs = "nixpkgs" }
 
 [inputs.preservation]
 url = "gh:nix-community/preservation"
 
 [inputs.hjem]
 url = "gh:feel-co/hjem"
-follows = { nixpkgs = "nixpkgs" }
 
 [inputs.nix-index-database]
 url = "gh:nix-community/nix-index-database"
-follows = { nixpkgs = "nixpkgs" }
 
 [inputs.tack]
 url = "gh:manic-systems/tack"
@@ -32,4 +33,3 @@ url = "gh:noctalia-dev/noctalia"
 
 [inputs.concord]
 url = "gh:chojs23/concord"
-follows = { nixpkgs = "nixpkgs" }
