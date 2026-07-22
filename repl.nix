@@ -9,7 +9,7 @@
 let
   inputs = import ./.tack;
   inherit (inputs.nixpkgs) lib;
-  hosts = import ./assemble.nix;
+  hosts = (import ./assemble.nix { }).nixosConfigurations;
 
   # Build attrs for each host: <name> = config, <name>Opts = mySystem
   hostAttrs = lib.mergeAttrsList (

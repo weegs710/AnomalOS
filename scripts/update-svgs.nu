@@ -601,10 +601,10 @@ def main [] {
 
     let assemble = $"($dotfiles)/assemble.nix"
 
-    print "  · hyprland version...";     let hyprland_ver  = (nix-eval-raw  $assemble "HX99G.pkgs.hyprland.version")
-    print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $assemble "HX99G.pkgs.nushell.version")
-    print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $assemble "HX99G.pkgs.ghostty.version")
-    print "  · zed version..."; let zed_ver = (nix-eval-raw $assemble "HX99G.pkgs.zed-editor.version")
+    print "  · hyprland version...";     let hyprland_ver  = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.hyprland.version")
+    print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.nushell.version")
+    print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.ghostty.version")
+    print "  · zed version..."; let zed_ver = (nix-eval-raw $assemble "nixosConfigurations.HX99G.pkgs.zed-editor.version")
     # noctalia version from meson.build at the locked rev (pkgs.version is stale nixpkgs metadata)
     print "  · noctalia version..."
     let noctalia_rev  = ($lock | get "noctalia" | get rev)
@@ -628,8 +628,8 @@ def main [] {
             $"v($base)"
         } else { "?" }
     )
-    print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $assemble "HX99G.config.environment.systemPackages")
-    print "  · user package count...";   let user_pkg_count = (nix-eval-count $assemble "HX99G.config.users.users.weegs.packages")
+    print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $assemble "nixosConfigurations.HX99G.config.environment.systemPackages")
+    print "  · user package count...";   let user_pkg_count = (nix-eval-count $assemble "nixosConfigurations.HX99G.config.users.users.weegs.packages")
     let total_pkgs = $sys_pkg_count + $user_pkg_count
 
     print "  · closure size (slow)..."
@@ -640,9 +640,9 @@ def main [] {
     } catch { 0 })
     let closure_size = if $closure_bytes > 0 { format-bytes $closure_bytes } else { "?" }
 
-    print "  · nixos version...";   let nixos_release   = (nix-eval-raw $assemble "HX99G.config.system.nixos.release")
-    print "  · nixos codename...";  let nixos_codename  = (nix-eval-raw $assemble "HX99G.config.system.nixos.codeName")
-    print "  · kernel version...";  let linux_version   = (nix-eval-raw $assemble "HX99G.config.boot.kernelPackages.kernel.modDirVersion")
+    print "  · nixos version...";   let nixos_release   = (nix-eval-raw $assemble "nixosConfigurations.HX99G.config.system.nixos.release")
+    print "  · nixos codename...";  let nixos_codename  = (nix-eval-raw $assemble "nixosConfigurations.HX99G.config.system.nixos.codeName")
+    print "  · kernel version...";  let linux_version   = (nix-eval-raw $assemble "nixosConfigurations.HX99G.config.boot.kernelPackages.kernel.modDirVersion")
     let nixos_version = $"($nixos_release) \(($nixos_codename)\)"
 
     # ── Live hardware probe (runs on the rig itself) ──────────────────────────
@@ -665,16 +665,16 @@ def main [] {
     # ── System / gaming / weegsware (config eval) ─────────────────────────────
     print "→ Evaluating system / gaming / weegsware..."
     let dm = (["ly" "gdm" "sddm" "greetd"] | where {|d|
-        let r = (^nix eval --impure -f $assemble $"HX99G.config.services.displayManager.($d).enable" | complete)
+        let r = (^nix eval --impure -f $assemble $"nixosConfigurations.HX99G.config.services.displayManager.($d).enable" | complete)
         ($r.exit_code == 0) and (($r.stdout | str trim) == "true")
     } | get -o 0 | default "?")
-    let gc_days = (nix-eval-raw $assemble "HX99G.config.nix.gc.options" | parse --regex '(?<d>[0-9]+d)' | get -o d.0 | default "")
+    let gc_days = (nix-eval-raw $assemble "nixosConfigurations.HX99G.config.nix.gc.options" | parse --regex '(?<d>[0-9]+d)' | get -o d.0 | default "")
     let system = {
         dm:         $dm
-        bootloader: (if (nix-eval-bool $assemble "HX99G.config.boot.loader.systemd-boot.enable") { "systemd-boot" } else if (nix-eval-bool $assemble "HX99G.config.boot.loader.grub.enable") { "grub" } else { "?" })
-        user:       (nix-eval-raw $assemble "HX99G.config.mySystem.user.name")
-        optimise:   (if (nix-eval-bool $assemble "HX99G.config.nix.optimise.automatic") { "daily" } else { "off" })
-        gc:         (if (nix-eval-bool $assemble "HX99G.config.nix.gc.automatic") { (if ($gc_days | is-empty) { "daily" } else { $"daily (char -u '00b7') ($gc_days)" }) } else { "off" })
+        bootloader: (if (nix-eval-bool $assemble "nixosConfigurations.HX99G.config.boot.loader.systemd-boot.enable") { "systemd-boot" } else if (nix-eval-bool $assemble "nixosConfigurations.HX99G.config.boot.loader.grub.enable") { "grub" } else { "?" })
+        user:       (nix-eval-raw $assemble "nixosConfigurations.HX99G.config.mySystem.user.name")
+        optimise:   (if (nix-eval-bool $assemble "nixosConfigurations.HX99G.config.nix.optimise.automatic") { "daily" } else { "off" })
+        gc:         (if (nix-eval-bool $assemble "nixosConfigurations.HX99G.config.nix.gc.automatic") { (if ($gc_days | is-empty) { "daily" } else { $"daily (char -u '00b7') ($gc_days)" }) } else { "off" })
     }
 
     let weegsware_pkgs = (try { ^nix eval --impure --json --expr $"\(import ($dotfiles)/.tack\).pkgs.packages.x86_64-linux" --apply 'builtins.attrNames' | from json | sort } catch { [] })
@@ -683,8 +683,8 @@ def main [] {
     mut gaming = $gmods
     if ("steam" in $weegsware_pkgs) { $gaming = ($gaming | append "steam") }
     if ($"($dotfiles)/modules/hjem/decky.nix" | path exists) { $gaming = ($gaming | append "decky") }
-    if (nix-eval-bool $assemble "HX99G.config.programs.gamescope.enable") { $gaming = ($gaming | append "gamescope") }
-    if (nix-eval-bool $assemble "HX99G.config.programs.gamemode.enable") { $gaming = ($gaming | append "gamemode") }
+    if (nix-eval-bool $assemble "nixosConfigurations.HX99G.config.programs.gamescope.enable") { $gaming = ($gaming | append "gamescope") }
+    if (nix-eval-bool $assemble "nixosConfigurations.HX99G.config.programs.gamemode.enable") { $gaming = ($gaming | append "gamemode") }
 
     # ── Assemble data record ──────────────────────────────────────────────────
     let d = {

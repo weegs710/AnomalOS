@@ -213,7 +213,7 @@ host="${host:-HX99G}"
 
 echo "Building $host from $SCRIPT_DIR (pure tack -- no flake)"
 # the tack resolver uses builtins.fetchTree, which needs the flakes feature even under nix-build
-system=$(sudo nix-build "$SCRIPT_DIR/assemble.nix" -A "$host.config.system.build.toplevel" --no-out-link --extra-experimental-features "nix-command flakes")
+system=$(sudo nix-build "$SCRIPT_DIR/assemble.nix" -A "nixosConfigurations.$host.config.system.build.toplevel" --no-out-link --extra-experimental-features "nix-command flakes")
 
 echo "Installing NixOS"
 # root password is irrelevant if initialPassword is set in the config

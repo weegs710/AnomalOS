@@ -16,7 +16,7 @@
   # Pure-tack: nh reads NH_FILE + NH_ATTRP instead of NH_FLAKE
   environment.variables = {
     NH_FILE = "/home/weegs/repo/public/anomalos/assemble.nix";
-    NH_ATTRP = "HX99G";
+    NH_ATTRP = "nixosConfigurations.HX99G";
   };
 
   nix.settings = {
