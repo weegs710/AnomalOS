@@ -4,7 +4,9 @@
   ...
 }:
 let
-  version = "1.19.8b";
+  sources = import ../_sources/generated.nix { inherit (pkgs) fetchgit fetchurl fetchFromGitHub dockerTools; };
+
+  version = sources.zen.version;
   binaryName = "zen";
   libName = "zen-bin-${version}";
 
@@ -12,10 +14,7 @@ let
     pname = "zen-browser-unwrapped";
     inherit version;
 
-    src = pkgs.fetchzip {
-      url = "https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-x86_64.tar.xz";
-      hash = "sha256-oB37jk5WSX1weho16FcQAWG2GjsPYvqzpXAz2Xq3QKA=";
-    };
+    src = sources.zen.src;
 
     nativeBuildInputs = with pkgs; [
       wrapGAppsHook3

@@ -22,6 +22,7 @@ pkgs.mkShell {
     nixd
     nixfmt
     nufmt
+    nvfetcher
     weegsware.nushell
     ruff
     rust-analyzer

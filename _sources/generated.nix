@@ -6,12 +6,31 @@
   dockerTools,
 }:
 {
+  d2launcher = {
+    pname = "d2launcher";
+    version = "4.1.3";
+    src = fetchFromGitHub {
+      owner = "murkl";
+      repo = "d2launcher";
+      rev = "4.1.3";
+      fetchSubmodules = false;
+      sha256 = "sha256-yK3ZYqeadh8AZ7q3TENdecAicGkBhSjZKlGUsBmzoMo=";
+    };
+  };
   helium = {
     pname = "helium";
     version = "0.14.7.1";
     src = fetchurl {
       url = "https://github.com/imputnet/helium-linux/releases/download/0.14.7.1/helium-0.14.7.1-x86_64_linux.tar.xz";
       sha256 = "sha256-W7p+DEx85p56si+hNAKFVM4q8rh5aZLS+BNmUTFroiE=";
+    };
+  };
+  zen = {
+    pname = "zen";
+    version = "1.21.8b";
+    src = fetchurl {
+      url = "https://github.com/zen-browser/desktop/releases/download/1.21.8b/zen.linux-x86_64.tar.xz";
+      sha256 = "sha256-BaNmV+TJ2+cA5UouOUH3r0ZWq74zBpCqdNjPeTrzlvQ=";
     };
   };
 }

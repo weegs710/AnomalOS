@@ -7,6 +7,8 @@
 let
   username = config.mySystem.user.name;
 
+  sources = import ../../../../_sources/generated.nix { inherit (pkgs) fetchgit fetchurl fetchFromGitHub dockerTools; };
+
   # MXL's Fog.dll stack-overflows on wine 10/11; nixpkgs ships 11, so wrap Kron4ek proton-8.0-2 (wine-staging 8.0) in an FHS env that supplies the 32-bit loader + freetype a bare run lacks
   wineKron = pkgs.stdenvNoCC.mkDerivation {
     pname = "wine-proton-kron4ek";
@@ -82,14 +84,9 @@ let
 
   d2launcher = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
     pname = "d2launcher";
-    version = "4.1.3";
+    version = sources.d2launcher.version;
 
-    src = pkgs.fetchFromGitHub {
-      owner = "murkl";
-      repo = "d2launcher";
-      rev = finalAttrs.version;
-      hash = "sha256-yK3ZYqeadh8AZ7q3TENdecAicGkBhSjZKlGUsBmzoMo=";
-    };
+    src = sources.d2launcher.src;
 
     dontConfigure = true;
     dontBuild = true;
