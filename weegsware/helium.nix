@@ -1,5 +1,7 @@
 { pkgs, ... }:
 let
+  sources = import ../_sources/generated.nix { inherit (pkgs) fetchgit fetchurl fetchFromGitHub dockerTools; };
+
   widevineConfig = pkgs.writeText "latest-component-updated-widevine-cdm" (
     builtins.toJSON {
       Path = "${pkgs.widevine-cdm}/share/google/chrome/WidevineCdm";
@@ -8,12 +10,9 @@ let
 
   heliumPkg = pkgs.stdenv.mkDerivation rec {
     pname = "helium";
-    version = "0.10.7.1";
+    version = sources.helium.version;
 
-    src = pkgs.fetchurl {
-      url = "https://github.com/imputnet/helium-linux/releases/download/${version}/${pname}-${version}-x86_64_linux.tar.xz";
-      sha256 = "sha256-ZHziopdl8ClZQJUHXtIIb9ok/flZoixMdlLMKf5HUUo=";
-    };
+    src = sources.helium.src;
 
     nativeBuildInputs = with pkgs; [
       makeWrapper
