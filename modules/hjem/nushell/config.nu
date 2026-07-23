@@ -66,8 +66,8 @@ def --wrapped gb [...args: string] {
     nu ~/repo/private/weegs.dev/moderate.nu ...$args
 }
 
-def --wrapped update-svgs [...args: string] {
-    nu ~/repo/public/anomalos/scripts/update-svgs.nu ...$args
+def --wrapped draw [...args: string] {
+    nu ~/repo/public/anomalos/scripts/draw.nu ...$args
 }
 
 def evaltime [] {

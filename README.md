@@ -13,7 +13,7 @@
 <details>
 <summary>desktop</summary>
 
-Hyprland with noctalia-shell for the bar, launcher, lock screen, and control center. config module at `modules/hjem/hyprland.nix`, which generates a Lua config at `~/.config/hypr/hyprland.lua` at runtime.
+Hyprland with noctalia-shell for the bar, launcher, lock screen, and control center. config module at `modules/hjem/desktop/hyprland/hyprland.nix`, which generates a Lua config at `~/.config/hypr/hyprland.lua` at runtime.
 
 **workspaces:**
 
@@ -51,7 +51,7 @@ Hyprland with noctalia-shell for the bar, launcher, lock screen, and control cen
 | 19  | Ctrl+Alt+Delete    | power menu                        |
 | 20  | Print              | capture menu                      |
 
-wlr-which-key is the primary navigation layer. Super tap opens it for app launches, system tools, screenshots, power menu. full menu in `modules/hjem/wlr-which-key.nix`.
+wlr-which-key is the primary navigation layer. Super tap opens it for app launches, system tools, screenshots, power menu. full menu in `modules/hjem/desktop/wlr-which-key/wlr-which-key.nix`.
 
 </details>
 
@@ -70,7 +70,7 @@ wlr-which-key is the primary navigation layer. Super tap opens it for app launch
 <summary>development</summary>
 
 - **zed** -- primary editor with LSP for nix, css, html, ts, nu, md and prettier/nixfmt/nufmt formatting. config in `modules/hjem/desktop/zed/`.
-- **devshell** -- `nix develop` drops into nushell with: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, clippy, rust-analyzer, rustfmt, dprint, typescript, typescript-language-server, nushell. see [Contributing](#contributing).
+- **devshell** -- `nix-shell devshell.nix` (or just cd in, direnv loads it) drops into nushell with: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, clippy, rust-analyzer, rustfmt, dprint, typescript, typescript-language-server, nvfetcher, nushell. see [Contributing](#contributing).
 - **Claude Code** -- AI-assisted dev, `cc` alias launches `claude-launcher` with project selection.
 - **nix-search-tv** -- `ns` for fzf-powered package search.
 - **nix-index + nix-index-database** -- command-not-found handler with pre-built community DB, comma integration.
@@ -86,7 +86,7 @@ wlr-which-key is the primary navigation layer. Super tap opens it for app launch
 - **MangoHud** -- performance overlay, 5 presets (0=off to 4=full), Shift+F12 to toggle.
 - **gamemode** -- globally enabled.
 - **emulators** -- RetroArch (33 cores), PPSSPP (RetroArch core), melonDS (DS, RetroArch core), ProtonUp-Qt, OpenRA.
-- **DCSS** -- Dungeon Crawl Stone Soup, wired in `modules/hjem/dcss.nix`.
+- **DCSS** -- Dungeon Crawl Stone Soup, wired in `modules/hjem/gaming/dcss/dcss.nix`.
 
 </details>
 
@@ -239,7 +239,7 @@ install.sh handles partitioning (1GB EFI boot, 16GB swap used during install onl
 
 **encryption:** install.sh will ask. also set `boot.zfs.requestEncryptionCredentials = true` in your host config.
 
-**post-install YubiKey setup** (the module is always loaded -- no YubiKey? rename `modules/nixos-modules/yubikey.nix` to `_yubikey.nix`):
+**post-install YubiKey setup** (the module is always loaded -- no YubiKey? rename `modules/nixos-modules/security/yubikey.nix` to `_yubikey.nix`):
 
 ```bash
 # persist this directory BEFORE creating the key file -- it lives under /home which
@@ -283,7 +283,7 @@ sudo mount -t zfs zroot/cache /mnt/cache
 
 sudo nixos-enter --root /mnt
 
-nh os switch --file /home/YOUR_USERNAME/dotfiles/assemble.nix YOUR_HOSTNAME
+nh os switch --file /home/YOUR_USERNAME/dotfiles/assemble.nix nixosConfigurations.YOUR_HOSTNAME
 exit
 
 sudo reboot
@@ -293,9 +293,11 @@ sudo reboot
 
 ## how it works
 
-everything is managed with [tack](https://github.com/manic-systems/tack) and hjem -- no flakes. inputs are pinned in `.tack/pins.toml`, and `assemble.nix` builds the system via `nixpkgs.lib.nixosSystem`. shareables (`modules/shareables/`) are wrapped packages with configs baked in, threaded to consumers via the `packages` specialArg.
+everythings pinned and managed with [tack](https://github.com/manic-systems/tack) + hjem. no flake runs the show -- tack owns the inputs (`.tack/pins.toml`) and `assemble.nix` is the entry point. i wrap that entry in a tiny vendored lib called [sprinkles](https://codeberg.org/poacher/sprinkles) so the repo exposes real `packages` and `nixosConfigurations` outputs like a flake would, while tack keeps doing the actual pinning. theres a 3-line `flake.nix` shim sitting on top purely so `nix build .#...` / `nix run .#...` work -- its not load-bearing, tack is. the full why is in the dropdown below.
 
-adding new modules is ezpz. everything in `modules/hjem/`, `modules/nixos-modules/`, and `modules/shareables/` gets auto-discovered -- drop a file and its in. files prefixed with `_` are skipped. shareables autodiscover too now (each returns `{ name = drv; }`), so theyre no longer a special case.
+my wrapped packages -- steam, zen, nushell, and friends -- live in `weegsware/`. these used to be called shareables. `assemble.nix` builds them and threads them into the config via the `weegsware` specialArg, and because theyre also spat out as `packages.x86_64-linux.*`, someone can add my repo as a flake input and `nix run` my version of a package straight from here, with whatever extra shit ive bolted onto it. a couple of them (helium, zen) build from upstream source and get their versions auto-bumped by [nvfetcher](https://github.com/berberman/nvfetcher).
+
+adding new modules is ezpz. everything under `modules/hjem/` and `modules/nixos-modules/` gets auto-discovered -- drop a `.nix` file in a domain and its in. files prefixed with `_` are skipped. weegsware autodiscovers the same way -- drop a `.nix` in `weegsware/` (each returns `{ name = drv; }`) and its built + exposed.
 
 nix reads the working copy directly (plain `import`, not flake eval), so new files are visible immediately -- no `jj s` needed before a build, unlike flakes. you still snapshot for version control, just not to make nix see your edits.
 
@@ -321,9 +323,24 @@ let username = config.mySystem.user.name; in
 }
 ```
 
-theres no feature toggle system. all modules load unconditionally. to disable something, rename the file with a `_` prefix or just delete it. `options.nix` only covers host identity (`mySystem.user`, `mySystem.hostName`, `mySystem.timeZone`) -- nothing fancier than that.
+theres no feature toggle system. all modules load unconditionally. to disable something, rename the file with a `_` prefix or just delete it. `modules/nixos-modules/options.nix` only covers host identity (`mySystem.user.name`/`.description`/`.extraGroups`, `mySystem.hostName`, `mySystem.timeZone`) -- nothing fancier than that.
 
-**adding packages:** user packages go in `modules/hjem/hjem-packages.nix`. system-wide stuff goes in the relevant module.
+**adding packages:** depends what it is. system-level shit -- services, kernel, system-wide programs -- goes in the `modules/nixos-modules/` bundle. user-level stuff -- anything in `~/.config` or a user package -- goes in the `modules/hjem/` bundle, usually colocated right in the module that uses it via `users.users.${username}.packages`. and anything i wrap myself, nixpkgs override or built from source, goes in `weegsware/` so it comes out as an output too.
+
+<details>
+<summary>the sprinkles + weegsware wiring, in detail</summary>
+
+heres the actual why. i wanted the repo to behave like a flake -- expose `packages` + `nixosConfigurations`, be runnable with `nix build .#` / `nix run .#`, and let people pull my packages as a flake input -- WITHOUT going all-in on flakes. tack already does my pinning better than flake inputs would, and i didnt want to give that up.
+
+sprinkles is the answer: a tiny lib that gives you flake-shaped outputs + overridability in plain nix, with zero opinion on how you pin (thats tacks job). i didnt want to depend on someone elses repo for something this load-bearing, so i **vendored** it -- the whole engine is ~34 lines of pure `builtins` in `lib/sprinkles.nix`. i own it outright, nothing to bitrot. (its the poacher fork, license kept in the file header.)
+
+`assemble.nix` is a "sprinkle" -- it hands the engine a `sources`/`inputs`/`outputs` set and gets back `{ packages.x86_64-linux = weegsware; nixosConfigurations.HX99G = ...; }`. the real `nixpkgs.lib.nixosSystem` call still happens inside `outputs`, same as it always did -- the sprinkle just shapes what comes out around it.
+
+the `flake.nix` is 3 lines: `{ outputs = _: (import ./assemble.nix) {}; }`. it declares no inputs of its own (tack owns those) so theres no `flake.lock`. it exists ONLY so the `.#` CLI works. heads up if you use it: `.#` needs `--impure`, because `assemble.nix` injects an absolute path for my cursor art and pure flake eval wont allow that.
+
+weegsware itself is my wrapped packages -- some are nixpkgs overrides (steam, nushell, retroarch), some build from upstream source (helium, zen). the from-source ones get their version + hash kept current by nvfetcher: config is `nvfetcher.toml`, it writes `_sources/generated.nix`, and running `nvfetcher` in the repo bumps them all in one shot. every weegsware package comes out as `packages.x86_64-linux.<name>` -- thats the whole point. theyre not trapped in my system config, theyre first-class outputs anyone can build, `nix run`, or add as a flake input to get my wrapped version. and `.override` means they can be re-tuned from outside without editing them.
+
+</details>
 
 <details>
 <summary>secrets (agenix)</summary>
@@ -334,11 +351,9 @@ Secret management via [agenix](https://github.com/ryantm/agenix). Secrets are en
 
 - encrypted `.age` files live in `secrets/` and are safe to commit
 - `secrets/secrets.nix` maps each `.age` filename to its recipient public keys (what agenix reads)
-- `modules/nixos-modules/secrets.nix` wires secrets into the system config via `age.secrets.*`
+- `modules/nixos-modules/security/secrets.nix` wires secrets into the system config via `age.secrets.*`
 - identity path is `/persist/etc/ssh/ssh_host_ed25519_key` -- if that key is missing, agenix silently fails at boot
 - decrypts to `/run/agenix/` at boot
-
-**currently configured secrets:** tailscale-authkey, discord-token, radarr-api-key, sonarr-api-key, jellyfin-api-key.
 
 **create a secret:**
 
@@ -493,7 +508,7 @@ jj u          # undo last operation
 
 everything is recoverable via operation log. `jj u` works for rebases, squashes, deletions, etc.
 
-**key aliases** (configured in `modules/hjem/jujutsu.nix`):
+**key aliases** (configured in `modules/hjem/vcs/vcs.nix`):
 
 | alias        | expands to                                                  |
 | ------------ | ----------------------------------------------------------- |
@@ -512,7 +527,7 @@ everything is recoverable via operation log. `jj u` works for rebases, squashes,
 | `bs`         | bookmark set                                                |
 | `tug`        | move closest bookmark to @-                                 |
 
-**nushell defs** (defined in `modules/hjem/nushell.nix`):
+**nushell defs** (defined in `modules/hjem/nushell/config.nu`):
 
 | def         | what it does                              |
 | ----------- | ----------------------------------------- |
@@ -565,7 +580,7 @@ nrs
 sudo nixos-rebuild switch --rollback
 ```
 
-**YubiKey locked you out:** boot single-user mode, rename `modules/nixos-modules/yubikey.nix` to `_yubikey.nix`, rebuild.
+**YubiKey locked you out:** boot single-user mode, rename `modules/nixos-modules/security/yubikey.nix` to `_yubikey.nix`, rebuild.
 
 <details>
 <summary>troubleshooting</summary>
@@ -614,7 +629,7 @@ help: [NixOS Discourse](https://discourse.nixos.org/) -- [NixOS Wiki](https://ni
 
 ## contributing
 
-feel free to fork this and do whatever. if you find bugs or have improvements, pull requests are welcome -- just run `nix develop` first so were using the same tools and formatter. the devshell has everything: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, clippy, rust-analyzer, rustfmt, dprint, typescript, and nushell.
+feel free to fork this and do whatever. if you find bugs or have improvements, pull requests are welcome -- just run `nix-shell devshell.nix` first so were using the same tools and formatter. the devshell has everything: nixd, nil, nixfmt, basedpyright, ruff, hyprls, nufmt, marksman, biome, clippy, rust-analyzer, rustfmt, dprint, typescript, nvfetcher, and nushell.
 
 but remember, this is primarily my personal config, and i am still fairly new to this stuff.
 
