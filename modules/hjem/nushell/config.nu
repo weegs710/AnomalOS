@@ -28,7 +28,7 @@ def nrbld [] {
     nh os build
 }
 
-def tu [...inputs: string] {
+def --wrapped tu [...inputs: string] {
     cd ~/repo/public/anomalos/
     if ($inputs | is-empty) {
         ^tack update
@@ -37,7 +37,7 @@ def tu [...inputs: string] {
     }
 }
 
-def tl [...inputs: string] {
+def --wrapped tl [...inputs: string] {
     cd ~/repo/public/anomalos/
     if ($inputs | is-empty) {
         ^tack look
