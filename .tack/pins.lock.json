@@ -27,9 +27,9 @@
     "type": "github",
     "owner": "xddxdd",
     "repo": "nix-cachyos-kernel",
-    "rev": "b3691ec0c053ca6b378bff155b15bc9741bd0953",
-    "narHash": "sha256-7XhSLmdHrlJ6Z8rlT3ez8OaMyLWCE8Rs0EEnhp22qM4=",
-    "lastModified": 1784659991
+    "rev": "39cb0153bbbd9095c132fe20a70be2fb9b4a8451",
+    "narHash": "sha256-wuIHyBzocBxDboYHnYPaEUmN2kjRsIS/8GFHGtLyhto=",
+    "lastModified": 1784745963
   },
   "nix-index-database": {
     "type": "github",
@@ -51,9 +51,9 @@
     "type": "github",
     "owner": "noctalia-dev",
     "repo": "noctalia",
-    "rev": "632e65e1e93dbe2fa281d3ee7c2aceef903e5578",
-    "narHash": "sha256-v1MJUvS5V/jmWo6rf0UtRYOLbWr6TovF/BKzBu0aQ40=",
-    "lastModified": 1784742988
+    "rev": "79530a6290fbf5ba5e34db61d4729abc7eea3920",
+    "narHash": "sha256-GhrQw9jeHxNc8nWcfl37hg82Ta1acLwrJPksBi8xkrI=",
+    "lastModified": 1784768158
   },
   "preservation": {
     "type": "github",
@@ -67,8 +67,8 @@
     "type": "github",
     "owner": "manic-systems",
     "repo": "tack",
-    "rev": "e177aaa81375394be33ebc383c15773c47941980",
-    "narHash": "sha256-eUzdato8njCzt5TqvFaUePkUOtOkM1Lu5JfbzoT0NiU=",
-    "lastModified": 1784415866
+    "rev": "671d4a7b61908adfce207349748fc59d655064a5",
+    "narHash": "sha256-sKO6dunSEgZAE1kMse8c/TUtwz5foklTJlTL9lYDgSo=",
+    "lastModified": 1784784543
   }
 }
