@@ -250,6 +250,7 @@ in
     programs.fish.enable = true;
 
     users.users.${config.mySystem.user.name}.packages = [
+      pkgs.atuin
       pkgs.fish
       pkgs.fzf
       pkgs.oh-my-posh
