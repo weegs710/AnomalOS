@@ -46,7 +46,4 @@
     }
   ];
 
-  preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
-    ".local/share/zen-jellyfin"
-  ];
 }

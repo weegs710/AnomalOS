@@ -35,9 +35,9 @@ desc = "Zed"
 for = "unix"
 
 [[opener.browser]]
-run = "zen \"$@\""
+run = "helium \"$@\""
 orphan = true
-desc = "Zen"
+desc = "Helium"
 for = "unix"
 
 [[open.rules]]

@@ -35,11 +35,10 @@ let
   noct = cmd: "noctalia msg ${cmd}";
 
   terminalCmd = hyprExec "ghostty --title=ghostty" (ws 2);
-  hexCmd = hyprExec "ghostty --title=hex -e claude-launcher cairn" stashTile;
-  jellyfinCmd = hyprExec "env MOZ_APP_LAUNCHER=zen-jellyfin zen --kiosk --profile ${homeDir}/.local/share/zen-jellyfin --no-remote http://localhost:8096" "{ workspace = '5' }";
+  cairnCmd = hyprExec "ghostty --title=Cairn -e claude-launcher cairn" stashTile;
+  # helium hands off to its running pid, so a launch rule whiffs -- focus WEB instead
+  heliumCmd = "hyprctl dispatch \"hl.dsp.focus({ workspace = 3 })\" ; ${hyprExec "helium" ""}";
   discordCmd = hyprExec "/etc/profiles/per-user/${username}/bin/vesktop" (ws 1);
-  steamchatCmd = hyprExec "env MOZ_APP_LAUNCHER=zen-steamchat zen --profile ${homeDir}/.local/share/zen-steamchat --no-remote https://steamcommunity.com/chat" "{ workspace = '1' }";
-  facebookCmd = hyprExec "zen --no-remote --new-window https://www.facebook.com" (ws 1);
   gajimCmd = hyprExec "/etc/profiles/per-user/${username}/bin/gajim" (ws 1);
   gorguruCmd = hyprExec "ghostty --title=gorguru -e ${homeDir}/repo/private/weegs.dev/dist/gorguru" stash;
   btopCmd = hyprExec "ghostty --title=btop -e btop" stashFloat;
@@ -168,18 +167,15 @@ let
         # hot path
         (run "Return" "ghostty" terminalCmd)
         (run "space" "launcher" (noct "panel-toggle launcher"))
-        (run "z" "zen" "zen")
+        (run "h" "helium" heliumCmd)
         (run "e" "zed" "zeditor")
-        (run "h" "hex" hexCmd)
+        (run "C" "Cairn" cairnCmd)
         (run "r" "rmpc" rmpcCmd)
-        (run "j" "jellyfin" jellyfinCmd)
         (run "x" "Median XL" "d2launcher")
         # categories
         (sub "c" "comms" [
           (run "g" "gajim" gajimCmd)
           (run "d" "discord" discordCmd)
-          (run "s" "steam chat" steamchatCmd)
-          (run "f" "facebook" facebookCmd)
         ])
         (sub "g" "games" [
           (run "s" "steam" (
