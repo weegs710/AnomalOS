@@ -31,6 +31,12 @@
       owner = config.mySystem.user.name;
     };
 
+    age.secrets.searx-secret-key = {
+      file = ../../../secrets/searx-secret-key.age;
+      mode = "0400";
+      owner = "searx";
+    };
+
     age.secrets.radarr-api-key = {
       file = ../../../secrets/radarr-api-key.age;
       mode = "0400";

@@ -27,4 +27,8 @@ in
     weegs
     HX99G
   ];
+  "searx-secret-key.age".publicKeys = [
+    weegs
+    HX99G
+  ];
 }
