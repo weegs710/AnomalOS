@@ -26,6 +26,7 @@
       search = {
         safe_search = 0;
         autocomplete = "duckduckgo";
+        favicon_resolver = "duckduckgo";
         default_lang = "en";
         formats = [ "html" "json" ];
       };
