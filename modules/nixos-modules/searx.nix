@@ -8,14 +8,14 @@
 
     # firewall trusts only tailscale0, so binding wide stays tailnet-only
     uwsgiConfig = {
-      http = ":8080";
+      http = ":8888";
       disable-logging = true;
     };
 
     settings = {
       server = {
         secret_key = "$SEARX_SECRET_KEY";
-        port = 8080;
+        port = 8888;
         # single-user instance
         limiter = false;
         public_instance = false;
