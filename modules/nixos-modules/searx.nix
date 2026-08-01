@@ -39,10 +39,17 @@
         theme_args.simple_style = "black";
       };
 
+      preferences.lock = [
+        "simple_style"
+        "center_alignment"
+        "favicon_resolver"
+        "doi_resolver"
+        "autocomplete"
+        "image_proxy"
+        "safesearch"
+      ];
+
       engines = [
-        # google's index is the priority
-        { name = "google cse"; weight = 3; }
-        { name = "startpage"; weight = 3; }
         { name = "bing"; disabled = false; }
 
         # brave rate-limits this IP
@@ -73,7 +80,7 @@
         translate = { };
       };
 
-      # a plugins block replaces the defaults, so the whole active set is restated
+      # a plugins block replaces the defaults, not merges
       plugins = {
         "searx.plugins.calculator.SXNGPlugin".active = true;
         "searx.plugins.hash_plugin.SXNGPlugin".active = true;
