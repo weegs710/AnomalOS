@@ -67,6 +67,9 @@ in
       engines = [
         { name = "bing"; disabled = false; }
 
+        # captcha-fingerprints searxng's scraper
+        { name = "startpage"; disabled = true; }
+
         # brave rate-limits this IP
         { name = "brave"; disabled = true; }
         { name = "brave.images"; disabled = true; }
