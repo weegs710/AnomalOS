@@ -36,13 +36,38 @@
       };
 
       engines = [
-        # rate-limits this IP and self-suspends
-        { name = "brave"; disabled = true; }
         # google's index is the priority
         { name = "google cse"; weight = 3; }
         { name = "startpage"; weight = 3; }
         { name = "bing"; disabled = false; }
+
+        # brave rate-limits this IP
+        { name = "brave"; disabled = true; }
+        { name = "brave.images"; disabled = true; }
+        { name = "brave.videos"; disabled = true; }
+        { name = "brave.news"; disabled = true; }
+
+        { name = "lingva"; categories = [ "translate" ]; }
+        { name = "dictzone"; categories = [ "translate" ]; }
+        { name = "mymemory translated"; categories = [ "translate" ]; }
+
+        { name = "openlibrary"; disabled = false; categories = [ "books" ]; }
+        { name = "annas archive"; disabled = false; categories = [ "books" ]; }
       ];
+
+      categories_as_tabs = {
+        general = { };
+        images = { };
+        videos = { };
+        # engineless for now, so it stays hidden until a shopping engine exists
+        shopping = { };
+        books = { };
+        files = { };
+        map = { };
+        news = { };
+        "social media" = { };
+        translate = { };
+      };
 
       # a plugins block replaces the defaults, so the whole active set is restated
       plugins = {
