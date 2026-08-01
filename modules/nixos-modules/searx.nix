@@ -16,6 +16,7 @@
       server = {
         secret_key = "$SEARX_SECRET_KEY";
         port = 8888;
+        base_url = "https://hx99g.tailc3ec2d.ts.net/";
         # single-user instance
         limiter = false;
         public_instance = false;
