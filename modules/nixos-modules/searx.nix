@@ -30,6 +30,8 @@
         formats = [ "html" "json" ];
       };
 
+      default_doi_resolver = "sci-hub.st";
+
       ui = {
         center_alignment = true;
         theme_args.simple_style = "black";
@@ -79,7 +81,7 @@
         "searx.plugins.hostnames.SXNGPlugin".active = true;
         "searx.plugins.time_zone.SXNGPlugin".active = true;
         "searx.plugins.tracker_url_remover.SXNGPlugin".active = true;
-        "searx.plugins.oa_doi_rewrite.SXNGPlugin".active = false;
+        "searx.plugins.oa_doi_rewrite.SXNGPlugin".active = true;
         "searx.plugins.tor_check.SXNGPlugin".active = false;
         "searx.plugins.infinite_scroll.SXNGPlugin".active = true;
       };
