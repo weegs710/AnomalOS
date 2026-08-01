@@ -1,5 +1,6 @@
 // declared baseline for zed; gui edits get pulled back into the repo with `zed-s` (copy-type, see nushell/config.nu)
 {
+  "cli_default_open_behavior": "existing_window",
   "preferred_line_length": 80,
   "horizontal_scroll_margin": 999.0,
   "vertical_scroll_margin": 999.0,
@@ -179,6 +180,19 @@
         "external": {
           "command": "prettier",
           "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
+    },
+  },
+
+  // hl is injected by hyprland's lua runtime, so lua_ls flags it undefined-global without this
+  "lsp": {
+    "lua-language-server": {
+      "settings": {
+        "Lua": {
+          "diagnostics": {
+            "globals": ["hl"],
+          },
         },
       },
     },
