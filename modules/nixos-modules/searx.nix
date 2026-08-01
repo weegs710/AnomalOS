@@ -1,4 +1,19 @@
-{ config, ... }:
+{ config, pkgs, ... }:
+let
+  orderedTabs = pkgs.writeText "searx-categories-as-tabs.yml" ''
+    categories_as_tabs:
+      general: {}
+      images: {}
+      videos: {}
+      shopping: {}
+      books: {}
+      files: {}
+      map: {}
+      news: {}
+      "social media": {}
+      translate: {}
+  '';
+in
 {
   services.searx = {
     enable = true;
@@ -66,20 +81,6 @@
         { name = "annas archive"; disabled = false; categories = [ "books" ]; }
       ];
 
-      categories_as_tabs = {
-        general = { };
-        images = { };
-        videos = { };
-        # engineless for now, so it stays hidden until a shopping engine exists
-        shopping = { };
-        books = { };
-        files = { };
-        map = { };
-        news = { };
-        "social media" = { };
-        translate = { };
-      };
-
       # a plugins block replaces the defaults, not merges
       plugins = {
         "searx.plugins.calculator.SXNGPlugin".active = true;
@@ -96,4 +97,8 @@
       };
     };
   };
+
+  # nix alphabetizes attrset keys -- tab order can't come from the settings map
+  systemd.services.searx-init.serviceConfig.ExecStartPost =
+    "${pkgs.bash}/bin/bash -c 'cat ${orderedTabs} >> /run/searx/settings.yml'";
 }
