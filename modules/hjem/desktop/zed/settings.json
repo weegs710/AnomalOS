@@ -10,7 +10,9 @@
   "code_lens": "menu",
   "current_line_highlight": "line",
   "colorize_brackets": true,
-  "lsp_insert_mode": "replace",
+  "completions": {
+    "lsp_insert_mode": "replace",
+  },
   "redact_private_values": true,
   "tab_size": 2,
   "diff_view_style": "unified",
