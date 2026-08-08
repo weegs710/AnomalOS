@@ -33,3 +33,7 @@ url = "gh:noctalia-dev/noctalia"
 
 [inputs.concord]
 url = "gh:chojs23/concord"
+
+[inputs.dusklight]
+url = "gh:TwilitRealm/dusklight/v1.4.1"
+submodules = true
