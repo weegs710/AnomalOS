@@ -184,7 +184,7 @@
       sed -i 's/queue num 0 bypass/accept/g' ruleset.conf
     '';
 
-    # preservation's d rule only chowns the dir, so a uid shift strands the files inside it
+    # the upstream d rule only chowns the dir, so a uid shift strands the files inside it
     systemd.tmpfiles.rules = [ "Z /var/log/suricata - suricata suricata - -" ];
 
     services.logrotate.settings.suricata = {
