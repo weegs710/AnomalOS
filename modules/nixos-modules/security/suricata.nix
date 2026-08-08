@@ -184,8 +184,15 @@
       sed -i 's/queue num 0 bypass/accept/g' ruleset.conf
     '';
 
+    # preservation's d rule only chowns the dir, so a uid shift strands the files inside it
+    systemd.tmpfiles.rules = [ "Z /var/log/suricata - suricata suricata - -" ];
+
     services.logrotate.settings.suricata = {
-      files = "/var/log/suricata/*.log /var/log/suricata/*.json";
+      # a space-joined string generates one quoted literal path that matches nothing
+      files = [
+        "/var/log/suricata/*.log"
+        "/var/log/suricata/*.json"
+      ];
       frequency = "daily";
       rotate = 3;
       compress = true;
