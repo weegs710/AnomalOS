@@ -15,7 +15,7 @@
   "game.enableDiscordPresence": false,
   "game.enableFrameInterpolation": 1,
   "game.enableLinkDollRotation": true,
-  "game.enableMirrorMode": true,
+  "game.enableMirrorMode": false,
   "game.enableQuickTransform": true,
   "game.enableTextureReplacements": true,
   "game.enhancedMapMenus": true,
