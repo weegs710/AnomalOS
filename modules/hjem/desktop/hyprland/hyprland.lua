@@ -84,6 +84,8 @@ hl.config({
 })
 
 hl.device({ name = "epic-mouse-v1", sensitivity = 1.0 })
+-- adaptive over the global flat so the ball can do precision and fast sweeps
+hl.device({ name = "getech-huge-trackball-1", sensitivity = 0.0, accel_profile = "adaptive" })
 
 -- animations
 -- hl.animation({ leaf = "windows", enabled = true, speed = 3, bezier = "curve", style = "slide" })
@@ -234,6 +236,25 @@ hl.bind(mainMod .. " + SHIFT + down",  hl.dsp.window.move({ direction = "d" }), 
 -- mouse window ops
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+-- trackball (Elecom HUGE)
+-- scoped so the other two pointers on the box don't fire these
+local ball = { device = { list = { "getech-huge-trackball-1" } } }
+
+hl.bind("mouse:275", hl.dsp.focus({ workspace = "e-1" }),                                  ball)
+hl.bind("mouse:276", hl.dsp.focus({ workspace = "e+1" }),                                  ball)
+hl.bind("mouse:277", hl.dsp.workspace.toggle_special("stash"),                             ball)
+hl.bind("mouse:278", hl.dsp.window.close(),                                                ball)
+hl.bind("mouse:279", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"),          ball)
+
+-- scroll-axis binds fire press-only, so the release has to be sent explicitly
+local ballBackDown = hl.dsp.send_key_state({ mods = "", key = "mouse:275", state = "down" })
+local ballBackUp   = hl.dsp.send_key_state({ mods = "", key = "mouse:275", state = "up"   })
+local ballFwdDown  = hl.dsp.send_key_state({ mods = "", key = "mouse:276", state = "down" })
+local ballFwdUp    = hl.dsp.send_key_state({ mods = "", key = "mouse:276", state = "up"   })
+
+hl.bind("mouse_left",  function() hl.dispatch(ballBackDown) return hl.dispatch(ballBackUp) end, ball)
+hl.bind("mouse_right", function() hl.dispatch(ballFwdDown)  return hl.dispatch(ballFwdUp)  end, ball)
 
 -- system / UI
 hl.bind("SUPER + Super_L",     hl.dsp.exec_cmd("wlr-which-key"),                                { release = true })
