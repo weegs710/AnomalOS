@@ -25,7 +25,7 @@
   "game.freeCameraXSensitivity": 1.0,
   "game.instantSaves": true,
   "game.instantText": true,
-  "game.internalResolutionScale": 7,
+  "game.internalResolutionScale": 5,
   "game.invertCameraXAxis": true,
   "game.invertCameraYAxis": false,
   "game.invertFirstPersonXAxis": false,
