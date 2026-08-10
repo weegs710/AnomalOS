@@ -13,6 +13,7 @@ reached and is dead weight in the index.
 
 import argparse
 import concurrent.futures as futures
+import hashlib
 import json
 import os
 import shutil
@@ -93,7 +94,7 @@ def main():
     ap.add_argument("--threads", type=int, default=12)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--incremental", action="store_true")
-    ap.add_argument("--all-attrs", action="store_true")
+    ap.add_argument("--bin-attrs", action="store_true")
     ap.add_argument("--merge-only", action="store_true")
     args = ap.parse_args()
 
@@ -105,20 +106,20 @@ def main():
 
     revs = json.loads(revfile.read_text())
 
-    # Keying the cache on the extractor too, so editing it does not silently reuse results from the old logic.
-    ehash = subprocess.run(
-        ["sha256sum", str(EXTRACTOR)], capture_output=True, text=True
-    ).stdout[:8]
+    # Keyed on the extractor AND the attr selection, so neither can change without invalidating what is on disk.
+    ehash = hashlib.sha256(EXTRACTOR.read_bytes()).hexdigest()[:8]
 
-    if args.all_attrs:
-        attrs_expr = "null"
-    else:
+    if args.bin_attrs:
         selected = binary_attrs()
         # Passed by file rather than argv: the list is ~250KB of attribute names.
         allow = cache / "bin-attrs.json"
         allow.write_text(json.dumps(selected))
         attrs_expr = f"builtins.fromJSON (builtins.readFile {allow.resolve()})"
-        print(f"restricting to {len(selected):,} attrs that ship an executable")
+        ehash = f"{ehash}.{hashlib.sha256(json.dumps(selected).encode()).hexdigest()[:8]}"
+        print(f"restricting to {len(selected):,} attrs the database says ship an executable")
+    else:
+        attrs_expr = "null"
+        ehash = f"{ehash}.all"
 
     if not args.merge_only:
         covered = 0

@@ -48,20 +48,20 @@ def render [v: any]: nothing -> string {
 
 def locate [cmd: string]: nothing -> list<string> {
   let r = (^nix-locate --minimal --at-root --whole-name $"/bin/($cmd)" | complete)
-  let hits = if $r.exit_code == 0 { $r.stdout | lines | where ($it | str trim | is-not-empty) } else { [] }
-  if ($hits | is-empty) {
-    die $"no executable '($cmd)' in the nix-index database"
-  }
-  $hits
+  if $r.exit_code == 0 { $r.stdout | lines | where ($it | str trim | is-not-empty) } else { [] }
 }
 
-def version-table [attr: string]: nothing -> table {
+def raw-version-table [attr: string]: nothing -> table {
   let apply = $"f: f \"($attr)\""
   let r = (^nix eval --json -f $env.SHOP_ENGINE versionTable --apply $apply | complete)
   if $r.exit_code != 0 {
     die $"nix eval failed" ($r.stderr | str trim)
   }
-  let tbl = ($r.stdout | from json | select version revision)
+  $r.stdout | from json | select version revision
+}
+
+def version-table [attr: string]: nothing -> table {
+  let tbl = (raw-version-table $attr)
   if ($tbl | is-empty) {
     die $"'($attr)' has no version axis"
   }
@@ -79,22 +79,39 @@ def sel-path [parts: list<string>]: nothing -> string {
   $parts | each {|p| $"\"($p)\"" } | str join "."
 }
 
-def save-choice [cmd: string, attr: string] {
+def save-choice [cmd: string, picked: record] {
   mkdir (cache-dir)
   let p = (choices-path)
   let cur = if ($p | path exists) { open $p } else { {} }
-  $cur | merge { ($cmd): $attr } | save --force $p
+  $cur | merge { ($cmd): $picked } | save --force $p
 }
 
-def resolve-choice [cmd: string]: nothing -> string {
+def resolve-choice [cmd: string]: nothing -> record {
   let p = (choices-path)
   let cached = if ($p | path exists) { open $p | get -o $cmd } else { null }
   if $cached != null {
-    return $cached
+    if (($cached | describe) | str starts-with "record") {
+      return $cached
+    }
+    let parts = ($cached | split row ".")
+    return { attr: ($parts | drop 1 | str join "."), output: ($parts | last) }
+  }
+
+  let all = (locate $cmd)
+
+  # The database only lists packages the binary cache has, so unfree attrs are reachable by name but never by command.
+  if ($all | is-empty) {
+    if ((raw-version-table $cmd) | is-empty) {
+      die $"no executable '($cmd)' in the nix-index database, and no attribute called '($cmd)'"
+    }
+    hint $"no /bin/($cmd) in the database -- resolving the attribute '($cmd)' directly"
+    let picked = { attr: $cmd, output: "" }
+    save-choice $cmd $picked
+    return $picked
   }
 
   # Only top-level attrs carry a version axis, so they are offered first.
-  let ordered = (locate $cmd | sort-by {|a| $a | split row "." | length })
+  let ordered = ($all | sort-by {|a| $a | split row "." | length })
 
   let choice = if (($ordered | length) == 1) {
     $ordered | first
@@ -107,8 +124,10 @@ def resolve-choice [cmd: string]: nothing -> string {
     die "nothing picked"
   }
 
-  save-choice $cmd $choice
-  $choice
+  let parts = ($choice | split row ".")
+  let picked = { attr: ($parts | drop 1 | str join "."), output: ($parts | last) }
+  save-choice $cmd $picked
+  $picked
 }
 
 def resolve-version [attr: string, tbl: table, want: string]: nothing -> string {
@@ -267,12 +286,20 @@ def --wrapped main [...rest] {
   }
 
   if $mode == "print" {
-    return (render (locate $cmd | wrap attr))
+    let found = (locate $cmd)
+    if ($found | is-empty) {
+      if ((raw-version-table $cmd) | is-empty) {
+        die $"no executable '($cmd)' in the nix-index database, and no attribute called '($cmd)'"
+      }
+      hint $"no /bin/($cmd) in the database -- shop resolves the attribute '($cmd)' directly"
+      return
+    }
+    return (render ($found | wrap attr))
   }
 
-  let chunks = (resolve-choice $cmd | split row ".")
-  let attr = ($chunks | drop 1 | str join ".")
-  let output = ($chunks | last)
+  let picked = (resolve-choice $cmd)
+  let attr = $picked.attr
+  let output = $picked.output
 
   if $mode == "list" {
     reject-nested $attr
@@ -280,13 +307,15 @@ def --wrapped main [...rest] {
   }
 
   let selection = if $version == null {
-    sel-path (["pkgs"] | append ($attr | split row ".") | append $output)
+    let base = (["pkgs"] | append ($attr | split row "."))
+    sel-path (if ($output | is-empty) { $base } else { $base | append $output })
   } else {
     reject-nested $attr
     let tbl = (version-table $attr)
     let ver = (resolve-version $attr $tbl $version)
     hint $"($attr) ($ver) -- from ($tbl | where version == $ver | first | get revision)"
-    sel-path ["versions" $attr $ver $output]
+    let base = ["versions" $attr $ver]
+    sel-path (if ($output | is-empty) { $base } else { $base | append $output })
   }
 
   if $mode == "shell" {
