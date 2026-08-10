@@ -11,9 +11,9 @@
     "type": "github",
     "owner": "chojs23",
     "repo": "concord",
-    "rev": "be7d750b7793ff2bb6ebc533cb1188e6123393cb",
-    "narHash": "sha256-m74ar1ue0Cl7G5QYeuzyzcgt4myQQUIULwLLol23lBA=",
-    "lastModified": 1786108652
+    "rev": "9da09fa2e6ee02f9fbe088544f6600a95c206475",
+    "narHash": "sha256-DlvPMJxFX9jySWVzaqD2HkVITFZV0G7Leu1K9d6Pe9M=",
+    "lastModified": 1786372178
   },
   "dusklight": {
     "type": "git",
@@ -44,9 +44,9 @@
     "type": "github",
     "owner": "nix-community",
     "repo": "nix-index-database",
-    "rev": "dbc756c9d7287de19b3e0e38c928c47510d42c3e",
-    "narHash": "sha256-q4kR7g+pCcz6NASvoVPYu+CWWUurX03wogtBqGmR4h0=",
-    "lastModified": 1785650611
+    "rev": "14d55b8069119e3b88da7aa2f6c97f86a2cd3cd6",
+    "narHash": "sha256-Y2mSr+HLKYoOsjiackgilxkHXe8gkJ3z4hFFekjQX3I=",
+    "lastModified": 1786249295
   },
   "nix-shop": {
     "type": "git",
@@ -68,9 +68,9 @@
     "type": "github",
     "owner": "noctalia-dev",
     "repo": "noctalia",
-    "rev": "e9230c81beb2513e4a4b09884f37e4f22fc246de",
-    "narHash": "sha256-+UpdMASvCJgEejw4SZbhefk/9oboIDR2s8gezsYjulg=",
-    "lastModified": 1786115669
+    "rev": "ec33edcddc296ba7c304adb0d5d8b0f6b43a0e9f",
+    "narHash": "sha256-PSfJXN6qwRkpWae6Ff6Wg5PyDniBRICOTYRA9F123Y4=",
+    "lastModified": 1786388579
   },
   "preservation": {
     "type": "github",
