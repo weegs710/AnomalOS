@@ -43,9 +43,9 @@ def binary_attrs():
     return sorted(names)
 
 
-def extract_one(clone, rev, attrs_expr, cache, ehash, tmpdir):
+def extract_one(clone, rev, attrs_expr, cache, ehash, tmpdir, need_hash):
     dest = cache / f"{rev}.{ehash}.json"
-    if dest.exists():
+    if dest.exists() and not need_hash:
         return rev, None, "cached"
 
     tmp = tempfile.mkdtemp(dir=tmpdir)
@@ -62,6 +62,10 @@ def extract_one(clone, rev, attrs_expr, cache, ehash, tmpdir):
 
         h = run(["nix", "hash", "path", "--sri", "--type", "sha256", tmp])
         narhash = h.stdout.strip() if h.returncode == 0 else None
+
+        # A cached extraction with no narHash is unreachable at eval time, so the checkout is worth it for the hash alone.
+        if dest.exists():
+            return rev, narhash, "cached"
 
         e = run([
             "nix-instantiate", "--eval", "--strict", "--json",
@@ -120,7 +124,9 @@ def main():
         covered = 0
         if args.incremental and out.exists():
             covered = json.loads(out.read_text())["revisionCount"]
-        targets = [(i, r) for i, r in enumerate(revs) if i >= covered]
+        targets = [
+            (i, r) for i, r in enumerate(revs) if i >= covered or "narHash" not in r
+        ]
         if args.limit:
             targets = targets[: args.limit]
 
@@ -130,7 +136,8 @@ def main():
         with futures.ThreadPoolExecutor(max_workers=args.threads) as pool:
             jobs = {
                 pool.submit(
-                    extract_one, args.clone, r["rev"], attrs_expr, cache, ehash, args.tmpdir
+                    extract_one, args.clone, r["rev"], attrs_expr, cache, ehash,
+                    args.tmpdir, "narHash" not in r,
                 ): (i, r)
                 for i, r in targets
             }
