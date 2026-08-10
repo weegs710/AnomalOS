@@ -28,7 +28,7 @@ sprinkles.new {
         let
           pkgs = pkgsFor system;
         in
-        lib.foldl' (acc: f: acc // import f { inherit pkgs lib; }) { } (
+        lib.foldl' (acc: f: acc // import f { inherit pkgs lib inputs; }) { } (
           toList (fileFilter (f: f.hasExt "nix" && !(lib.hasPrefix "_" f.name)) ./weegsware)
         );
 
