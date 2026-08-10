@@ -37,3 +37,6 @@ url = "gh:chojs23/concord"
 [inputs.dusklight]
 url = "gh:TwilitRealm/dusklight/v1.4.1"
 submodules = true
+
+[inputs.nix-shop]
+url = "cb:weegs710/nix-shop"

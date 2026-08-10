@@ -48,6 +48,14 @@
     "narHash": "sha256-q4kR7g+pCcz6NASvoVPYu+CWWUurX03wogtBqGmR4h0=",
     "lastModified": 1785650611
   },
+  "nix-shop": {
+    "type": "git",
+    "url": "https://codeberg.org/weegs710/nix-shop",
+    "ref": "HEAD",
+    "rev": "505d57443f4b2743e0b6986c496935185b035dd3",
+    "narHash": "sha256-zh0I8bjuPCAFDyhTd2ZIoFwnBq2H4tnNP++l4Al65ww=",
+    "lastModified": 1786392827
+  },
   "nixpkgs": {
     "type": "github",
     "owner": "NixOS",
