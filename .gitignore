@@ -131,3 +131,6 @@ test-output/
 *.patch
 *.diff
 *.orig
+
+# shop -- per-revision extraction cache, regenerable from the bare nixpkgs clone
+lib/shop/index/.per-rev/

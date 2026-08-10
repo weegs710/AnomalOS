@@ -37,7 +37,7 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  programs.nix-index-database.comma.enable = true;
+  programs.nix-index-database.comma.enable = false;
 
   environment.systemPackages = with pkgs; [
     curl

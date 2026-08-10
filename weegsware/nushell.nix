@@ -24,7 +24,7 @@ let
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/nu \
-        --prefix PATH : ${pkgs.lib.makeBinPath nushellTools}
+        --suffix PATH : ${pkgs.lib.makeBinPath nushellTools}
     '';
 
     passthru.shellPath = "/bin/nu";
