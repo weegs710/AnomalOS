@@ -25,7 +25,7 @@
   "game.freeCameraXSensitivity": 1.0,
   "game.instantSaves": true,
   "game.instantText": true,
-  "game.internalResolutionScale": 5,
+  "game.internalResolutionScale": 10,
   "game.invertCameraXAxis": true,
   "game.invertCameraYAxis": false,
   "game.invertFirstPersonXAxis": false,
@@ -42,5 +42,5 @@
   "game.sunsSong": true,
   "video.enableFullscreen": true,
   "video.enableVsync": false,
-  "video.maxFrameRate": 144
+  "video.maxFrameRate": 60
 }
