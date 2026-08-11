@@ -112,7 +112,6 @@ avatar_path = "~/.local/share/wallpapers/cyberstoner.webp"
 clipboard_enabled = true
 font_family = "Terminess Nerd Font"
 telemetry_enabled = false
-ui_scale = 1.2
 
 [shell.animation]
 enabled = true
@@ -120,10 +119,6 @@ speed = 1.0
 
 [shell.panel]
 borders = true
-clipboard_placement = "centered"
-control_center_placement = "centered"
-launcher_placement = "centered"
-session_placement = "centered"
 shadow = true
 transparency_mode = "soft"
 wallpaper_placement = "attached"
@@ -135,7 +130,7 @@ enabled = true
 builtin = "Eldritch"
 mode = "dark"
 source = "custom"
-custom_palette = "Twilight"
+custom_palette = "Plasm"
 
 [theme.templates]
 builtin_ids = [
@@ -197,7 +192,8 @@ device = "output"
 show_label = false
 
 [widget.workspaces]
-display = "name"
+label_source = "name"
+show_labels = true
 empty_color = "secondary"
 focused_color = "primary"
 hide_when_empty = false
