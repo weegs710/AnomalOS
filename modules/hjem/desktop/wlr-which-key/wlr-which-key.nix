@@ -185,8 +185,9 @@ let
           (run "g" "gorguru" gorguruCmd)
           (run "c" "Dungeon Crawl Stone Soup" (hyprExec "crawl-tiles" (ws 4)))
           (run "e" "ES-DE" "es-de")
-          (run "m" "AM2R" (hyprExec "am2r" (ws 4)))
+          (run "M" "AM2R" (hyprExec "am2r" (ws 4)))
           (run "z" "Dusklight" (hyprExec "dusklight" (ws 4)))
+          (run "m" "2Ship2Harkinian" (hyprExec "2s2h" (ws 4)))
           (run "x" "renegade x" "steam steam://rungameid/14947236508015263744")
           (sub "o" "openra" [
             (run "d" "Dune 2000" (hyprExec "openra-d2k" (ws 4)))
