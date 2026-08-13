@@ -2,8 +2,9 @@ local mainMod  = "SUPER"
 
 -- monitors
 -- hl.monitor({ output = "NAME", mode = "WxH@Hz", position = "XxY", scale = "1" })
-hl.monitor({ output = "HDMI-A-2", mode = "2560x1440@144", position = "0x0",  scale = "1" })
-hl.monitor({ output = "",          mode = "preferred",      position = "auto", scale = "auto" })
+-- match by desc, not connector name -- the name drifted to HDMI-A-1 and silently dropped us to 60Hz
+hl.monitor({ output = "desc:HKC OVERSEAS LIMITED G2721P", mode = "2560x1440@144", position = "0x0",  scale = "1" })
+hl.monitor({ output = "",                                 mode = "preferred",     position = "auto", scale = "auto" })
 
 -- environment
 -- hl.env("KEY", "value")
