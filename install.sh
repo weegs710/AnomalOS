@@ -1,222 +1,782 @@
 #!/usr/bin/env bash
+#
+# Installs a host from this repository onto local disks.
+#
+# The script works in two stages. First it builds a plan: which host to install,
+# which disk each storage pool goes on, and how large the boot and swap
+# partitions should be. It checks that plan against the host's configuration and
+# refuses to continue if the two disagree. Only after that does it write
+# anything to a disk.
+#
+# Nothing is written to any disk until the plan has passed every check and you
+# have confirmed it once.
 
 set -o errexit
 set -o nounset
 set -o pipefail
 
-function yesno() {
-	local prompt="$1"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ASSEMBLE="$SCRIPT_DIR/assemble.nix"
+REQUIREMENTS="$SCRIPT_DIR/lib/requirements.nix"
+HOSTS_DIR="$SCRIPT_DIR/modules/hosts"
+NIX_FEATURES="nix-command flakes"
 
+PLAN_IN=""
+PLAN_OUT=""
+ASSUME_YES=0
+NO_INSTALL=0
+REGENERATE="ask"
+
+say() { printf '%s\n' "$*"; }
+blank() { printf '\n'; }
+die() {
+	printf '\n%s\n' "Error: $*" >&2
+	exit 1
+}
+
+usage() {
+	cat <<'EOF'
+Usage: ./install.sh [options]
+
+Options:
+  --plan FILE        Use a previously saved plan instead of asking questions.
+  --save-plan FILE   Build and check a plan, write it to FILE, then stop
+                     without touching any disk. Use this to review a plan
+                     before committing to it.
+  --regenerate       Rewrite the host's hardware.nix from the disks this run
+                     creates. Only meaningful for a host that already has one.
+  --keep-hardware    Leave an existing hardware.nix untouched.
+  --yes              Do not ask for the final confirmation. Intended for
+                     automated runs; it still refuses a plan that fails checks.
+  --no-install       Partition the disks, create the filesystems and mount
+                     them, then stop without building or installing anything.
+  -h, --help         Show this message.
+
+With no options the script asks questions, shows you the resulting plan, and
+waits for confirmation before writing anything.
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+	--plan)
+		PLAN_IN="${2:-}"
+		[[ -n "$PLAN_IN" ]] || die "--plan needs a file path."
+		shift 2
+		;;
+	--save-plan)
+		PLAN_OUT="${2:-}"
+		[[ -n "$PLAN_OUT" ]] || die "--save-plan needs a file path."
+		shift 2
+		;;
+	--regenerate)
+		REGENERATE="yes"
+		shift
+		;;
+	--keep-hardware)
+		REGENERATE="no"
+		shift
+		;;
+	--yes)
+		ASSUME_YES=1
+		shift
+		;;
+	--no-install)
+		NO_INSTALL=1
+		shift
+		;;
+	-h | --help)
+		usage
+		exit 0
+		;;
+	*) die "Unknown option: $1. Run with --help to see the available options." ;;
+	esac
+done
+
+# ---------------------------------------------------------------- prerequisites
+
+check_tools() {
+	local purpose="$1"
+	shift
+	local missing=() t
+	for t in "$@"; do
+		command -v "$t" >/dev/null 2>&1 || missing+=("$t")
+	done
+	((${#missing[@]} > 0)) || return 0
+	say "This machine is missing tools needed to $purpose:"
+	for t in "${missing[@]}"; do say "  - $t"; done
+	blank
+	say "Boot the NixOS installer image, which provides all of them, and run"
+	say "this script again from there."
+	exit 1
+}
+
+require_planning_tools() {
+	check_tools "read the configuration and inspect disks" nix lsblk jq
+	[[ -r "$ASSEMBLE" ]] || die "Cannot read $ASSEMBLE. Run this script from inside a clone of the repository."
+	[[ -r "$REQUIREMENTS" ]] || die "Cannot read $REQUIREMENTS. The clone looks incomplete."
+}
+
+require_install_tools() {
+	check_tools "partition disks and install" \
+		sgdisk zpool zfs mkfs.fat mkswap blkdiscard nixos-install nixos-generate-config
+}
+
+# ------------------------------------------------------------------------ hosts
+
+list_hosts() {
+	local d
+	for d in "$HOSTS_DIR"/*/; do
+		[[ -d "$d" ]] || continue
+		local name
+		name="$(basename "$d")"
+		[[ "${name:0:1}" != "_" ]] || continue
+		say "$name"
+	done
+}
+
+host_exists() {
+	local want="$1" h
+	while read -r h; do
+		[[ "$h" != "$want" ]] || return 0
+	done < <(list_hosts)
+	return 1
+}
+
+choose_host() {
+	local hosts
+	mapfile -t hosts < <(list_hosts)
+	((${#hosts[@]} > 0)) || die "No hosts found in $HOSTS_DIR. Each host needs its own directory containing a metadata.nix."
+
+	say "Hosts defined in this repository:"
+	local i
+	for i in "${!hosts[@]}"; do
+		local meta="$HOSTS_DIR/${hosts[i]}/metadata.nix"
+		local detail=""
+		if [[ -r "$meta" ]]; then
+			detail="$(nix eval --json --file "$meta" --extra-experimental-features "$NIX_FEATURES" 2>/dev/null |
+				jq -r '"\(.system)  \(.tags | join(", "))"' 2>/dev/null || true)"
+		fi
+		printf '  %d) %-16s %s\n' "$((i + 1))" "${hosts[i]}" "$detail"
+	done
+	blank
+
+	local answer
 	while true; do
-		read -rp "$prompt [y/n] " yn
-		case $yn in
-		[Yy]*)
-			echo "y"
+		read -rp "Which host is being installed on this machine? " answer
+		if [[ "$answer" =~ ^[0-9]+$ ]] && ((answer >= 1 && answer <= ${#hosts[@]})); then
+			HOST="${hosts[answer - 1]}"
 			return
+		fi
+		if host_exists "$answer"; then
+			HOST="$answer"
+			return
+		fi
+		say "That is not one of the hosts listed above. Enter a number or a host name."
+	done
+}
+
+# ----------------------------------------------------------------- requirements
+
+load_requirements() {
+	say "Reading what host \"$HOST\" expects from its disks."
+	REQS="$WORK/requirements.json"
+	if ! nix eval --json --file "$REQUIREMENTS" --apply "f: f \"$HOST\"" \
+		--extra-experimental-features "$NIX_FEATURES" >"$REQS" 2>"$WORK/requirements.err"; then
+		say "The configuration for \"$HOST\" could not be evaluated. Nothing has been"
+		say "written to any disk. The error was:"
+		blank
+		sed 's/^/  /' "$WORK/requirements.err" | tail -20
+		exit 1
+	fi
+}
+
+# ------------------------------------------------------------------------ disks
+
+# type=disk excludes partitions, and zram is memory rather than storage
+usable_disks_json() {
+	lsblk -J -b -o NAME,PATH,SIZE,TYPE,FSTYPE,LABEL,MODEL |
+		jq '[ .blockdevices[]
+              | select(.type == "disk")
+              | select(.name | startswith("zram") | not)
+              | { path, size, model: (.model // "unknown"),
+                  holds: [ (.children // [])[] | select(.fstype == "zfs_member") | .label ] } ]'
+}
+
+human_size() { numfmt --to=iec --suffix=B "$1" 2>/dev/null || printf '%s bytes' "$1"; }
+
+show_disks() {
+	local n
+	n="$(jq 'length' <<<"$DISKS")"
+	say "Disks attached to this machine:"
+	local i
+	for ((i = 0; i < n; i++)); do
+		local path size model holds
+		path="$(jq -r ".[$i].path" <<<"$DISKS")"
+		size="$(jq -r ".[$i].size" <<<"$DISKS")"
+		model="$(jq -r ".[$i].model" <<<"$DISKS")"
+		holds="$(jq -r ".[$i].holds | join(\", \")" <<<"$DISKS")"
+		printf '  %d) %-16s %-10s %s\n' "$((i + 1))" "$path" "$(human_size "$size")" "$model"
+		if [[ -n "$holds" ]]; then
+			printf '     %s\n' "Already contains a storage pool named: $holds"
+			printf '     %s\n' "Choosing this disk destroys that pool and everything in it."
+		fi
+	done
+	blank
+}
+
+pick_disk() {
+	local prompt="$1" answer n
+	n="$(jq 'length' <<<"$DISKS")"
+	while true; do
+		read -rp "$prompt " answer
+		if [[ "$answer" =~ ^[0-9]+$ ]] && ((answer >= 1 && answer <= n)); then
+			jq -r ".[$((answer - 1))].path" <<<"$DISKS"
+			return
+		fi
+		if jq -e --arg p "$answer" 'any(.[]; .path == $p)' <<<"$DISKS" >/dev/null; then
+			printf '%s\n' "$answer"
+			return
+		fi
+		say "That is not one of the disks listed above. Enter a number or a device path." >&2
+	done
+}
+
+ask_number() {
+	local prompt="$1" default="$2" answer
+	while true; do
+		read -rp "$prompt [$default] " answer
+		answer="${answer:-$default}"
+		if [[ "$answer" =~ ^[0-9]+$ ]]; then
+			printf '%s\n' "$answer"
+			return
+		fi
+		say "Enter a whole number, or press enter to accept $default." >&2
+	done
+}
+
+ask_yes_no() {
+	local prompt="$1" answer
+	while true; do
+		read -rp "$prompt [y/n] " answer
+		case "$answer" in
+		[Yy]*)
+			return 0
 			;;
 		[Nn]*)
-			echo "n"
-			return
+			return 1
 			;;
-		*) echo "Please answer yes or no." ;;
+		*) say "Please answer y or n." ;;
 		esac
 	done
 }
 
-cat <<Introduction
-The *entire* disk will be formatted with a 1GB boot partition
-(labelled NIXBOOT), 16GB of swap, and the rest allocated to ZFS.
+# ------------------------------------------------------------------------- plan
 
-The following ZFS datasets will be created:
-    - zroot/root (mounted at / with blank snapshot)
-    - zroot/nix (mounted at /nix)
-    - zroot/tmp (mounted at /tmp)
-    - zroot/persist (mounted at /persist)
-    - zroot/cache (mounted at /cache)
+build_plan() {
+	DISKS="$(usable_disks_json)"
+	local ndisks
+	ndisks="$(jq 'length' <<<"$DISKS")"
+	((ndisks > 0)) || die "No usable disks were found on this machine."
 
-** IMPORTANT **
-This script assumes that the relevant "fileSystems" are declared within the
-NixOS config to be installed. It does not create any hardware configuration
-or modify the NixOS config to be installed in any way. If you have not done
-so, you will need to add the necessary zfs options and filesystems before
-proceeding or your install WILL NOT BOOT.
+	blank
+	show_disks
 
-Introduction
+	local pools
+	mapfile -t pools < <(jq -r '.pools[]' "$REQS")
+	say "The configuration for \"$HOST\" stores data in ${#pools[@]} pool(s): ${pools[*]}"
+	say "Each one needs a disk. A disk can hold only one pool."
+	blank
 
-# ZFS "fileSystems" declarations can be referenced from modules/zfs.nix
-# ZFS also requires the following options to be set within host config:
-#   networking.hostId (can be generated using: head -c 8 /etc/machine-id)
-#   zfs.devNodes
-#       "/dev/disk/by-id" for Intel CPUs
-#       "/dev/disk/by-partuuid" for AMD CPUs / within VMs
-# impermanence setup can be referenced from modules/impermanence.nix
-
-# It is highly recommended to setup an initialPassword for root and your user(s)
-# as a fallback so you will always be able to login / sudo using that initialPassword, e.g.
-#
-# users = {
-#     mutableUsers = false;   # set to true if *NOT* using impermanence
-#     users.root.initialPassword = "password";
-#     users.YOUR_USERNAME.initialPassword = "password";
-# }
-#
-# After initial login, you can then set new passwords for root and your user(s)
-# using `users.YOUR_USERNAME.hashedPasswordFile = /persist/PATH_TO_HASHED_PASSWORD_FILE`
-# read -s -p "" PASSWORD && mkpasswd -m sha-512 "$PASSWORD" | sudo tee /persist/PATH_TO_HASHED_PASSWORD_FILE
-
-# NOTE: during rebuild, there will be warnings about setting multiple password options, this is expected :(
-# (https://github.com/NixOS/nixpkgs/pull/287506#issuecomment-1950958990)
-# see modules/users.nix for a fix to silence the warnings
-
-# in a vm, special case
-if [[ -b "/dev/vda" ]]; then
-	DISK="/dev/vda"
-else
-	# listing with the standard lsblk to help with viewing partitions
-	lsblk
-
-	# Get the list of disks
-	mapfile -t disks < <(lsblk -ndo NAME,SIZE,MODEL)
-
-	echo -e "\nAvailable disks:\n"
-	for i in "${!disks[@]}"; do
-		printf "%d) %s\n" $((i + 1)) "${disks[i]}"
-	done
-
-	# Get user selection
-	while true; do
-		echo ""
-		read -rp "Enter the number of the disk to install to: " selection
-		if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 1 ] && [ "$selection" -le ${#disks[@]} ]; then
+	local assignments="[]" pool disk
+	for pool in "${pools[@]}"; do
+		while true; do
+			disk="$(pick_disk "Which disk should hold the pool \"$pool\"? (number or path)")"
+			if jq -e --arg d "$disk" 'any(.[]; .disk == $d)' <<<"$assignments" >/dev/null; then
+				say "$disk is already assigned to another pool. Choose a different disk."
+				continue
+			fi
 			break
-		else
-			echo "Invalid selection. Please try again."
-		fi
+		done
+		assignments="$(jq --arg n "$pool" --arg d "$disk" '. + [{name: $n, disk: $d}]' <<<"$assignments")"
 	done
 
-	# Get the selected disk
-	DISK="/dev/$(echo "${disks[$selection - 1]}" | awk '{print $1}')"
-fi
+	blank
+	say "The machine needs one disk to boot from. It gets a 1GiB boot partition"
+	say "and a temporary swap partition used only during installation."
+	local boot_pool boot_disk
+	boot_pool="$(jq -r '.[0].name' <<<"$assignments")"
+	boot_disk="$(jq -r '.[0].disk' <<<"$assignments")"
+	if ((${#pools[@]} > 1)); then
+		say "By default this is $boot_disk, the disk holding \"$boot_pool\"."
+		if ! ask_yes_no "Use $boot_disk as the boot disk?"; then
+			boot_disk="$(pick_disk "Which disk should the machine boot from? (number or path)")"
+			jq -e --arg d "$boot_disk" 'any(.[]; .disk == $d)' <<<"$assignments" >/dev/null ||
+				die "The boot disk must be one of the disks assigned to a pool."
+		fi
+	fi
 
-# if disk contains "nvme", append "p" to partitions
-if [[ "$DISK" =~ "nvme" ]]; then
-	BOOTDISK="${DISK}p3"
-	SWAPDISK="${DISK}p2"
-	ZFSDISK="${DISK}p1"
+	blank
+	local boot_mib swap_gib
+	boot_mib=1024
+	swap_gib="$(ask_number "How much swap should the installer use, in GiB?" 16)"
+	say "Swap is only used while installing. What the machine uses afterwards is"
+	say "whatever its configuration declares."
+
+	blank
+	local encrypt=false
+	if ask_yes_no "Encrypt the storage pools with a passphrase?"; then
+		encrypt=true
+		say "You will be asked to set the passphrase when each pool is created."
+	fi
+
+	local boot_label
+	boot_label="$(jq -r '(.labels[] | select(.mountPoint == "/boot") | .label) // "NIXBOOT"' "$REQS")"
+
+	PLAN="$WORK/plan.json"
+	jq -n \
+		--arg host "$HOST" \
+		--arg bootDisk "$boot_disk" \
+		--arg bootLabel "$boot_label" \
+		--argjson bootMiB "$boot_mib" \
+		--argjson swapGiB "$swap_gib" \
+		--argjson encrypt "$encrypt" \
+		--argjson pools "$assignments" \
+		--slurpfile reqs "$REQS" \
+		'{
+           host: $host, bootDisk: $bootDisk, bootLabel: $bootLabel,
+           bootMiB: $bootMiB, swapGiB: $swapGiB, encrypt: $encrypt,
+           pools: $pools,
+           installRoot: ($reqs[0].pools[0] + "/root"),
+           datasets: $reqs[0].datasets,
+           mounts: $reqs[0].zfsMounts
+         }' >"$PLAN"
+}
+
+# --------------------------------------------------------------------- checking
+
+check_plan() {
+	local problems=0
+
+	say "Checking the plan against the configuration for \"$(jq -r .host "$PLAN")\"."
+	blank
+
+	local missing_pools
+	missing_pools="$(jq -r --slurpfile p "$PLAN" \
+		'[ .pools[] | select( . as $n | ($p[0].pools | map(.name)) | index($n) | not ) ] | .[]' "$REQS")"
+	if [[ -n "$missing_pools" ]]; then
+		say "Problem: the configuration expects storage pools this plan does not create."
+		while read -r pool; do
+			say "  - \"$pool\" is required, but no disk is assigned to it"
+		done <<<"$missing_pools"
+		say "  Assign a disk to each pool listed above, or change the configuration"
+		say "  so it no longer refers to them."
+		blank
+		problems=$((problems + 1))
+	else
+		say "Every storage pool the configuration needs has a disk assigned."
+	fi
+
+	local missing_ds
+	missing_ds="$(jq -r --slurpfile p "$PLAN" \
+		'[ .datasets[] | select( . as $d | $p[0].datasets | index($d) | not ) ] | .[]' "$REQS")"
+	if [[ -n "$missing_ds" ]]; then
+		say "Problem: the configuration mounts filesystems this plan does not create."
+		while read -r ds; do
+			say "  - \"$ds\" is mounted by the configuration but is not in the plan"
+		done <<<"$missing_ds"
+		say "  The machine would fail to mount these after it reboots."
+		blank
+		problems=$((problems + 1))
+	else
+		say "Every filesystem the configuration mounts will be created."
+	fi
+
+	local want_label have_label
+	want_label="$(jq -r '(.labels[] | select(.mountPoint == "/boot") | .label) // ""' "$REQS")"
+	have_label="$(jq -r '.bootLabel // ""' "$PLAN")"
+	if [[ -n "$want_label" && "$want_label" != "$have_label" ]]; then
+		say "Problem: the boot partition label does not match."
+		say "  - the configuration looks for a partition labelled \"$want_label\""
+		say "  - this plan would label it \"${have_label:-none}\""
+		say "  The machine would not boot."
+		blank
+		problems=$((problems + 1))
+	else
+		say "The boot partition will be labelled \"$want_label\", which is what the configuration expects."
+	fi
+
+	local hostid
+	hostid="$(jq -r '.hostId // ""' "$REQS")"
+	if [[ -z "$hostid" || "$hostid" == "null" ]]; then
+		say "Problem: this host has no hostId. ZFS needs one to tell machines apart."
+		say "  Set hostId in $HOSTS_DIR/$HOST/metadata.nix."
+		blank
+		problems=$((problems + 1))
+	else
+		say "The host identifier is $hostid."
+	fi
+
+	local plan_disks
+	plan_disks="$(jq -r '.pools[].disk' "$PLAN")"
+	while read -r d; do
+		[[ -n "$d" ]] || continue
+		if [[ ! -b "$d" ]]; then
+			say "Problem: $d is not a block device on this machine."
+			blank
+			problems=$((problems + 1))
+		fi
+	done <<<"$plan_disks"
+
+	blank
+	if ((problems > 0)); then
+		say "Found $problems problem(s). Nothing has been written to any disk."
+		return 1
+	fi
+	say "The plan satisfies the configuration."
+	return 0
+}
+
+check_bootable() {
+	local problems=0
+
+	say "Checking that the configuration now describes a machine that can boot."
+	blank
+
+	local mounts
+	mounts="$(jq -r '.mountPoints[]' "$REQS")"
+
+	if grep -qx "/" <<<"$mounts"; then
+		say "The configuration declares a root filesystem."
+	else
+		say "Problem: the configuration declares no root filesystem."
+		say "  Without a filesystem mounted at / the machine cannot start."
+		blank
+		problems=$((problems + 1))
+	fi
+
+	if grep -qx "/boot" <<<"$mounts"; then
+		say "The configuration declares a boot filesystem."
+	else
+		say "Problem: the configuration declares no filesystem at /boot."
+		say "  The bootloader has nowhere to put the kernel."
+		blank
+		problems=$((problems + 1))
+	fi
+
+	blank
+	if ((problems > 0)); then
+		say "Found $problems problem(s). The disks are set up, but nothing has been installed."
+		return 1
+	fi
+	say "The configuration describes a machine that can boot."
+	return 0
+}
+
+show_plan() {
+	local host bootDisk bootLabel bootMiB swapGiB encrypt
+	host="$(jq -r .host "$PLAN")"
+	bootDisk="$(jq -r .bootDisk "$PLAN")"
+	bootLabel="$(jq -r .bootLabel "$PLAN")"
+	bootMiB="$(jq -r .bootMiB "$PLAN")"
+	swapGiB="$(jq -r .swapGiB "$PLAN")"
+	encrypt="$(jq -r .encrypt "$PLAN")"
+
+	say "This is what will happen:"
+	blank
+	say "  Host:        $host"
+	say "  Boot disk:   $bootDisk  (${bootMiB}MiB partition labelled $bootLabel)"
+	say "  Swap:        ${swapGiB}GiB on $bootDisk, used during installation only"
+	say "  Encryption:  $([[ "$encrypt" == "true" ]] && echo "yes, passphrase" || echo "no")"
+	blank
+	say "  Storage pools:"
+	jq -r '.pools[] | "    \(.name) on \(.disk)"' "$PLAN"
+	blank
+	say "  Filesystems created and mounted:"
+	jq -r '.mounts[] | "    \(.device) at \(.mountPoint)"' "$PLAN"
+	blank
+	say "  Every disk listed above will be completely erased."
+	blank
+}
+
+# -------------------------------------------------------------------- execution
+
+partition_boot_disk() {
+	local disk="$1" boot_mib="$2" swap_gib="$3" label="$4"
+
+	say "Erasing $disk and creating partitions."
+	blkdiscard -f "$disk" 2>/dev/null || true
+	sgdisk --zap-all "$disk" >/dev/null
+
+	sgdisk -n3:1M:+"${boot_mib}"M -t3:EF00 -c3:boot "$disk" >/dev/null
+	sgdisk -n2:0:+"${swap_gib}"G -t2:8200 -c2:swap "$disk" >/dev/null
+	sgdisk -n1:0:0 -t1:BF01 -c1:pool "$disk" >/dev/null
+	sgdisk -p "$disk" >/dev/null
+	udevadm settle 2>/dev/null || sleep 3
+
+	BOOT_PART="$(part_path "$disk" 3)"
+	SWAP_PART="$(part_path "$disk" 2)"
+	POOL_PART="$(part_path "$disk" 1)"
+
+	say "Formatting the boot partition."
+	mkfs.fat -F 32 "$BOOT_PART" -n "$label" >/dev/null
+
+	say "Enabling swap for the installation."
+	mkswap "$SWAP_PART" --label SWAP >/dev/null
+	swapon "$SWAP_PART"
+}
+
+# some device families separate the partition number with a p, so ask the kernel rather than guess
+part_path() {
+	local disk="$1" num="$2" candidate
+	for candidate in "${disk}${num}" "${disk}p${num}"; do
+		[[ -b "$candidate" ]] && {
+			printf '%s\n' "$candidate"
+			return
+		}
+	done
+	die "Could not find partition $num on $disk after creating it."
+}
+
+wipe_whole_disk() {
+	local disk="$1"
+	say "Erasing $disk."
+	blkdiscard -f "$disk" 2>/dev/null || true
+	sgdisk --zap-all "$disk" >/dev/null
+	sgdisk -n1:0:0 -t1:BF01 -c1:pool "$disk" >/dev/null
+	sgdisk -p "$disk" >/dev/null
+	udevadm settle 2>/dev/null || sleep 3
+	POOL_PART="$(part_path "$disk" 1)"
+}
+
+create_pool() {
+	local name="$1" part="$2" encrypt="$3"
+	local opts=(-f -o ashift=12 -o autotrim=on
+		-O compression=zstd -O acltype=posixacl -O atime=off
+		-O xattr=sa -O normalization=formD -O mountpoint=none)
+	if [[ "$encrypt" == "true" ]]; then
+		opts+=(-O encryption=aes-256-gcm -O keyformat=passphrase -O keylocation=prompt)
+		say "Creating pool \"$name\". You will be asked to set its passphrase now."
+	else
+		say "Creating pool \"$name\"."
+	fi
+	zpool create "${opts[@]}" "$name" "$part"
+}
+
+apply_plan() {
+	local encrypt boot_disk boot_mib swap_gib boot_label install_root
+	encrypt="$(jq -r .encrypt "$PLAN")"
+	boot_disk="$(jq -r .bootDisk "$PLAN")"
+	boot_mib="$(jq -r .bootMiB "$PLAN")"
+	swap_gib="$(jq -r .swapGiB "$PLAN")"
+	boot_label="$(jq -r .bootLabel "$PLAN")"
+	install_root="$(jq -r .installRoot "$PLAN")"
+
+	blank
+	say "Writing to disks now."
+	blank
+
+	local n i name disk
+	n="$(jq '.pools | length' "$PLAN")"
+	for ((i = 0; i < n; i++)); do
+		name="$(jq -r ".pools[$i].name" "$PLAN")"
+		disk="$(jq -r ".pools[$i].disk" "$PLAN")"
+		if [[ "$disk" == "$boot_disk" ]]; then
+			partition_boot_disk "$disk" "$boot_mib" "$swap_gib" "$boot_label"
+		else
+			wipe_whole_disk "$disk"
+		fi
+		create_pool "$name" "$POOL_PART" "$encrypt"
+	done
+
+	say "Creating the filesystem the installation is written into."
+	zfs create -p -o mountpoint=legacy "$install_root"
+	zfs snapshot "${install_root}@blank"
+	mount -t zfs "$install_root" /mnt
+
+	say "Mounting the boot partition."
+	mount --mkdir "$BOOT_PART" /mnt/boot
+
+	local persist_ds
+	persist_ds="$(jq -r '(.mounts[] | select(.mountPoint == "/persist") | .device) // empty' "$PLAN")"
+	RESTORE_FROM=""
+	[[ -z "$persist_ds" ]] || ask_restore "$persist_ds"
+
+	local ds mp
+	while read -r ds mp; do
+		[[ -n "$ds" ]] || continue
+		if [[ "$mp" == "/persist" && -n "$RESTORE_FROM" ]]; then
+			say "Restoring $ds from $RESTORE_FROM."
+			zfs receive -o mountpoint=legacy "$ds" <"$RESTORE_FROM" ||
+				die "Restoring $ds failed. The disks are set up, but nothing was installed."
+			mount --mkdir -t zfs "$ds" "/mnt$mp"
+			continue
+		fi
+		say "Creating $ds for $mp."
+		# -p because a nested dataset cannot be created before its parents exist
+		zfs create -p -o mountpoint=legacy "$ds"
+		mount --mkdir -t zfs "$ds" "/mnt$mp"
+	done < <(jq -r '.mounts[] | "\(.device) \(.mountPoint)"' "$PLAN")
+}
+
+# asked before the dataset loop, whose stdin is the plan rather than the terminal
+ask_restore() {
+	local ds="$1" path
+	((ASSUME_YES == 0)) || return 0
+
+	blank
+	say "The /persist dataset holds everything this machine keeps between reboots,"
+	say "including the SSH host key its encrypted secrets are tied to. Restoring it"
+	say "from a snapshot keeps those secrets working. Creating it empty means the"
+	say "machine generates a new host key, and secrets encrypted to the old one"
+	say "will need to be re-encrypted before they work again."
+	blank
+	ask_yes_no "Restore $ds from a snapshot file?" || return 0
+
+	while true; do
+		read -rp "Full path to the snapshot file: " path
+		if [[ -r "$path" ]]; then
+			RESTORE_FROM="$path"
+			return 0
+		fi
+		say "Cannot read that file. Enter a path that exists."
+	done
+}
+
+# ----------------------------------------------------------- hardware config
+
+handle_hardware_config() {
+	local hw="$HOSTS_DIR/$HOST/hardware.nix"
+	local generated="$WORK/generated"
+
+	mkdir -p "$generated"
+	say "Recording the disk layout that was just created."
+	nixos-generate-config --root /mnt --dir "$generated" >/dev/null 2>&1 ||
+		die "nixos-generate-config failed. The disks are set up; nothing has been installed."
+
+	if [[ ! -e "$hw" ]]; then
+		say "This host has no hardware.nix yet. Writing the generated one."
+		cp "$generated/hardware-configuration.nix" "$hw"
+		say "Wrote $hw. Review it before the machine goes into service."
+		return
+	fi
+
+	case "$REGENERATE" in
+	no)
+		say "Keeping the existing hardware.nix as instructed."
+		;;
+	yes)
+		cp "$hw" "$hw.replaced"
+		cp "$generated/hardware-configuration.nix" "$hw"
+		say "Replaced $hw. The previous version is at $hw.replaced."
+		;;
+	*)
+		blank
+		say "This host already has a hardware.nix. The freshly generated one is at:"
+		say "  $generated/hardware-configuration.nix"
+		say "Replacing it would discard any changes made by hand, such as kernel"
+		say "settings or graphics options."
+		if ask_yes_no "Replace $hw with the generated version?"; then
+			cp "$hw" "$hw.replaced"
+			cp "$generated/hardware-configuration.nix" "$hw"
+			say "Replaced it. The previous version is at $hw.replaced."
+		else
+			say "Keeping the existing hardware.nix."
+		fi
+		;;
+	esac
+}
+
+# ------------------------------------------------------------------------- main
+
+WORK="$(mktemp -d)"
+trap 'rm -rf "$WORK"' EXIT
+
+require_planning_tools
+
+if [[ -n "$PLAN_IN" ]]; then
+	[[ -r "$PLAN_IN" ]] || die "Cannot read the plan file: $PLAN_IN"
+	jq -e . "$PLAN_IN" >/dev/null 2>&1 || die "$PLAN_IN is not valid JSON."
+	PLAN="$WORK/plan.json"
+	cp "$PLAN_IN" "$PLAN"
+	HOST="$(jq -r '.host // ""' "$PLAN")"
+	[[ -n "$HOST" ]] || die "The plan file does not name a host."
+	host_exists "$HOST" || die "The plan names host \"$HOST\", which has no directory in $HOSTS_DIR."
+	say "Using the plan in $PLAN_IN for host \"$HOST\"."
+	load_requirements
 else
-	BOOTDISK="${DISK}3"
-	SWAPDISK="${DISK}2"
-	ZFSDISK="${DISK}1"
+	choose_host
+	blank
+	load_requirements
+	build_plan
 fi
 
-echo "Boot Partition: $BOOTDISK"
-echo "SWAP Partition: $SWAPDISK"
-echo "ZFS Partition: $ZFSDISK"
+blank
+check_plan || exit 1
 
-echo ""
-do_format=$(yesno "This irreversibly formats the entire disk. Are you sure?")
-if [[ $do_format == "n" ]]; then
-	exit
+if [[ -n "$PLAN_OUT" ]]; then
+	cp "$PLAN" "$PLAN_OUT"
+	blank
+	say "Plan written to $PLAN_OUT. No disks were touched."
+	say "Run this script again with --plan $PLAN_OUT to carry it out."
+	exit 0
 fi
 
-echo "Creating partitions"
-sudo blkdiscard -f "$DISK"
-sudo sgdisk --clear "$DISK"
+blank
+show_plan
 
-sudo sgdisk -n3:1M:+1G -t3:EF00 "$DISK"
-sudo sgdisk -n2:0:+16G -t2:8200 "$DISK"
-sudo sgdisk -n1:0:0 -t1:BF01 "$DISK"
-
-# notify kernel of partition changes
-sudo sgdisk -p "$DISK" >/dev/null
-sleep 5
-
-echo "Creating Swap"
-sudo mkswap "$SWAPDISK" --label "SWAP"
-sudo swapon "$SWAPDISK"
-
-echo "Creating Boot Disk"
-sudo mkfs.fat -F 32 "$BOOTDISK" -n NIXBOOT
-
-# setup encryption
-use_encryption=$(yesno "Use encryption? (Encryption must also be enabled within host config with boot.zfs.requestEncryptionCredentials = true)")
-if [[ $use_encryption == "y" ]]; then
-	encryption_options=(-O encryption=aes-256-gcm -O keyformat=passphrase -O keylocation=prompt)
-else
-	encryption_options=()
+if ((ASSUME_YES == 0)); then
+	ask_yes_no "Erase those disks and install?" || {
+		say "Stopped. Nothing was written."
+		exit 0
+	}
 fi
 
-echo "Creating base zpool"
-sudo zpool create -f \
-	-o ashift=12 \
-	-o autotrim=on \
-	-O compression=zstd \
-	-O acltype=posixacl \
-	-O atime=off \
-	-O xattr=sa \
-	-O normalization=formD \
-	-O mountpoint=none \
-	"${encryption_options[@]}" \
-	zroot "$ZFSDISK"
+require_install_tools
+apply_plan
+handle_hardware_config
 
-# NOTE: legacy mounts are used so they can be managed by fstab and swapped out via nixos configuration, e.g. for tmpfs
-echo "Creating /"
-sudo zfs create -o mountpoint=legacy zroot/root
-sudo zfs snapshot zroot/root@blank
-sudo mount -t zfs zroot/root /mnt
+blank
+say "The disks now exist, so the configuration can be checked against them"
+say "rather than against what it looked like beforehand."
+blank
+load_requirements
+check_plan || die "The plan and the configuration disagree. The disks are set up, but nothing was installed."
+blank
+check_bootable || exit 1
 
-# uncomment to have separate /home dataset
-# echo "Creating /home"
-# sudo zfs create -o mountpoint=legacy zroot/home
-# sudo zfs snapshot zroot/home@blank
-# sudo mount --mkdir -t zfs zroot/home /mnt/home
-
-# create the boot partition after creating root
-echo "Mounting /boot (efi)"
-sudo mount --mkdir "$BOOTDISK" /mnt/boot
-
-echo "Creating /nix"
-sudo zfs create -o mountpoint=legacy zroot/nix
-sudo mount --mkdir -t zfs zroot/nix /mnt/nix
-
-echo "Creating /tmp"
-sudo zfs create -o mountpoint=legacy zroot/tmp
-sudo mount --mkdir -t zfs zroot/tmp /mnt/tmp
-
-echo "Creating /cache"
-sudo zfs create -o mountpoint=legacy zroot/cache
-sudo mount --mkdir -t zfs zroot/cache /mnt/cache
-
-# handle persist, possibly from snapshot
-restore_snapshot=$(yesno "Do you want to restore from a persist snapshot?")
-if [[ $restore_snapshot == "y" ]]; then
-	echo "Enter full path to snapshot: "
-	read -r snapshot_file_path
-	echo
-
-	echo "Creating /persist"
-	# disable shellcheck (sudo doesn't affect redirects)
-	# shellcheck disable=SC2024
-	sudo zfs receive -o mountpoint=legacy zroot/persist <"$snapshot_file_path"
-
-else
-	echo "Creating /persist"
-	sudo zfs create -o mountpoint=legacy zroot/persist
+if ((NO_INSTALL == 1)); then
+	blank
+	say "Disks are set up and mounted under /mnt. Stopping before the install as asked."
+	say "Nothing has been built and nothing has been installed."
+	exit 0
 fi
-sudo mount --mkdir -t zfs zroot/persist /mnt/persist
 
-# this script runs from inside your clone (see README "getting started")
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+blank
+say "Building and installing the system for \"$HOST\". This can take a while."
+say "The build happens on the disks that were just prepared, so the machine"
+say "doing the installation does not need memory to hold the whole system."
 
-read -rp "Which host to install? (default: HX99G): " host
-host="${host:-HX99G}"
+SUBSTITUTERS="$(jq -r '.substituters | join(" ")' "$REQS")"
+TRUSTED_KEYS="$(jq -r '.trustedPublicKeys | join(" ")' "$REQS")"
+if [[ -n "$SUBSTITUTERS" ]]; then
+	blank
+	say "Package caches this host trusts, taken from its own configuration:"
+	jq -r '.substituters[] | "  " + .' "$REQS"
+fi
+blank
 
-echo "Building $host from $SCRIPT_DIR (pure tack -- no flake)"
-# the tack resolver uses builtins.fetchTree, which needs the flakes feature even under nix-build
-system=$(sudo nix-build "$SCRIPT_DIR/assemble.nix" -A "nixosConfigurations.$host.config.system.build.toplevel" --no-out-link --extra-experimental-features "nix-command flakes")
+# --file/--attr makes nixos-install build with --store /mnt; building here instead would need RAM the size of the closure
+nixos-install \
+	--root /mnt \
+	--file "$ASSEMBLE" \
+	--attr "nixosConfigurations.$HOST" \
+	--no-root-password \
+	--no-channel-copy \
+	--option extra-experimental-features "$NIX_FEATURES" \
+	--option substituters "$SUBSTITUTERS" \
+	--option trusted-public-keys "$TRUSTED_KEYS" ||
+	die "The installation failed. The disks are set up, but the system was not installed."
 
-echo "Installing NixOS"
-# root password is irrelevant if initialPassword is set in the config
-sudo nixos-install --no-root-password --system "$system" --no-channel-copy
-
-echo "Installation complete. It is now safe to reboot."
+blank
+say "Installation finished. It is safe to reboot."

@@ -1,53 +1,38 @@
 {
-    "d2launcher": {
-        "cargoLock": null,
-        "date": null,
-        "extract": null,
-        "name": "d2launcher",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "murkl",
-            "repo": "d2launcher",
-            "rev": "4.1.3",
-            "sha256": "sha256-yK3ZYqeadh8AZ7q3TENdecAicGkBhSjZKlGUsBmzoMo=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "4.1.3"
+  "d2launcher": {
+    "cargoLock": null,
+    "date": null,
+    "extract": null,
+    "name": "d2launcher",
+    "passthru": null,
+    "pinned": false,
+    "src": {
+      "deepClone": false,
+      "fetchSubmodules": false,
+      "leaveDotGit": false,
+      "name": null,
+      "owner": "murkl",
+      "repo": "d2launcher",
+      "rev": "4.1.3",
+      "sha256": "sha256-yK3ZYqeadh8AZ7q3TENdecAicGkBhSjZKlGUsBmzoMo=",
+      "sparseCheckout": [],
+      "type": "github"
     },
-    "helium": {
-        "cargoLock": null,
-        "date": null,
-        "extract": null,
-        "name": "helium",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "name": null,
-            "sha256": "sha256-3XUwBw9sSQgPjTVX3oBGwK9PQXgN5J+ktdICey67wAE=",
-            "type": "url",
-            "url": "https://github.com/imputnet/helium-linux/releases/download/0.14.8.2/helium-0.14.8.2-x86_64_linux.tar.xz"
-        },
-        "version": "0.14.8.2"
+    "version": "4.1.3"
+  },
+  "helium": {
+    "cargoLock": null,
+    "date": null,
+    "extract": null,
+    "name": "helium",
+    "passthru": null,
+    "pinned": false,
+    "src": {
+      "name": null,
+      "sha256": "sha256-3XUwBw9sSQgPjTVX3oBGwK9PQXgN5J+ktdICey67wAE=",
+      "type": "url",
+      "url": "https://github.com/imputnet/helium-linux/releases/download/0.14.8.2/helium-0.14.8.2-x86_64_linux.tar.xz"
     },
-    "zen": {
-        "cargoLock": null,
-        "date": null,
-        "extract": null,
-        "name": "zen",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "name": null,
-            "sha256": "sha256-BaNmV+TJ2+cA5UouOUH3r0ZWq74zBpCqdNjPeTrzlvQ=",
-            "type": "url",
-            "url": "https://github.com/zen-browser/desktop/releases/download/1.21.8b/zen.linux-x86_64.tar.xz"
-        },
-        "version": "1.21.8b"
-    }
+    "version": "0.14.8.2"
+  }
 }

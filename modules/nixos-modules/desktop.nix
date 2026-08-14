@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  only,
   ...
 }:
 let
@@ -12,6 +13,8 @@ let
     sudo sh -c "export GDK_BACKEND=wayland WAYLAND_DISPLAY='$WAYLAND_DISPLAY' XDG_RUNTIME_DIR='$XDG_RUNTIME_DIR' GTK_THEME=adw-gtk3-dark XDG_CONFIG_HOME='$HOME/.config' XDG_DATA_DIRS='$XDG_DATA_DIRS'; exec ${gpartedWithTools}/bin/gparted"
   '';
 in
+# gated so a headless host skips the whole desktop bundle rather than pulling GUI packages it never starts
+only.gate { tags = [ "desktop" ]; }
 {
   users.users.${config.mySystem.user.name}.packages = with pkgs; [
     adwaita-icon-theme

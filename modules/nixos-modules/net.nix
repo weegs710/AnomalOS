@@ -4,7 +4,6 @@
 
   networking = {
     hostName = config.mySystem.hostName;
-    hostId = "fff29759";
     networkmanager.enable = true;
     nftables.enable = true;
 

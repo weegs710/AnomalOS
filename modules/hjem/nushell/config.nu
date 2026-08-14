@@ -67,7 +67,7 @@ def --wrapped gb [...args: string] {
 }
 
 def --wrapped draw [...args: string] {
-    nu ~/repo/public/anomalos/scripts/draw.nu ...$args
+    nu ~/repo/public/anomalos/lib/scripts/draw.nu ...$args
 }
 
 def evaltime [] {
@@ -142,7 +142,7 @@ def room [] {
 }
 
 alias repl = nix repl --expr 'import ~/repo/public/anomalos/repl.nix {}'
-alias cc = claude-launcher
+alias ccl = claude-launcher
 alias hex = claude-launcher hex
 alias l = ls -alh
 alias ll = ls -l

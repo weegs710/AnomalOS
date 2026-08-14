@@ -40,7 +40,6 @@ let
   heliumCmd = "hyprctl dispatch \"hl.dsp.focus({ workspace = 3 })\" ; ${hyprExec "helium" ""}";
   discordCmd = hyprExec "/etc/profiles/per-user/${username}/bin/vesktop" (ws 1);
   gajimCmd = hyprExec "/etc/profiles/per-user/${username}/bin/gajim" (ws 1);
-  gorguruCmd = hyprExec "ghostty --title=gorguru -e ${homeDir}/repo/private/weegs.dev/dist/gorguru" stash;
   btopCmd = hyprExec "ghostty --title=btop -e btop" stashFloat;
   rmpcCmd = hyprExec "ghostty --title=rmpc -e rmpc" (ws 5);
   fileManagerCmd = hyprExec "ghostty -e yazi" bigFloat;
@@ -182,7 +181,6 @@ let
             hyprExec "steam" "{ workspace = '4', opacity = '1.0 override 1.0 override 1.0 override' }"
           ))
           (run "h" "heroic" (hyprExec "heroic" (ws 4)))
-          (run "g" "gorguru" gorguruCmd)
           (run "c" "Dungeon Crawl Stone Soup" (hyprExec "crawl-tiles" (ws 4)))
           (run "e" "ES-DE" "es-de")
           (run "M" "AM2R" (hyprExec "am2r" (ws 4)))

@@ -2,6 +2,7 @@
   config,
   pkgs,
   weegsware,
+  only,
   ...
 }:
 let
@@ -9,6 +10,7 @@ let
   homebrew = "/home/${username}/homebrew";
   decky-loader = weegsware.steam.passthru.decky-loader;
 in
+only.gate { tags = [ "gaming" ]; }
 {
   # decky self-creates these on first run; pre-make them user-owned so they aren't created root-owned
   systemd.tmpfiles.rules = [

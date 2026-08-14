@@ -137,7 +137,6 @@ in
           ".local/share/Cryptomator"
           ".local/share/Larian Studios"
           ".local/share/Paradox Interactive"
-          ".local/share/gorguru"
           # .local/state -- general
           ".local/state/nix"
           ".local/state/nix-output-monitor"

@@ -96,10 +96,9 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="448" y="538" font-size="13" fill="#34e0ff" font-weight="700" letter-spacing="1">WEEGSWARE</text>
 <line x1="444" y1="548" x2="756" y2="548" stroke="#517269" stroke-width="1"/>
 <text x="450" y="562" font-size="12" fill="#e6f2ec">▸ decky</text>
-<text x="450" y="580" font-size="12" fill="#e6f2ec">▸ gorguru</text>
-<text x="450" y="598" font-size="12" fill="#e6f2ec">▸ helium</text>
-<text x="450" y="616" font-size="12" fill="#e6f2ec">▸ nushell</text>
-<text x="450" y="634" font-size="12" fill="#e6f2ec">▸ steam</text>
+<text x="450" y="580" font-size="12" fill="#e6f2ec">▸ helium</text>
+<text x="450" y="598" font-size="12" fill="#e6f2ec">▸ nushell</text>
+<text x="450" y="616" font-size="12" fill="#e6f2ec">▸ steam</text>
 <rect x="790" y="510" rx="12" width="340" height="240" fill="#151c24" stroke="#517269" stroke-width="1"/>
 <rect x="798" y="524" rx="2" width="4" height="212" fill="#ff5d8a"/>
 <text x="808" y="538" font-size="13" fill="#ff5d8a" font-weight="700" letter-spacing="1">GAMING</text>

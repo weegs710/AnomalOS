@@ -124,7 +124,7 @@ def ov-packages [x: int y: int sys_count: int user_count: int total: int paths: 
     ]
 }
 
-# the fixed 240px box fits nine 18px rows, so longer lists wrap into columns rather than spilling past the card
+# 240px fits nine 18px rows; longer lists wrap to a new column
 def ov-list-card [x: int y: int color: string label: string items: list<string>] {
     let n     = ($items | length)
     let cap   = (((240 - 52 - 10) / 18) | into int)
@@ -183,7 +183,7 @@ def generate-overview [d: record] {
     ] | str join "\n"
 }
 
-# ~4.2px/char matches JetBrains Mono's advance so labels never truncate
+# 4.2px/char is JetBrains Mono's advance width
 def pill-w [label: string] {
     ((($label | str length) * 4.2 + 10) | math round)
 }
@@ -218,6 +218,24 @@ def diag-header [nixos_ver: string total_files: int input_count: int] {
 
 def solder [cx: int cy: int color: string] {
     $"<circle cx=\"($cx)\" cy=\"($cy)\" r=\"3.5\" fill=\"($color)\" opacity=\"0.85\"/>"
+}
+
+# a host with many tags would otherwise run its subtitle past the card edge
+def wrap-line [s: string maxchars: int] {
+    let words = ($s | split row " " | where { $in != "" })
+    mut lines = []
+    mut cur = ""
+    for word in $words {
+        let cand = (if ($cur | is-empty) { $word } else { $"($cur) ($word)" })
+        if (($cand | str length) > $maxchars) and (not ($cur | is-empty)) {
+            $lines = ($lines | append $cur)
+            $cur = $word
+        } else {
+            $cur = $cand
+        }
+    }
+    if not ($cur | is-empty) { $lines = ($lines | append $cur) }
+    $lines
 }
 
 def cable [pts: list<any> color: string width: number] {
@@ -305,16 +323,21 @@ def group-dirs [files: list<string>] {
     { roots: $roots, groups: $groups }
 }
 
-def diag-dir-card [x: int y: int w: int title: string path: string files: list<record> file_inputs: record pin_hues: record accent: string] {
+def diag-dir-card [x: int y: int w: int title: string path: string files: list<record> file_inputs: record pin_hues: record accent: string subtitle: string = ""] {
     let n      = ($files | length)
-    let head_h = 32
+    # 6.2px/char is JetBrains Mono's advance at 10px
+    let sub_lines = (if ($subtitle | is-empty) { [] } else { wrap-line $subtitle ((($w - 34) / 6.2) | into int) })
+    let head_h = (if ($sub_lines | is-empty) { 32 } else { 32 + (($sub_lines | length) * 15) })
     let h      = $head_h + ($n * 22) + 14
 
-    let card = [
+    let card = ([
         $"<rect x=\"($x)\" y=\"($y)\" rx=\"10\" width=\"($w)\" height=\"($h)\" fill=\"#151c24\" stroke=\"#517269\" stroke-width=\"1.5\"/>"
         $"<rect x=\"($x + 4)\" y=\"($y + 8)\" rx=\"3\" width=\"4\" height=\"($h - 16)\" fill=\"($accent)\"/>"
         $"<text x=\"($x + 18)\" y=\"($y + 21)\" font-size=\"14\" fill=\"#e6f2ec\" font-weight=\"700\">($title)</text>"
-    ]
+        ($sub_lines | enumerate | each {|it|
+            $"<text x=\"($x + 18)\" y=\"($y + 37 + ($it.index * 14))\" font-size=\"10\" fill=\"($accent)\" opacity=\"0.85\">($it.item)</text>"
+        })
+    ] | flatten)
 
     let items = ($files | enumerate | each {|it|
         let f        = $it.item
@@ -344,7 +367,7 @@ def diag-dir-card [x: int y: int w: int title: string path: string files: list<r
     { elems: ([$card, $items] | flatten), height: $h }
 }
 
-def diag-bundle-column [colx: int top_y: int w: int ncols: int label: string path: string files: list<string> file_inputs: record pin_hues: record unit: string] {
+def diag-bundle-column [colx: int top_y: int w: int ncols: int label: string path: string files: list<string> file_inputs: record pin_hues: record unit: string annotations: record = {}] {
     let pad       = 16
     let inner_gap = 14
     let title_h   = 56
@@ -353,13 +376,16 @@ def diag-bundle-column [colx: int top_y: int w: int ncols: int label: string pat
     let plural    = if $n == 1 { "" } else { "s" }
     let grouped   = (group-dirs $files)
     let hdr_cx    = $colx + (($w / 2) | into int)
-    # each subdir card gets its own accent so siblings read apart at a glance
+    # distinct accent per subdir so sibling cards are distinguishable
     let dir_accents = ["#3dffb0" "#34e0ff" "#b673ff" "#ff5d8a" "#c8f5b8" "#6ae9ff" "#cb96ff" "#ff7ea3" "#7cffd6"]
 
-    # every card title carries the bundle path so the nesting is unmistakable
+    # subdir names alone are ambiguous across bundles
     let cards = ([
-        (if (($grouped.roots | length) > 0) { [{ title: $"($label)/", files: $grouped.roots }] } else { [] })
-        ($grouped.groups | each {|g| { title: $"($label)/($g.dir)", files: $g.files } })
+        (if (($grouped.roots | length) > 0) { [{ title: $"($label)/", files: $grouped.roots, subtitle: "" }] } else { [] })
+        ($grouped.groups | each {|g|
+            let key = ($g.dir | str trim --right --char "/")
+            { title: $"($label)/($g.dir)", files: $g.files, subtitle: ($annotations | get -o $key | default "") }
+        })
     ] | flatten)
 
     mut dir_elems = []
@@ -369,7 +395,7 @@ def diag-bundle-column [colx: int top_y: int w: int ncols: int label: string pat
         let ci = ($col_ys | enumerate | sort-by item | first | get index)
         let cx = $colx + $pad + ($ci * ($card_w + $inner_gap))
         let cy = ($col_ys | get $ci)
-        let dc = (diag-dir-card $cx $cy $card_w $it.item.title $path $it.item.files $file_inputs $pin_hues $a)
+        let dc = (diag-dir-card $cx $cy $card_w $it.item.title $path $it.item.files $file_inputs $pin_hues $a $it.item.subtitle)
         $dir_elems = ($dir_elems | append $dc.elems)
         $col_ys = ($col_ys | update $ci ($cy + $dc.height + 14))
     }
@@ -473,7 +499,7 @@ def generate-diagram [d: record] {
     let asm_rx     = $node_x + $node_w
     let asm_cy     = $assemble_y + 27
     let ep_exit_ys = [($asm_cy - 24) ($asm_cy - 8) ($asm_cy + 8) ($asm_cy + 24)]
-    # mirror the red fan: outer cables take the near lane, inner cables the far lane -- no crossings
+    # outer cables take the near lane to avoid crossings
     let ep_lane_xs = [($asm_rx + 34) ($asm_rx + 70) ($asm_rx + 70) ($asm_rx + 34)]
     let ep_cables = [
         $"<text x=\"($ep_x)\" y=\"($ep_top - 14)\" font-size=\"11\" fill=\"#34e0ff\" font-weight=\"700\" letter-spacing=\"1\">ENTRYPOINTS</text>"
@@ -486,18 +512,18 @@ def generate-diagram [d: record] {
         })
     ]
 
-    # grid starts below the entrypoint cluster so the bottom fan clears it
+    # offset clears the entrypoint cluster above
     let mod_top  = ([($assemble_y + 54 + 80), ($ep_top + $ep_total + 70)] | math max)
     let pin_hues = ($d.pins | reduce --fold {} {|p, acc| $acc | upsert $p.name $p.hue })
 
-    # gap between the two grid halves is centered under assemble so the fan exits sit even
+    # centered gap keeps the fan exits symmetric
     let gw   = 672
     let lgx  = 40
     let rgx  = 788
     let lcx  = $lgx + (($gw / 2) | into int)
     let rcx  = $rgx + (($gw / 2) | into int)
 
-    let hosts_col  = (diag-bundle-column $lgx $mod_top $gw 1 "hosts" "modules/hosts" $d.hosts_files $d.file_inputs $pin_hues "file")
+    let hosts_col  = (diag-bundle-column $lgx $mod_top $gw 2 "hosts" "modules/hosts" $d.hosts_files $d.file_inputs $pin_hues "file" $d.host_meta)
     let hjem_top   = ($hosts_col.bottom + 40)
     let hjem_col   = (diag-bundle-column $lgx $hjem_top $gw 2 "hjem" "modules/hjem" $d.hjem_files $d.file_inputs $pin_hues "file")
 
@@ -512,18 +538,24 @@ def generate-diagram [d: record] {
     let lane_h   = $mod_top - 32
     let lane_hj  = $hjem_top - 26
     let lane_nx  = $nixos_top - 26
+    # shared so the exit solders cannot drift from the cables they cap
+    let fan_xs = [726 742 758 774]
     let fan_cables = [
-        (cable [{x: 726, y: $asm_by} {x: 726, y: $lane_h}  {x: $lcx, y: $lane_h}  {x: $lcx, y: $mod_top}]   "#ff5d8a" 3)
-        (cable [{x: 742, y: $asm_by} {x: 742, y: $lane_hj} {x: $lcx, y: $lane_hj} {x: $lcx, y: $hjem_top}]  "#ff5d8a" 3)
-        (cable [{x: 758, y: $asm_by} {x: 758, y: $lane_nx} {x: $rcx, y: $lane_nx} {x: $rcx, y: $nixos_top}] "#ff5d8a" 3)
-        (cable [{x: 774, y: $asm_by} {x: 774, y: $lane_h}  {x: $rcx, y: $lane_h}  {x: $rcx, y: $mod_top}]   "#ff5d8a" 3)
+        (cable [{x: ($fan_xs | get 0), y: $asm_by} {x: ($fan_xs | get 0), y: $lane_h}  {x: $lcx, y: $lane_h}  {x: $lcx, y: $mod_top}]   "#ff5d8a" 3)
+        (cable [{x: ($fan_xs | get 1), y: $asm_by} {x: ($fan_xs | get 1), y: $lane_hj} {x: $lcx, y: $lane_hj} {x: $lcx, y: $hjem_top}]  "#ff5d8a" 3)
+        (cable [{x: ($fan_xs | get 2), y: $asm_by} {x: ($fan_xs | get 2), y: $lane_nx} {x: $rcx, y: $lane_nx} {x: $rcx, y: $nixos_top}] "#ff5d8a" 3)
+        (cable [{x: ($fan_xs | get 3), y: $asm_by} {x: ($fan_xs | get 3), y: $lane_h}  {x: $rcx, y: $lane_h}  {x: $rcx, y: $mod_top}]   "#ff5d8a" 3)
     ]
 
-    # every solder drawn last so it lands on top of its node, not behind it
+    # solder must draw after its node to land on top
     let all_solders = [
+        (solder $node_cx $pin_bottom "#3dffb0")
         (solder $node_cx $tack_y "#3dffb0")
+        (solder $node_cx ($tack_y + 54) "#3dffb0")
         (solder $node_cx $assemble_y "#3dffb0")
+        ...(0..3 | each {|i| (solder $asm_rx ($ep_exit_ys | get $i) "#34e0ff") })
         ...(0..3 | each {|i| (solder $ep_x (($ep_ys | get $i) + 27) "#34e0ff") })
+        ...($fan_xs | each {|fx| (solder $fx $asm_by "#ff5d8a") })
         (solder $lcx $mod_top "#ff5d8a")
         (solder $lcx $hjem_top "#ff5d8a")
         (solder $rcx $mod_top "#ff5d8a")
@@ -557,7 +589,7 @@ def classify-inputs [pins: record] {
     let inputs         = ($pins.inputs)
     let names          = ($inputs | columns)
     let follow_targets = ($pins.all_follow? | default {} | columns)
-    # Plasm-family hues, ordered so adjacent pins stay visually distinct
+    # ordered so adjacent pins stay distinct
     let hue_pool = ["#3dffb0" "#ff5d8a" "#34e0ff" "#b673ff" "#c8f5b8" "#6ae9ff" "#ff7ea3" "#cb96ff" "#7cffd6"]
 
     $names | each {|name|
@@ -579,7 +611,7 @@ def classify-inputs [pins: record] {
         { name: $name, repo: $repo, status: $status, status_label: $status, rank: $rank }
     }
     | sort-by rank name
-    # each pin gets an identity hue; consumer pills reuse it so a pin traces by color
+    # consumer pills reuse the pin hue so a pin is traceable by color
     | enumerate | each {|it|
         let hue = ($hue_pool | get ($it.index mod ($hue_pool | length)))
         $it.item | merge { color: $hue, hue: $hue }
@@ -608,12 +640,12 @@ def find-input-consumers [dotfiles: string input_names: list<string>] {
 
 def main [] {
     if not ("CURRENT_FILE" in $env) {
-        error make { msg: "CURRENT_FILE not set -- run this script directly: nu scripts/update-svgs.nu" }
+        error make { msg: "CURRENT_FILE not set -- run this script directly: nu lib/scripts/draw.nu" }
     }
 
     print "⚠  Remember: run `jj s` in anomalos first -- snapshot the working copy before regenerating committed SVGs.\n"
 
-    let dotfiles = ($env.CURRENT_FILE | path dirname | path join ".." | path expand)
+    let dotfiles = ($env.CURRENT_FILE | path dirname | path join ".." ".." | path expand)
 
     print "→ Collecting repo data..."
 
@@ -628,9 +660,20 @@ def main [] {
         | sort
     )
     let hosts_files = (
-        glob $"($dotfiles)/modules/hosts/*.nix"
-        | each { $in | path basename }
+        glob $"($dotfiles)/modules/hosts/**/*.nix"
+        | each { $in | path relative-to $"($dotfiles)/modules/hosts" }
         | sort
+    )
+    # metadata.nix is a bare attrset, so it evals without a full system eval
+    let host_meta = (
+        glob $"($dotfiles)/modules/hosts/*/metadata.nix"
+        | reduce --fold {} {|f, acc|
+            let name = ($f | path dirname | path basename)
+            let m = (try { ^nix eval --json --file $f | from json } catch { {} })
+            let sys = ($m | get -o system | default "?")
+            let tags = ($m | get -o tags | default [] | str join ", ")
+            $acc | insert $name (if ($tags | is-empty) { $sys } else { $"($sys)  ·  ($tags)" })
+        }
     )
     let modules_root_files = (
         glob $"($dotfiles)/modules/*.nix"
@@ -774,6 +817,7 @@ def main [] {
         hjem_files:         $hjem_files
         nixos_files:        $nixos_files
         hosts_files:        $hosts_files
+        host_meta:          $host_meta
         modules_root_files: $modules_root_files
     }
 

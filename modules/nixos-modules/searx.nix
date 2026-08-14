@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, only, ... }:
 let
   orderedTabs = pkgs.writeText "searx-categories-as-tabs.yml" ''
     categories_as_tabs:
@@ -14,6 +14,7 @@ let
       translate: {}
   '';
 in
+only.gate { tags = [ "server" ]; }
 {
   services.searx = {
     enable = true;

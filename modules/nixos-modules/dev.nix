@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  only,
   ...
 }:
 let
@@ -33,7 +34,7 @@ let
       let projects_dir = $"($env.HOME)/claude-projects/projects"
 
       if ($project_name | is-empty) {
-        print "Usage: cc <project-name>"
+        print "Usage: ccl <project-name>"
         print ""
         print "Available projects:"
         try {
@@ -56,6 +57,8 @@ let
     }
   '';
 in
+# gated so a host without the dev tag skips this bundle instead of carrying the toolchain
+only.gate { tags = [ "dev" ]; }
 {
   programs = {
     tmux.enable = true;
@@ -106,6 +109,6 @@ in
   ];
 
   environment.shellAliases = {
-    cc = "claude-launcher";
+    ccl = "claude-launcher";
   };
 }

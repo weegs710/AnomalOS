@@ -1,0 +1,3 @@
+# vda must hold boot + swap + the whole system closure
+vda     70G
+vdb     20G

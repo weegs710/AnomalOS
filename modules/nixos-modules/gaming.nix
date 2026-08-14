@@ -2,6 +2,7 @@
   config,
   pkgs,
   weegsware,
+  only,
   ...
 }:
 let
@@ -26,6 +27,7 @@ let
     nativeBuildInputs = [ pkgs.pkg-config ];
   };
 in
+only.gate { tags = [ "gaming" ]; }
 {
   programs.nix-ld.enable = true;
 

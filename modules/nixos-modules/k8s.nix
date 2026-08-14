@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  only,
   ...
 }:
 let
@@ -354,7 +355,8 @@ in
     };
   };
 
-  config = {
+  # gate the config only -- the option declarations above must stay unconditional or k8s-HA.nix fails to eval
+  config = only.gate { tags = [ "lab" ]; } {
     assertions = [
       {
         assertion = cfg.sshPublicKey != "";

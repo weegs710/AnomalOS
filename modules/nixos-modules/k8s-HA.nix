@@ -1,6 +1,7 @@
-{ ... }:
+{ only, ... }:
+# k8s.nix declares mySystem.k8sLab, so disabling it while this file is live breaks eval
+only.gate { tags = [ "lab" ]; }
 {
-  # k8s.nix declares mySystem.k8sLab, so disabling it while this file is live breaks eval
   mySystem.k8sLab.nodes = {
     cp2 = {
       role = "control-plane";
