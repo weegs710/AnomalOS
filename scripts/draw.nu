@@ -124,29 +124,31 @@ def ov-packages [x: int y: int sys_count: int user_count: int total: int paths: 
     ]
 }
 
-def ov-wrapped-pkgs [x: int y: int pkgs: list<string>] {
-    let lx    = $x + 20
-    let iy    = $y + 52
-    let items = ($pkgs | enumerate | each {|it|
-        $"<text x=\"($lx)\" y=\"($iy + ($it.index * 18))\" font-size=\"12\" fill=\"#e6f2ec\">▸ ($it.item)</text>"
+# the fixed 240px box fits nine 18px rows, so longer lists wrap into columns rather than spilling past the card
+def ov-list-card [x: int y: int color: string label: string items: list<string>] {
+    let n     = ($items | length)
+    let cap   = (((240 - 52 - 10) / 18) | into int)
+    let ncols = ([1, ((($n + $cap - 1) / $cap) | into int)] | math max)
+    let rows  = ((($n + $ncols - 1) / $ncols) | into int)
+    let col_w = (((340 - 40) / $ncols) | into int)
+    let arrow = (char -u '25b8')
+    let cells = ($items | enumerate | each {|it|
+        let cx = $x + 20 + (((($it.index / $rows) | into int)) * $col_w)
+        let cy = $y + 52 + (($it.index mod $rows) * 18)
+        $"<text x=\"($cx)\" y=\"($cy)\" font-size=\"12\" fill=\"#e6f2ec\">($arrow) ($it.item)</text>"
     })
     [
-        ...(ov-section-box $x $y 340 240 "#34e0ff" "WEEGSWARE"),
-        ...$items,
+        ...(ov-section-box $x $y 340 240 $color $label),
+        ...$cells,
     ]
 }
 
+def ov-wrapped-pkgs [x: int y: int pkgs: list<string>] {
+    ov-list-card $x $y "#34e0ff" "WEEGSWARE" $pkgs
+}
+
 def ov-gaming [x: int y: int items: list<string>] {
-    let lx    = $x + 20
-    let iy    = $y + 52
-    let arrow = (char -u '25b8')
-    let rows = ($items | enumerate | each {|it|
-        $"<text x=\"($lx)\" y=\"($iy + ($it.index * 18))\" font-size=\"12\" fill=\"#e6f2ec\">($arrow) ($it.item)</text>"
-    })
-    [
-        ...(ov-section-box $x $y 340 240 "#ff5d8a" "GAMING"),
-        ...$rows,
-    ]
+    ov-list-card $x $y "#ff5d8a" "GAMING" $items
 }
 
 def generate-overview [d: record] {

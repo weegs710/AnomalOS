@@ -11,12 +11,12 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="50" y="90" font-size="42" fill="#e6f2ec" font-weight="700">anomalOS</text>
 <rect x="290" y="70" rx="6" width="72" height="22" fill="#3dffb0" opacity="0.15" stroke="#3dffb0" stroke-width="0.5"/>
 <text x="326" y="85" font-size="10" fill="#3dffb0" font-weight="600" text-anchor="middle">OVERVIEW</text>
-<text x="50" y="120" font-size="15" fill="#93b3ab">NixOS 26.11 (Zokor)  ·  Linux 7.1.4-cachyos</text>
+<text x="50" y="120" font-size="15" fill="#93b3ab">NixOS 26.11 (Zokor)  ·  Linux 7.1.6-cachyos</text>
 <rect x="70" y="185" rx="8" width="196" height="62" fill="#151c24" stroke="#517269" stroke-width="1"/>
 <rect x="78" y="193" rx="2" width="4" height="46" fill="#3dffb0"/>
 <text x="86" y="203" font-size="10" fill="#517269" font-weight="600" letter-spacing="1">WM</text>
 <text x="86" y="221" font-size="15" fill="#e6f2ec" font-weight="600">Hyprland</text>
-<text x="86" y="237" font-size="10" fill="#3dffb0" opacity="0.6">0.55.4</text>
+<text x="86" y="237" font-size="10" fill="#3dffb0" opacity="0.6">0.56.1</text>
 <rect x="286" y="185" rx="8" width="196" height="62" fill="#151c24" stroke="#517269" stroke-width="1"/>
 <rect x="294" y="193" rx="2" width="4" height="46" fill="#34e0ff"/>
 <text x="302" y="203" font-size="10" fill="#517269" font-weight="600" letter-spacing="1">SHELL</text>
@@ -31,7 +31,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="726" y="193" rx="2" width="4" height="46" fill="#ff5d8a"/>
 <text x="734" y="203" font-size="10" fill="#517269" font-weight="600" letter-spacing="1">EDITOR</text>
 <text x="734" y="221" font-size="15" fill="#e6f2ec" font-weight="600">zed</text>
-<text x="734" y="237" font-size="10" fill="#ff5d8a" opacity="0.6">1.11.3</text>
+<text x="734" y="237" font-size="10" fill="#ff5d8a" opacity="0.6">1.14.2</text>
 <rect x="934" y="185" rx="8" width="196" height="62" fill="#151c24" stroke="#517269" stroke-width="1"/>
 <rect x="942" y="193" rx="2" width="4" height="46" fill="#6ae9ff"/>
 <text x="950" y="203" font-size="10" fill="#517269" font-weight="600" letter-spacing="1">UI</text>
@@ -82,15 +82,15 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="88" y="538" font-size="13" fill="#7cffd6" font-weight="700" letter-spacing="1">PACKAGES</text>
 <line x1="84" y1="548" x2="396" y2="548" stroke="#517269" stroke-width="1"/>
 <text x="90" y="567" font-size="12" fill="#93b3ab">System</text>
-<text x="220" y="567" font-size="12" fill="#e6f2ec">208</text>
+<text x="220" y="567" font-size="12" fill="#e6f2ec">233</text>
 <text x="90" y="587" font-size="12" fill="#93b3ab">User</text>
-<text x="220" y="587" font-size="12" fill="#e6f2ec">120</text>
+<text x="220" y="587" font-size="12" fill="#e6f2ec">130</text>
 <text x="90" y="607" font-size="12" fill="#93b3ab">Total declared</text>
-<text x="220" y="607" font-size="12" fill="#e6f2ec">328</text>
+<text x="220" y="607" font-size="12" fill="#e6f2ec">363</text>
 <text x="90" y="627" font-size="12" fill="#93b3ab">Closure paths</text>
-<text x="220" y="627" font-size="12" fill="#e6f2ec">2984</text>
+<text x="220" y="627" font-size="12" fill="#e6f2ec">3195</text>
 <text x="90" y="647" font-size="12" fill="#93b3ab">Closure size</text>
-<text x="220" y="647" font-size="12" fill="#e6f2ec">22.0G</text>
+<text x="220" y="647" font-size="12" fill="#e6f2ec">32.2G</text>
 <rect x="430" y="510" rx="12" width="340" height="240" fill="#151c24" stroke="#517269" stroke-width="1"/>
 <rect x="438" y="524" rx="2" width="4" height="212" fill="#34e0ff"/>
 <text x="448" y="538" font-size="13" fill="#34e0ff" font-weight="700" letter-spacing="1">WEEGSWARE</text>
@@ -100,17 +100,21 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="450" y="598" font-size="12" fill="#e6f2ec">▸ helium</text>
 <text x="450" y="616" font-size="12" fill="#e6f2ec">▸ nushell</text>
 <text x="450" y="634" font-size="12" fill="#e6f2ec">▸ steam</text>
-<text x="450" y="652" font-size="12" fill="#e6f2ec">▸ zen</text>
 <rect x="790" y="510" rx="12" width="340" height="240" fill="#151c24" stroke="#517269" stroke-width="1"/>
 <rect x="798" y="524" rx="2" width="4" height="212" fill="#ff5d8a"/>
 <text x="808" y="538" font-size="13" fill="#ff5d8a" font-weight="700" letter-spacing="1">GAMING</text>
 <line x1="804" y1="548" x2="1116" y2="548" stroke="#517269" stroke-width="1"/>
-<text x="810" y="562" font-size="12" fill="#e6f2ec">▸ am2r</text>
-<text x="810" y="580" font-size="12" fill="#e6f2ec">▸ d2launcher</text>
-<text x="810" y="598" font-size="12" fill="#e6f2ec">▸ dcss</text>
-<text x="810" y="616" font-size="12" fill="#e6f2ec">▸ es-de</text>
-<text x="810" y="634" font-size="12" fill="#e6f2ec">▸ heroic</text>
-<text x="810" y="652" font-size="12" fill="#e6f2ec">▸ mangohud</text>
-<text x="810" y="670" font-size="12" fill="#e6f2ec">▸ gamescope</text>
-<text x="810" y="688" font-size="12" fill="#e6f2ec">▸ gamemode</text>
+<text x="810" y="562" font-size="12" fill="#e6f2ec">▸ 2s2h</text>
+<text x="810" y="580" font-size="12" fill="#e6f2ec">▸ am2r</text>
+<text x="810" y="598" font-size="12" fill="#e6f2ec">▸ d2launcher</text>
+<text x="810" y="616" font-size="12" fill="#e6f2ec">▸ dcss</text>
+<text x="810" y="634" font-size="12" fill="#e6f2ec">▸ dino-recomp</text>
+<text x="810" y="652" font-size="12" fill="#e6f2ec">▸ dusklight</text>
+<text x="810" y="670" font-size="12" fill="#e6f2ec">▸ es-de</text>
+<text x="960" y="562" font-size="12" fill="#e6f2ec">▸ godot</text>
+<text x="960" y="580" font-size="12" fill="#e6f2ec">▸ heroic</text>
+<text x="960" y="598" font-size="12" fill="#e6f2ec">▸ mangohud</text>
+<text x="960" y="616" font-size="12" fill="#e6f2ec">▸ zelda3</text>
+<text x="960" y="634" font-size="12" fill="#e6f2ec">▸ gamescope</text>
+<text x="960" y="652" font-size="12" fill="#e6f2ec">▸ gamemode</text>
 </svg>
