@@ -1,5 +1,7 @@
-# Vendored sprinkles engine (poacher fork).
+# Vendored sprinkles engine (poacher fork), flattened from two files and reformatted.
 # See: https://codeberg.org/poacher/sprinkles
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: Contributors to the sprinkles project
 let
   inherit (builtins)
     intersectAttrs

@@ -1,3 +1,8 @@
+// Adapted from https://github.com/sahaj-b/ghostty-cursor-shaders -- trimmed, renamed helpers, added the visibility gate below.
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2026 Sahaj Bhatt
+// The rectangle SDF derives from Inigo Quilez: https://iquilezles.org/articles/distfunctions2d/
+
 // ghostty passes sRGB but the shader pipeline operates in linear color space
 vec3 sRGBToLinear(vec3 c) {
     return mix(c / 12.92, pow((c + 0.055) / 1.055, vec3(2.4)), step(vec3(0.04045), c));

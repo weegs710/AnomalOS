@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 weegs710
+Copyright (c) 2026 Sahaj Bhatt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,22 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-The MIT licence above covers anomalOS itself. It does NOT cover the following
-third-party material bundled in this repository, which carries its own terms.
-Full texts and modification notes are in LICENSES/:
-
-  lib/sprinkles.nix
-      MIT -- Contributors to the sprinkles project
-      https://codeberg.org/poacher/sprinkles
-
-  modules/hjem/desktop/ghostty/cursor_tail.glsl
-      MIT -- Copyright (c) 2026 Sahaj Bhatt
-      https://github.com/sahaj-b/ghostty-cursor-shaders
-
-  modules/hjem/desktop/xdg/phinger-cursors-dark-hyprcursor/
-      CC-BY-SA-4.0 -- phinger-cursors by phisch
-      https://github.com/phisch/phinger-cursors
-      Adapted Material: converted to hyprcursor format. Remains CC-BY-SA-4.0.
