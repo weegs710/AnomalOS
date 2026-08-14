@@ -36,11 +36,6 @@ sprinkles.new {
         toList (fileFilter (f: f.name == "bundle.nix") ./modules)
       );
 
-      # Local-path cursor injected so xdg.nix's `inputs.fft-ivalice-cursor` is unchanged (copyright: stays out of the repo).
-      inputs' = inputs // {
-        fft-ivalice-cursor = /home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor;
-      };
-
       mkOnly = import ./lib/only.nix lib;
 
       hosts = {
@@ -72,7 +67,7 @@ sprinkles.new {
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
-            inputs = inputs';
+            inputs = inputs;
             weegsware = weegswareFor system;
             inherit host;
             only = mkOnly host;

@@ -8,7 +8,7 @@ hl.monitor({ output = "",                                 mode = "preferred",   
 
 -- environment
 -- hl.env("KEY", "value")
-hl.env("HYPRCURSOR_THEME",    "fft-ivalice-hyprcursor")
+hl.env("HYPRCURSOR_THEME",    "phinger-cursors-dark-hyprcursor")
 hl.env("HYPRCURSOR_SIZE",     "32")
 hl.env("XCURSOR_THEME",       "phinger-cursors-dark")
 hl.env("XCURSOR_SIZE",        "32")

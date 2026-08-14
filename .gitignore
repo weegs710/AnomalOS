@@ -123,9 +123,6 @@ Cargo.lock
 *.out
 go.work
 
-# extracted from commercial games -- not for public distribution
-modules/hjem/desktop/xdg/fft-ivalice-hyprcursor/hyprcursors/
-
 test-result
 test-output/
 *.patch
@@ -134,4 +131,3 @@ test-output/
 
 # shop -- per-revision extraction cache, regenerable from the bare nixpkgs clone
 lib/shop/index/.per-rev/
-modules/nixos-modules/k8s-lab.pub

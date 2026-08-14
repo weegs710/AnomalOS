@@ -314,9 +314,9 @@ in
 
     sshPublicKey = lib.mkOption {
       type = lib.types.str;
-      # gitignored so the key stays out of the public remote; tack reads the working copy, so an untracked file still evals
-      default = lib.optionalString (builtins.pathExists ./k8s-lab.pub) (
-        lib.removeSuffix "\n" (builtins.readFile ./k8s-lab.pub)
+      # tracked on purpose: a throwaway lab key means flake eval, which only sees git-tracked files, can still resolve it
+      default = lib.optionalString (builtins.pathExists ./k8s-lab-throwaway.pub) (
+        lib.removeSuffix "\n" (builtins.readFile ./k8s-lab-throwaway.pub)
       );
       description = "Public key injected into every guest; there is no password login.";
     };

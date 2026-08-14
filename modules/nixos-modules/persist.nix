@@ -126,7 +126,6 @@ in
           ".local/share/icons"
           ".local/share/mime"
           ".local/share/wallpapers"
-          ".local/share/cursor-sources"
           ".local/share/pki"
           ".local/share/vulkan"
           ".local/share/sddm"

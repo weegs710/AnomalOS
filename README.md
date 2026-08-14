@@ -207,14 +207,6 @@ zfs list -t all | grep <snapshot-name>
 
 > **Important**: this config is for my machine. might work on yours, might not. no guarantees.
 
-**fork before you build.** `assemble.nix` injects one local path pointing at an absolute location on my machine:
-
-```nix
-fft-ivalice-cursor = /home/weegs/.local/share/cursor-sources/fft-ivalice-hyprcursor;
-```
-
-this is consumed by `modules/hjem/desktop/xdg/xdg.nix`. nix will blow up evaluating the system if that path doesnt exist on your machine. fork the repo, remove the `fft-ivalice-cursor` injection from `assemble.nix`, and remove `inputs.fft-ivalice-cursor` from `xdg.nix`. or swap it for a cursor theme you have.
-
 **hardware:** x86_64 with AVX2, BMI2, and XSAVE (x86_64-v3 -- most CPUs from 2013+ are fine, not all). AMD-only hardware config. Intel users need to change `boot.zfs.devNodes` from `"/dev/disk/by-partuuid"` to `"/dev/disk/by-id"` in `modules/hosts/hx99g-hardware.nix` and drop the AMD microcode stuff. internet, at least 100GB free.
 
 **persistence.** the root filesystem (`/`) is a 256MB tmpfs -- it gets wiped on every reboot. `/persist` holds the stuff that actually matters (home dirs, SSH keys, network connections). `/cache` is for things youd rather not redownload but wont lose sleep over if theyre gone. everything else gets rebuilt from the nix store on boot. uses [nix-community/preservation](https://github.com/nix-community/preservation) (pure systemd tmpfiles + mounts, no bash). if something goes missing after a reboot, check `modules/nixos-modules/persist.nix` to see whats persisted.
@@ -336,7 +328,7 @@ sprinkles is the answer: a tiny lib that gives you flake-shaped outputs + overri
 
 `assemble.nix` is a "sprinkle" -- it hands the engine a `sources`/`inputs`/`outputs` set and gets back `{ packages.x86_64-linux = weegsware; nixosConfigurations.HX99G = ...; }`. the real `nixpkgs.lib.nixosSystem` call still happens inside `outputs`, same as it always did -- the sprinkle just shapes what comes out around it.
 
-the `flake.nix` is 3 lines: `{ outputs = _: (import ./assemble.nix) {}; }`. it declares no inputs of its own (tack owns those) so theres no `flake.lock`. it exists ONLY so the `.#` CLI works. heads up if you use it: `.#` needs `--impure`, because `assemble.nix` injects an absolute path for my cursor art and pure flake eval wont allow that.
+the `flake.nix` is 3 lines: `{ outputs = _: (import ./assemble.nix) {}; }`. it declares no inputs of its own (tack owns those) so theres no `flake.lock`. it exists ONLY so the `.#` CLI works. heads up if you use it: `.#` is broken right now, and `--impure` does NOT help. flake eval copies the git tree into the store, so it only ever sees tracked files -- and `modules/nixos-modules/k8s-lab.pub` is gitignored, so `mySystem.k8sLab.sshPublicKey` comes back empty and the assertion in `modules/nixos-modules/k8s.nix` trips. `nrs`/`nrt` dont care: `NH_FILE` imports `assemble.nix` directly, and a plain import reads the working copy, untracked files and all.
 
 weegsware itself is my wrapped packages -- some are nixpkgs overrides (steam, nushell, retroarch), some build from upstream source (helium, zen). the from-source ones get their version + hash kept current by nvfetcher: config is `nvfetcher.toml`, it writes `_sources/generated.nix`, and running `nvfetcher` in the repo bumps them all in one shot. every weegsware package comes out as `packages.x86_64-linux.<name>` -- thats the whole point. theyre not trapped in my system config, theyre first-class outputs anyone can build, `nix run`, or add as a flake input to get my wrapped version. and `.override` means they can be re-tuned from outside without editing them.
 
