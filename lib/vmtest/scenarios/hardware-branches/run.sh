@@ -65,10 +65,11 @@ cp /root/anomalos/modules/hosts/HX99G/zfs.nix $NEW/zfs.nix
 cp /root/hardware.original $NEW/hardware.nix
 chk "VMFRESH is discovered by assemble" "nix eval --raw --file ./assemble.nix nixosConfigurations.VMFRESH.config.networking.hostName --extra-experimental-features 'nix-command flakes' | grep -q VMFRESH"
 rm -f $NEW/hardware.nix
-printf 'VMFRESH\n1\n2\ny\n2\nn\n' | ./install.sh --save-plan /root/plan2.json > /root/c4a.log 2>&1
+printf 'VMFRESH\n1\n2\nn\n' | ./install.sh --save-plan /root/plan2.json > /root/c4a.log 2>&1
 echo "  plan-for-fresh-host exit: $?"
 ./install.sh --plan /root/plan2.json --yes --no-install > /root/c4.log 2>&1
 echo "  exit: $?"
+echo "  ---- apply output ----"; sed 's/^/    /' /root/c4.log | tail -20
 chk "hardware.nix was created"      "test -f $NEW/hardware.nix"
 chk "it contains virtio"            "grep -q virtio $NEW/hardware.nix"
 chk "no .replaced for a new host"   "! test -e $NEW/hardware.nix.replaced"

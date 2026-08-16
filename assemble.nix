@@ -138,7 +138,7 @@ sprinkles.new {
         };
     in
     {
-      inherit nixosConfigurations;
+      inherit nixosConfigurations validTags;
 
       packages = forSys weegswareFor;
 

@@ -54,28 +54,38 @@ chk "plan written" "test -s /root/plan.json"
 
 echo
 echo "-- install for real (this is the long part) --"
-./install.sh --plan /root/plan.json --yes --keep-hardware
-inst=$?
+./install.sh --plan /root/plan.json --yes --keep-hardware 2>&1 | tee /root/install.out
+inst=${PIPESTATUS[0]}
 echo "  install exit: $inst"
 chk "install.sh reported success" "test $inst -eq 0"
 
 echo
-echo "-- what landed --"
-chk "bootloader installed"       "test -d /mnt/boot/EFI"
-chk "systemd-boot entry present" "ls /mnt/boot/loader/entries/*.conf"
-chk "system profile link exists" "test -L /mnt/nix/var/nix/profiles/system"
-chk "profile target is on /mnt"  "test -e /mnt\$(readlink /mnt/nix/var/nix/profiles/system)"
-chk "hardware.nix was written"   "test -f $NEW/hardware.nix"
-chk "hostId reached the target"  "grep -q 00c0ffee /mnt/etc/hostid 2>/dev/null || test -e /mnt/etc/hostid"
+echo "-- install.sh must release the disks itself, or the installed machine cannot import them --"
+sync
+chk "install.sh exported zroot"    "! zpool list zroot"
+chk "install.sh unmounted /mnt"    "! mountpoint -q /mnt"
+chk "said it released the disks"   "grep -q 'Releasing the disks' /root/install.out"
+
+echo
+echo "-- re-import the way the installed system will, then inspect --"
+zpool import -N zroot 2>&1 | sed 's/^/     /'
+imp=${PIPESTATUS[0]}
+chk "a clean import works"         "test $imp -eq 0"
+mount -t zfs zroot/root /mnt 2>/dev/null
+mount --mkdir -t zfs zroot/nix /mnt/nix 2>/dev/null
+mount --mkdir /dev/disk/by-label/NIXBOOT /mnt/boot 2>/dev/null
+
+chk "bootloader installed"        "test -d /mnt/boot/EFI"
+chk "systemd-boot entry present"  "ls /mnt/boot/loader/entries/*.conf"
+chk "system profile link exists"  "test -L /mnt/nix/var/nix/profiles/system"
+chk "profile closure is on /mnt"  "test -d /mnt\$(readlink -f /mnt/nix/var/nix/profiles/system)"
+chk "hardware.nix was written"    "test -f $NEW/hardware.nix"
 ls -la /mnt/boot/loader/entries/ 2>&1 | sed 's/^/     /' | head -6
 
 echo
-echo "-- unmount cleanly so the disks are consistent for the reboot --"
-sync
-umount -R /mnt/boot 2>/dev/null
+echo "-- release again so the reboot test gets a clean pool --"
 umount -R /mnt 2>/dev/null
-swapoff -a 2>/dev/null
-zpool export zroot 2>/dev/null; zpool export zgames 2>/dev/null
-chk "zroot exported" "! zpool list zroot"
+zpool export zroot 2>/dev/null
+chk "released for the reboot"     "! zpool list zroot"
 
 finish

@@ -54,6 +54,11 @@ let
                 echo "HARNESS: /harness/run.sh missing or not executable"
                 exit 0
               fi
+              # network.target is reached before name resolution works, and every scenario that evaluates nix needs to fetch
+              for _ in $(seq 1 60); do
+                getent hosts github.com >/dev/null 2>&1 && break
+                sleep 1
+              done
               echo "HARNESS: START"
               /harness/run.sh; rc=$?
               echo "HARNESS: EXIT $rc"
