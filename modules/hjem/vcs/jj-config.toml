@@ -11,17 +11,20 @@ editor = "zeditor --wait"
 [git]
 auto-local-branch = true
 
-[remotes.origin]
+[remotes.codeberg]
 auto-track-bookmarks = "*"
 
-[remotes.codeberg]
+[remotes.github]
+auto-track-bookmarks = "*"
+
+[remotes.tangled]
 auto-track-bookmarks = "*"
 
 # ============================================================================
 # REVSET ALIASES
 # ============================================================================
 [revset-aliases]
-'trunk()' = 'main@origin'
+'trunk()' = 'main@codeberg'
 'closest_bookmark(to)' = 'heads(::to & bookmarks())'
 'recent()' = 'ancestors(reachable(@, mutable()), 2)'
 

@@ -60,16 +60,22 @@ jj-push                           # fetch + push + fetch
 
 ## Nushell Wrappers
 
-| Def         | What it does                                          |
-| ----------- | ----------------------------------------------------- |
-| `jj-fetch`  | `jj git fetch --all-remotes`                          |
-| `jj-push`   | fetch all remotes, push, fetch again                  |
-| `jj-pull`   | fetch all remotes, then move `main` to `main@origin`  |
-| `jj-commit` | `jj spi`, then move the closest bookmark to `@-`      |
-| `tngl-push` | the same push cycle against the `tangled` remote only |
-| `tngl-pull` | fetch `tangled`, then move `main` to `main@tangled`   |
+| Def         | What it does                                                            |
+| ----------- | ----------------------------------------------------------------------- |
+| `jj-fetch`  | `jj git fetch --all-remotes`                                            |
+| `jj-push`   | push to every remote the repo has, then verify all of them are in sync  |
+| `jj-pull`   | fetch all remotes, then move `main` to `main@codeberg`                  |
+| `jj-commit` | `jj spi`, then move the closest bookmark to `@-`                        |
 
 `jj-commit` refuses to run on a clean working copy rather than opening an empty split.
+
+`jj-push` enumerates remotes rather than naming forges, so a repo's remote set decides where it can
+go: public repos carry `codeberg`, `github` and `tangled`, private ones only `codeberg` and `github`.
+Tangled has no private-repo support, so a private repo simply has no remote that reaches it.
+
+It does not trust exit codes. `jj git push` exits 0 both when it declines to push a conflicted
+bookmark and when it refuses to create an untracked remote bookmark, so `jj-push` compares every
+bookmark against every remote afterwards and fails if any disagree.
 
 ## Coming From Git
 

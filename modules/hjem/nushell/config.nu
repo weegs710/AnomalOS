@@ -81,13 +81,63 @@ def recycle [] {
 
 def jj-pull [] {
     jj git fetch --all-remotes
-    jj bookmark move main --to main@origin
+    jj bookmark move main --to main@codeberg
 }
 
+# one remote per forge: a single remote with N pushurls silently skips drifted forges
 def jj-push [] {
+    let remotes = (jj git remote list | lines | each { split row " " | first })
+    if ($remotes | is-empty) {
+        error make { msg: "jj-push: this repo has no git remotes" }
+    }
+
+    mut failed = []
+    for r in $remotes {
+        print $"(ansi cyan_bold)-> ($r)(ansi reset)"
+        # do -i zeroes LAST_EXIT_CODE
+        let res = (jj git push --remote $r | complete)
+        print ($res.stderr | str trim --right)
+        if $res.exit_code != 0 {
+            $failed = ($failed | append $r)
+        }
+    }
+
     jj git fetch --all-remotes
-    jj git push
-    jj git fetch --all-remotes
+
+    # jj git push exits 0 on both conflicted and untracked bookmarks
+    let state = (
+        jj bookmark list --all-remotes -T $"self.name\(\) ++ '|' ++ self.remote\(\) ++ '|' ++ if\(self.conflict\(\), 'CONFLICT', self.normal_target\(\).commit_id\(\).short\(12\)\) ++ \"\\n\""
+        | lines
+        | where ($it | str contains "|")
+        | each { |l| let p = ($l | split row "|"); {name: $p.0, remote: $p.1, target: $p.2} }
+        | where remote != "git"
+    )
+
+    mut drift = []
+    for b in ($state | where remote == "") {
+        if $b.target == "CONFLICT" {
+            $drift = ($drift | append $"($b.name): conflicted locally -- a remote moved under you")
+            continue
+        }
+        for r in $remotes {
+            let hit = ($state | where name == $b.name and remote == $r)
+            if ($hit | is-empty) {
+                $drift = ($drift | append $"($b.name): not on ($r)")
+            } else if ($hit | first | get target) != $b.target {
+                $drift = ($drift | append $"($b.name): ($r) at ($hit | first | get target), local at ($b.target)")
+            }
+        }
+    }
+
+    if ($failed | is-not-empty) or ($drift | is-not-empty) {
+        if ($failed | is-not-empty) {
+            print $"(ansi red_bold)push FAILED on: ($failed | str join ', ')(ansi reset)"
+        }
+        for d in $drift { print $"(ansi red_bold)OUT OF SYNC -- ($d)(ansi reset)" }
+        error make { msg: "jj-push: remotes are not in sync" }
+    }
+
+    print $"(ansi green_bold)jj-push: in sync on ($remotes | length) remotes -- ($remotes | str join ', ')(ansi reset)"
 }
 
 def jj-commit [] {
@@ -100,17 +150,6 @@ def jj-commit [] {
 
     jj spi
     jj bookmark move --from 'closest_bookmark(@-)' --to @-
-}
-
-def tngl-pull [] {
-    jj git fetch --remote tangled
-    jj bookmark move main --to main@tangled
-}
-
-def tngl-push [] {
-    jj git fetch --remote tangled
-    jj git push --remote tangled
-    jj git fetch --remote tangled
 }
 
 def noct-r [] {
@@ -154,7 +193,6 @@ alias cam-off = pkill scrcpy
 alias cam-on = andcam-start
 alias gparted = gparted-safe
 alias jj-fetch = jj git fetch --all-remotes
-alias tngl-fetch = jj git fetch --remote tangled
 alias pixel = ssh -p 8022 u0_a267@100.121.71.20
 
 def nu_greeting [] {
