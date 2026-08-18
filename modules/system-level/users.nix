@@ -37,7 +37,7 @@ in
       };
     };
 
-    # Bash auto-exec to nushell is handled via ~/.bashrc (see modules/hjem/bash/)
+    # Bash auto-exec to nushell is handled via ~/.bashrc (see modules/user-level/bash/)
     # Keeps bash as login shell for POSIX compliance and proper env setup
   };
 }

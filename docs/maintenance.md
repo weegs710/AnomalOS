@@ -1,6 +1,6 @@
 # Maintenance
 
-Everything below is a nushell def from `modules/hjem/nushell/config.nu` unless it says otherwise.
+Everything below is a nushell def from `modules/user-level/nushell/config.nu` unless it says otherwise.
 
 ## Daily
 
@@ -41,7 +41,7 @@ jj edit <id>
 nrs
 ```
 
-**The YubiKey locked you out:** boot single-user mode, rename `modules/nixos-modules/security/yubikey.nix` to `_yubikey.nix`, rebuild.
+**The YubiKey locked you out:** boot single-user mode, rename `modules/system-level/security/yubikey.nix` to `_yubikey.nix`, rebuild.
 
 **Recovering from a live image** is in [Installing](./install.md#recovery-from-a-live-image).
 
@@ -87,7 +87,7 @@ systemctl --user restart pipewire pipewire-pulse wireplumber
 show-tmpfs      # usage, then the largest files sitting on the root
 ```
 
-Add the offending path to `modules/nixos-modules/persist.nix` and rebuild. See [ZFS and snapshots](./zfs.md#the-tmpfs-root).
+Add the offending path to `modules/system-level/persist.nix` and rebuild. See [ZFS and snapshots](./zfs.md#the-tmpfs-root).
 
 ## General
 

@@ -8,7 +8,7 @@ Secret management is [agenix](https://github.com/ryantm/agenix). Secrets are enc
 | -------------------------------------------- | ---------------------------------------------------------------------------------- |
 | `secrets/*.age`                              | the encrypted files, safe to commit                                                |
 | `secrets/secrets.nix`                        | maps each `.age` filename to its recipient public keys, which is what agenix reads |
-| `modules/nixos-modules/security/secrets.nix` | wires them into the system via `age.secrets.*`                                     |
+| `modules/system-level/security/secrets.nix` | wires them into the system via `age.secrets.*`                                     |
 | `/run/agenix/<name>`                         | where each one decrypts to                                                         |
 
 Most are declared in the security module -- `age.secrets` is a normal option and any module may set it.

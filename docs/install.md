@@ -112,7 +112,7 @@ Then answer yes and give the full path when the installer asks.
 
 ## After the First Boot
 
-**Set up the YubiKey**, if you have one. The module is always loaded; without one, rename `modules/nixos-modules/security/yubikey.nix` to `_yubikey.nix` and rebuild.
+**Set up the YubiKey**, if you have one. The module is always loaded; without one, rename `modules/system-level/security/yubikey.nix` to `_yubikey.nix` and rebuild.
 
 ```bash
 # persist this directory BEFORE creating the key file -- /home is on a tmpfs root.

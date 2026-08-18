@@ -30,11 +30,11 @@ Full texts and modification notes are in LICENSES/:
       MIT -- Contributors to the sprinkles project
       https://codeberg.org/poacher/sprinkles
 
-  modules/hjem/desktop/ghostty/cursor_tail.glsl
+  modules/user-level/desktop/ghostty/cursor_tail.glsl
       MIT -- Copyright (c) 2026 Sahaj Bhatt
       https://github.com/sahaj-b/ghostty-cursor-shaders
 
-  modules/hjem/desktop/xdg/phinger-cursors-dark-hyprcursor/
+  modules/user-level/desktop/xdg/phinger-cursors-dark-hyprcursor/
       CC-BY-SA-4.0 -- phinger-cursors by phisch
       https://github.com/phisch/phinger-cursors
       Adapted Material: converted to hyprcursor format. Remains CC-BY-SA-4.0.

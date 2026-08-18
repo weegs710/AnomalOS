@@ -2,7 +2,7 @@
 
 This repo is version-controlled with [Jujutsu](https://jj-vcs.github.io/jj/latest/) in colocated mode, so `.git/` is exposed and the Codeberg and Tangled remotes work normally. Every jj command exports to git as it goes.
 
-Config is `modules/hjem/vcs/jj-config.toml`; the nushell wrappers are in `modules/hjem/nushell/config.nu`.
+Config is `modules/user-level/vcs/jj-config.toml`; the nushell wrappers are in `modules/user-level/nushell/config.nu`.
 
 ## No Need to Snapshot Before a Build
 
@@ -20,7 +20,7 @@ The exception is the `.#` CLI. `nix build .#`, `nix flake show` and friends reso
 ## Daily Loop
 
 ```bash
-zeditor modules/hjem/something.nix
+zeditor modules/user-level/something.nix
 
 jj s                              # what changed
 jj d                              # the diff

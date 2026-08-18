@@ -524,26 +524,26 @@ def generate-diagram [d: record] {
     let rcx  = $rgx + (($gw / 2) | into int)
 
     let hosts_col  = (diag-bundle-column $lgx $mod_top $gw 2 "hosts" "modules/hosts" $d.hosts_files $d.file_inputs $pin_hues "file" $d.host_meta)
-    let hjem_top   = ($hosts_col.bottom + 40)
-    let hjem_col   = (diag-bundle-column $lgx $hjem_top $gw 2 "hjem" "modules/hjem" $d.hjem_files $d.file_inputs $pin_hues "file")
+    let user_top   = ($hosts_col.bottom + 40)
+    let user_col   = (diag-bundle-column $lgx $user_top $gw 2 "user-level" "modules/user-level" $d.user_files $d.file_inputs $pin_hues "file")
 
     let weegs_col  = (diag-bundle-column $rgx $mod_top $gw 1 "weegsware" "./weegsware" $d.weegsware_pkgs {} $pin_hues "pkg")
-    let nixos_top  = ($weegs_col.bottom + 40)
-    let nixos_col  = (diag-bundle-column $rgx $nixos_top $gw 2 "nixos-modules" "modules/nixos-modules" $d.nixos_files $d.file_inputs $pin_hues "file")
+    let system_top = ($weegs_col.bottom + 40)
+    let system_col = (diag-bundle-column $rgx $system_top $gw 2 "system-level" "modules/system-level" $d.system_files $d.file_inputs $pin_hues "file")
 
-    let col_elems  = ([$hosts_col.elems $hjem_col.elems $weegs_col.elems $nixos_col.elems] | flatten)
-    let max_bottom = ([$hjem_col.bottom $nixos_col.bottom] | math max)
+    let col_elems  = ([$hosts_col.elems $user_col.elems $weegs_col.elems $system_col.elems] | flatten)
+    let max_bottom = ([$user_col.bottom $system_col.bottom] | math max)
 
     let asm_by   = $assemble_y + 54
     let lane_h   = $mod_top - 32
-    let lane_hj  = $hjem_top - 26
-    let lane_nx  = $nixos_top - 26
+    let lane_ul  = $user_top - 26
+    let lane_sl  = $system_top - 26
     # shared so the exit solders cannot drift from the cables they cap
     let fan_xs = [726 742 758 774]
     let fan_cables = [
         (cable [{x: ($fan_xs | get 0), y: $asm_by} {x: ($fan_xs | get 0), y: $lane_h}  {x: $lcx, y: $lane_h}  {x: $lcx, y: $mod_top}]   "#ff5d8a" 3)
-        (cable [{x: ($fan_xs | get 1), y: $asm_by} {x: ($fan_xs | get 1), y: $lane_hj} {x: $lcx, y: $lane_hj} {x: $lcx, y: $hjem_top}]  "#ff5d8a" 3)
-        (cable [{x: ($fan_xs | get 2), y: $asm_by} {x: ($fan_xs | get 2), y: $lane_nx} {x: $rcx, y: $lane_nx} {x: $rcx, y: $nixos_top}] "#ff5d8a" 3)
+        (cable [{x: ($fan_xs | get 1), y: $asm_by} {x: ($fan_xs | get 1), y: $lane_ul} {x: $lcx, y: $lane_ul} {x: $lcx, y: $user_top}]  "#ff5d8a" 3)
+        (cable [{x: ($fan_xs | get 2), y: $asm_by} {x: ($fan_xs | get 2), y: $lane_sl} {x: $rcx, y: $lane_sl} {x: $rcx, y: $system_top}] "#ff5d8a" 3)
         (cable [{x: ($fan_xs | get 3), y: $asm_by} {x: ($fan_xs | get 3), y: $lane_h}  {x: $rcx, y: $lane_h}  {x: $rcx, y: $mod_top}]   "#ff5d8a" 3)
     ]
 
@@ -557,9 +557,9 @@ def generate-diagram [d: record] {
         ...(0..3 | each {|i| (solder $ep_x (($ep_ys | get $i) + 27) "#34e0ff") })
         ...($fan_xs | each {|fx| (solder $fx $asm_by "#ff5d8a") })
         (solder $lcx $mod_top "#ff5d8a")
-        (solder $lcx $hjem_top "#ff5d8a")
+        (solder $lcx $user_top "#ff5d8a")
         (solder $rcx $mod_top "#ff5d8a")
-        (solder $rcx $nixos_top "#ff5d8a")
+        (solder $rcx $system_top "#ff5d8a")
     ]
 
     let legend_y = $max_bottom + 60
@@ -649,14 +649,14 @@ def main [] {
 
     print "→ Collecting repo data..."
 
-    let hjem_files = (
-        glob $"($dotfiles)/modules/hjem/**/*.nix"
-        | each { $in | path relative-to $"($dotfiles)/modules/hjem" }
+    let user_files = (
+        glob $"($dotfiles)/modules/user-level/**/*.nix"
+        | each { $in | path relative-to $"($dotfiles)/modules/user-level" }
         | sort
     )
-    let nixos_files = (
-        glob $"($dotfiles)/modules/nixos-modules/**/*.nix"
-        | each { $in | path relative-to $"($dotfiles)/modules/nixos-modules" }
+    let system_files = (
+        glob $"($dotfiles)/modules/system-level/**/*.nix"
+        | each { $in | path relative-to $"($dotfiles)/modules/system-level" }
         | sort
     )
     let hosts_files = (
@@ -680,11 +680,11 @@ def main [] {
         | each { $in | path basename }
         | sort
     )
-    let hjem_count         = ($hjem_files | length)
-    let nixos_count        = ($nixos_files | length)
+    let user_count         = ($user_files | length)
+    let system_count       = ($system_files | length)
     let hosts_count        = ($hosts_files | length)
     let modules_root_count = ($modules_root_files | length)
-    let total_files        = $hjem_count + $nixos_count + $hosts_count + $modules_root_count
+    let total_files        = $user_count + $system_count + $hosts_count + $modules_root_count
 
     print "→ Classifying tack pins..."
     let pins        = (open $"($dotfiles)/.tack/pins.toml")
@@ -779,13 +779,13 @@ def main [] {
     let weegsware_base = (try { ^nix eval --impure --json -f $assemble packages.x86_64-linux --apply 'builtins.attrNames' | from json } catch { [] })
     # decky is a passthru of the weegsware steam pkg, so it lives with weegsware, not gaming
     let weegsware_pkgs = (
-        if ($"($dotfiles)/modules/hjem/decky.nix" | path exists) { $weegsware_base | append "decky" } else { $weegsware_base }
+        if ($"($dotfiles)/modules/user-level/decky.nix" | path exists) { $weegsware_base | append "decky" } else { $weegsware_base }
         | sort
     )
 
     # gaming modules are a mix of gaming/<name>/<name>.nix dirs + gaming/*.nix files -- catch both
     let gmods = (
-        glob $"($dotfiles)/modules/hjem/gaming/*"
+        glob $"($dotfiles)/modules/user-level/gaming/*"
         | each {|p| if ($p | path type) == "dir" { $p | path basename } else { $p | path parse | get stem } }
         | uniq | sort
     )
@@ -814,8 +814,8 @@ def main [] {
         input_count:        $input_count
         pins:               $pin_list
         file_inputs:        $file_inputs
-        hjem_files:         $hjem_files
-        nixos_files:        $nixos_files
+        user_files:         $user_files
+        system_files:       $system_files
         hosts_files:        $hosts_files
         host_meta:          $host_meta
         modules_root_files: $modules_root_files

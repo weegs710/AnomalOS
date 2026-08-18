@@ -6,7 +6,7 @@ What is configured, and which tag gates it. Anything without a tag is on for eve
 
 Hyprland, with [noctalia](https://github.com/noctalia-dev/noctalia) for the bar, launcher, lock screen and control center. Login is `ly` on tty, defaulting into the Hyprland session.
 
-The Hyprland config is Lua, not `hyprland.conf`. `modules/hjem/desktop/hyprland/hyprland.nix` places `hyprland.lua` at `~/.config/hypr/hyprland.lua`. Three nushell helpers -- `hypr-focus`, `hypr-pin-toggle`, `hypr-split-toggle` -- exist because the right behaviour depends on which layout the workspace is using.
+The Hyprland config is Lua, not `hyprland.conf`. `modules/user-level/desktop/hyprland/hyprland.nix` places `hyprland.lua` at `~/.config/hypr/hyprland.lua`. Three nushell helpers -- `hypr-focus`, `hypr-pin-toggle`, `hypr-split-toggle` -- exist because the right behaviour depends on which layout the workspace is using.
 
 ### Workspaces
 
@@ -50,7 +50,7 @@ All five are persistent, each with its own layout.
 | `Print`                            | capture menu                                                           |
 | `Ctrl+Alt+Delete`                  | power menu                                                             |
 
-wlr-which-key is the primary navigation layer. Tapping `Super` opens it, and it is where app launches, system tools, service control, screenshots and the power menu live. The menu is in `modules/hjem/desktop/wlr-which-key/wlr-which-key.nix`, with submenus for comms, games, media, tools, audio, notifications, wireless, services and capture.
+wlr-which-key is the primary navigation layer. Tapping `Super` opens it, and it is where app launches, system tools, service control, screenshots and the power menu live. The menu is in `modules/user-level/desktop/wlr-which-key/wlr-which-key.nix`, with submenus for comms, games, media, tools, audio, notifications, wireless, services and capture.
 
 ## Security
 
@@ -74,19 +74,19 @@ Open ports:
 | 4000/tcp                         | Median XL Sigma LAN host |
 | 1337/tcp                         |                          |
 
-Kernel hardening, in `modules/nixos-modules/boot.nix`: full ASLR (`randomize_va_space=2`), kernel pointers hidden (`kptr_restrict=2`), `dmesg` restricted to root, ptrace limited to descendants (`yama.ptrace_scope=1`), core dumps piped to `/bin/false` with `suid_dumpable=0`, SYN cookies, RFC1337 TIME_WAIT protection, ICMP redirects rejected in both directions, reverse-path filtering, and forwarding off on both IP versions. BBR congestion control with the `fq` qdisc is a throughput choice rather than a hardening one.
+Kernel hardening, in `modules/system-level/boot.nix`: full ASLR (`randomize_va_space=2`), kernel pointers hidden (`kptr_restrict=2`), `dmesg` restricted to root, ptrace limited to descendants (`yama.ptrace_scope=1`), core dumps piped to `/bin/false` with `suid_dumpable=0`, SYN cookies, RFC1337 TIME_WAIT protection, ICMP redirects rejected in both directions, reverse-path filtering, and forwarding off on both IP versions. BBR congestion control with the `fq` qdisc is a throughput choice rather than a hardening one.
 
 Boot is `systemd-boot`, keeping 10 generations.
 
 ## Development -- `dev`
 
-- zed, the primary editor. It resolves language servers off `PATH`, so `nixd` comes from its own module and the css/html/ts servers come from this bundle. Config in `modules/hjem/desktop/zed/`.
+- zed, the primary editor. It resolves language servers off `PATH`, so `nixd` comes from its own module and the css/html/ts servers come from this bundle. Config in `modules/user-level/desktop/zed/`.
 - devshell: `nix-shell devshell.nix`, or `cd` in and let direnv load it. Drops into the wrapped nushell with nixd, nil, nixfmt, nufmt, basedpyright, ruff, hyprls, marksman, biome, dprint, clippy, rust-analyzer, rustfmt, typescript-language-server, vscode-langservers-extracted, nvfetcher and git.
 - toolchains: rust (cargo, rustc, clippy, rustfmt, rust-analyzer), python (python3, uv, ruff), node (nodejs, typescript).
 - Claude Code, `ccl` launches `claude-launcher` which picks a project first.
 - nix-search-tv, `ns` for fzf-driven package search.
 - nix-index + nix-index-database, the command-not-found handler on a pre-built community database.
-- [nix-shop](https://codeberg.org/weegs710/nix-shop), `shop`, for running any version of any package without installing it. Wired in `modules/nixos-modules/shop.nix`.
+- [nix-shop](https://codeberg.org/weegs710/nix-shop), `shop`, for running any version of any package without installing it. Wired in `modules/system-level/shop.nix`.
 - wireshark, tmux, direnv with `nix-direnv`, gh, hyperfine, jq, ripgrep.
 
 ## Gaming -- `gaming`
@@ -96,10 +96,10 @@ Boot is `systemd-boot`, keeping 10 generations.
 - Decky Loader, Steam plugin system, web UI on `localhost:8080`. It is a passthru of the wrapped steam package rather than a separate input.
 - MangoHud, with five presets in `presets.conf` from off to a full GPU/CPU/VRAM/frametime readout.
 - gamemode, nix-ld, ntsync, protontricks, ProtonUp-Qt, OpenRA.
-- ES-DE with RetroArch carrying 36 libretro cores, plus MAME with a flattened `crt-geom` shader chain. Per-core `.opt` files are declarative, in `modules/hjem/gaming/es-de/opts/`.
+- ES-DE with RetroArch carrying 36 libretro cores, plus MAME with a flattened `crt-geom` shader chain. Per-core `.opt` files are declarative, in `modules/user-level/gaming/es-de/opts/`.
 - Native ports and recomps, each with its own module and declarative config: [Dusklight](https://github.com/TwilitRealm/dusklight) (Twilight Princess), [2Ship2Harkinian](https://github.com/HarbourMasters/2ship2harkinian) (Majora's Mask), [zelda3](https://github.com/snesrev/zelda3) (A Link to the Past), Dinosaur Planet, AM2R, DCSS, Median XL via `d2launcher`, and Godot.
 
-The whole `modules/hjem/gaming/` subtree is gated by one `only.imports` line in its `bundle.nix`.
+The whole `modules/user-level/gaming/` subtree is gated by one `only.imports` line in its `bundle.nix`.
 
 ## Media
 
@@ -111,7 +111,7 @@ Media creation: GIMP 3 with plugins, Inkscape, `gpu-screen-recorder` with a repl
 
 ### Media Server -- `server`
 
-`modules/nixos-modules/media-server/` is gated as a subtree:
+`modules/system-level/media-server/` is gated as a subtree:
 
 - Jellyfin with VAAPI hardware decode, on 8096. `/mnt/media/music` is a read-only bind of `~/Music` off `/persist`, because a 700 home directory blocks it otherwise.
 - The arr suite: Radarr, Sonarr, Prowlarr, Bazarr, FlareSolverr, Recyclarr on a weekly schedule. All `openFirewall = false`; they are reachable over Tailscale, not the LAN.
@@ -123,7 +123,7 @@ SearXNG is also `server`-gated, on 8888, fronted by `tailscale serve` over HTTPS
 
 ## Lab -- `lab`
 
-`modules/nixos-modules/k8s.nix` and `k8s-HA.nix`, behind the `mySystem.k8sLab` option tree. This is the only place outside `options.nix` that defines `mySystem` options.
+`modules/system-level/k8s.nix` and `k8s-HA.nix`, behind the `mySystem.k8sLab` option tree. This is the only place outside `options.nix` that defines `mySystem` options.
 
 ## Everywhere
 

@@ -158,18 +158,18 @@ def noct-r [] {
 
 # promote noctalia gui changes (state overlay) into the declared repo config so they survive rebuilds + get vcs history
 def noct-s [] {
-    noctalia config export merged | complete | get stdout | save --force ~/repo/public/anomalos/modules/hjem/desktop/noctalia/config.toml
+    noctalia config export merged | complete | get stdout | save --force ~/repo/public/anomalos/modules/user-level/desktop/noctalia/config.toml
 }
 
 # pull gui-edited zed settings back into the repo (reverse of the copy-type rebuild); --raw keeps jsonc comments verbatim
 def zed-s [] {
-    open --raw ~/.config/zed/settings.json | save --force ~/repo/public/anomalos/modules/hjem/desktop/zed/settings.json
+    open --raw ~/.config/zed/settings.json | save --force ~/repo/public/anomalos/modules/user-level/desktop/zed/settings.json
 }
 
 # pull gui-edited vesktop + vencord settings back into the repo (reverse of the copy-type rebuild)
 def vesk-s [] {
-    open --raw ~/.config/vesktop/settings.json | save --force ~/repo/public/anomalos/modules/hjem/comms/vesktop/settings.json
-    open --raw ~/.config/vesktop/settings/settings.json | save --force ~/repo/public/anomalos/modules/hjem/comms/vesktop/vencord-settings.json
+    open --raw ~/.config/vesktop/settings.json | save --force ~/repo/public/anomalos/modules/user-level/comms/vesktop/settings.json
+    open --raw ~/.config/vesktop/settings/settings.json | save --force ~/repo/public/anomalos/modules/user-level/comms/vesktop/vencord-settings.json
 }
 
 def space [] {

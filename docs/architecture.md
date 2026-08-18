@@ -87,9 +87,9 @@ The collision check lives in `checks` rather than in discovery, so one malformed
 
 ## Module Discovery
 
-Everything under `modules/hjem/` and `modules/nixos-modules/` is auto-discovered by a `bundle.nix` per subtree. Drop a `.nix` file into a domain and it is in. `weegsware/` works the same way -- each file returns `{ name = drv; }` and gets built and exposed as a package.
+Everything under `modules/user-level/` and `modules/system-level/` is auto-discovered by a `bundle.nix` per subtree. Drop a `.nix` file into a domain and it is in. `weegsware/` works the same way -- each file returns `{ name = drv; }` and gets built and exposed as a package.
 
-System modules (`modules/nixos-modules/`) are NixOS-level: services, packages, kernel, networking.
+System modules (`modules/system-level/`) are NixOS-level: services, packages, kernel, networking.
 
 ```nix
 { config, lib, pkgs, ... }:
@@ -98,7 +98,7 @@ System modules (`modules/nixos-modules/`) are NixOS-level: services, packages, k
 }
 ```
 
-User modules (`modules/hjem/`) are anything that lands in `~/.config` or `~/.local/share`, via [hjem](https://github.com/feel-co/hjem).
+User modules (`modules/user-level/`) are anything that lands in `~/.config` or `~/.local/share`, via [hjem](https://github.com/feel-co/hjem).
 
 ```nix
 { config, lib, pkgs, ... }:
@@ -144,7 +144,7 @@ only.gate { tags = [ "desktop" ]; }
 }
 ```
 
-That is `modules/hjem/gaming/bundle.nix`, gating the whole subtree in one line. `modules/nixos-modules/media-server/bundle.nix` does the same on the `server` tag. Their parent bundles use `lib.fileset.difference` to subtract the subtree, so a file is never claimed by two bundles.
+That is `modules/user-level/gaming/bundle.nix`, gating the whole subtree in one line. `modules/system-level/media-server/bundle.nix` does the same on the `server` tag. Their parent bundles use `lib.fileset.difference` to subtract the subtree, so a file is never claimed by two bundles.
 
 `only` picks which host. `lib.mkIf` still picks which state. Don't reach for `only` when you mean `mkIf`.
 
@@ -188,23 +188,23 @@ Adding a tag is one line in `assemble.nix`.
 
 ### What Is Gated
 
-| Module                        | Gate                         |
-| ----------------------------- | ---------------------------- |
-| `nixos-modules/desktop.nix`   | `desktop`                    |
-| `nixos-modules/dev.nix`       | `dev`                        |
-| `nixos-modules/gaming.nix`    | `gaming`                     |
-| `nixos-modules/searx.nix`     | `server`                     |
-| `nixos-modules/k8s.nix`       | `lab`                        |
-| `nixos-modules/k8s-HA.nix`    | `lab`                        |
-| `hjem/decky.nix`              | `gaming`                     |
-| `hjem/gaming/`                | `gaming`, via `only.imports` |
-| `nixos-modules/media-server/` | `server`, via `only.imports` |
+| Module                       | Gate                         |
+| ---------------------------- | ---------------------------- |
+| `system-level/desktop.nix`   | `desktop`                    |
+| `system-level/dev.nix`       | `dev`                        |
+| `system-level/gaming.nix`    | `gaming`                     |
+| `system-level/searx.nix`     | `server`                     |
+| `system-level/k8s.nix`       | `lab`                        |
+| `system-level/k8s-HA.nix`    | `lab`                        |
+| `user-level/decky.nix`       | `gaming`                     |
+| `user-level/gaming/`         | `gaming`, via `only.imports` |
+| `system-level/media-server/` | `server`, via `only.imports` |
 
 Tailscale, SSH, the firewall, persistence and the shell are ungated. They are true of every machine.
 
 ## Options
 
-`modules/nixos-modules/options.nix` is the whole `mySystem` surface for host identity:
+`modules/system-level/options.nix` is the whole `mySystem` surface for host identity:
 
 ```
 mySystem.user.name          default "anomalos"
@@ -214,7 +214,7 @@ mySystem.hostName           default "anomalos", overridden by the derived identi
 mySystem.timeZone           default "America/New_York"
 ```
 
-The only other `mySystem` tree is `mySystem.k8sLab` in `modules/nixos-modules/k8s.nix`.
+The only other `mySystem` tree is `mySystem.k8sLab` in `modules/system-level/k8s.nix`.
 
 ## weegsware
 
@@ -226,7 +226,7 @@ Some are nixpkgs overrides (steam, nushell) and some build from upstream source 
 
 ## Where a New Thing Goes
 
-A service, kernel option or system-wide program goes in `modules/nixos-modules/`. Anything in `~/.config`, or a user package, goes in `modules/hjem/`, colocated with the module that uses it. A package I wrap, override or build from source goes in `weegsware/`. A per-host fact goes in `modules/hosts/<HOST>/`. Reusable operational tooling goes in `lib/scripts/`.
+A service, kernel option or system-wide program goes in `modules/system-level/`. Anything in `~/.config`, or a user package, goes in `modules/user-level/`, colocated with the module that uses it. A package I wrap, override or build from source goes in `weegsware/`. A per-host fact goes in `modules/hosts/<HOST>/`. Reusable operational tooling goes in `lib/scripts/`.
 
 ## Layout
 
@@ -243,8 +243,8 @@ lib/requirements.nix  extracts a host's storage contract for the installer
 lib/vmtest/           the VM harness, see docs/testing.md
 lib/scripts/          reusable tooling, including draw.nu which renders the diagrams
 modules/hosts/        one directory per machine
-modules/nixos-modules/  system modules
-modules/hjem/         user modules
+modules/system-level/ system modules
+modules/user-level/   user modules
 weegsware/            wrapped packages, exposed as outputs
 secrets/              agenix .age files and secrets.nix
 assets/               the SVGs in the README

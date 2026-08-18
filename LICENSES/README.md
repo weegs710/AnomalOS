@@ -13,7 +13,7 @@ where I modified it.
   this is both flattened into one, reformatted with nixfmt, with the upstream doc comments removed
   and one internal binding renamed. Behaviour is unchanged.
 
-## `modules/hjem/desktop/ghostty/cursor_tail.glsl`
+## `modules/user-level/desktop/ghostty/cursor_tail.glsl`
 
 - **From:** <https://github.com/sahaj-b/ghostty-cursor-shaders>
 - **Terms:** MIT, Copyright (c) 2026 Sahaj Bhatt. Full text in
@@ -25,7 +25,7 @@ where I modified it.
 - Upstream's rectangle SDF is itself based on Inigo Quilez's 2D distance functions article,
   <https://iquilezles.org/articles/distfunctions2d/>.
 
-## `modules/hjem/desktop/xdg/phinger-cursors-dark-hyprcursor/`
+## `modules/user-level/desktop/xdg/phinger-cursors-dark-hyprcursor/`
 
 - **From:** phinger-cursors by phisch, <https://github.com/phisch/phinger-cursors>
 - **Terms:** CC-BY-SA-4.0. Full text in

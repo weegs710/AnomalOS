@@ -22,7 +22,7 @@ Pools are created with `ashift=12`, `autotrim=on`, `compression=zstd`, `acltype=
 
 There is no swap partition after the install. `zramSwap` takes over at 25% of RAM with zstd.
 
-The declarations live in `modules/hosts/HX99G/hardware.nix`, except `/` which `modules/nixos-modules/persist.nix` overrides with `lib.mkForce`, and the media mounts which come from the `server`-gated `modules/nixos-modules/media-server/`.
+The declarations live in `modules/hosts/HX99G/hardware.nix`, except `/` which `modules/system-level/persist.nix` overrides with `lib.mkForce`, and the media mounts which come from the `server`-gated `modules/system-level/media-server/`.
 
 ## The Tmpfs Root
 
@@ -38,7 +38,7 @@ Persistence is [nix-community/preservation](https://github.com/nix-community/pre
 
 Automated by [sanoid](https://github.com/jimsalterjrs/sanoid) on an hourly timer. Snapshots are copy-on-write: they start at nearly zero and only grow as the data underneath changes.
 
-Templates are in `modules/nixos-modules/sanoid.nix`. Dataset assignments are in `modules/hosts/HX99G/zfs.nix`.
+Templates are in `modules/system-level/sanoid.nix`. Dataset assignments are in `modules/hosts/HX99G/zfs.nix`.
 
 | Dataset             | Policy                                                        |
 | ------------------- | ------------------------------------------------------------- |
@@ -104,7 +104,7 @@ sudo systemctl start sanoid.service
 zfs list -o space
 ```
 
-Then reduce retention in `modules/nixos-modules/sanoid.nix` and rebuild.
+Then reduce retention in `modules/system-level/sanoid.nix` and rebuild.
 
 **A snapshot will not delete**, usually because something is cloned from it:
 

@@ -88,7 +88,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="90" y="607" font-size="12" fill="#93b3ab">Total declared</text>
 <text x="220" y="607" font-size="12" fill="#e6f2ec">363</text>
 <text x="90" y="627" font-size="12" fill="#93b3ab">Closure paths</text>
-<text x="220" y="627" font-size="12" fill="#e6f2ec">3195</text>
+<text x="220" y="627" font-size="12" fill="#e6f2ec">3196</text>
 <text x="90" y="647" font-size="12" fill="#93b3ab">Closure size</text>
 <text x="220" y="647" font-size="12" fill="#e6f2ec">32.2G</text>
 <rect x="430" y="510" rx="12" width="340" height="240" fill="#151c24" stroke="#517269" stroke-width="1"/>
@@ -105,15 +105,16 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <line x1="804" y1="548" x2="1116" y2="548" stroke="#517269" stroke-width="1"/>
 <text x="810" y="562" font-size="12" fill="#e6f2ec">▸ 2s2h</text>
 <text x="810" y="580" font-size="12" fill="#e6f2ec">▸ am2r</text>
-<text x="810" y="598" font-size="12" fill="#e6f2ec">▸ d2launcher</text>
-<text x="810" y="616" font-size="12" fill="#e6f2ec">▸ dcss</text>
-<text x="810" y="634" font-size="12" fill="#e6f2ec">▸ dino-recomp</text>
-<text x="810" y="652" font-size="12" fill="#e6f2ec">▸ dusklight</text>
-<text x="810" y="670" font-size="12" fill="#e6f2ec">▸ es-de</text>
-<text x="960" y="562" font-size="12" fill="#e6f2ec">▸ godot</text>
-<text x="960" y="580" font-size="12" fill="#e6f2ec">▸ heroic</text>
-<text x="960" y="598" font-size="12" fill="#e6f2ec">▸ mangohud</text>
-<text x="960" y="616" font-size="12" fill="#e6f2ec">▸ zelda3</text>
-<text x="960" y="634" font-size="12" fill="#e6f2ec">▸ gamescope</text>
-<text x="960" y="652" font-size="12" fill="#e6f2ec">▸ gamemode</text>
+<text x="810" y="598" font-size="12" fill="#e6f2ec">▸ bundle</text>
+<text x="810" y="616" font-size="12" fill="#e6f2ec">▸ d2launcher</text>
+<text x="810" y="634" font-size="12" fill="#e6f2ec">▸ dcss</text>
+<text x="810" y="652" font-size="12" fill="#e6f2ec">▸ dino-recomp</text>
+<text x="810" y="670" font-size="12" fill="#e6f2ec">▸ dusklight</text>
+<text x="960" y="562" font-size="12" fill="#e6f2ec">▸ es-de</text>
+<text x="960" y="580" font-size="12" fill="#e6f2ec">▸ godot</text>
+<text x="960" y="598" font-size="12" fill="#e6f2ec">▸ heroic</text>
+<text x="960" y="616" font-size="12" fill="#e6f2ec">▸ mangohud</text>
+<text x="960" y="634" font-size="12" fill="#e6f2ec">▸ zelda3</text>
+<text x="960" y="652" font-size="12" fill="#e6f2ec">▸ gamescope</text>
+<text x="960" y="670" font-size="12" fill="#e6f2ec">▸ gamemode</text>
 </svg>
