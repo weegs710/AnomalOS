@@ -26,9 +26,9 @@
     },
   },
   "indent_guides": {
-    "background_coloring": "indent_aware",
+    "background_coloring": "disabled",
     "active_line_width": 3,
-    "coloring": "indent_aware",
+    "coloring": "fixed",
     "line_width": 1,
   },
   "toolbar": {
@@ -89,7 +89,7 @@
       "show": "never",
     },
   },
-  "theme": "Noctalia Dark Transparent",
+  "theme": "Noctalia Dark",
   "format_on_save": "on",
 
   // grammar + adapter wasm for non-core languages (html auto-installs by zed default)
