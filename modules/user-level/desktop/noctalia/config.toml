@@ -1,3 +1,6 @@
+[accessibility]
+ui_scale = 1.2500000111758709
+
 [audio]
 enable_overdrive = false
 enable_sounds = false
@@ -10,8 +13,8 @@ capsule = true
 capsule_border = "primary"
 capsule_opacity = 0.75
 capsule_radius = 5
-center = ["active_window", "notifications"]
-end = ["audio_visualizer", "volume", "tray", "clock"]
+center = [ "active_window", "notifications" ]
+end = [ "audio_visualizer", "volume", "tray", "clock" ]
 margin_edge = 5
 margin_ends = 5
 padding = 5
@@ -20,7 +23,7 @@ radius = 12
 reserve_space = true
 scale = 1.3799999999999999
 shadow = true
-start = ["workspaces"]
+start = [ "workspaces" ]
 thickness = 47
 widget_spacing = 10
 
@@ -51,29 +54,52 @@ tint_intensity = 0.0
 [lockscreen_widgets]
 enabled = false
 schema_version = 2
-widget_order = ["lockscreen-login-box@HDMI-A-2"]
+widget_order = [ "lockscreen-login-box@HDMI-A-1", "lockscreen-login-box@HDMI-A-2" ]
 
-[lockscreen_widgets.grid]
-cell_size = 16
-major_interval = 4
-visible = true
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
 
-[lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2"]
-box_height = 0.0
-box_width = 0.0
-cx = 1280.0
-cy = 1317.0
-output = "HDMI-A-2"
-rotation = 0.0
-type = "login_box"
+    [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1"]
+    box_height = 70.0
+    box_width = 400.0
+    cx = 1280.0
+    cy = 1321.0
+    output = "HDMI-A-1"
+    rotation = 0.0
+    type = "login_box"
 
-[lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2".settings]
-background_color = "surface_variant"
-background_opacity = 0.88
-background_radius = 12.0
-input_opacity = 1.0
-input_radius = 6.0
-show_login_button = true
+        [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2"]
+    box_height = 70.0
+    box_width = 400.0
+    cx = 1280.0
+    cy = 1317.0
+    output = "HDMI-A-2"
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
 
 [nightlight]
 enabled = true
@@ -95,17 +121,17 @@ orientation = "horizontal"
 position = "top_center"
 scale = 1.0
 
-[osd.kinds]
-bluetooth = true
-brightness = true
-power_profile = true
-volume = true
-volume_input = true
-volume_output = true
-wifi = true
+    [osd.kinds]
+    bluetooth = true
+    brightness = true
+    power_profile = true
+    volume = true
+    volume_input = true
+    volume_output = true
+    wifi = true
 
 [plugins]
-enabled = ["noctalia/screen_recorder"]
+enabled = [ "noctalia/screen_recorder" ]
 
 [shell]
 avatar_path = "~/.local/share/wallpapers/cyberstoner.webp"
@@ -113,62 +139,62 @@ clipboard_enabled = true
 font_family = "Terminess Nerd Font"
 telemetry_enabled = false
 
-[shell.animation]
-enabled = true
-speed = 1.0
+    [shell.animation]
+    enabled = true
+    speed = 1.0
 
-[shell.panel]
-borders = true
-shadow = true
-transparency_mode = "soft"
-wallpaper_placement = "attached"
+    [shell.panel]
+    borders = true
+    shadow = true
+    transparency_mode = "soft"
+    wallpaper_placement = "attached"
 
 [system.monitor]
 enabled = true
 
 [theme]
 builtin = "Eldritch"
-mode = "dark"
-source = "custom"
 custom_palette = "Plasm"
+mode = "dark"
+pure_black_dark = true
+source = "wallpaper"
+wallpaper_scheme = "vibrant"
 
-[theme.templates]
-builtin_ids = [
-  "btop",
-  "gtk3",
-  "gtk4",
-  "ghostty",
-  "hyprland",
-  "kcolorscheme",
-  "qt",
-]
-community_ids = ["zen-browser", "zed", "yazi", "hyprtoolkit"]
-enable_builtin_templates = true
-enable_community_templates = true
+    [theme.templates]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "hyprland", "kcolorscheme", "qt" ]
+    community_ids = [ "zen-browser", "zed", "hyprtoolkit", "yazi" ]
+    enable_builtin_templates = true
+    enable_community_templates = true
 
 [wallpaper]
 directory = "~/.local/share/wallpapers"
-edge_smoothness = 0.050000000000000003
+edge_smoothness = 0.4999999888241291
 enabled = true
 fill_mode = "crop"
-transition = ["stripes"]
-transition_duration = 100
+transition = [ "disc", "fade", "honeycomb", "stripes", "wipe", "zoom" ]
+transition_duration = 500
 transition_on_startup = false
 
-[wallpaper.automation]
-enabled = true
-interval_seconds = 300
-order = "random"
-recursive = true
+    [wallpaper.automation]
+    enabled = true
+    interval_seconds = 60
+    order = "random"
+    recursive = true
 
-[wallpaper.default]
-path = "/home/weegs/.local/share/wallpapers/Login Screen.webp"
+    [wallpaper.default]
+    path = "/home/weegs/.local/share/wallpapers/borg-head.webp"
 
-[wallpaper.last]
-path = "/home/weegs/.local/share/wallpapers/Login Screen.webp"
+    [wallpaper.last]
+    path = "/home/weegs/.local/share/wallpapers/borg-head.webp"
 
-[wallpaper.monitors.HDMI-A-2]
-path = "/home/weegs/.local/share/wallpapers/Login Screen.webp"
+    [wallpaper.monitors.FALLBACK]
+    path = "/home/weegs/.local/share/wallpapers/cannabis-grow-room.webp"
+
+    [wallpaper.monitors.HDMI-A-1]
+    path = "/home/weegs/.local/share/wallpapers/borg-head.webp"
+
+    [wallpaper.monitors.HDMI-A-2]
+    path = "/home/weegs/.local/share/wallpapers/Sampo.webp"
 
 [weather]
 effects = true
@@ -192,11 +218,11 @@ device = "output"
 show_label = false
 
 [widget.workspaces]
-label_source = "name"
-show_labels = true
 empty_color = "secondary"
 focused_color = "primary"
 hide_when_empty = false
+label_source = "name"
 max_label_chars = 10
 occupied_color = "secondary"
 pill_scale = 1.0
+show_labels = true
