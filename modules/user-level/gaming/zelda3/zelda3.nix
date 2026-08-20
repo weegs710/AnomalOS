@@ -70,6 +70,7 @@ in
     ];
     files = [
       "${dataDir}/zelda3_assets.dat"
+      "${dataDir}/minishcaplink.3.zspr"
     ];
   };
 }
