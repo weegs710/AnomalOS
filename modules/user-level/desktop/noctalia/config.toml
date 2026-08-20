@@ -154,7 +154,7 @@ enabled = true
 
 [theme]
 builtin = "Eldritch"
-custom_palette = "Plasm"
+custom_palette = "Cymagentan"
 mode = "dark"
 pure_black_dark = true
 source = "wallpaper"

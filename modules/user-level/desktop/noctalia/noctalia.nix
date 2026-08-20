@@ -38,5 +38,6 @@ in
     xdg.config.files."noctalia/palettes/Plasm.json".source = ./palettes/Plasm.json;
     xdg.config.files."noctalia/palettes/Great-Below.json".source = ./palettes/Great-Below.json;
     xdg.config.files."noctalia/palettes/Cold-Wind.json".source = ./palettes/Cold-Wind.json;
+    xdg.config.files."noctalia/palettes/Cymagentan.json".source = ./palettes/Cymagentan.json;
   };
 }
