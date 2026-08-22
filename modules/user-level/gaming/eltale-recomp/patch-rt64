@@ -1,15 +1,31 @@
-diff --git a/src/render/rt64_projection_processor.cpp b/src/render/rt64_projection_processor.cpp
-index e842dcc..4c54cb9 100644
---- a/src/render/rt64_projection_processor.cpp
-+++ b/src/render/rt64_projection_processor.cpp
-@@ -94,7 +94,9 @@ namespace RT64 {
-                 if (!intersectionRect.isEmpty()) {
-                     bool coversWholeWidth = (intersectionRect.ulx <= fbPair.scissorRect.ulx) && (intersectionRect.lrx >= fbPair.scissorRect.lrx);
-                     bool horizontalRatio = (intersectionRect.width(true, true) > intersectionRect.height(true, true));
--                    adjustAspectRatio = (viewportOrigin == G_EX_ORIGIN_NONE) && coversWholeWidth && horizontalRatio;
-+                    // a full-width orthographic layer is a flat overlay, and scaling its projection cancels the frame's own widening exactly
-+                    const bool flatOverlay = (proj.type == Projection::Type::Orthographic);
-+                    adjustAspectRatio = (viewportOrigin == G_EX_ORIGIN_NONE) && coversWholeWidth && horizontalRatio && !flatOverlay;
-                 }
+diff --git a/src/render/rt64_framebuffer_renderer.cpp b/src/render/rt64_framebuffer_renderer.cpp
+index 3a0de47..2250b35 100644
+--- a/src/render/rt64_framebuffer_renderer.cpp
++++ b/src/render/rt64_framebuffer_renderer.cpp
+@@ -1526,8 +1526,26 @@ namespace RT64 {
+                 viewportClip = convertViewportRect(viewport.rect(viewportClipRatios), p.resolutionScale, p.fbWidth, projInvRatioScale, extOriginPercentage, 0.0f, viewportOrigin, viewportOrigin);
              }
-  
+ 
++            const float projScreenScaleX = triangles.screenScale.x;
++
+             for (uint32_t d = 0; (d < proj.gameCallCount) && (globalCallIndex < p.maxGameCall); d++) {
+                 const GameCall &call = proj.gameCalls[d];
++                // a flat draw spanning the whole native screen is a full-frame overlay, so the projection's squeeze is undone for that draw alone
++                if (proj.type == Projection::Type::Orthographic) {
++                    float minVertexX = FLT_MAX;
++                    float maxVertexX = -FLT_MAX;
++                    for (uint32_t t = 0; t < call.callDesc.triangleCount; t++) {
++                        for (uint32_t i = 0; i < 3; i++) {
++                            const uint32_t vertexIndex = drawData.faceIndices[call.meshDesc.faceIndicesStart + t * 3 + i];
++                            const float vertexX = drawData.posScreen[vertexIndex].x;
++                            minVertexX = std::min(minVertexX, vertexX);
++                            maxVertexX = std::max(maxVertexX, vertexX);
++                        }
++                    }
++
++                    const bool coversScissorWidth = ((minVertexX * 4.0f) <= float(fbPair.scissorRect.ulx)) && ((maxVertexX * 4.0f) >= float(fbPair.scissorRect.lrx));
++                    triangles.screenScale.x = coversScissorWidth ? (projScreenScaleX * aspectRatioScale) : projScreenScaleX;
++                }
+                 renderIndices.instanceIndex = call.callDesc.callIndex;
+                 renderIndices.faceIndicesStart = call.meshDesc.faceIndicesStart;
+                 renderIndices.rdpTileIndex = call.callDesc.tileIndex;

@@ -230,23 +230,25 @@ in
 {
   users.users.${username}.packages = [ eltale-recomp ];
 
-  hjem.users.${username}.xdg.config.files = {
-    "${appDir}/graphics.json".source = ./graphics.json;
-    "${appDir}/controls.json".source = ./controls.json;
-    "${appDir}/general.json".source = ./general.json;
-    "${appDir}/sound.json".source = ./sound.json;
-  };
+  # the app rewrites these on exit, so they seed once and stay app-owned; elt-s pulls changes back into the repo
+  hjem.users.${username}.xdg.config.files =
+    let
+      seed = source: {
+        inherit source;
+        type = "copy";
+        clobber = false;
+        permissions = "0644";
+      };
+    in
+    {
+      "${appDir}/graphics.json" = seed ./graphics.json;
+      "${appDir}/controls.json" = seed ./controls.json;
+      "${appDir}/general.json" = seed ./general.json;
+      "${appDir}/sound.json" = seed ./sound.json;
+    };
 
-  # the four json files are hjem-owned and re-laid each boot, so they stay out of the persist list
-  preservation.preserveAt."/persist".users.${username} = {
-    directories = [
-      "${configDir}/saves"
-    ];
-    files = [
-      "${configDir}/quest64_us.z64"
-      "${configDir}/launcher-bg.png"
-      "${configDir}/manual.pdf"
-      "${configDir}/strategy-guide.pdf"
-    ];
-  };
+  # the rom copy, the launcher art, both pdfs, the controller pak and the settings all live here and are all runtime-written
+  preservation.preserveAt."/persist".users.${username}.directories = [
+    configDir
+  ];
 }

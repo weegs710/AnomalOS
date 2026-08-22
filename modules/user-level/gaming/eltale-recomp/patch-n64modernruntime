@@ -1,3 +1,111 @@
+diff --git a/librecomp/src/pak.cpp b/librecomp/src/pak.cpp
+index ff4bc48..1bd1d2d 100644
+--- a/librecomp/src/pak.cpp
++++ b/librecomp/src/pak.cpp
+@@ -16,14 +16,20 @@ typedef struct ControllerPak {
+     std::fstream file;
+ } ControllerPak;
+ 
+-// extern std::filesystem::path config_path;
+-// const std::u8string save_folder = u8"saves";
+-// std::filesystem::path save_folder_path = config_path / save_folder;
++extern std::filesystem::path config_path;
++
++// the pak files are opened by bare name, so without this they land in the cwd, which is read-only for an installed build
++static std::filesystem::path pak_path(const char* name) {
++    std::filesystem::path folder = config_path / u8"saves";
++    std::error_code ec;
++    std::filesystem::create_directories(folder, ec);
++    return folder / name;
++}
+ 
+ void Pfs_PakHeader_Write(u32* file_size, u32* game_code, u16* company_code, u8* ext_name, u8* game_name, u8 fileIndex) {
+     ControllerPak pak;
+ 
+-    pak.header.open("controllerPak_header.sav", std::ios::binary | std::ios::in | std::ios::out);
++    pak.header.open(pak_path("controllerPak_header.sav"), std::ios::binary | std::ios::in | std::ios::out);
+ 
+     if (!pak.header.good()) {
+         assert(false);
+@@ -57,7 +63,7 @@ void Pfs_PakHeader_Write(u32* file_size, u32* game_code, u16* company_code, u8*
+ void Pfs_PakHeader_Read(u32* file_size, u32* game_code, u16* company_code, u8* ext_name, u8* game_name, u8 fileIndex) {
+     ControllerPak pak;
+ 
+-    pak.header.open("controllerPak_header.sav", std::ios::binary | std::ios::in | std::ios::out);
++    pak.header.open(pak_path("controllerPak_header.sav"), std::ios::binary | std::ios::in | std::ios::out);
+ 
+     if (!pak.header.good()) {
+         assert(false);
+@@ -127,8 +133,8 @@ extern "C" void osPfsInit_recomp(uint8_t* rdram, recomp_context* ctx) {
+     ControllerPak pak;
+ 
+     // If a header file doesn't exist, create it.
+-    if (!std::filesystem::exists("controllerPak_header.sav")) {
+-        pak.header.open("controllerPak_header.sav", std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
++    if (!std::filesystem::exists(pak_path("controllerPak_header.sav"))) {
++        pak.header.open(pak_path("controllerPak_header.sav"), std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+         pak.header.close();
+     }
+ 
+@@ -147,8 +153,8 @@ extern "C" void osPfsInitPak_recomp(uint8_t* rdram, recomp_context* ctx) {
+     ControllerPak pak;
+ 
+     // If a header file doesn't exist, create it.
+-    if (!std::filesystem::exists("controllerPak_header.sav")) {
+-        pak.header.open("controllerPak_header.sav", std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
++    if (!std::filesystem::exists(pak_path("controllerPak_header.sav"))) {
++        pak.header.open(pak_path("controllerPak_header.sav"), std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+         pak.header.close();
+     }
+ 
+@@ -253,7 +259,7 @@ extern "C" void osPfsAllocateFile_recomp(uint8_t* rdram, recomp_context* ctx) {
+ 
+     char filename[100];
+     sprintf(filename, "controllerPak_file_%d.sav", freeFileIndex);
+-    pak.file.open(filename, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
++    pak.file.open(pak_path(filename), std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+ 
+     file_size = (file_size + 31) & ~31;
+ 
+@@ -288,7 +294,7 @@ extern "C" void osPfsFileState_recomp(uint8_t* rdram, recomp_context* ctx) {
+ 
+     char filename[100];
+     sprintf(filename, "controllerPak_file_%d.sav", file_no);
+-    if (!std::filesystem::exists(filename)) {
++    if (!std::filesystem::exists(pak_path(filename))) {
+         ctx->r2 = 5;
+         return;
+     }
+@@ -414,9 +420,9 @@ extern "C" void osPfsReadWriteFile_recomp(uint8_t* rdram, recomp_context* ctx) {
+ 
+     char filename[100];
+     sprintf(filename, "controllerPak_file_%d.sav", file_no);
+-    pak.file.open(filename, std::ios::binary | std::ios::in | std::ios::out);
++    pak.file.open(pak_path(filename), std::ios::binary | std::ios::in | std::ios::out);
+ 
+-    if (!std::filesystem::exists(filename)) {
++    if (!std::filesystem::exists(pak_path(filename))) {
+         ctx->r2 = 5; // PFS_ERR_INVALID
+         return;
+     }
+@@ -561,7 +567,7 @@ extern "C" void osPfsDeleteFile_recomp(uint8_t* rdram, recomp_context* ctx) {
+                 }
+                 // File found
+ 
+-                pak.header.open("controllerPak_header.sav", std::ios::binary | std::ios::in | std::ios::out);
++                pak.header.open(pak_path("controllerPak_header.sav"), std::ios::binary | std::ios::in | std::ios::out);
+ 
+                 if (!pak.header.good()) {
+                     assert(false);
+@@ -583,7 +589,7 @@ extern "C" void osPfsDeleteFile_recomp(uint8_t* rdram, recomp_context* ctx) {
+ 
+                 char filename[100];
+                 sprintf(filename, "controllerPak_file_%d.sav", i);
+-                remove(filename);
++                std::filesystem::remove(pak_path(filename));
+ 
+                 ctx->r2 = 0; // PFS_NO_ERROR
+                 return;
 diff --git a/ultramodern/include/ultramodern/config.hpp b/ultramodern/include/ultramodern/config.hpp
 index a8cd8e0..7fa1cf9 100644
 --- a/ultramodern/include/ultramodern/config.hpp
