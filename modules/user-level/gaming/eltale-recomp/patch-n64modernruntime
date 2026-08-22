@@ -1,0 +1,63 @@
+diff --git a/ultramodern/include/ultramodern/config.hpp b/ultramodern/include/ultramodern/config.hpp
+index a8cd8e0..7fa1cf9 100644
+--- a/ultramodern/include/ultramodern/config.hpp
++++ b/ultramodern/include/ultramodern/config.hpp
+@@ -58,6 +58,24 @@ namespace ultramodern {
+             OptionCount
+         };
+ 
++        enum class ThreePointFiltering {
++            On,
++            Off,
++            OptionCount
++        };
++        enum class Filtering {
++            Nearest,
++            Linear,
++            AntiAliasedPixelScaling,
++            OptionCount
++        };
++        enum class Upscale2D {
++            Original,
++            ScaledOnly,
++            All,
++            OptionCount
++        };
++
+         class GraphicsConfig {
+         public:
+             bool developer_mode;
+@@ -71,6 +89,9 @@ namespace ultramodern {
+             HighPrecisionFramebuffer hpfb_option;
+             int rr_manual_value;
+             int ds_option;
++            Filtering filtering_option;
++            Upscale2D upscale2d_option;
++            ThreePointFiltering tpf_option;
+ 
+             virtual ~GraphicsConfig() = default;
+ 
+@@ -104,6 +125,23 @@ namespace ultramodern {
+             {ultramodern::renderer::GraphicsApi::Metal, "Metal"},
+         });
+ 
++        NLOHMANN_JSON_SERIALIZE_ENUM(ultramodern::renderer::ThreePointFiltering, {
++            {ultramodern::renderer::ThreePointFiltering::On, "On"},
++            {ultramodern::renderer::ThreePointFiltering::Off, "Off"},
++        });
++
++        NLOHMANN_JSON_SERIALIZE_ENUM(ultramodern::renderer::Filtering, {
++            {ultramodern::renderer::Filtering::Nearest, "Nearest"},
++            {ultramodern::renderer::Filtering::Linear, "Linear"},
++            {ultramodern::renderer::Filtering::AntiAliasedPixelScaling, "AntiAliasedPixelScaling"},
++        });
++
++        NLOHMANN_JSON_SERIALIZE_ENUM(ultramodern::renderer::Upscale2D, {
++            {ultramodern::renderer::Upscale2D::Original, "Original"},
++            {ultramodern::renderer::Upscale2D::ScaledOnly, "ScaledOnly"},
++            {ultramodern::renderer::Upscale2D::All, "All"},
++        });
++
+         NLOHMANN_JSON_SERIALIZE_ENUM(ultramodern::renderer::AspectRatio, {
+             {ultramodern::renderer::AspectRatio::Original, "Original"},
+             {ultramodern::renderer::AspectRatio::Expand, "Expand"},

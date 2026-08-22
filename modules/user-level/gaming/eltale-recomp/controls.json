@@ -1,0 +1,426 @@
+{
+    "controller": {
+        "A": [
+            {
+                "input_id": 0,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "ACCEPT_MENU": [
+            {
+                "input_id": 0,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "APPLY_MENU": [
+            {
+                "input_id": 2,
+                "input_type": 3
+            },
+            {
+                "input_id": 6,
+                "input_type": 3
+            }
+        ],
+        "B": [
+            {
+                "input_id": 1,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "C_DOWN": [
+            {
+                "input_id": 12,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "C_LEFT": [
+            {
+                "input_id": 13,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "C_RIGHT": [
+            {
+                "input_id": 14,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "C_UP": [
+            {
+                "input_id": 11,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "DPAD_DOWN": [
+            {
+                "input_id": 0,
+                "input_type": 0
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "DPAD_LEFT": [
+            {
+                "input_id": 0,
+                "input_type": 0
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "DPAD_RIGHT": [
+            {
+                "input_id": 0,
+                "input_type": 0
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "DPAD_UP": [
+            {
+                "input_id": 0,
+                "input_type": 0
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "L": [
+            {
+                "input_id": 9,
+                "input_type": 3
+            },
+            {
+                "input_id": 8,
+                "input_type": 3
+            }
+        ],
+        "R": [
+            {
+                "input_id": 10,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "START": [
+            {
+                "input_id": 6,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "TOGGLE_MENU": [
+            {
+                "input_id": 4,
+                "input_type": 3
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "X_AXIS_NEG": [
+            {
+                "input_id": -1,
+                "input_type": 4
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "X_AXIS_POS": [
+            {
+                "input_id": 1,
+                "input_type": 4
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "Y_AXIS_NEG": [
+            {
+                "input_id": 2,
+                "input_type": 4
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "Y_AXIS_POS": [
+            {
+                "input_id": -2,
+                "input_type": 4
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "Z": [
+            {
+                "input_id": 5,
+                "input_type": 4
+            },
+            {
+                "input_id": 6,
+                "input_type": 4
+            }
+        ]
+    },
+    "keyboard": {
+        "A": [
+            {
+                "input_id": 44,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "ACCEPT_MENU": [
+            {
+                "input_id": 40,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "APPLY_MENU": [
+            {
+                "input_id": 9,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "B": [
+            {
+                "input_id": 225,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "C_DOWN": [
+            {
+                "input_id": 81,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "C_LEFT": [
+            {
+                "input_id": 80,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "C_RIGHT": [
+            {
+                "input_id": 79,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "C_UP": [
+            {
+                "input_id": 82,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "DPAD_DOWN": [
+            {
+                "input_id": 14,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "DPAD_LEFT": [
+            {
+                "input_id": 13,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "DPAD_RIGHT": [
+            {
+                "input_id": 15,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "DPAD_UP": [
+            {
+                "input_id": 12,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "L": [
+            {
+                "input_id": 8,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "R": [
+            {
+                "input_id": 21,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "START": [
+            {
+                "input_id": 40,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "TOGGLE_MENU": [
+            {
+                "input_id": 41,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "X_AXIS_NEG": [
+            {
+                "input_id": 4,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "X_AXIS_POS": [
+            {
+                "input_id": 7,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "Y_AXIS_NEG": [
+            {
+                "input_id": 22,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "Y_AXIS_POS": [
+            {
+                "input_id": 26,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ],
+        "Z": [
+            {
+                "input_id": 20,
+                "input_type": 1
+            },
+            {
+                "input_id": 0,
+                "input_type": 0
+            }
+        ]
+    }
+}

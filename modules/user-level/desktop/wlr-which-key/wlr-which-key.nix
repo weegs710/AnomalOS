@@ -188,6 +188,7 @@ let
           (run "m" "2Ship2Harkinian" (hyprExec "2s2h" (ws 4)))
           (run "l" "zelda3" (hyprExec "zelda3" (ws 4)))
           (run "d" "Dinosaur Planet" (hyprExec "dino-recomp" (ws 4)))
+          (run "q" "Quest 64" (hyprExec "EltaleRecompiled" (ws 4)))
           (run "x" "renegade x" "steam steam://rungameid/14947236508015263744")
           (sub "o" "openra" [
             (run "d" "Dune 2000" (hyprExec "openra-d2k" (ws 4)))

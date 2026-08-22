@@ -1,0 +1,16 @@
+{
+    "api_option": "Auto",
+    "ar_option": "Expand",
+    "developer_mode": true,
+    "ds_option": 4,
+    "filtering_option": "AntiAliasedPixelScaling",
+    "hpfb_option": "Auto",
+    "hr_option": "Full",
+    "msaa_option": "MSAA8X",
+    "res_option": "Original2x",
+    "rr_manual_value": 60,
+    "rr_option": "Original",
+    "tpf_option": "On",
+    "upscale2d_option": "ScaledOnly",
+    "wm_option": "Fullscreen"
+}

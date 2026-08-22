@@ -1,0 +1,13 @@
+{
+    "analog_camera_invert_mode": "On",
+    "background_input_mode": "Off",
+    "debug_mode": false,
+    "film_grain_mode": "On",
+    "gyro_sensitivity": 50,
+    "invert_y_axis_mode": "On",
+    "joystick_deadzone": 0,
+    "mouse_sensitivity": 0,
+    "radio_comm_box_mode": "Original",
+    "rumble_strength": 50,
+    "targeting_mode": "Switch"
+}

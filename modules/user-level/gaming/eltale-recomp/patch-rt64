@@ -1,0 +1,15 @@
+diff --git a/src/render/rt64_projection_processor.cpp b/src/render/rt64_projection_processor.cpp
+index e842dcc..4c54cb9 100644
+--- a/src/render/rt64_projection_processor.cpp
++++ b/src/render/rt64_projection_processor.cpp
+@@ -94,7 +94,9 @@ namespace RT64 {
+                 if (!intersectionRect.isEmpty()) {
+                     bool coversWholeWidth = (intersectionRect.ulx <= fbPair.scissorRect.ulx) && (intersectionRect.lrx >= fbPair.scissorRect.lrx);
+                     bool horizontalRatio = (intersectionRect.width(true, true) > intersectionRect.height(true, true));
+-                    adjustAspectRatio = (viewportOrigin == G_EX_ORIGIN_NONE) && coversWholeWidth && horizontalRatio;
++                    // a full-width orthographic layer is a flat overlay, and scaling its projection cancels the frame's own widening exactly
++                    const bool flatOverlay = (proj.type == Projection::Type::Orthographic);
++                    adjustAspectRatio = (viewportOrigin == G_EX_ORIGIN_NONE) && coversWholeWidth && horizontalRatio && !flatOverlay;
+                 }
+             }
+  

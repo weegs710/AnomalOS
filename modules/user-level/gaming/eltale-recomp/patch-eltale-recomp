@@ -1,0 +1,1035 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bd15eff..64d5c32 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -4,7 +4,7 @@ if (APPLE)
+     set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING "Minimum OS X deployment version")
+ endif()
+ 
+-project(Quest64Recompiled LANGUAGES C CXX)
++project(EltaleRecompiled LANGUAGES C CXX)
+ set(CMAKE_C_STANDARD 17)
+ set(CMAKE_CXX_STANDARD 20)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+@@ -145,7 +145,7 @@ add_custom_command(OUTPUT
+ )
+ 
+ # Main executable
+-add_executable(Quest64Recompiled)
++add_executable(EltaleRecompiled)
+ 
+ set (SOURCES
+     ${CMAKE_SOURCE_DIR}/src/main/main.cpp
+@@ -207,7 +207,7 @@ if (APPLE)
+     list(APPEND SOURCES ${CMAKE_SOURCE_DIR}/src/main/support_apple.mm)
+ endif()
+ 
+-target_include_directories(Quest64Recompiled PRIVATE
++target_include_directories(EltaleRecompiled PRIVATE
+     ${CMAKE_SOURCE_DIR}/include
+     ${CMAKE_SOURCE_DIR}/lib/N64ModernRuntime/N64Recomp/include
+     ${CMAKE_SOURCE_DIR}/lib/concurrentqueue
+@@ -228,7 +228,7 @@ target_include_directories(Quest64Recompiled PRIVATE
+ )
+ 
+ if(CMAKE_SIZEOF_VOID_P EQUAL 8 AND CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|AMD64")
+-    target_compile_options(Quest64Recompiled PRIVATE
++    target_compile_options(EltaleRecompiled PRIVATE
+         -march=nehalem
+         # -march=core2
+         # -msse4.1 # added for core2
+@@ -236,7 +236,7 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8 AND CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|
+         -fms-extensions
+     )
+ else()
+-    target_compile_options(Quest64Recompiled PRIVATE
++    target_compile_options(EltaleRecompiled PRIVATE
+         -fno-strict-aliasing
+         -fms-extensions
+     )
+@@ -244,11 +244,11 @@ endif()
+ 
+ if (MSVC)
+     # Disable identical code folding, since this breaks mod function patching as multiple functions can get merged into one.
+-    target_link_options(Quest64Recompiled PRIVATE /OPT:NOICF)
++    target_link_options(EltaleRecompiled PRIVATE /OPT:NOICF)
+ elseif (APPLE)
+     # Use a wrapper around ld64 that respects segprot's `max_prot` value in order
+     # to make our executable memory writable (required for mod function patching)
+-    target_link_options(Quest64Recompiled PRIVATE
++    target_link_options(EltaleRecompiled PRIVATE
+         "-fuse-ld=${CMAKE_SOURCE_DIR}/.github/macos/ld64"
+     )
+ endif()
+@@ -268,23 +268,23 @@ if (WIN32)
+         URL https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/SDL2-devel-${SDL2_VERSION}-VC.zip
+     )
+     FetchContent_MakeAvailable(sdl2)
+-    target_include_directories(Quest64Recompiled PRIVATE
++    target_include_directories(EltaleRecompiled PRIVATE
+         ${sdl2_SOURCE_DIR}/include
+     )
+-    target_link_directories(Quest64Recompiled PRIVATE
++    target_link_directories(EltaleRecompiled PRIVATE
+         ${sdl2_SOURCE_DIR}/lib/x64
+     )
+ 
+     # Copy SDL2 and dxc DLLs to output folder as post build step
+-    add_custom_command(TARGET Quest64Recompiled POST_BUILD
++    add_custom_command(TARGET EltaleRecompiled POST_BUILD
+         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+             "${sdl2_SOURCE_DIR}/lib/x64/SDL2.dll"
+             "${CMAKE_SOURCE_DIR}/lib/rt64/src/contrib/dxc/bin/x64/dxil.dll"
+             "${CMAKE_SOURCE_DIR}/lib/rt64/src/contrib/dxc/bin/x64/dxcompiler.dll"
+-            $<TARGET_FILE_DIR:Quest64Recompiled>)
++            $<TARGET_FILE_DIR:EltaleRecompiled>)
+ 
+     set_target_properties(
+-        Quest64Recompiled
++        EltaleRecompiled
+         PROPERTIES
+             LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE"
+             LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+@@ -292,19 +292,19 @@ if (WIN32)
+             LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+     )
+ 
+-    target_sources(Quest64Recompiled PRIVATE ${CMAKE_SOURCE_DIR}/icons/app.rc)
+-    target_link_libraries(Quest64Recompiled PRIVATE SDL2 Winmm.lib)
++    target_sources(EltaleRecompiled PRIVATE ${CMAKE_SOURCE_DIR}/icons/app.rc)
++    target_link_libraries(EltaleRecompiled PRIVATE SDL2 Winmm.lib)
+ endif()
+ 
+ if (APPLE)
+     find_package(SDL2 REQUIRED)
+-    target_include_directories(Quest64Recompiled PRIVATE ${SDL2_INCLUDE_DIRS})
++    target_include_directories(EltaleRecompiled PRIVATE ${SDL2_INCLUDE_DIRS})
+ 
+     set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+     set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+     find_package(Threads REQUIRED)
+ 
+-    target_link_libraries(Quest64Recompiled PRIVATE ${CMAKE_DL_LIBS} Threads::Threads SDL2::SDL2)
++    target_link_libraries(EltaleRecompiled PRIVATE ${CMAKE_DL_LIBS} Threads::Threads SDL2::SDL2)
+ 
+     include(${CMAKE_SOURCE_DIR}/.github/macos/apple_bundle.cmake)
+ endif()
+@@ -320,20 +320,20 @@ if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+         COMMAND file_to_c ${CMAKE_SOURCE_DIR}/icons/512.png icon_bytes ${CMAKE_CURRENT_BINARY_DIR}/icon_bytes.c ${CMAKE_CURRENT_BINARY_DIR}/icon_bytes.h
+         DEPENDS ${CMAKE_SOURCE_DIR}/icons/512.png
+     )
+-    target_sources(Quest64Recompiled PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/icon_bytes.c)
++    target_sources(EltaleRecompiled PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/icon_bytes.c)
+ 
+     message(STATUS "SDL2_FOUND = ${SDL2_FOUND}")
+     message(STATUS "SDL2_INCLUDE_DIRS = ${SDL2_INCLUDE_DIRS}")
+ 
+-    target_include_directories(Quest64Recompiled PRIVATE ${SDL2_INCLUDE_DIRS})
++    target_include_directories(EltaleRecompiled PRIVATE ${SDL2_INCLUDE_DIRS})
+ 
+     message(STATUS "X11_FOUND = ${X11_FOUND}")
+     message(STATUS "X11_Xrandr_FOUND = ${X11_Xrandr_FOUND}")
+     message(STATUS "X11_INCLUDE_DIR = ${X11_INCLUDE_DIR}")
+     message(STATUS "X11_LIBRARIES = ${X11_LIBRARIES}")
+ 
+-    target_include_directories(Quest64Recompiled PRIVATE ${X11_INCLUDE_DIR} ${X11_Xrandr_INCLUDE_PATH})
+-    target_link_libraries(Quest64Recompiled PRIVATE ${X11_LIBRARIES} ${X11_Xrandr_LIB})
++    target_include_directories(EltaleRecompiled PRIVATE ${X11_INCLUDE_DIR} ${X11_Xrandr_INCLUDE_PATH})
++    target_link_libraries(EltaleRecompiled PRIVATE ${X11_LIBRARIES} ${X11_Xrandr_LIB})
+ 
+     find_package(Freetype REQUIRED)
+ 
+@@ -342,16 +342,16 @@ if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+     message(STATUS "FREETYPE_LIBRARIES = ${FREETYPE_LIBRARIES}")
+ 
+     include_directories(${FREETYPE_LIBRARIES})
+-    target_link_libraries(Quest64Recompiled PRIVATE ${FREETYPE_LIBRARIES} SDL2::SDL2)
++    target_link_libraries(EltaleRecompiled PRIVATE ${FREETYPE_LIBRARIES} SDL2::SDL2)
+ 
+     set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+     set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+     find_package(Threads REQUIRED)
+ 
+-    target_link_libraries(Quest64Recompiled PRIVATE "-latomic -static-libstdc++" ${CMAKE_DL_LIBS} Threads::Threads)
++    target_link_libraries(EltaleRecompiled PRIVATE "-latomic -static-libstdc++" ${CMAKE_DL_LIBS} Threads::Threads)
+ endif()
+ 
+-target_link_libraries(Quest64Recompiled PRIVATE
++target_link_libraries(EltaleRecompiled PRIVATE
+     PatchesLib
+     RecompiledFuncs
+     librecomp
+@@ -395,8 +395,8 @@ else()
+     endif()
+ endif()
+ 
+-build_vertex_shader(Quest64Recompiled "shaders/InterfaceVS.hlsl" "shaders/InterfaceVS.hlsl")
+-build_pixel_shader(Quest64Recompiled "shaders/InterfacePS.hlsl" "shaders/InterfacePS.hlsl")
++build_vertex_shader(EltaleRecompiled "shaders/InterfaceVS.hlsl" "shaders/InterfaceVS.hlsl")
++build_pixel_shader(EltaleRecompiled "shaders/InterfacePS.hlsl" "shaders/InterfacePS.hlsl")
+ 
+ # Embed all .nrm files in the "mods" directory
+ file(GLOB NRM_FILES "${CMAKE_SOURCE_DIR}/mods/*.nrm")
+@@ -417,8 +417,8 @@ foreach(NRM_FILE ${NRM_FILES})
+     list(APPEND GENERATED_NRM_SOURCES ${OUT_C})
+ endforeach()
+ 
+-target_sources(Quest64Recompiled PRIVATE ${GENERATED_NRM_SOURCES})
++target_sources(EltaleRecompiled PRIVATE ${GENERATED_NRM_SOURCES})
+ 
+-target_sources(Quest64Recompiled PRIVATE ${SOURCES})
++target_sources(EltaleRecompiled PRIVATE ${SOURCES})
+ 
+-set_property(TARGET Quest64Recompiled PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
++set_property(TARGET EltaleRecompiled PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+diff --git a/assets/config_menu.rml b/assets/config_menu.rml
+index 3865510..2198648 100644
+--- a/assets/config_menu.rml
++++ b/assets/config_menu.rml
+@@ -27,7 +27,6 @@
+ 	<link type="text/template" href="config_menu/controls.rml" />
+ 	<link type="text/template" href="config_menu/graphics.rml" />
+ 	<link type="text/template" href="config_menu/sound.rml" />
+-	<link type="text/template" href="config_menu/mods.rml" />
+ 	<link type="text/template" href="config_menu/debug.rml" />
+ </head>
+ <body class="window">
+@@ -64,13 +63,6 @@
+ 						<panel class="config" data-model="sound_options_model">
+ 							<template src="config-menu__sound" />
+ 						</panel>
+-						<tab class="tab" id="tab_mods">
+-							<div>Mods</div>
+-							<div class="tab__indicator"></div>
+-						</tab>
+-						<panel class="config">
+-							<template src="config-menu__mods" />
+-						</panel>
+ 						<tab class="tab" data-model="debug_model" data-if="debug_enabled" id="tab_debug">
+ 							<div>Debug</div>
+ 							<div class="tab__indicator"></div>
+diff --git a/assets/config_menu/general.rml b/assets/config_menu/general.rml
+index 9e3f934..c669e59 100644
+--- a/assets/config_menu/general.rml
++++ b/assets/config_menu/general.rml
+@@ -56,7 +56,7 @@
+                                 data-checked="background_input_mode"
+                                 value="On"
+                                 id="bg_input_enabled"
+-                                style="nav-up: #joystick_deadzone_input; nav-down: #film_grain_mode_on"
++                                style="nav-up: #joystick_deadzone_input;"
+                             />
+                             <label class="config-option__tab-label" for="bg_input_enabled">On</label>
+ 
+@@ -68,102 +68,12 @@
+                                 data-checked="background_input_mode"
+                                 value="Off"
+                                 id="bg_input_disabled"
+-                                style="nav-up: #joystick_deadzone_input; nav-down: #film_grain_mode_off"
++                                style="nav-up: #joystick_deadzone_input;"
+                             />
+                             <label class="config-option__tab-label" for="bg_input_disabled">Off</label>
+                         </div>
+                     </div>
+ 
+-                    <!-- Film Grain -->
+-                    <div class="config-option" data-event-mouseover="set_cur_config_index(6)">
+-                        <label class="config-option__title">Film Grain</label>
+-                        <div class="config-option__list">
+-                            <input
+-                                type="radio"
+-                                data-event-blur="set_cur_config_index(-1)"
+-                                data-event-focus="set_cur_config_index(6)"
+-                                name="film_grain_mode"
+-                                data-checked="film_grain_mode"
+-                                value="On"
+-                                id="film_grain_mode_on"
+-                                style="nav-up: #bg_input_enabled; nav-down: #invert_y_axis_mode_on"
+-                            />
+-                            <label class="config-option__tab-label" for="film_grain_mode_on">On</label>
+-
+-                            <input
+-                                type="radio"
+-                                data-event-blur="set_cur_config_index(-1)"
+-                                data-event-focus="set_cur_config_index(6)"
+-                                name="film_grain_mode"
+-                                data-checked="film_grain_mode"
+-                                value="Off"
+-                                id="film_grain_mode_off"
+-                                style="nav-up: #bg_input_disabled; nav-down: #invert_y_axis_mode_off"
+-                            />
+-                            <label class="config-option__tab-label" for="film_grain_mode_off">Off</label>
+-                        </div>
+-                    </div>
+-
+-                    <!-- Invert Y Axis -->
+-                    <div class="config-option" data-event-mouseover="set_cur_config_index(7)">
+-                        <label class="config-option__title">Invert Y Axis</label>
+-                        <div class="config-option__list">
+-                            <input
+-                                type="radio"
+-                                data-event-blur="set_cur_config_index(-1)"
+-                                data-event-focus="set_cur_config_index(7)"
+-                                name="invert_y_axis_mode"
+-                                data-checked="invert_y_axis_mode"
+-                                value="On"
+-                                id="invert_y_axis_mode_on"
+-                                style="nav-up: #film_grain_mode_on;"
+-                            />
+-                            <label class="config-option__tab-label" for="invert_y_axis_mode_on">On</label>
+-
+-                            <input
+-                                type="radio"
+-                                data-event-blur="set_cur_config_index(-1)"
+-                                data-event-focus="set_cur_config_index(7)"
+-                                name="invert_y_axis_mode"
+-                                data-checked="invert_y_axis_mode"
+-                                value="Off"
+-                                id="invert_y_axis_mode_off"
+-                                style="nav-up: #film_grain_mode_off;"
+-                            />
+-                            <label class="config-option__tab-label" for="invert_y_axis_mode_off">Off</label>
+-                        </div>
+-                    </div>
+-
+-                    <!-- Radio Communication Box -->
+-                    <div class="config-option" data-event-mouseover="set_cur_config_index(8)">
+-                        <label class="config-option__title">Radio Communication Box</label>
+-                        <div class="config-option__list">
+-                            <input
+-                                type="radio"
+-                                data-event-blur="set_cur_config_index(-1)"
+-                                data-event-focus="set_cur_config_index(8)"
+-                                name="radio_comm_box_mode"
+-                                data-checked="radio_comm_box_mode"
+-                                value="Expand"
+-                                id="radio_comm_box_mode_expand"
+-                                style="nav-up: #invert_y_axis_mode_on;"
+-                            />
+-                            <label class="config-option__tab-label" for="radio_comm_box_mode_expand">Expand</label>
+-
+-                            <input
+-                                type="radio"
+-                                data-event-blur="set_cur_config_index(-1)"
+-                                data-event-focus="set_cur_config_index(8)"
+-                                name="radio_comm_box_mode"
+-                                data-checked="radio_comm_box_mode"
+-                                value="Original"
+-                                id="radio_comm_box_mode_center"
+-                                style="nav-up: #invert_y_axis_mode_off;"
+-                            />
+-                            <label class="config-option__tab-label" for="radio_comm_box_mode_center">Original</label>
+-                        </div>
+-                    </div>
+-
+                 </div>
+ 
+                 <!-- Descriptions -->
+@@ -194,17 +104,6 @@
+                         <br/>
+                         <b>This setting does not affect keyboard input.</b>
+                     </p>
+-                    <p data-if="cur_config_index == 6">
+-                        Adds a visual effect that simulates the random grain you see in old film or high-ISO camera footage.
+-                        <br/>
+-                    </p>
+-                    <p data-if="cur_config_index == 7">
+-                        Inverts the Y axis aiming controls. <b>On</b> is the default and matches the original game.
+-                    </p>
+-                    <p data-if="cur_config_index == 8">
+-                        Alignment for Radio Communications Box.
+-                        <br/>
+-                    </p>
+                     <p data-if="cur_config_index == 9">
+                         Inverts the camera controls for the analog camera if it's enabled. <b>None</b> is the default.
+                     </p>
+diff --git a/assets/config_menu/graphics.rml b/assets/config_menu/graphics.rml
+index a11de72..e1575ba 100644
+--- a/assets/config_menu/graphics.rml
++++ b/assets/config_menu/graphics.rml
+@@ -225,6 +225,17 @@
+                                 data-attr-style="rr_option=='Manual' ? 'nav-up: #rr_manual_input; nav-down: #hr_full' : 'nav-up: #rr_manual; nav-down: #hr_full'"
+                             />
+                             <label class="config-option__tab-label" for="msaa_4x">4x</label>
++                            <input type="radio"
++                                data-event-blur="set_cur_config_index(-1)"
++                                data-event-focus="set_cur_config_index(5)"
++                                name="antialiasing"
++                                data-attrif-disabled="!msaa8x_supported"
++                                data-checked="msaa_option"
++                                value="MSAA8X"
++                                id="msaa_8x"
++                                data-attr-style="rr_option=='Manual' ? 'nav-up: #rr_manual_input; nav-down: #hr_full' : 'nav-up: #rr_manual; nav-down: #hr_full'"
++                            />
++                            <label class="config-option__tab-label" for="msaa_8x">8x</label>
+                             <div class="config-option__details" data-if="!sample_positions_supported">Not available (missing sample positions support)</div>
+                         </div>
+                     </div>
+@@ -239,7 +250,7 @@
+                                 data-checked="hr_option"
+                                 value="Original"
+                                 id="hr_original"
+-                                style="nav-up: #msaa_none; nav-down: #apply_button"
++                                style="nav-up: #msaa_none; nav-down: #filt_nearest"
+                             />
+                             <label class="config-option__tab-label" for="hr_original">Original</label>
+                             <input type="radio"
+@@ -249,7 +260,7 @@
+                                 data-checked="hr_option"
+                                 value="Clamp16x9"
+                                 id="hr_16_9"
+-                                style="nav-up: #msaa_2x; nav-down: #apply_button"
++                                style="nav-up: #msaa_2x; nav-down: #filt_linear"
+                                 data-style-nav-up="msaa2x_supported ? '#msaa_2x' : '#msaa_none'"
+                             />
+                             <label class="config-option__tab-label" for="hr_16_9">16:9</label>
+@@ -260,15 +271,94 @@
+                                 data-checked="hr_option"
+                                 value="Full"
+                                 id="hr_full"
+-                                style="nav-up: #msaa_4x; nav-down: #apply_button"
++                                style="nav-up: #msaa_4x; nav-down: #filt_aa"
+                                 data-style-nav-up="msaa4x_supported ? '#msaa_4x' : (msaa2x_supported ? '#msaa_2x' : '#msaa_none')"
+                             />
+                             <label class="config-option__tab-label" for="hr_full">Expand</label>
+                         </div>
+                     </div>
+ 
++                    <div class="config-option" data-event-mouseover="set_cur_config_index(7)">
++                        <label class="config-option__title">Output Filtering</label>
++                        <div class="config-option__list">
++                            <input type="radio"
++                                data-event-blur="set_cur_config_index(-1)"
++                                data-event-focus="set_cur_config_index(7)"
++                                name="filtering-option"
++                                data-checked="filtering_option"
++                                value="Nearest"
++                                id="filt_nearest"
++                                style="nav-up: #hr_original; nav-down: #up2d_original"
++                            />
++                            <label class="config-option__tab-label" for="filt_nearest">Nearest</label>
++                            <input type="radio"
++                                data-event-blur="set_cur_config_index(-1)"
++                                data-event-focus="set_cur_config_index(7)"
++                                name="filtering-option"
++                                data-checked="filtering_option"
++                                value="Linear"
++                                id="filt_linear"
++                                style="nav-up: #hr_16_9; nav-down: #up2d_scaled"
++                            />
++                            <label class="config-option__tab-label" for="filt_linear">Linear</label>
++                            <input type="radio"
++                                data-event-blur="set_cur_config_index(-1)"
++                                data-event-focus="set_cur_config_index(7)"
++                                name="filtering-option"
++                                data-checked="filtering_option"
++                                value="AntiAliasedPixelScaling"
++                                id="filt_aa"
++                                style="nav-up: #hr_full; nav-down: #up2d_all"
++                            />
++                            <label class="config-option__tab-label" for="filt_aa">Anti-Aliased</label>
++                        </div>
++                    </div>
++
++                    <div class="config-option" data-event-mouseover="set_cur_config_index(8)">
++                        <label class="config-option__title">2D Upscaling</label>
++                        <div class="config-option__list">
++                            <input type="radio"
++                                data-event-blur="set_cur_config_index(-1)"
++                                data-event-focus="set_cur_config_index(8)"
++                                name="upscale2d-option"
++                                data-checked="upscale2d_option"
++                                value="Original"
++                                id="up2d_original"
++                                style="nav-up: #filt_nearest; nav-down: #apply_button"
++                            />
++                            <label class="config-option__tab-label" for="up2d_original">Original</label>
++                            <input type="radio"
++                                data-event-blur="set_cur_config_index(-1)"
++                                data-event-focus="set_cur_config_index(8)"
++                                name="upscale2d-option"
++                                data-checked="upscale2d_option"
++                                value="ScaledOnly"
++                                id="up2d_scaled"
++                                style="nav-up: #filt_linear; nav-down: #apply_button"
++                            />
++                            <label class="config-option__tab-label" for="up2d_scaled">Scaled Only</label>
++                            <input type="radio"
++                                data-event-blur="set_cur_config_index(-1)"
++                                data-event-focus="set_cur_config_index(8)"
++                                name="upscale2d-option"
++                                data-checked="upscale2d_option"
++                                value="All"
++                                id="up2d_all"
++                                style="nav-up: #filt_aa; nav-down: #apply_button"
++                            />
++                            <label class="config-option__tab-label" for="up2d_all">All</label>
++                        </div>
++                    </div>
++
++
+                 </div>
+                 <div class="config__wrapper">
++                    <p data-if="cur_config_index == 7">
++                        Controls how the finished image is scaled to the window. <b>Anti-Aliased</b> smooths edges while keeping the original look, <b>Linear</b> blurs, and <b>Nearest</b> keeps hard pixel edges. This is the final blit only -- it does not change how textures are sampled in-game.
++                    </p>
++                    <p data-if="cur_config_index == 8">
++                        Controls which 2D elements are rendered at the increased resolution. <b>Scaled Only</b> upscales elements the game already scales, <b>All</b> upscales everything, and <b>Original</b> leaves 2D at native resolution.
++                    </p>
+                     <p data-if="cur_config_index == 0">
+                         Sets the output resolution of the game. <b>Original</b> matches the game's original 240p resolution. <b>Original 2x</b> will render at 480p. <b>Auto</b> will scale based on the game window's resolution.
+                     </p>
+diff --git a/assets/config_menu/sound.rml b/assets/config_menu/sound.rml
+index bbbed06..3f3d46a 100644
+--- a/assets/config_menu/sound.rml
++++ b/assets/config_menu/sound.rml
+@@ -18,80 +18,19 @@
+                                     type="range"
+                                     min="0"
+                                     max="100"
+-                                    style="flex: 1; margin: 0dp; nav-up: #tab_sound; nav-down: #bgm_volume_input;"
++                                    style="flex: 1; margin: 0dp; nav-up: #tab_sound;"
+                                     data-value="main_volume"
+                                 />
+                             </div>
+                         </div>
+-                        <div class="config-option" data-event-mouseover="set_cur_config_index(1)">
+-                            <label class="config-option__title">Music Volume</label>
+-                            <div class="config-option__range-wrapper config-option__list">
+-                                <label class="config-option__range-label">{{bgm_volume}}%</label>
+-                                <input
+-                                    data-event-blur="set_cur_config_index(-1)"
+-                                    data-event-focus="set_cur_config_index(1)"
+-                                    class="nav-vert"
+-                                    id="bgm_volume_input"
+-                                    type="range"
+-                                    min="0"
+-                                    max="100"
+-                                    style="flex: 1; margin: 0dp; nav-up: #main_volume_input; nav-down: #lhb_on;"
+-                                    data-value="bgm_volume"
+-                                />
+-                            </div>
+-                        </div>
+-                        <div class="config-option" data-event-mouseover="set_cur_config_index(2)">
+-                            <label class="config-option__title">Voice Volume</label>
+-                            <div class="config-option__range-wrapper config-option__list">
+-                                <label class="config-option__range-label">{{voice_volume}}%</label>
+-                                <input
+-                                    data-event-blur="set_cur_config_index(-1)"
+-                                    data-event-focus="set_cur_config_index(1)"
+-                                    class="nav-vert"
+-                                    id="voice_volume_input"
+-                                    type="range"
+-                                    min="0"
+-                                    max="100"
+-                                    style="flex: 1; margin: 0dp; nav-up: #main_volume_input; nav-down: #lhb_on;"
+-                                    data-value="voice_volume"
+-                                />
+-                            </div>
+-                        </div>
+-                        <div class="config-option" data-event-mouseover="set_cur_config_index(3)">
+-                            <label class="config-option__title">Sound Effects Volume</label>
+-                            <div class="config-option__range-wrapper config-option__list">
+-                                <label class="config-option__range-label">{{sfx_volume}}%</label>
+-                                <input
+-                                    data-event-blur="set_cur_config_index(-1)"
+-                                    data-event-focus="set_cur_config_index(1)"
+-                                    class="nav-vert"
+-                                    id="sfx_volume_input"
+-                                    type="range"
+-                                    min="0"
+-                                    max="100"
+-                                    style="flex: 1; margin: 0dp; nav-up: #main_volume_input; nav-down: #lhb_on;"
+-                                    data-value="sfx_volume"
+-                                />
+-                            </div>
+-                        </div>
+                 </div>
+                 <!-- Descriptions -->
+                 <div class="config__wrapper">
+ 					<p data-if="cur_config_index == 0">
+ 						Controls the main volume of the game.
+ 					</p>
+-                    <p data-if="cur_config_index == 1">
+-                        Controls the overall volume of music.
+-                    </p>
+-                    <p data-if="cur_config_index == 2">
+-                        Controls the overall volume of voices.
+-                    </p>
+-                    <p data-if="cur_config_index == 3">
+-                        Controls the overall volume of sound effects.
+-                    </p>
+                 </div>
+             </div>
+         </form>
+     </body>
+ </template>
+-    
+\ No newline at end of file
+diff --git a/assets/launcher.rml b/assets/launcher.rml
+index 10f5ddb..db3f394 100644
+--- a/assets/launcher.rml
++++ b/assets/launcher.rml
+@@ -13,23 +13,18 @@
+ 	</head>
+ 	<body>
+ 		<div id="window" data-model="launcher_model">
+-			<div class="launcher">
++			<div class="launcher">
++				<img src="?/quest64-bg" class="launcher__background-art" />
+ 				<div class="launcher__vertical-split">
+ 					<div class="launcher__title-quadrant">
+ 						<button class="subtitle-title" enabled>
+-							<div><h3>Quest 64: Recompiled</h3></div>
++							<div><h3>Eltale Recompiled</h3></div>
+ 						</button>
+ 					</div>
+ 					<div class="launcher__content-quadrant"></div>
+ 				</div>
+ 				<div class="launcher__vertical-split launcher__vertical-split--right">
+-					<div class="launcher__background-wrapper">
+-						<svg src="mm-clipped.svg" class="launcher__background-mm" />
+-					</div>
+-					<div class="launcher__title-quadrant launcher__title-quadrant--right">
+-						<button class="subtitle-title subtitle-title--right" selected>
+-						</button>
+-					</div>
++					
+ 					<div class="launcher__content-quadrant">
+ 						<button data-if="!mm_rom_valid" onclick="select_rom" class="menu-list-item menu-list-item--right" autofocus>
+ 							<div class="menu-list-item__bullet">•</div>
+@@ -47,9 +42,13 @@
+ 							<div class="menu-list-item__bullet">•</div>
+ 							<div class="menu-list-item__label">Settings</div>
+ 						</button>
+-						<button onclick="open_mods" class="menu-list-item menu-list-item--right">
++						<button data-if="manual_available" onclick="open_manual" class="menu-list-item menu-list-item--right">
++							<div class="menu-list-item__bullet">•</div>
++							<div class="menu-list-item__label">Quest64 Manual</div>
++						</button>
++						<button data-if="guide_available" onclick="open_guide" class="menu-list-item menu-list-item--right">
+ 							<div class="menu-list-item__bullet">•</div>
+-							<div class="menu-list-item__label">Mods</div>
++							<div class="menu-list-item__label">Quest64 Strategy Guide</div>
+ 						</button>
+ 						<button onclick="exit_game" class="menu-list-item menu-list-item--right">
+ 							<div class="menu-list-item__bullet">•</div>
+diff --git a/assets/recomp.rcss b/assets/recomp.rcss
+index 551e60d..974dee8 100644
+--- a/assets/recomp.rcss
++++ b/assets/recomp.rcss
+@@ -2510,3 +2510,58 @@ button {
+     background-color: #17D6E8;
+   }
+ }
++
++.launcher__background-art {
++  position: absolute;
++  top: 0;
++  right: 0;
++  bottom: 0;
++  left: 0;
++  width: 100%;
++  height: 100%;
++}
++
++.subtitle-title {
++  color: #FADE23;
++  background-color: #0078E9C4;
++  padding: 8dp 26dp;
++  border-radius: 3dp;
++}
++
++.launcher__vertical-split--right .launcher__content-quadrant {
++  width: auto;
++  align-items: stretch;
++}
++
++.menu-list-item {
++  color: #FADE23;
++  background-color: #0078E9C4;
++  width: auto;
++  padding: 6dp 22dp;
++  margin-bottom: 6dp;
++  border-radius: 3dp;
++}
++
++.menu-list-item:focus:not(:disabled, [disabled]), .menu-list-item:hover:not(:disabled, [disabled]) {
++  color: #FFF27A;
++  background-color: #1B8FF5DE;
++  decorator: none;
++}
++
++.subtitle-title h3 {
++  font-family: Michroma;
++  font-weight: 400;
++  font-size: 24dp;
++  line-height: 26dp;
++  letter-spacing: 2dp;
++  text-transform: uppercase;
++}
++
++.menu-list-item__label {
++  font-family: Michroma;
++  font-weight: 400;
++  font-size: 19dp;
++  line-height: 22dp;
++  letter-spacing: 1.5dp;
++  text-transform: uppercase;
++}
+diff --git a/include/recomp_input.h b/include/recomp_input.h
+index 38f8b0c..099fc42 100644
+--- a/include/recomp_input.h
++++ b/include/recomp_input.h
+@@ -18,20 +18,20 @@ namespace recomp {
+     // First parameter is the enum name, second parameter is the bit field for the input (or 0 if there is no associated one), third is the readable name.
+     // TODO refactor this to allow projects to rename these, or get rid of the readable name and leave that up to individual projects to map.
+     #define DEFINE_N64_BUTTON_INPUTS() \
+-        DEFINE_INPUT(A, 0x8000, "Laser") \
+-        DEFINE_INPUT(B, 0x4000, "Smart Bomb") \
+-        DEFINE_INPUT(Z, 0x2000, "Tilt Left") \
+-        DEFINE_INPUT(R, 0x0010, "Tilt Right") \
+-        DEFINE_INPUT(START, 0x1000, "Pause") \
+-        DEFINE_INPUT(C_UP, 0x0008, "Camera") \
+-        DEFINE_INPUT(C_LEFT, 0x0002, "Turbo") \
+-        DEFINE_INPUT(C_DOWN, 0x0004, "Brake") \
+-        DEFINE_INPUT(C_RIGHT, 0x0001, "ROB Message") \
+-        DEFINE_INPUT(DPAD_UP, 0x0800, "Menu Up") \
+-        DEFINE_INPUT(DPAD_RIGHT, 0x0100, "Menu Right") \
+-        DEFINE_INPUT(DPAD_DOWN, 0x0400, "Menu Down") \
+-        DEFINE_INPUT(DPAD_LEFT, 0x0200, "Menu Left") \
+-        DEFINE_INPUT(L, 0x0020, "L (debug)")
++        DEFINE_INPUT(A, 0x8000, "Confirm / Attack") \
++        DEFINE_INPUT(B, 0x4000, "Rotate View / Cancel") \
++        DEFINE_INPUT(Z, 0x2000, "Attack / Cast") \
++        DEFINE_INPUT(R, 0x0010, "Inventory") \
++        DEFINE_INPUT(START, 0x1000, "Status / Options") \
++        DEFINE_INPUT(C_UP, 0x0008, "Magic: Fire") \
++        DEFINE_INPUT(C_LEFT, 0x0002, "Magic: Earth") \
++        DEFINE_INPUT(C_DOWN, 0x0004, "Magic: Water") \
++        DEFINE_INPUT(C_RIGHT, 0x0001, "Magic: Wind") \
++        DEFINE_INPUT(DPAD_UP, 0x0800, "D-Pad Up (Unused)") \
++        DEFINE_INPUT(DPAD_RIGHT, 0x0100, "D-Pad Right (Unused)") \
++        DEFINE_INPUT(DPAD_DOWN, 0x0400, "D-Pad Down (Unused)") \
++        DEFINE_INPUT(DPAD_LEFT, 0x0200, "D-Pad Left (Unused)") \
++        DEFINE_INPUT(L, 0x0020, "Camera View")
+ 
+     #define DEFINE_N64_AXIS_INPUTS() \
+         DEFINE_INPUT(Y_AXIS_POS, 0, "Up") \
+diff --git a/include/zelda_config.h b/include/zelda_config.h
+index be15cf4..cfa18c7 100644
+--- a/include/zelda_config.h
++++ b/include/zelda_config.h
+@@ -7,8 +7,8 @@
+ #include "recomp_input.h"
+ 
+ namespace zelda64 {
+-    constexpr std::u8string_view program_id = u8"Quest64Recompiled";
+-    constexpr std::string_view program_name = "Quest 64: Recompiled";
++    constexpr std::u8string_view program_id = u8"EltaleRecompiled";
++    constexpr std::string_view program_name = "Eltale Recompiled";
+ 
+     // TODO: Move loading configs to the runtime once we have a way to allow per-project customization.
+     void load_config();
+diff --git a/include/zelda_render.h b/include/zelda_render.h
+index 15397f9..a5f6c33 100644
+--- a/include/zelda_render.h
++++ b/include/zelda_render.h
+@@ -43,6 +43,7 @@ namespace zelda64 {
+         std::unique_ptr<ultramodern::renderer::RendererContext> create_render_context(uint8_t *rdram, ultramodern::renderer::WindowHandle window_handle, bool developer_mode);
+ 
+         RT64::UserConfiguration::Antialiasing RT64MaxMSAA();
++        void RT64ToggleInspector();
+         bool RT64SamplePositionsSupported();
+         bool RT64HighPrecisionFBEnabled();
+ 
+diff --git a/patches/Makefile b/patches/Makefile
+index 9a17dc1..cf01436 100644
+--- a/patches/Makefile
++++ b/patches/Makefile
+@@ -6,7 +6,7 @@ LD      ?= ld.lld
+ CFLAGS   := -target mips -mips2 -mabi=32 -O2 -G0 -mno-abicalls -mno-odd-spreg -mno-check-zero-division \
+ 			-fomit-frame-pointer -ffast-math -fno-unsafe-math-optimizations -fno-builtin-memset \
+ 			-Wall -Wextra -Wno-incompatible-library-redeclaration -Wno-unused-parameter -Wno-unknown-pragmas -Wno-unused-variable -Wno-unused-but-set-variable -Wno-missing-braces -Wno-unsupported-floating-point-opt -Wno-switch
+-CPPFLAGS := -nostdinc -DF3DEX_GBI -D_LANGUAGE_C -DMIPS -I dummy_headers -I ../lib/sf64decomp/include -I ../lib/sf64decomp/include/libultra -I ../lib/sf64decomp/src -I ../lib/rt64/include
++CPPFLAGS := -nostdinc -DF3DEX_GBI -I shim_headers -D_LANGUAGE_C -DMIPS -I ../lib/quest64decomp/include/2.0H -I ../lib/quest64decomp/include/2.0H/PR -I ../lib/quest64decomp/include -I ../lib/quest64decomp/src -I ../lib/rt64/include
+ LDFLAGS  := -nostdlib -T patches.ld -T syms.ld -Map patches.map --unresolved-symbols=ignore-all --emit-relocs
+ 
+ C_SRCS := $(wildcard *.c)
+diff --git a/src/game/config.cpp b/src/game/config.cpp
+index 9cf887c..c15c04b 100644
+--- a/src/game/config.cpp
++++ b/src/game/config.cpp
+@@ -31,6 +31,9 @@ constexpr auto msaa_default           = ultramodern::renderer::Antialiasing::MSA
+ constexpr auto rr_default             = ultramodern::renderer::RefreshRate::Manual;
+ constexpr auto hpfb_default           = ultramodern::renderer::HighPrecisionFramebuffer::Auto;
+ constexpr int ds_default              = 1;
++constexpr auto filtering_default      = ultramodern::renderer::Filtering::AntiAliasedPixelScaling;
++constexpr auto upscale2d_default      = ultramodern::renderer::Upscale2D::ScaledOnly;
++constexpr auto tpf_default            = ultramodern::renderer::ThreePointFiltering::On;
+ constexpr int rr_manual_default       = 60;
+ constexpr bool developer_mode_default = true;
+ 
+@@ -96,6 +99,9 @@ namespace ultramodern {
+             {"hr_option",       config.hr_option},
+             {"api_option",      config.api_option},
+             {"ds_option",       config.ds_option},
++            {"filtering_option", config.filtering_option},
++            {"upscale2d_option", config.upscale2d_option},
++            {"tpf_option",      config.tpf_option},
+             {"ar_option",       config.ar_option},
+             {"msaa_option",     config.msaa_option},
+             {"rr_option",       config.rr_option},
+@@ -111,6 +117,9 @@ namespace ultramodern {
+         config.hr_option        = from_or_default(j, "hr_option",       hr_default);
+         config.api_option       = from_or_default(j, "api_option",      api_default);
+         config.ds_option        = from_or_default(j, "ds_option",       ds_default);
++        config.filtering_option = from_or_default(j, "filtering_option", filtering_default);
++        config.upscale2d_option = from_or_default(j, "upscale2d_option", upscale2d_default);
++        config.tpf_option       = from_or_default(j, "tpf_option",      tpf_default);
+         config.ar_option        = from_or_default(j, "ar_option",       ar_default);
+         config.msaa_option      = from_or_default(j, "msaa_option",     msaa_default);
+         config.rr_option        = from_or_default(j, "rr_option",       rr_default);
+@@ -345,6 +354,9 @@ void reset_graphics_options() {
+     new_config.wm_option = wm_default();
+     new_config.hr_option = hr_default;
+     new_config.ds_option = ds_default;
++    new_config.filtering_option = filtering_default;
++    new_config.upscale2d_option = upscale2d_default;
++    new_config.tpf_option = tpf_default;
+     new_config.ar_option = ar_default;
+     new_config.msaa_option = msaa_default;
+     new_config.rr_option = rr_default;
+diff --git a/src/game/input.cpp b/src/game/input.cpp
+index 9456af0..c2b4be2 100644
+--- a/src/game/input.cpp
++++ b/src/game/input.cpp
+@@ -5,6 +5,7 @@
+ #include "recomp.h"
+ #include "recomp_input.h"
+ #include "zelda_config.h"
++#include "zelda_render.h"
+ #include "recomp_ui.h"
+ #include "SDL.h"
+ #include "promptfont.h"
+@@ -172,6 +173,11 @@ bool sdl_event_filter(void* userdata, SDL_Event* event) {
+         queue_if_enabled(event);
+         break;
+     case SDL_EventType::SDL_CONTROLLERBUTTONDOWN:
++        if ((scanning_device == recomp::InputDevice::COUNT) &&
++            (event->cbutton.button == SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y)) {
++            zelda64::renderer::RT64ToggleInspector();
++            break;
++        }
+         if (scanning_device != recomp::InputDevice::COUNT) {
+             auto menuToggleBinding0 = recomp::get_input_binding(recomp::GameInput::TOGGLE_MENU, 0, recomp::InputDevice::Controller);
+             auto menuToggleBinding1 = recomp::get_input_binding(recomp::GameInput::TOGGLE_MENU, 1, recomp::InputDevice::Controller);
+diff --git a/src/main/main.cpp b/src/main/main.cpp
+index 709b3da..2680d69 100644
+--- a/src/main/main.cpp
++++ b/src/main/main.cpp
+@@ -144,7 +144,7 @@ ultramodern::renderer::WindowHandle create_window(ultramodern::gfx_callbacks_t::
+     flags |= SDL_WINDOW_VULKAN;
+ #endif
+ 
+-    window = SDL_CreateWindow("Quest 64: Recompiled", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1600, 960,  flags);
++    window = SDL_CreateWindow(zelda64::program_name.data(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1600, 960,  flags);
+ #if defined(__linux__)
+     SetImageAsIcon("icons/512.png",window);
+     if (ultramodern::renderer::get_graphics_config().wm_option == ultramodern::renderer::WindowMode::Fullscreen) { // TODO: Remove once RT64 gets native fullscreen support on Linux
+diff --git a/src/main/rt64_render_context.cpp b/src/main/rt64_render_context.cpp
+index 9e43fef..75d0c44 100644
+--- a/src/main/rt64_render_context.cpp
++++ b/src/main/rt64_render_context.cpp
+@@ -17,6 +17,8 @@
+ 
+ static RT64::UserConfiguration::Antialiasing device_max_msaa = RT64::UserConfiguration::Antialiasing::None;
+ static bool sample_positions_supported = false;
++// RT64 owns the inspector but the port never exposes it, so a file-static handle is needed to reach it from input handling
++static RT64::Application *inspector_app = nullptr;
+ static bool high_precision_fb_enabled = false;
+ 
+ static uint8_t DMEM[0x1000];
+@@ -84,6 +86,30 @@ RT64::UserConfiguration::AspectRatio to_rt64(ultramodern::renderer::AspectRatio
+     }
+ }
+ 
++RT64::UserConfiguration::Filtering to_rt64(ultramodern::renderer::Filtering option) {
++    switch (option) {
++        case ultramodern::renderer::Filtering::Nearest:
++            return RT64::UserConfiguration::Filtering::Nearest;
++        case ultramodern::renderer::Filtering::Linear:
++            return RT64::UserConfiguration::Filtering::Linear;
++        default:
++        case ultramodern::renderer::Filtering::AntiAliasedPixelScaling:
++            return RT64::UserConfiguration::Filtering::AntiAliasedPixelScaling;
++    }
++}
++
++RT64::UserConfiguration::Upscale2D to_rt64(ultramodern::renderer::Upscale2D option) {
++    switch (option) {
++        case ultramodern::renderer::Upscale2D::Original:
++            return RT64::UserConfiguration::Upscale2D::Original;
++        default:
++        case ultramodern::renderer::Upscale2D::ScaledOnly:
++            return RT64::UserConfiguration::Upscale2D::ScaledOnly;
++        case ultramodern::renderer::Upscale2D::All:
++            return RT64::UserConfiguration::Upscale2D::All;
++    }
++}
++
+ RT64::UserConfiguration::Antialiasing to_rt64(ultramodern::renderer::Antialiasing option) {
+     switch (option) {
+         case ultramodern::renderer::Antialiasing::None:
+@@ -160,6 +186,9 @@ void set_application_user_config(RT64::Application* application, const ultramode
+ 
+     application->userConfig.aspectRatio = to_rt64(config.ar_option);
+     application->userConfig.antialiasing = to_rt64(config.msaa_option);
++    application->userConfig.filtering = to_rt64(config.filtering_option);
++    application->userConfig.upscale2D = to_rt64(config.upscale2d_option);
++    application->userConfig.threePointFiltering = (config.tpf_option == ultramodern::renderer::ThreePointFiltering::On);
+     application->userConfig.refreshRate = to_rt64(config.rr_option);
+     application->userConfig.refreshRateTarget = config.rr_manual_value;
+     application->userConfig.internalColorFormat = to_rt64(config.hpfb_option);
+@@ -258,6 +287,7 @@ zelda64::renderer::RT64Context::RT64Context(uint8_t* rdram, ultramodern::rendere
+ 
+     // Create the RT64 application.
+     app = std::make_unique<RT64::Application>(appCore, appConfig);
++    inspector_app = app.get();
+ 
+     // Set initial user config settings based on the current settings.
+     auto& cur_config = ultramodern::renderer::get_graphics_config();
+@@ -294,6 +324,7 @@ zelda64::renderer::RT64Context::RT64Context(uint8_t* rdram, ultramodern::rendere
+     // Get the API that RT64 chose.
+     chosen_api = map_graphics_api(app->chosenGraphicsAPI);
+     if (setup_result != ultramodern::renderer::SetupResult::Success) {
++        inspector_app = nullptr;
+         app = nullptr;
+         return;
+     }
+@@ -453,6 +484,12 @@ std::unique_ptr<ultramodern::renderer::RendererContext> zelda64::renderer::creat
+     return std::make_unique<zelda64::renderer::RT64Context>(rdram, window_handle, developer_mode);
+ }
+ 
++void zelda64::renderer::RT64ToggleInspector() {
++    if (inspector_app != nullptr) {
++        inspector_app->processDeveloperShortcut(RT64::Application::DeveloperShortcut::Inspector);
++    }
++}
++
+ bool zelda64::renderer::RT64SamplePositionsSupported() {
+     return sample_positions_supported;
+ }
+diff --git a/src/ui/ui_config.cpp b/src/ui/ui_config.cpp
+index 5c4c224..318d71f 100644
+--- a/src/ui/ui_config.cpp
++++ b/src/ui/ui_config.cpp
+@@ -648,6 +648,9 @@ public:
+         bind_option(constructor, "ar_option", &new_options.ar_option);
+         bind_option(constructor, "hr_option", &new_options.hr_option);
+         bind_option(constructor, "msaa_option", &new_options.msaa_option);
++        bind_option(constructor, "filtering_option", &new_options.filtering_option);
++        bind_option(constructor, "upscale2d_option", &new_options.upscale2d_option);
++        bind_option(constructor, "tpf_option", &new_options.tpf_option);
+         bind_option(constructor, "rr_option", &new_options.rr_option);
+         constructor.BindFunc("rr_manual_value",
+             [](Rml::Variant& out) {
+diff --git a/src/ui/ui_launcher.cpp b/src/ui/ui_launcher.cpp
+index 67149c1..fe92ec3 100644
+--- a/src/ui/ui_launcher.cpp
++++ b/src/ui/ui_launcher.cpp
+@@ -6,14 +6,32 @@
+ #include "RmlUi/Core.h"
+ #include "nfd.h"
+ #include <filesystem>
++#include <fstream>
++#include <vector>
+ 
+ static std::string version_string;
+ 
+ Rml::DataModelHandle model_handle;
+ bool mm_rom_valid = false;
++bool manual_available = false;
++bool guide_available = false;
+ 
+ extern std::vector<recomp::GameEntry> supported_games;
+ 
++// mirrors the mods-folder handling in ui_mod_menu.cpp rather than adding a second way to hand a path to the desktop
++static void open_document(const char *file) {
++    std::filesystem::path path = zelda64::get_app_folder_path() / file;
++#if defined(WIN32)
++    ShellExecuteW(NULL, L"open", path.wstring().c_str(), NULL, NULL, SW_SHOWDEFAULT);
++#elif defined(__linux__)
++    std::string command = "xdg-open \"" + path.string() + "\" &";
++    std::system(command.c_str());
++#elif defined(__APPLE__)
++    std::string command = "open \"" + path.string() + "\"";
++    std::system(command.c_str());
++#endif
++}
++
+ void select_rom() {
+     nfdnchar_t* native_path = nullptr;
+     zelda64::open_file_dialog([](bool success, const std::filesystem::path& path) {
+@@ -63,6 +81,20 @@ public:
+ 
+     }
+     void load_document() override {
++        // the UI texture loader only resolves names already in its byte map, so files must be registered first
++        // the cover is user-supplied and swappable, so it reads from the writable config dir rather than the read-only assets
++        auto register_launcher_image = [](const char *name, const char *file) {
++            std::ifstream stream{ zelda64::get_app_folder_path() / file, std::ios::binary };
++            if (stream.good()) {
++                std::vector<char> bytes{ std::istreambuf_iterator<char>(stream), std::istreambuf_iterator<char>() };
++                recompui::queue_image_from_bytes_file(name, bytes);
++            }
++        };
++        register_launcher_image("?/quest64-bg", "launcher-bg.png");
++
++        manual_available = std::filesystem::exists(zelda64::get_app_folder_path() / "manual.pdf");
++        guide_available = std::filesystem::exists(zelda64::get_app_folder_path() / "strategy-guide.pdf");
++
+ 		launcher_context = recompui::create_context(zelda64::get_asset_path("launcher.rml"));
+     }
+     void register_events(recompui::UiEventListenerInstancer& listener) override {
+@@ -97,11 +129,14 @@ public:
+                 recompui::show_context(recompui::get_config_context_id(), "");
+             }
+         );
+-        recompui::register_event(listener, "open_mods",
+-            [](const std::string &param, Rml::Event &event) {
+-                recompui::set_config_tab(recompui::ConfigTab::Mods);
+-                recompui::hide_all_contexts();
+-                recompui::show_context(recompui::get_config_context_id(), "");
++        recompui::register_event(listener, "open_manual",
++            [](const std::string& param, Rml::Event& event) {
++                open_document("manual.pdf");
++            }
++        );
++        recompui::register_event(listener, "open_guide",
++            [](const std::string& param, Rml::Event& event) {
++                open_document("strategy-guide.pdf");
+             }
+         );
+         recompui::register_event(listener, "exit_game",
+@@ -114,6 +149,8 @@ public:
+         Rml::DataModelConstructor constructor = context->CreateDataModel("launcher_model");
+ 
+         constructor.Bind("mm_rom_valid", &mm_rom_valid);
++        constructor.Bind("manual_available", &manual_available);
++        constructor.Bind("guide_available", &guide_available);
+ 
+         version_string = recomp::get_project_version().to_string();
+         constructor.Bind("version_number", &version_string);
+diff --git a/src/ui/ui_state.cpp b/src/ui/ui_state.cpp
+index 7fad31e..e15cb47 100644
+--- a/src/ui/ui_state.cpp
++++ b/src/ui/ui_state.cpp
+@@ -223,6 +223,7 @@ public:
+                 {"LatoLatin-Bold.ttf", false},
+                 {"LatoLatin-BoldItalic.ttf", false},
+                 {"NotoEmoji-Regular.ttf", true},
++                {"Michroma-Regular.ttf", false},
+                 {"promptfont/promptfont.ttf", false},
+             };
+ 
