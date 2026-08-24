@@ -191,6 +191,15 @@
     <command label="bluemsx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/bluemsx_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-pal.slangp %ROM%</command>
   </system>
   <system>
+    <name>n3ds</name>
+    <fullname>Nintendo 3DS</fullname>
+    <path>%ROMPATH%/n3ds</path>
+    <extension>.3ds .3DS .3dsx .3DSX .app .APP .axf .AXF .cci .CCI .cxi .CXI .desktop .elf .ELF .z3dsx .Z3DSX .zcci .ZCCI .zcxi .ZCXI .7z .7Z .zip .ZIP</extension>
+    <platform>n3ds</platform>
+    <theme>n3ds</theme>
+    <command label="Azahar (Standalone)">%EMULATOR_AZAHAR% %ROM%</command>
+  </system>
+  <system>
     <name>n64</name>
     <fullname>Nintendo 64</fullname>
     <path>%ROMPATH%/n64</path>

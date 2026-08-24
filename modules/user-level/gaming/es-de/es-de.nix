@@ -76,6 +76,7 @@ in
     wrappedRetroArch
     esde
     pkgs.mame
+    pkgs.azahar
   ];
 
   hjem.users.${username} = {
@@ -150,6 +151,9 @@ in
     "ES-DE/themes"
     "ES-DE/controllers"
     ".mame"
+    ".config/azahar-emu"
+    # azahar keys save paths on program id, not install state, so rom-booted titles save here too
+    ".local/share/azahar-emu"
   ];
 
   # ES-DE's default rom dir is ~/ROMs; symlink it to the collection so es_settings stays ES-DE-owned
