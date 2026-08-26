@@ -10,6 +10,11 @@
         "wireshark"
       ];
     };
+
+    k8sLab = {
+      manualPrep = true;
+      manualPkgs = true;
+    };
   };
 
   # Pure-tack: nh reads NH_FILE instead of NH_FLAKE; NH_ATTRP is derived from the host directory name

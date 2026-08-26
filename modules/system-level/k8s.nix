@@ -102,36 +102,49 @@ let
 
   userData =
     name: node:
-    pkgs.writeText "user-data-${name}" ''
-      #cloud-config
-      hostname: ${name}
-      fqdn: ${name}.${cfg.domain}
-      prefer_fqdn_over_hostname: false
-      manage_etc_hosts: false
-
-      users:
-        - name: ${cfg.guestUser}
-          sudo: ALL=(ALL) NOPASSWD:ALL
-          shell: /bin/bash
-          lock_passwd: true
-          ssh_authorized_keys:
-            - ${cfg.sshPublicKey}
-
-      write_files:
-      ${writeFilesBlock node}
-
-      package_update: true
-      packages:
-        - apt-transport-https
-        - ca-certificates
-        - curl
-        - gpg
-        - qemu-guest-agent
-        - yq
-
-      runcmd:
-      ${runcmdBlock node}
-    '';
+    pkgs.writeText "user-data-${name}" (
+      lib.concatStringsSep "\n" (
+        [
+          "#cloud-config"
+          "hostname: ${name}"
+          "fqdn: ${name}.${cfg.domain}"
+          "prefer_fqdn_over_hostname: false"
+          "manage_etc_hosts: false"
+          ""
+          "users:"
+          "  - name: ${cfg.guestUser}"
+          "    sudo: ALL=(ALL) NOPASSWD:ALL"
+          "    shell: /bin/bash"
+          "    lock_passwd: true"
+          "    ssh_authorized_keys:"
+          "      - ${cfg.sshPublicKey}"
+          ""
+        ]
+        ++ lib.optionals (!cfg.manualPrep) [
+          "write_files:"
+          (writeFilesBlock node)
+          ""
+        ]
+        ++ [ "package_update: ${lib.boolToString (!cfg.manualPkgs)}" ]
+        ++ lib.optionals (!cfg.manualPkgs) (
+          [ "packages:" ]
+          ++ map (p: "  - ${p}") [
+            "qemu-guest-agent"
+            "apt-transport-https"
+            "ca-certificates"
+            "curl"
+            "gpg"
+            "yq"
+          ]
+        )
+        ++ [ "" ]
+        ++ lib.optionals (!cfg.manualPrep) [
+          "runcmd:"
+          (runcmdBlock node)
+        ]
+        ++ [ "" ]
+      )
+    );
 
   metaData =
     name:
@@ -309,8 +322,8 @@ in
 
     guestUser = lib.mkOption {
       type = lib.types.str;
-      default = user;
-      description = "Login created inside every guest, key-only.";
+      default = "student";
+      description = "Login created inside every guest, key-only; matches the LFS258 lab text.";
     };
 
     sshPublicKey = lib.mkOption {
@@ -335,16 +348,27 @@ in
       description = "Filename the base image is cached under in stateDir.";
     };
 
-    # matches the LFS258 course version and the CKA exam v1.35 series
+    manualPrep = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Skip the write_files and runcmd provisioning so the LFS258 prep steps are typed by hand.";
+    };
+
+    manualPkgs = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Skip the convenience package list and cloud-init's apt update.";
+    };
+
     k8sRepo = lib.mkOption {
       type = lib.types.str;
-      default = "https://pkgs.k8s.io/core:/stable:/v1.35";
-      description = "pkgs.k8s.io base for the minor series.";
+      default = "https://pkgs.k8s.io/core:/stable:/v1.34";
+      description = "pkgs.k8s.io base for the minor series; pinned to the LFS258 lab text.";
     };
 
     k8sPkgVersion = lib.mkOption {
       type = lib.types.str;
-      default = "1.35.2-1.1";
+      default = "1.34.2-1.1";
       description = "Exact deb version installed and held on every node.";
     };
 
