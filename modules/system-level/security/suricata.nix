@@ -162,18 +162,18 @@
 
     networking.nftables.tables.suricata-ips = {
       family = "inet";
+      # inline IPS silently black-holes idle host<->guest flows; local bridges are inside the trust boundary
       content = ''
         chain input {
           type filter hook input priority -5;
           iif lo accept
-          iifname "tailscale0" accept
-          iifname "virbr0" accept
+          iifname { "tailscale0", "virbr0", "virbr-k8s" } accept
           queue num 0 bypass
         }
         chain output {
           type filter hook output priority -5;
           oif lo accept
-          oifname "tailscale0" accept
+          oifname { "tailscale0", "virbr0", "virbr-k8s" } accept
           queue num 0 bypass
         }
       '';
