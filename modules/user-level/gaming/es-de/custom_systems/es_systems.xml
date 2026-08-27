@@ -353,6 +353,15 @@
     <command label="mednafen_supergrafx">%EMULATOR_RETROARCH% -L %CORE_RETROARCH%/mednafen_supergrafx_libretro.so --set-shader shaders_slang/crt/crt-guest-advanced-ntsc.slangp %ROM%</command>
   </system>
   <system>
+    <name>switch</name>
+    <fullname>Nintendo Switch</fullname>
+    <path>%ROMPATH%/switch</path>
+    <extension>.nca .NCA .nro .NRO .nso .NSO .nsp .NSP .xci .XCI</extension>
+    <platform>switch</platform>
+    <theme>switch</theme>
+    <command label="Ryujinx (Standalone)">%EMULATOR_RYUJINX% -f %ROM%</command>
+  </system>
+  <system>
     <name>vectrex</name>
     <fullname>GCE Vectrex</fullname>
     <path>%ROMPATH%/vectrex</path>

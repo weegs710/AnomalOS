@@ -77,6 +77,8 @@ in
     esde
     pkgs.mame
     pkgs.azahar
+    # ES-DE's RYUJINX rule searches PATH for a binary named Ryujinx, which is ryubing's
+    pkgs.ryubing
   ];
 
   hjem.users.${username} = {
