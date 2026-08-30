@@ -168,7 +168,7 @@ def generate-overview [d: record] {
         "</pattern></defs>"
         $"<rect width=\"($w)\" height=\"($h)\" rx=\"16\" fill=\"url\(#grid\)\"/>"
         ...(ov-header (svg-escape $d.nixos_version) (svg-escape $d.linux_version)),
-        ...(ov-top-card 70  "#3dffb0" "WM"       "Hyprland"       (svg-escape $d.hyprland_ver)),
+        ...(ov-top-card 70  "#3dffb0" "WM"       "Umbriel"        (svg-escape $d.umbriel_ver)),
         ...(ov-top-card 286 "#34e0ff" "SHELL"    "nu"             (svg-escape $d.nushell_ver)),
         ...(ov-top-card 502 "#b673ff" "TERMINAL" "ghostty"        (svg-escape $d.ghostty_ver)),
         ...(ov-top-card 718 "#ff5d8a" "EDITOR"   "zed"            (svg-escape $d.zed_ver)),
@@ -701,7 +701,29 @@ def main [] {
 
     let assemble = $"($dotfiles)/assemble.nix"
 
-    print "  · hyprland version...";     let hyprland_ver  = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.hyprland.version")
+    # umbriel version from meson.build at the locked rev; it is a flake input, not a nixpkgs attr
+    print "  · umbriel version..."
+    let umbriel_rev = ($lock | get "umbriel" | get rev)
+    let umbriel_meson = (
+        try {
+            ^gh api $"repos/noctalia-dev/umbriel/contents/meson.build?ref=($umbriel_rev)" --jq '.content'
+            | ^base64 -d
+        } catch { "" }
+    )
+    let umbriel_ver = (
+        if ($umbriel_meson | str length) > 0 {
+            let base = (
+                $umbriel_meson
+                | lines
+                | where { ($in | str contains "version") and ($in | str contains "'") and (not ($in | str contains "meson_version")) }
+                | first
+                | parse --regex "'(?P<ver>[0-9][^']*)'"
+                | get ver
+                | first
+            )
+            $"v($base)"
+        } else { "?" }
+    )
     print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.nushell.version")
     print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.ghostty.version")
     print "  · zed version..."; let zed_ver = (nix-eval-raw $assemble "nixosConfigurations.HX99G.pkgs.zed-editor.version")
@@ -759,7 +781,17 @@ def main [] {
         mem:     $"(($mem_kb / 1048576) | math round) GB"
         gpu:     (if ($disc_line | is-empty) { "?" } else { gpu-clean $disc_line })
         igpu:    (if ($igpu_line | is-empty) { "-" } else { gpu-clean $igpu_line })
-        monitor: (try { ^hyprctl monitors -j | from json | each {|m| $"($m.width)(char -u 'd7')($m.height) @ (($m.refreshRate) | math round)Hz" } | str join ", " } catch { "?" })
+        # umbriel outputs has no json mode, so the active mode is read off the (current) tag
+        monitor: (try {
+            ^umbriel outputs
+            | lines
+            | where { $in =~ '\(current\)' }
+            | each {|l|
+                let m = ($l | parse --regex '(?<w>[0-9]+)x(?<h>[0-9]+) @ (?<r>[0-9.]+)' | first)
+                $"($m.w)(char -u 'd7')($m.h) @ (($m.r | into float) | math round)Hz"
+            }
+            | str join ", "
+        } catch { "?" })
     }
 
     print "→ Evaluating system / gaming / weegsware..."
@@ -796,7 +828,7 @@ def main [] {
     let d = {
         nixos_version:      $nixos_version
         linux_version:      $linux_version
-        hyprland_ver:       $hyprland_ver
+        umbriel_ver:        $umbriel_ver
         nushell_ver:        $nushell_ver
         ghostty_ver:        $ghostty_ver
         zed_ver:            $zed_ver

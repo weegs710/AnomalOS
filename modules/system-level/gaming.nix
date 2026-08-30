@@ -62,7 +62,7 @@ only.gate { tags = [ "gaming" ]; }
 
   systemd.user.services.dmemcg-booster-user = {
     description = "dmemcg-booster user service";
-    # graphical-session-pre.target not activated by Hyprland
+    # umbriel does activate graphical-session-pre.target; default.target here predates the migration
     wantedBy = [ "default.target" ];
     serviceConfig.ExecStart = "${dmemcg-booster}/bin/dmemcg-booster";
   };

@@ -22,7 +22,6 @@ only.gate { tags = [ "desktop" ]; }
     cachix
     tutanota-desktop
     zathura
-    cliphist
     dbus
     dbus-broker
     file-roller
@@ -39,7 +38,6 @@ only.gate { tags = [ "desktop" ]; }
     libxxf86vm
     lm_sensors
     mesa
-    piper
     qview
     tremc
     ueberzugpp
@@ -90,14 +88,13 @@ only.gate { tags = [ "desktop" ]; }
 
   services.blueman.enable = true;
   services.upower.enable = true;
-  services.ratbagd.enable = true;
   services.udisks2.enable = true;
   services.gvfs.enable = true;
   services.locate.enable = true;
   services.speechd.enable = false; # pulled in as a gnome dependency, not needed
 
   services.displayManager = {
-    defaultSession = "hyprland";
+    defaultSession = "umbriel";
     ly = {
       enable = true;
       settings = {

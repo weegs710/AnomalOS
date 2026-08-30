@@ -26,9 +26,6 @@ in
       builtins.readFile ./termfilechooser-config
     );
 
-    # portal searches lowercase; hyprland pkg ships its own hyprland-portals.conf which wins otherwise
-    "xdg-desktop-portal/hyprland-portals.conf".source = ./hyprland-portals.conf;
-
     "xdg-desktop-portal-termfilechooser/yazi-wrapper.nu" = {
       source = wrapperScript;
       type = "copy";

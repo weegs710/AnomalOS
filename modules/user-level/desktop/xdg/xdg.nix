@@ -72,8 +72,6 @@ in
     xdg.data.files = {
       "icons/default/index.theme".source = ./index.theme;
       "applications/yazi.desktop".source = ./yazi.desktop;
-      # Custom launcher -- opens piper into special:stash workspace via hyprctl (see piper.desktop Exec)
-      "applications/piper.desktop".source = ./piper.desktop;
     };
   };
 }

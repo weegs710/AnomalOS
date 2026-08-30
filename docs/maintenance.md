@@ -59,11 +59,12 @@ nh os test -- --show-trace    # verbose; nrt does not pass arguments through
 
 ## Desktop
 
-**Hyprland will not start:**
+**Umbriel will not start:**
 
 ```bash
-cat /tmp/hypr/$(ls -t /tmp/hypr/ | head -1)/hyprland.log
+journalctl --user -t umbriel -b
 echo $XDG_SESSION_TYPE     # should be "wayland"
+umbriel validate           # check the config file
 ```
 
 **noctalia is missing:**

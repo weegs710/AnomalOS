@@ -16,7 +16,6 @@ pkgs.mkShell {
     clippy
     dprint
     git
-    hyprls
     marksman
     nil
     nixd
@@ -24,6 +23,7 @@ pkgs.mkShell {
     nufmt
     nvfetcher
     weegsware.nushell
+    pciutils
     ruff
     rust-analyzer
     rustfmt

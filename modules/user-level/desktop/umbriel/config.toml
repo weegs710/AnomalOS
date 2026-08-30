@@ -244,7 +244,7 @@ default_floating = true
 default_size = [1600, 900]
 default_position = { x = 531, y = 262, anchor = "top_left" }
 
-# Titles are set by the menu's --title flags, which is what replaces hyprland's exec-time placement rules.
+# Placement keys off the menu's --title flags, since umbriel has no exec-time rule for a spawned process.
 [[window_rule]]
 match.title = "^(yazi|tremc)$"
 default_floating = true
@@ -264,7 +264,7 @@ default_size = [900, 320]
 default_position = { x = 830, y = 560, anchor = "top_left" }
 
 [[window_rule]]
-match.title = "^(name-shot|name-clip)$"
+match.title = "^name-clip$"
 default_floating = true
 default_size = [360, 130]
 default_position = { x = 0, y = 0, anchor = "center" }

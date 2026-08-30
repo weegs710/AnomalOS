@@ -186,17 +186,4 @@
       },
     },
   },
-
-  // hl is injected by hyprland's lua runtime, so lua_ls flags it undefined-global without this
-  "lsp": {
-    "lua-language-server": {
-      "settings": {
-        "Lua": {
-          "diagnostics": {
-            "globals": ["hl"],
-          },
-        },
-      },
-    },
-  },
 }

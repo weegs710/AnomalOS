@@ -21,7 +21,6 @@ let
   runPause = "${shared}/run-pause.nu";
   svcAuth = "${shared}/svc-auth.nu";
   svcUser = "${shared}/svc-user.nu";
-  shotSave = "${shared}/shot-save.nu";
   clipStart = "${shared}/clip-start.nu";
   clipSave = "${shared}/clip-save.nu";
 
@@ -47,12 +46,7 @@ let
   tailscaleCmd = "ghostty --title=tailscale -e nu ${runPause} tailscale status";
 
   # the menu owns the foreground, so the shot has to wait for it to tear down
-  shotRegionClipCmd = "nu -c 'sleep 500ms; ^noctalia msg screenshot-region'";
-  shotWindowClipCmd = "nu ${./shot-window.nu}";
-  shotScreenClipCmd = "nu -c 'sleep 500ms; ^noctalia msg screenshot-fullscreen'";
-  shotRegionSaveCmd = "nu ${./shot-file.nu} region ${shotSave}";
-  shotWindowSaveCmd = "nu ${./shot-file.nu} window ${shotSave}";
-  shotScreenSaveCmd = "nu ${./shot-file.nu} output ${shotSave}";
+  shotRegionCmd = "nu -c 'sleep 500ms; ^noctalia msg screenshot-region'";
   clipScreenCmd = "nu ${clipStart} screen";
   stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
 
@@ -199,7 +193,6 @@ let
           (run "b" "btop" btopCmd)
           (run "y" "yazi" fileManagerCmd)
           (run "l" "lact" "lact gui")
-          (run "m" "piper" "piper")
           (run "p" "gparted" "gparted")
           (run "t" "protontricks" "protontricks --no-term --gui")
           (run "u" "protonup-qt" "protonup-qt")
@@ -248,14 +241,7 @@ let
         ])
         (sub "s" "capture" [
           (run "x" "stop recording" stopRecordCmd)
-          (run "r" "region → clipboard" shotRegionClipCmd)
-          (run "w" "window → clipboard" shotWindowClipCmd)
-          (run "s" "screen → clipboard" shotScreenClipCmd)
-          (sub "f" "save to file" [
-            (run "r" "region" shotRegionSaveCmd)
-            (run "w" "window" shotWindowSaveCmd)
-            (run "s" "screen" shotScreenSaveCmd)
-          ])
+          (run "r" "region" shotRegionCmd)
           (run "c" "start recording" clipScreenCmd)
         ])
         (sub "q" "session" [

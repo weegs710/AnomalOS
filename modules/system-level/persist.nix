@@ -132,7 +132,6 @@ in
           ".local/share/systemd"
           ".local/share/nix"
           ".local/share/Trash"
-          ".local/share/hyprland"
           ".local/share/direnv"
           ".local/share/Cryptomator"
           ".local/share/Larian Studios"

@@ -55,10 +55,7 @@
   };
 
   users.users.${config.mySystem.user.name}.packages = with pkgs; [
-    grim
-    slurp
     wl-clipboard
-    wl-clip-persist
   ];
 
   environment.sessionVariables = {

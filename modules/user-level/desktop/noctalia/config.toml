@@ -54,7 +54,7 @@ tint_intensity = 0.0
 [lockscreen_widgets]
 enabled = false
 schema_version = 2
-widget_order = [ "lockscreen-login-box@HDMI-A-1", "lockscreen-login-box@HDMI-A-2" ]
+widget_order = [ "lockscreen-login-box@HDMI-A-1" ]
 
     [lockscreen_widgets.grid]
     cell_size = 16
@@ -81,25 +81,6 @@ widget_order = [ "lockscreen-login-box@HDMI-A-1", "lockscreen-login-box@HDMI-A-2
         show_keyboard_layout = true
         show_login_button = true
 
-    [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2"]
-    box_height = 70.0
-    box_width = 400.0
-    cx = 1280.0
-    cy = 1317.0
-    output = "HDMI-A-2"
-    rotation = 0.0
-    type = "login_box"
-
-        [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2".settings]
-        background_color = "surface_variant"
-        background_opacity = 0.88
-        background_radius = 12.0
-        center_password_text = false
-        input_opacity = 1.0
-        input_radius = 6.0
-        show_caps_lock = true
-        show_keyboard_layout = true
-        show_login_button = true
 
 [nightlight]
 enabled = true
@@ -135,7 +116,8 @@ enabled = [ "noctalia/screen_recorder" ]
 
 [shell]
 avatar_path = "~/.local/share/wallpapers/cyberstoner.webp"
-clipboard_enabled = true
+clipboard_enabled = false
+clipboard_keep_from_closed_apps = true
 font_family = "Terminess Nerd Font"
 telemetry_enabled = false
 
@@ -149,6 +131,18 @@ telemetry_enabled = false
     transparency_mode = "soft"
     wallpaper_placement = "attached"
 
+    [shell.screenshot]
+    confirm_region = true
+    copy_to_clipboard = true
+    directory = "~/Pictures/shots"
+    filename_pattern = "shot_%Y%m%d_%H%M%S"
+    freeze_screen = true
+    pipe_command = ""
+    pipe_to_command = false
+    remember_last_region = false
+    save_to_file = true
+    show_cursor = false
+
 [system.monitor]
 enabled = true
 
@@ -161,7 +155,7 @@ source = "wallpaper"
 wallpaper_scheme = "vibrant"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "hyprland", "umbriel", "kcolorscheme", "qt" ]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "umbriel", "kcolorscheme", "qt" ]
     community_ids = [ "zen-browser", "zed", "hyprtoolkit", "yazi" ]
     enable_builtin_templates = true
     enable_community_templates = true
@@ -192,9 +186,6 @@ transition_on_startup = false
 
     [wallpaper.monitors.HDMI-A-1]
     path = "/home/weegs/.local/share/wallpapers/borg-head.webp"
-
-    [wallpaper.monitors.HDMI-A-2]
-    path = "/home/weegs/.local/share/wallpapers/Sampo.webp"
 
 [weather]
 effects = true

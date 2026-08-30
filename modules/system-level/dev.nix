@@ -84,7 +84,6 @@ only.gate { tags = [ "dev" ]; }
     clippy
     gh
     hyperfine
-    hyprls
     jq
     nodejs
     python3
