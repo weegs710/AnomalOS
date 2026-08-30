@@ -28,6 +28,9 @@ let
   atuin-init = pkgs.runCommand "atuin-init" { HOME = "/tmp"; } ''
     mkdir -p "$out"
     ${lib.getExe pkgs.atuin} init nu > "$out/init.nu"
+    # atuin names both of its keybindings "atuin", which nushell warns on as a duplicate
+    sed -i '0,/name: atuin/s//name: atuin_search/' "$out/init.nu"
+    sed -i 's/name: atuin$/name: atuin_up/' "$out/init.nu"
   '';
 
   colors = {
