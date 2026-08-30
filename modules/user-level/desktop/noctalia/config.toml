@@ -161,7 +161,7 @@ source = "wallpaper"
 wallpaper_scheme = "vibrant"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "hyprland", "kcolorscheme", "qt" ]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "hyprland", "umbriel", "kcolorscheme", "qt" ]
     community_ids = [ "zen-browser", "zed", "hyprtoolkit", "yazi" ]
     enable_builtin_templates = true
     enable_community_templates = true
@@ -223,6 +223,6 @@ focused_color = "primary"
 hide_when_empty = false
 label_source = "name"
 max_label_chars = 10
-occupied_color = "secondary"
+occupied_color = "tertiary"
 pill_scale = 1.0
 show_labels = true

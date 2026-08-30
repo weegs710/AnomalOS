@@ -1,0 +1,350 @@
+# Colors come from noctalia's umbriel template; keys set here would override the include and freeze the palette.
+[include]
+files = ["noctalia.toml"]
+
+[general]
+autostart = []
+xwayland = true
+show_cheatsheet = false
+focus_on_activate = false
+honor_restored_maximize = false
+
+[environment]
+TERMINAL = "ghostty"
+XDG_TERMINAL_EDITOR = "ghostty"
+
+[workspaces]
+back_and_forth = false
+empty_above = false
+
+[animation]
+enabled = true
+duration_ms = 300
+curve = "easeout"
+
+[animation.beziers]
+zoom = [0.1, 0.9, 0.1, 1.2]
+overshot = [0.13, 0.99, 0.29, 1.5]
+
+[animation.windows_in]
+enabled = true
+duration_ms = 300
+curve = "zoom"
+style = "popin"
+scale = 0.85
+
+[animation.windows_out]
+enabled = true
+duration_ms = 300
+curve = "zoom"
+style = "fade"
+
+[animation.windows_move]
+enabled = true
+duration_ms = 300
+curve = "zoom"
+
+[animation.workspaces]
+enabled = true
+duration_ms = 300
+curve = "overshot"
+
+[animation.border]
+enabled = true
+duration_ms = 300
+curve = "easeout"
+
+[animation.layers]
+enabled = true
+duration_ms = 300
+curve = "zoom"
+
+[animation.overview]
+enabled = true
+duration_ms = 300
+curve = "easeout"
+
+[animation.scratchpad]
+enabled = true
+duration_ms = 300
+curve = "easeout"
+dim = 0.5
+
+[appearance]
+prefer_no_csd = true
+border_width = 1
+outer_border_width = 0
+corner_radius = 6
+drag_opacity = 0.75
+
+[appearance.blur]
+enabled = false
+
+[appearance.shadow]
+enabled = true
+softness = 8
+offset_x = 2
+offset_y = 2
+
+[layout]
+# edgePad is derived as gap + border, so one value covers both the old gaps_in and gaps_out.
+gap = 5
+mode = "dwindle"
+width_presets = [0.333, 0.5, 0.667]
+
+[layout.dwindle]
+preserve_split = true
+
+[layout.scrolling]
+direction = "horizontal"
+default_width_fraction = 0.9
+center_underfull_strip = true
+center_focused = false
+expand_single_column = true
+
+[output."HDMI-A-1"]
+mode = "2560x1440@144"
+position = [0, 0]
+scale = 1.0
+vrr = "disabled"
+workspaces = [
+  "COMMS",
+  "DEV",
+  "WEB",
+  "GAMES",
+  "MEDIA",
+]
+
+[[workspace]]
+name = "DEV"
+layout.mode = "scrolling"
+
+# Full-viewport columns stand in for monocle: a second window parks beside the first instead of shrinking it.
+[[workspace]]
+name = "GAMES"
+layout.mode = "scrolling"
+layout.gap = 0
+layout.scrolling.default_width_fraction = 1.0
+
+[[workspace]]
+name = "MEDIA"
+layout.mode = "scrolling"
+layout.scrolling.default_width_fraction = 1.0
+
+[input]
+middle_click_paste = true
+
+[input.keyboard]
+layout = "us"
+repeat_rate = 25
+repeat_delay = 600
+
+[input.mouse]
+accel_profile = "flat"
+sensitivity = 0.0
+scroll_wheel_step = 60
+
+# keyd grabs the ball and re-emits its motion through this virtual device, so the real name no longer matches.
+[[input.device]]
+name = "keyd virtual pointer"
+accel_profile = "adaptive"
+sensitivity = 0.0
+
+[input.cursor]
+theme = "phinger-cursors-dark"
+size = 32
+hardware_cursor = true
+
+[input.focus]
+follows_mouse = true
+
+[keybinds]
+# Direct terminal and launcher so the session is never dependent on wlr-which-key coming up.
+"Mod+Return" = "spawn:ghostty"
+"Mod+D" = "spawn:noctalia msg panel-toggle launcher"
+
+"Mod+Escape" = "window-close"
+"Mod+F" = "window-toggle-fullscreen"
+"Mod+G" = "window-toggle-floating"
+"Mod+O" = "window-consume-or-expel-right"
+"Mod+Backslash" = "window-toggle-pinned"
+"Mod+Space" = "spawn:ghostty --title=yazi -e yazi"
+
+"Mod+1" = "workspace-switch:1"
+"Mod+2" = "workspace-switch:2"
+"Mod+3" = "workspace-switch:3"
+"Mod+4" = "workspace-switch:4"
+"Mod+5" = "workspace-switch:5"
+
+"Mod+Shift+1" = "window-move-to-workspace:1"
+"Mod+Shift+2" = "window-move-to-workspace:2"
+"Mod+Shift+3" = "window-move-to-workspace:3"
+"Mod+Shift+4" = "window-move-to-workspace:4"
+"Mod+Shift+5" = "window-move-to-workspace:5"
+
+"Mod+Page_Down" = "workspace-next"
+"Mod+Page_Up" = "workspace-previous"
+"Mod+WheelDown" = "workspace-previous"
+"Mod+WheelUp" = "workspace-next"
+
+"Mod+Grave" = "scratchpad-toggle"
+# One chord both ways: adds the focused window, or pulls it back out when it is the scratchpad's focused entry.
+"Mod+Shift+Grave" = "window-toggle-scratchpad"
+
+"Mod+Left" = "window-focus-left"
+"Mod+Right" = "window-focus-right"
+"Mod+Up" = "window-focus-up"
+"Mod+Down" = "window-focus-down"
+
+"Mod+Shift+Left" = "column-move-left"
+"Mod+Shift+Right" = "column-move-right"
+"Mod+Shift+Up" = "window-move-up"
+"Mod+Shift+Down" = "window-move-down"
+
+# keyd emits F13-F17 for the ball buttons, but the us keymap gives those keycodes XF86 keysyms, which is what binds match.
+"XF86Tools" = "workspace-previous"
+"XF86Launch5" = "workspace-next"
+"XF86Launch6" = "scratchpad-toggle"
+"XF86Launch7" = "window-close"
+"XF86Launch8" = "spawn:noctalia msg panel-toggle control-center"
+
+"Mod" = "spawn:wlr-which-key"
+"Print" = "spawn:wlr-which-key -k s"
+"Ctrl+Alt+Delete" = "spawn:wlr-which-key -k q"
+"Mod+Tab" = "spawn:noctalia msg panel-toggle control-center"
+
+"Mod+BackSpace" = { action = "submap:resize", repeat = false }
+"submap[resize],Right" = "window-modify-width:0.05"
+"submap[resize],Left" = "window-modify-width:-0.05"
+"submap[resize],Down" = "window-modify-height:0.05"
+"submap[resize],Up" = "window-modify-height:-0.05"
+"submap[resize],Escape" = "submap:reset"
+"submap[resize],Return" = "submap:reset"
+
+[[window_rule]]
+match.title = "^(Open|Save|Save As|Choose|Select|Preferences|Settings|Properties|Create Folder|Rename|Delete)"
+default_floating = true
+
+[[window_rule]]
+match.title = "([Dd]ialog|[Pp]opup)"
+default_floating = true
+
+[[window_rule]]
+match.app_id = "^zenity$"
+default_floating = true
+
+# Polkit prompts must land in front; stay_focused has no umbriel equivalent so activation focus is the whole guard.
+[[window_rule]]
+match.app_id = "^gcr-prompter$"
+focus_on_activate = true
+
+[[window_rule]]
+match.title = "^termfilechooser$"
+default_floating = true
+default_size = [1600, 900]
+default_position = { x = 531, y = 262, anchor = "top_left" }
+
+# Titles are set by the menu's --title flags, which is what replaces hyprland's exec-time placement rules.
+[[window_rule]]
+match.title = "^(yazi|tremc)$"
+default_floating = true
+default_size = [1600, 900]
+default_position = { x = 531, y = 262, anchor = "top_left" }
+
+[[window_rule]]
+match.title = "^(cam-list|zpool|tailscale|svc-status)$"
+default_floating = true
+default_size = [1200, 700]
+default_position = { x = 680, y = 370, anchor = "top_left" }
+
+[[window_rule]]
+match.title = "^svc-auth$"
+default_floating = true
+default_size = [900, 320]
+default_position = { x = 830, y = 560, anchor = "top_left" }
+
+[[window_rule]]
+match.title = "^(name-shot|name-clip)$"
+default_floating = true
+default_size = [360, 130]
+default_position = { x = 0, y = 0, anchor = "center" }
+focus_on_activate = true
+
+[[window_rule]]
+match.title = "^btop$"
+default_floating = true
+
+[[window_rule]]
+match.title = "^ghostty$"
+default_workspace = 2
+
+[[window_rule]]
+match.title = "^rmpc$"
+default_workspace = 5
+
+[[window_rule]]
+match.title = "^Picture in picture$"
+default_floating = true
+default_pinned = true
+default_size = [512, 288]
+default_position = { x = 2034, y = 62, anchor = "top_left" }
+
+[[window_rule]]
+match.app_id = "^(zen-discord|zen-steamchat)$"
+default_workspace = 1
+
+[[window_rule]]
+match.app_id = "^dev\\.zed\\.Zed$"
+default_workspace = 2
+
+[[window_rule]]
+match.app_id = "^zen$"
+match.title = "^Zen Browser$"
+default_workspace = 3
+
+[[window_rule]]
+match.app_id = "^zen$"
+focus_on_activate = true
+
+[[window_rule]]
+match.app_id = "^steam$"
+default_workspace = 4
+
+[[window_rule]]
+match.app_id = "^steam_app_.*$"
+default_workspace = 4
+focus_on_activate = true
+
+[[window_rule]]
+match.app_id = "^gamescope$"
+default_workspace = 4
+default_fullscreen = true
+focus_on_activate = true
+
+[[window_rule]]
+match.app_id = "^steam_proton$"
+match.title = "^Diablo II$"
+default_workspace = 4
+
+[[window_rule]]
+match.app_id = "^steam_proton$"
+match.title = "^D2Stats"
+default_floating = true
+
+# es-de execs as a child of its appimage wrapper, so the launched process carries no token to place it.
+[[window_rule]]
+match.app_id = "^es-de$"
+default_workspace = 4
+
+[[window_rule]]
+match.app_id = "^(zen-jellyfin|mpv|gimp|org\\.inkscape\\.Inkscape)$"
+default_workspace = 5
+
+[[window_rule]]
+match.app_id = "^zen$"
+match.title = "Jellyfin"
+default_workspace = 5
+
+[[layer_rule]]
+match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd|desktop-widget-[^\"]*)$"
+blur = false

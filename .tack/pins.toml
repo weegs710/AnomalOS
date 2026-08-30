@@ -40,3 +40,8 @@ submodules = true
 
 [inputs.nix-shop]
 url = "cb:weegs710/nix-shop"
+
+# The github tarball fetcher cannot carry subprojects/scenefx, and package.nix throws without it.
+[inputs.umbriel]
+url = "gh:noctalia-dev/umbriel"
+submodules = true
