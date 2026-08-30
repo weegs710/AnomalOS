@@ -1,41 +1,41 @@
 [[opener.video]]
-run = "mpv \"$@\""
+run = "mpv %s"
 orphan = true
 desc = "mpv"
 for = "unix"
 
 [[opener.audio]]
-run = "rmpc-open \"$@\""
+run = "rmpc-open %s"
 orphan = true
 desc = "rmpc"
 for = "unix"
 
 [[opener.image]]
-run = "qview \"$@\""
+run = "qview %s"
 orphan = true
 desc = "qView"
 for = "unix"
 
 [[opener.pdf]]
-run = "zathura \"$@\""
+run = "zathura %s"
 orphan = true
 desc = "Zathura"
 for = "unix"
 
 [[opener.archive]]
-run = "file-roller \"$@\""
+run = "file-roller %s"
 orphan = true
 desc = "File Roller"
 for = "unix"
 
 [[opener.edit]]
-run = "zeditor \"$@\""
+run = "zeditor %s"
 orphan = true
 desc = "Zed"
 for = "unix"
 
 [[opener.browser]]
-run = "helium \"$@\""
+run = "helium %s"
 orphan = true
 desc = "Helium"
 for = "unix"
