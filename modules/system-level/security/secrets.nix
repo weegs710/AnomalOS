@@ -48,5 +48,11 @@
       mode = "0400";
       owner = "recyclarr";
     };
+
+    age.secrets.github-token = {
+      file = ../../../secrets/github-token.age;
+      mode = "0400";
+      owner = config.mySystem.user.name;
+    };
   };
 }

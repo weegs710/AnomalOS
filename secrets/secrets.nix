@@ -31,4 +31,9 @@ in
     weegs
     HX99G
   ];
+
+  "github-token.age".publicKeys = [
+    weegs
+    HX99G
+  ];
 }

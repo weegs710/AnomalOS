@@ -46,17 +46,28 @@
       automatic = true;
       dates = [ "00:00" ];
     };
+
+    # the token must stay out of the world-readable nix.conf, which carries only the include
+    extraOptions = ''
+      !include ${config.age.secrets.github-token.path}
+    '';
   };
 
   nixpkgs.config.allowUnfree = true;
 
   programs.nix-index-database.comma.enable = false;
 
+  programs.tack = {
+    enable = true;
+    # nixpkgs pins the v1.0.1 tag, which predates --exclude; the flake pin carries it
+    package = inputs.tack.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    nixConfTokens = true;
+  };
+
   environment.systemPackages = with pkgs; [
     curl
     git
     nh
     wget
-    inputs.tack.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }
