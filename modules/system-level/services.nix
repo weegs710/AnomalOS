@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   ...
 }:
 {
@@ -10,6 +11,12 @@
     };
 
     services = {
+      # silently drops any dbus package not also present in system.path
+      dbus.packages = lib.mkForce [
+        config.services.dbus.dbusPackage
+        config.system.path
+      ];
+
       openssh = {
         enable = true;
         ports = [ 2222 ];

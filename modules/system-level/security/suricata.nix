@@ -185,7 +185,10 @@
     '';
 
     # the upstream d rule only chowns the dir, so a uid shift strands the files inside it
-    systemd.tmpfiles.rules = [ "Z /var/log/suricata - suricata suricata - -" ];
+    systemd.tmpfiles.rules = [
+      "Z /var/log/suricata - suricata suricata - -"
+      "Z /var/lib/suricata - suricata suricata - -"
+    ];
 
     services.logrotate.settings.suricata = {
       # a space-joined string generates one quoted literal path that matches nothing
@@ -194,14 +197,13 @@
         "/var/log/suricata/*.json"
       ];
       frequency = "daily";
-      rotate = 3;
+      rotate = 30;
       compress = true;
       delaycompress = false;
       missingok = true;
       notifempty = true;
       create = "0640 suricata suricata";
       sharedscripts = true;
-      size = "1G";
       postrotate = "systemctl kill -s HUP suricata.service || true";
     };
   };
