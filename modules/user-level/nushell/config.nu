@@ -6,8 +6,13 @@ def cachix-pin-system [] {
     print "Done."
 }
 
+# nix eval collects on a small initial heap; 4G up front removes the GC work entirely
+def --wrapped nhg [...args: string] {
+    with-env { GC_INITIAL_HEAP_SIZE: "4294967296" } { ^nh ...$args }
+}
+
 def nrs [] {
-    nh os switch
+    nhg os switch
     if $env.LAST_EXIT_CODE == 0 {
         ^nix-store -qR /run/current-system | ^cachix push anomalos
         if $env.LAST_EXIT_CODE == 0 {
@@ -17,15 +22,15 @@ def nrs [] {
 }
 
 def nrt [] {
-    nh os test
+    nhg os test
 }
 
 def nrbt [] {
-    nh os boot
+    nhg os boot
 }
 
 def nrbld [] {
-    nh os build
+    nhg os build
 }
 
 def --wrapped tu [...inputs: string] {
