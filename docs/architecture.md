@@ -218,7 +218,7 @@ The only other `mySystem` tree is `mySystem.k8sLab` in `modules/system-level/k8s
 
 ## weegsware
 
-`weegsware/` holds my wrapped packages: helium, nushell and steam. `assemble.nix` builds them, threads them into the config through the `weegsware` specialArg, and exposes them as `packages.x86_64-linux.<name>`.
+`weegsware/` holds my wrapped packages: helium, nushell and steam. `assemble.nix` builds them, threads them into the config as the `weegsware` module argument (built on the host's own `pkgs`, so weegsware and the system share one nixpkgs instance), and exposes them as `packages.x86_64-linux.<name>`.
 
 That second half is the point -- they aren't trapped in my system config. Anyone can add this repo as a flake input and `nix run` my version of a package, and `.override` re-tunes them from outside without editing the file.
 

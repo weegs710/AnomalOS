@@ -23,14 +23,13 @@ sprinkles.new {
           config.allowUnfree = true;
         };
 
-      weegswareFor =
-        system:
-        let
-          pkgs = pkgsFor system;
-        in
+      weegswareWith =
+        pkgs:
         lib.foldl' (acc: f: acc // import f { inherit pkgs lib inputs; }) { } (
           toList (fileFilter (f: f.hasExt "nix" && !(lib.hasPrefix "_" f.name)) ./weegsware)
         );
+
+      weegswareFor = system: weegswareWith (pkgsFor system);
 
       moduleBundles = map (b: import b { inherit inputs; }) (
         toList (fileFilter (f: f.name == "bundle.nix") ./modules)
@@ -119,11 +118,17 @@ sprinkles.new {
           inherit system;
           specialArgs = {
             inputs = inputs;
-            weegsware = weegswareFor system;
             inherit host;
             only = mkOnly host;
           };
-          modules = moduleBundles ++ modules ++ [ identity ];
+          modules =
+            moduleBundles
+            ++ modules
+            ++ [
+              identity
+              # built on the host's own pkgs so weegsware and the system share one nixpkgs instance
+              ({ pkgs, ... }: { _module.args.weegsware = weegswareWith pkgs; })
+            ];
         };
 
       nixosConfigurations = lib.mapAttrs mkHost hosts;
