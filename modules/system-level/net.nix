@@ -48,6 +48,8 @@
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      # After= only waits for the unit; serve needs the backend Running or it exits on NoState.
+      ExecStartPre = "${lib.getExe config.services.tailscale.package} wait";
       ExecStart = "${lib.getExe config.services.tailscale.package} serve --bg 8888";
     };
   };
