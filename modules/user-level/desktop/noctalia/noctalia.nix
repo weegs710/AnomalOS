@@ -24,6 +24,9 @@ in
       systemd.enable = true;
     };
 
+    # umbriel publishes the session environment after graphical-session.target activates, so the unit inherits none of it
+    systemd.services.noctalia.environment.UMBRIEL_SOCKET = "%t/umbriel-wayland-0.sock";
+
     # settings left empty so config.toml stays a standalone first-class file (copied, not nix-generated); v5 hot-reloads it via inotify
     xdg.config.files."noctalia/config.toml" = {
       source = ./config.toml;
