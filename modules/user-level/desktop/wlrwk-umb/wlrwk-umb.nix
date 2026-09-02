@@ -26,9 +26,6 @@ let
 
   noct = cmd: "noctalia msg ${cmd}";
 
-  # Umbriel has no exec-time placement rule, so apps whose app_id is unknown get placed by landing on the workspace first.
-  onWs = n: cmd: "umbriel msg workspace-switch:${toString n} ; ${cmd}";
-
   terminalCmd = "ghostty --title=ghostty";
   cairnCmd = "ghostty --title=Cairn -e claude-launcher cairn";
   # helium hands off to its running pid, so a launch rule whiffs -- focus WEB instead
@@ -167,27 +164,27 @@ let
           (run "d" "discord" discordCmd)
         ])
         (sub "g" "games" [
-          (run "s" "steam" (onWs 4 "steam"))
-          (run "h" "heroic" (onWs 4 "heroic"))
-          (run "c" "Dungeon Crawl Stone Soup" (onWs 4 "crawl-tiles"))
+          (run "s" "steam" "steam")
+          (run "h" "heroic" "heroic")
+          (run "c" "Dungeon Crawl Stone Soup" "crawl-tiles")
           (run "e" "ES-DE" "es-de")
-          (run "M" "AM2R" (onWs 4 "am2r"))
-          (run "z" "Dusklight" (onWs 4 "dusklight"))
-          (run "m" "2Ship2Harkinian" (onWs 4 "2s2h"))
-          (run "l" "zelda3" (onWs 4 "zelda3"))
-          (run "d" "Dinosaur Planet" (onWs 4 "dino-recomp"))
-          (run "q" "Quest 64" (onWs 4 "EltaleRecompiled"))
+          (run "M" "AM2R" "am2r")
+          (run "z" "Dusklight" "dusklight")
+          (run "m" "2Ship2Harkinian" "2s2h")
+          (run "l" "zelda3" "zelda3")
+          (run "d" "Dinosaur Planet" "dino-recomp")
+          (run "q" "Quest 64" "EltaleRecompiled")
           (run "x" "renegade x" "steam steam://rungameid/14947236508015263744")
           (sub "o" "openra" [
-            (run "d" "Dune 2000" (onWs 4 "openra-d2k"))
-            (run "r" "Red Alert" (onWs 4 "openra-ra"))
-            (run "c" "Tiberian Dawn" (onWs 4 "openra-cnc"))
+            (run "d" "Dune 2000" "openra-d2k")
+            (run "r" "Red Alert" "openra-ra")
+            (run "c" "Tiberian Dawn" "openra-cnc")
           ])
         ])
         (sub "m" "media" [
           (run "i" "inkscape" "inkscape")
           (run "g" "gimp" "gimp")
-          (run "z" "zathura" (onWs 5 "zathura"))
+          (run "z" "zathura" "zathura")
         ])
         (sub "t" "tools" [
           (run "b" "btop" btopCmd)

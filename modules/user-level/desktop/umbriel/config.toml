@@ -282,15 +282,16 @@ default_workspace = 2
 match.title = "^rmpc$"
 default_workspace = 5
 
+# xdg-shell has no PiP role, and the two engines spell the title differently.
 [[window_rule]]
-match.title = "^Picture in picture$"
+match.title = "^Picture[- ]in[- ][Pp]icture$"
 default_floating = true
 default_pinned = true
 default_size = [512, 288]
 default_position = { x = 2034, y = 62, anchor = "top_left" }
 
 [[window_rule]]
-match.app_id = "^(zen-discord|zen-steamchat)$"
+match.app_id = "^vesktop$"
 default_workspace = 1
 
 [[window_rule]]
@@ -298,12 +299,8 @@ match.app_id = "^dev\\.zed\\.Zed$"
 default_workspace = 2
 
 [[window_rule]]
-match.app_id = "^zen$"
-match.title = "^Zen Browser$"
+match.app_id = "^helium$"
 default_workspace = 3
-
-[[window_rule]]
-match.app_id = "^zen$"
 focus_on_activate = true
 
 [[window_rule]]
@@ -337,12 +334,27 @@ match.app_id = "^es-de$"
 default_workspace = 4
 
 [[window_rule]]
-match.app_id = "^(zen-jellyfin|mpv|gimp|org\\.inkscape\\.Inkscape)$"
-default_workspace = 5
+match.app_id = "^(heroic|crawl-tiles|zelda3|dev\\.twilitrealm\\.dusk|2s2h\\.elf|DinosaurPlanetRecompiled)$"
+default_workspace = 4
+
+# the wrapper basename is the app_id, leading dot included
+[[window_rule]]
+match.app_id = "^\\.EltaleRecompiled-wrapped$"
+default_workspace = 4
+
+# all three openra games report app_id dotnet, so only the title separates them
+[[window_rule]]
+match.app_id = "^dotnet$"
+match.title = "^OpenRA - "
+default_workspace = 4
+
+# xwayland with no app_id, so the title is the only selector
+[[window_rule]]
+match.title = "^AM2R$"
+default_workspace = 4
 
 [[window_rule]]
-match.app_id = "^zen$"
-match.title = "Jellyfin"
+match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape|org\\.pwmt\\.zathura)$"
 default_workspace = 5
 
 [[layer_rule]]
