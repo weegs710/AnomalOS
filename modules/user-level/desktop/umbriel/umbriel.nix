@@ -15,4 +15,9 @@ in
       permissions = "0644";
     };
   };
+
+  # umbriel resolves its [include] at startup, before noctalia can regenerate the palette on a wiped root
+  preservation.preserveAt."/persist".users.${username}.files = [
+    ".config/umbriel/noctalia.toml"
+  ];
 }
