@@ -27,7 +27,7 @@ in
     ];
     extraModulePackages = [ ];
     zfs.devNodes = "/dev/disk/by-partuuid";
-    kernelPackages = cachyPkgs.linuxPackages-cachyos-latest;
+    kernelPackages = cachyPkgs.linuxPackages-cachyos-bore-x86_64-v3;
     kernelParams = [ "hid_apple.fnmode=2" ];
     supportedFilesystems.zfs = true;
     zfs.package = config.boot.kernelPackages.zfs_cachyos;
