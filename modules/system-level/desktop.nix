@@ -45,6 +45,7 @@ only.gate { tags = [ "desktop" ]; }
     xdg-dbus-proxy
     gimp3-with-plugins
     gpu-screen-recorder
+    ffmpeg
     inkscape
   ];
 

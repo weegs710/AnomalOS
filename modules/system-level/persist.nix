@@ -86,6 +86,7 @@ in
         directories = [
           # top-level home dirs
           ".ssh"
+          ".android"
           ".crawl"
           ".var"
           ".claude"

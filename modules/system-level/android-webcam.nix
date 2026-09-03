@@ -4,244 +4,140 @@
   ...
 }:
 let
-  startAndroidCam = pkgs.writers.writePython3Bin "andcam-start" { } ''
-    import subprocess
-    import sys
+  username = config.mySystem.user.name;
 
-    ADB = "${pkgs.android-tools}/bin/adb"  # noqa: E501
-    SCRCPY = "${pkgs.scrcpy}/bin/scrcpy"  # noqa: E501
+  phoneIp = "192.168.1.151";
+  # Pinned by `adb tcpip`, which does not survive a phone reboot -- `phone-adb` re-pins it.
+  phonePort = "5555";
+  phone = "${phoneIp}:${phonePort}";
 
+  # The debug port is random again after a phone reboot, so the open one is found by asking each.
+  phoneAdb = pkgs.writeShellApplication {
+    name = "phone-adb";
+    runtimeInputs = with pkgs; [
+      android-tools
+      netcat
+      coreutils
+      findutils
+      systemd
+    ];
+    text = ''
+      IP=${phoneIp}
+      PIN=${phonePort}
+      say() { printf '%s\n' "$*" >&2; }
 
-    class Colors:
-        GREEN = '\033[0;32m'
-        BLUE = '\033[0;34m'
-        RED = '\033[0;31m'
-        YELLOW = '\033[1;33m'
-        END = '\033[0m'
+      if adb -s "$IP:$PIN" shell true >/dev/null 2>&1; then
+        say "already on $IP:$PIN, nothing to do"
+        exit 0
+      fi
 
+      if [ "$#" -ge 2 ]; then
+        say "pairing on $IP:$1"
+        adb pair "$IP:$1" "$2" || exit 1
+      fi
 
-    def print_color(color, message):
-        print(f"{color}{message}{Colors.END}")
+      say "scanning $IP:32768-60999 for the debug port, takes about a minute"
+      # xargs exits 123 when any probe fails, which is every closed port, so swallow it
+      ports=$(seq 32768 60999 | xargs -P 400 -I{} sh -c "nc -z -w1 $IP {} 2>/dev/null && echo {}" || true)
+      if [ -z "$ports" ]; then
+        say "no open ports found. is wireless debugging on?"
+        exit 1
+      fi
+      say "open: $(echo "$ports" | tr '\n' ' ')"
 
+      for p in $ports; do
+        adb connect "$IP:$p" >/dev/null 2>&1 || true
+        if adb -s "$IP:$p" shell true >/dev/null 2>&1; then
+          say "adb answered on $p, pinning to $PIN"
+          adb -s "$IP:$p" tcpip "$PIN" || exit 1
+          sleep 4
+          adb disconnect "$IP:$p" >/dev/null 2>&1 || true
+          adb connect "$IP:$PIN" || exit 1
+          adb -s "$IP:$PIN" shell true >/dev/null 2>&1 || { say "reconnect on $PIN failed"; exit 1; }
+          systemctl --user restart phone-mic.service >/dev/null 2>&1 || true
+          say "done. adb is on $IP:$PIN"
+          exit 0
+        fi
+        adb disconnect "$IP:$p" >/dev/null 2>&1 || true
+      done
+      say "open ports found but none answered adb: $(echo "$ports" | tr '\n' ' ')"
+      exit 1
+    '';
+  };
 
-    def main():
-        print_color(Colors.BLUE, "Starting ADB server...")
-        subprocess.run([ADB, "start-server"], check=True)
-
-        print_color(Colors.BLUE, "Checking connected devices...")
-        result = subprocess.run(
-            [ADB, "devices"],
-            capture_output=True,
-            text=True
-        )
-
-        if "\tdevice" not in result.stdout:
-            print_color(
-                Colors.RED,
-                "Error: No Android device connected"
-            )
-            print_color(Colors.YELLOW, "Make sure:")
-            print("  1. USB debugging is enabled on your phone")
-            print("  2. Phone is connected via USB")
-            print("  3. You've authorized this computer")
-            sys.exit(1)
-
-        print_color(Colors.GREEN, "Device connected!")
-        print_color(
-            Colors.BLUE,
-            "Starting camera stream to /dev/video9..."
-        )
-        print_color(
-            Colors.YELLOW,
-            "Using: back camera, no audio, 1024px width"
-        )
-
-        subprocess.run([
-            SCRCPY,
-            "--video-source=camera",
-            "--camera-facing=back",
-            "--no-audio",
-            "--v4l2-sink=/dev/video9",
-            "-m1024"
-        ])
-
-
-    if __name__ == "__main__":
-        main()
+  # Attenuation limit 10 is the highest setting that suppresses noise without gating speech.
+  phoneMicConf = pkgs.writeText "phone-mic.conf" ''
+    context.properties = {
+        log.level = 0
+    }
+    context.spa-libs = {
+        audio.convert.* = audioconvert/libspa-audioconvert
+        support.*       = support/libspa-support
+    }
+    context.modules = [
+        { name = libpipewire-module-rt
+            args = { }
+            flags = [ ifexists nofail ]
+        }
+        { name = libpipewire-module-protocol-native }
+        { name = libpipewire-module-client-node }
+        { name = libpipewire-module-adapter }
+        { name = libpipewire-module-filter-chain
+            args = {
+                node.description = "Phone Mic (DeepFilter)"
+                media.name       = "Phone Mic (DeepFilter)"
+                filter.graph = {
+                    nodes = [
+                        { type = builtin  name = mix  label = mixer
+                          control = { "Gain 1" = 0.5  "Gain 2" = 0.5 } }
+                        { type = ladspa   name = df   label = deep_filter_mono
+                          plugin = "libdeep_filter_ladspa"
+                          control = {
+                              "Attenuation Limit (dB)"            = 10.0
+                              "Min processing threshold (dB)"     = -15.0
+                              "Max ERB processing threshold (dB)" = 35.0
+                              "Max DF processing threshold (dB)"  = 35.0
+                              "Min Processing Buffer (frames)"    = 0
+                              "Post Filter Beta"                  = 0.0
+                          } }
+                        # Sized so a node volume of 100% is the intended ceiling, which noctalia cannot exceed.
+                        { type = builtin  name = gain label = mixer
+                          control = { "Gain 1" = 2.06626 } }
+                    ]
+                    links = [
+                        { output = "mix:Out"      input = "df:Audio In" }
+                        { output = "df:Audio Out" input = "gain:In 1"   }
+                    ]
+                    inputs  = [ "mix:In 1" "mix:In 2" ]
+                    outputs = [ "gain:Out" ]
+                }
+                capture.props = {
+                    node.name      = "phone_mic_sink"
+                    node.nick      = "Phone Mic Input"
+                    media.class    = "Audio/Sink"
+                    audio.position = [ FL FR ]
+                }
+                playback.props = {
+                    node.name      = "phone_mic_source"
+                    node.nick      = "Phone Mic"
+                    media.class    = "Audio/Source"
+                    audio.position = [ MONO ]
+                }
+            }
+        }
+    ]
   '';
 
-  listCameras = pkgs.writers.writePython3Bin "andcam-list" { } ''
-    import subprocess
-    import sys
-
-    ADB = "${pkgs.android-tools}/bin/adb"  # noqa: E501
-    SCRCPY = "${pkgs.scrcpy}/bin/scrcpy"  # noqa: E501
-
-
-    class Colors:
-        GREEN = '\033[0;32m'
-        BLUE = '\033[0;34m'
-        RED = '\033[0;31m'
-        END = '\033[0m'
-
-
-    def print_color(color, message):
-        print(f"{color}{message}{Colors.END}")
-
-
-    def main():
-        print_color(Colors.BLUE, "Starting ADB server...")
-        subprocess.run([ADB, "start-server"], check=True)
-
-        print_color(
-            Colors.BLUE,
-            "Listing available cameras on device..."
-        )
-        result = subprocess.run(
-            [ADB, "devices"],
-            capture_output=True,
-            text=True
-        )
-
-        if "\tdevice" not in result.stdout:
-            print_color(
-                Colors.RED,
-                "Error: No Android device connected"
-            )
-            sys.exit(1)
-
-        print_color(Colors.GREEN, "Available cameras:")
-        subprocess.run([SCRCPY, "--list-cameras"])
-
-
-    if __name__ == "__main__":
-        main()
+  # Its own app_id, so an umbriel rule can place the preview without catching every other mpv window.
+  phoneCamPreview = pkgs.writeShellScriptBin "phone-cam-preview" ''
+    exec ${pkgs.mpv}/bin/mpv --wayland-app-id=phone-cam --title="Phone Cam" \
+      --profile=low-latency --untimed --no-osc --no-input-default-bindings \
+      --geometry=480x270 av://v4l2:/dev/video9
   '';
 
-  daemonAndroidCam = pkgs.writers.writePython3Bin "andcam-daemon" { } ''
-    import subprocess
-    import sys
-
-    ADB = "${pkgs.android-tools}/bin/adb"  # noqa: E501
-    SCRCPY = "${pkgs.scrcpy}/bin/scrcpy"  # noqa: E501
-
-
-    class Colors:
-        GREEN = '\033[0;32m'
-        BLUE = '\033[0;34m'
-        RED = '\033[0;31m'
-        YELLOW = '\033[1;33m'
-        END = '\033[0m'
-
-
-    def print_color(color, message):
-        print(f"{color}{message}{Colors.END}")
-
-
-    def main():
-        print_color(Colors.BLUE, "Starting ADB server...")
-        subprocess.run([ADB, "start-server"], check=True)
-
-        print_color(Colors.BLUE, "Checking connected devices...")
-        result = subprocess.run(
-            [ADB, "devices"],
-            capture_output=True,
-            text=True
-        )
-
-        if "\tdevice" not in result.stdout:
-            print_color(
-                Colors.RED,
-                "Error: No Android device connected"
-            )
-            print_color(Colors.YELLOW, "Make sure:")
-            print("  1. USB debugging is enabled on your phone")
-            print("  2. Phone is connected via USB")
-            print("  3. You've authorized this computer")
-            sys.exit(1)
-
-        print_color(Colors.GREEN, "Device connected!")
-        print_color(
-            Colors.BLUE,
-            "Starting background camera stream to /dev/video9..."
-        )
-        print_color(
-            Colors.YELLOW,
-            "Using: back camera, no audio, no preview window"
-        )
-        print_color(
-            Colors.YELLOW,
-            "Camera will run in background. Use 'pkill scrcpy' to stop."
-        )
-
-        subprocess.run([
-            SCRCPY,
-            "--video-source=camera",
-            "--camera-facing=back",
-            "--no-audio",
-            "--no-video-playback",
-            "--v4l2-sink=/dev/video9",
-            "-m1024"
-        ])
-
-
-    if __name__ == "__main__":
-        main()
-  '';
-
-  customCamera = pkgs.writers.writePython3Bin "andcam-custom" { } ''
-    import subprocess
-    import sys
-
-    ADB = "${pkgs.android-tools}/bin/adb"  # noqa: E501
-    SCRCPY = "${pkgs.scrcpy}/bin/scrcpy"  # noqa: E501
-
-
-    class Colors:
-        GREEN = '\033[0;32m'
-        BLUE = '\033[0;34m'
-        YELLOW = '\033[1;33m'
-        END = '\033[0m'
-
-
-    def print_color(color, message):
-        print(f"{color}{message}{Colors.END}")
-
-
-    def main():
-        if len(sys.argv) < 2:
-            msg = "Usage: andcam-custom <camera-id> [options]"
-            print_color(Colors.YELLOW, msg)
-            print("Example: andcam-custom 0")
-            print("Example: andcam-custom 0 --show-touches")
-            print("Example: andcam-custom 0 --no-audio")
-            print()
-            print("Run 'andcam-list' to see available IDs")
-            sys.exit(1)
-
-        camera_id = sys.argv[1]
-        extra_args = sys.argv[2:]
-
-        print_color(Colors.BLUE, "Starting ADB server...")
-        subprocess.run([ADB, "start-server"], check=True)
-
-        msg = f"Starting camera {camera_id} to /dev/video9..."
-        print_color(Colors.BLUE, msg)
-
-        cmd = [
-            SCRCPY,
-            "--video-source=camera",
-            f"--camera-id={camera_id}",
-            "--v4l2-sink=/dev/video9",
-            "-m1024"
-        ]
-        cmd.extend(extra_args)
-
-        subprocess.run(cmd)
-
-
-    if __name__ == "__main__":
-        main()
+  phoneCamList = pkgs.writeShellScriptBin "phone-cam-list" ''
+    ${pkgs.android-tools}/bin/adb connect ${phone} >/dev/null 2>&1 || true
+    exec ${pkgs.scrcpy}/bin/scrcpy -s ${phone} --list-cameras
   '';
 in
 {
@@ -253,40 +149,79 @@ in
     '';
   };
 
-  users.users.${config.mySystem.user.name}.extraGroups = [ "adbusers" ];
+  users.users.${username}.extraGroups = [ "adbusers" ];
 
   environment.systemPackages = with pkgs; [
     adbfs-rootless
     scrcpy
     android-tools
-    startAndroidCam
-    listCameras
-    customCamera
-    daemonAndroidCam
+    deepfilternet
+    phoneAdb
+    phoneCamPreview
+    phoneCamList
   ];
 
   environment.shellAliases = {
-    cam-on = "andcam-start";
-    cam-list = "andcam-list";
-    cam-cust = "andcam-custom";
-    cam-d = "andcam-daemon";
-    cam-off = "pkill scrcpy";
+    cam-on = "systemctl --user start phone-cam";
+    cam-off = "systemctl --user stop phone-cam";
+    cam-view = "phone-cam-preview";
+    cam-list = "phone-cam-list";
   };
 
-  # ENV{DEVTYPE}=="usb_device" ensures we fire once per device, not once per interface
-  services.udev.extraRules = ''
-    ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="4ee7", RUN+="${pkgs.systemd}/bin/systemctl start scrcpy-cam.service"
-    ACTION=="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="4ee7", RUN+="${pkgs.systemd}/bin/systemctl stop scrcpy-cam.service"
-  '';
-
-  systemd.services.scrcpy-cam = {
-    description = "Android camera v4l2 stream";
+  # filter-chain resolves ladspa plugins by bare name against LADSPA_PATH, never by absolute path
+  systemd.user.services.phone-mic-filter = {
+    description = "Phone mic DeepFilter chain";
+    wantedBy = [ "default.target" ];
+    after = [ "pipewire.service" ];
+    environment.LADSPA_PATH = "${pkgs.deepfilternet}/lib/ladspa";
     serviceConfig = {
-      User = config.mySystem.user.name;
-      ExecStartPre = "${pkgs.android-tools}/bin/adb start-server";
-      ExecStart = "${pkgs.scrcpy}/bin/scrcpy --video-source=camera --camera-id=1 --capture-orientation=270 --no-audio --no-window --v4l2-sink=/dev/video9";
+      Type = "simple";
+      ExecStart = "${pkgs.pipewire}/bin/pipewire -c ${phoneMicConf}";
+      Restart = "always";
+      RestartSec = 2;
+    };
+  };
+
+  systemd.user.services.phone-mic = {
+    description = "Phone microphone over scrcpy";
+    wantedBy = [ "default.target" ];
+    after = [ "phone-mic-filter.service" ];
+    requires = [ "phone-mic-filter.service" ];
+    # A filter restart orphans the scrcpy stream onto the default sink, so drag the stream with it.
+    partOf = [ "phone-mic-filter.service" ];
+    # No spaces or quotes, so systemd's Environment= unquoting cannot mangle it.
+    environment.PIPEWIRE_PROPS = "{target.object=phone_mic_sink}";
+    serviceConfig = {
+      Type = "simple";
+      ExecStartPre = "${pkgs.android-tools}/bin/adb connect ${phone}";
+      # Every audio encoder on this device is software, and raw costs ~44% less phone CPU on a LAN.
+      ExecStart = "${pkgs.scrcpy}/bin/scrcpy -s ${phone} --no-video --no-window --audio-source=mic-camcorder --audio-codec=raw";
+      Restart = "always";
+      RestartSec = 5;
+    };
+  };
+
+  # The camera sensor stays closed until it is explicitly asked for.
+  systemd.user.services.phone-cam = {
+    description = "Phone camera to /dev/video9";
+    serviceConfig = {
+      Type = "simple";
+      ExecStartPre = "${pkgs.android-tools}/bin/adb connect ${phone}";
+      ExecStart = "${pkgs.scrcpy}/bin/scrcpy -s ${phone} --video-source=camera --camera-id=0 --camera-size=1920x1080 --camera-fps=60 --capture-orientation=180 --no-audio --no-window --v4l2-sink=/dev/video9";
       Restart = "no";
-      Environment = "HOME=/home/${config.mySystem.user.name}";
+    };
+  };
+
+  systemd.user.services.phone-cam-view = {
+    description = "Phone camera preview window";
+    after = [ "phone-cam.service" ];
+    partOf = [ "phone-cam.service" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${phoneCamPreview}/bin/phone-cam-preview";
+      # mpv exits 4 when it is told to quit, which is a normal stop rather than a failure.
+      SuccessExitStatus = 4;
+      Restart = "no";
     };
   };
 }

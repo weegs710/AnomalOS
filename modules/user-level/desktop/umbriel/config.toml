@@ -291,6 +291,13 @@ default_size = [512, 288]
 default_position = { x = 2034, y = 62, anchor = "top_left" }
 
 [[window_rule]]
+match.app_id = "^phone-cam$"
+default_floating = true
+default_pinned = true
+default_size = [480, 270]
+default_position = { x = 2071, y = 127, anchor = "top_left" }
+
+[[window_rule]]
 match.app_id = "^vesktop$"
 default_workspace = 1
 

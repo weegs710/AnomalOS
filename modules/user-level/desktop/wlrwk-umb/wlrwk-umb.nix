@@ -22,7 +22,10 @@ let
   svcAuth = "${shared}/svc-auth.nu";
   svcUser = "${shared}/svc-user.nu";
   clipStart = "${shared}/clip-start.nu";
+  camToggleScript = "${shared}/cam-toggle.nu";
+  facecamToggleScript = "${shared}/facecam-toggle.nu";
   clipSave = "${shared}/clip-save.nu";
+  clipEncode = "${shared}/clip-encode.nu";
 
   noct = cmd: "noctalia msg ${cmd}";
 
@@ -36,7 +39,8 @@ let
   rmpcCmd = "ghostty --title=rmpc -e rmpc";
   fileManagerCmd = "ghostty --title=yazi -e yazi";
   tremcCmd = "ghostty --title=tremc -e tremc";
-  camListCmd = "ghostty --title=cam-list -e nu ${runPause} andcam-list";
+  camListCmd = "ghostty --title=cam-list -e nu ${runPause} phone-cam-list";
+  camToggle = action: "nu ${camToggleScript} ${action}";
 
   journalCmd = "ghostty --title=journal -e journalctl -f";
   zpoolCmd = "ghostty --title=zpool -e nu ${runPause} zpool status";
@@ -45,6 +49,8 @@ let
   # the menu owns the foreground, so the shot has to wait for it to tear down
   shotRegionCmd = "nu -c 'sleep 500ms; ^noctalia msg screenshot-region'";
   clipScreenCmd = "nu ${clipStart} screen";
+  clipMicCmd = "nu ${clipStart} mic";
+  facecamToggleCmd = "nu ${facecamToggleScript}";
   stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
 
   # system units restart in a float so the polkit FIDO prompt is the guard; user units just notify
@@ -92,12 +98,20 @@ let
       key = "a";
       unit = "tailscaled";
     }
-    {
-      key = "c";
-      unit = "scrcpy-cam";
-    }
   ];
   userUnits = [
+    {
+      key = "c";
+      unit = "phone-cam";
+    }
+    {
+      key = "v";
+      unit = "phone-mic";
+    }
+    {
+      key = "z";
+      unit = "phone-mic-filter";
+    }
     {
       key = "m";
       unit = "mpd";
@@ -195,9 +209,9 @@ let
           (run "u" "protonup-qt" "protonup-qt")
           (run "x" "transmission" tremcCmd)
           (sub "c" "cam" [
-            (run "o" "cam on" "andcam-start")
-            (run "x" "cam off" "pkill scrcpy")
-            (run "d" "cam daemon" "andcam-daemon")
+            (run "o" "cam on" (camToggle "start"))
+            (run "x" "cam off" (camToggle "stop"))
+            (run "v" "cam preview" "phone-cam-preview")
             (run "l" "cam list" camListCmd)
           ])
         ])
@@ -240,6 +254,8 @@ let
           (run "x" "stop recording" stopRecordCmd)
           (run "r" "region" shotRegionCmd)
           (run "c" "start recording" clipScreenCmd)
+          (run "f" "facecam toggle" facecamToggleCmd)
+          (run "v" "record + mic" clipMicCmd)
         ])
         (sub "q" "session" [
           (run "l" "lock" (noct "session lock"))
@@ -252,7 +268,7 @@ let
 
     "post-record" = commonSettings // {
       menu = [
-        (run "s" "save clip" "ghostty --title=name-clip -e nu ${clipSave}")
+        (run "s" "save clip" "ghostty --title=name-clip -e nu ${clipSave} ${clipEncode}")
         (run "d" "discard" "rm -f /tmp/gsr_clip.mp4")
       ];
     };
