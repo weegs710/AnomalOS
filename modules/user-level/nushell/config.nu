@@ -185,6 +185,15 @@ def elt-s [] {
     open --raw ~/.config/EltaleRecompiled/sound.json | save --force ~/repo/public/anomalos/modules/user-level/gaming/eltale-recomp/sound.json
 }
 
+# pull ui-edited adguard blocklists back into the repo (reverse of the declarative rebuild)
+def block-s [] {
+    let pw = (input -s "adguard password: ")
+    http get -u weegs -p $pw http://100.81.141.83:3000/control/filtering/status
+    | get filters
+    | select id name url enabled
+    | save --force ~/repo/public/anomalos/modules/system-level/security/adguard/filters.json
+}
+
 def space [] {
     df -h | detect columns --guess
 }

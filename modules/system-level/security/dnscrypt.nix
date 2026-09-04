@@ -18,9 +18,10 @@ in
       dnscrypt-proxy = {
         enable = true;
         settings = {
+          # AdGuard Home owns :53 on every bind
           listen_addresses = [
-            "127.0.0.1:53"
-            "[::1]:53"
+            "127.0.0.1:5300"
+            "[::1]:5300"
           ];
           server_names = [
             "cloudflare"
@@ -36,7 +37,8 @@ in
           cache_max_ttl = 86400;
           cache_neg_min_ttl = 60;
           cache_neg_max_ttl = 600;
-          block_ipv6 = true;
+          # tailnet-wide resolver now, and the phones sit on IPv6-only carrier networks
+          block_ipv6 = false;
           sources.public-resolvers = {
             urls = [
               "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md"

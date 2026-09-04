@@ -25,6 +25,9 @@
     enable = true;
     openFirewall = true;
     authKeyFile = config.age.secrets.tailscale-authkey.path;
+    # "server" is the half that turns on IP forwarding; an exit node cannot route without it
+    useRoutingFeatures = "server";
+    extraSetFlags = [ "--advertise-exit-node" ];
   };
 
   systemd.services.tailscaled = {
