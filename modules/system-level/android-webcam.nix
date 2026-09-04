@@ -11,7 +11,94 @@ let
   phonePort = "5555";
   phone = "${phoneIp}:${phonePort}";
 
-  # The debug port is random again after a phone reboot, so the open one is found by asking each.
+  phoneMdnsPort = pkgs.writeText "phone-mdns-port.py" ''
+    import socket
+    import struct
+    import sys
+    import time
+
+    SERVICES = ["_adb._tcp.local", "_adb-tls-connect._tcp.local"]
+
+
+    def encode(name):
+        out = b""
+        for label in name.split("."):
+            if label:
+                out += bytes([len(label)]) + label.encode()
+        return out + b"\x00"
+
+
+    def read_name(buf, i):
+        parts = []
+        while True:
+            length = buf[i]
+            if length == 0:
+                return ".".join(parts), i + 1
+            if length & 0xC0 == 0xC0:
+                ptr = struct.unpack("!H", buf[i:i + 2])[0] & 0x3FFF
+                sub, _ = read_name(buf, ptr)
+                parts.append(sub)
+                return ".".join(parts), i + 2
+            i += 1
+            parts.append(buf[i:i + length].decode("utf-8", "replace"))
+            i += length
+
+
+    def query(ip, timeout=3.0):
+        # QU bit, so the reply is unicast and returns through conntrack rather than needing 5353 open
+        header = struct.pack("!HHHHHH", 0, 0, len(SERVICES), 0, 0, 0)
+        body = b"".join(encode(s) + struct.pack("!HH", 255, 0x8001) for s in SERVICES)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.settimeout(0.5)
+        sock.sendto(header + body, (ip, 5353))
+
+        found = {}
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            try:
+                data, _ = sock.recvfrom(9000)
+            except socket.timeout:
+                continue
+            except OSError:
+                break
+            qd, an, ns, ar = struct.unpack("!HHHH", data[4:12])
+            i = 12
+            for _ in range(qd):
+                _, i = read_name(data, i)
+                i += 4
+            for _ in range(an + ns + ar):
+                name, i = read_name(data, i)
+                rtype, _, _, dlen = struct.unpack("!HHIH", data[i:i + 10])
+                i += 10
+                if rtype == 33:
+                    found[name] = struct.unpack("!H", data[i + 4:i + 6])[0]
+                i += dlen
+            if found:
+                break
+        return found
+
+
+    def main():
+        if len(sys.argv) < 2:
+            print("usage: phone-mdns-port <ip>", file=sys.stderr)
+            return 2
+        found = query(sys.argv[1])
+        if not found:
+            print("no mdns reply", file=sys.stderr)
+            return 1
+        # plain _adb._tcp needs no pairing, so it is offered ahead of the tls port
+        for service in SERVICES:
+            for name, port in found.items():
+                if name.endswith(service):
+                    print(port)
+        return 0
+
+
+    if __name__ == "__main__":
+        sys.exit(main())
+  '';
+
+  # The debug port is random again after a phone reboot, and adbd publishes the new one over mDNS.
   phoneAdb = pkgs.writeShellApplication {
     name = "phone-adb";
     runtimeInputs = with pkgs; [
@@ -19,6 +106,7 @@ let
       netcat
       coreutils
       findutils
+      python3
       systemd
     ];
     text = ''
@@ -34,16 +122,28 @@ let
       if [ "$#" -ge 2 ]; then
         say "pairing on $IP:$1"
         adb pair "$IP:$1" "$2" || exit 1
+        shift 2
       fi
 
-      say "scanning $IP:32768-60999 for the debug port, takes about a minute"
-      # xargs exits 123 when any probe fails, which is every closed port, so swallow it
-      ports=$(seq 32768 60999 | xargs -P 400 -I{} sh -c "nc -z -w1 $IP {} 2>/dev/null && echo {}" || true)
-      if [ -z "$ports" ]; then
-        say "no open ports found. is wireless debugging on?"
-        exit 1
+      if [ "$#" -ge 1 ]; then
+        ports=$1
+        say "using the port given: $ports"
+      else
+        ports=$(python3 ${phoneMdnsPort} "$IP" 2>/dev/null || true)
+        if [ -n "$ports" ]; then
+          say "mdns: $(echo "$ports" | tr '\n' ' ')"
+        else
+          # a 28k-port sweep returns false negatives against this device, so it is the last resort
+          say "no mdns reply, falling back to a port scan of $IP:32768-60999"
+          # xargs exits 123 when any probe fails, which is every closed port, so swallow it
+          ports=$(seq 32768 60999 | xargs -P 100 -I{} sh -c "nc -z -w2 $IP {} 2>/dev/null && echo {}" || true)
+          if [ -z "$ports" ]; then
+            say "nothing found. is wireless debugging on? read the port off the phone and pass it in"
+            exit 1
+          fi
+          say "open: $(echo "$ports" | tr '\n' ' ')"
+        fi
       fi
-      say "open: $(echo "$ports" | tr '\n' ' ')"
 
       for p in $ports; do
         adb connect "$IP:$p" >/dev/null 2>&1 || true
@@ -52,15 +152,22 @@ let
           adb -s "$IP:$p" tcpip "$PIN" || exit 1
           sleep 4
           adb disconnect "$IP:$p" >/dev/null 2>&1 || true
-          adb connect "$IP:$PIN" || exit 1
-          adb -s "$IP:$PIN" shell true >/dev/null 2>&1 || { say "reconnect on $PIN failed"; exit 1; }
+          ok=""
+          for _ in 1 2 3; do
+            # a stale transport makes adb connect report success without re-establishing anything
+            adb disconnect "$IP:$PIN" >/dev/null 2>&1 || true
+            adb connect "$IP:$PIN" >/dev/null 2>&1 || true
+            if adb -s "$IP:$PIN" shell true >/dev/null 2>&1; then ok=1; break; fi
+            sleep 2
+          done
+          [ -n "$ok" ] || { say "reconnect on $PIN failed"; exit 1; }
           systemctl --user restart phone-mic.service >/dev/null 2>&1 || true
           say "done. adb is on $IP:$PIN"
           exit 0
         fi
         adb disconnect "$IP:$p" >/dev/null 2>&1 || true
       done
-      say "open ports found but none answered adb: $(echo "$ports" | tr '\n' ' ')"
+      say "candidates found but none answered adb: $(echo "$ports" | tr '\n' ' ')"
       exit 1
     '';
   };
