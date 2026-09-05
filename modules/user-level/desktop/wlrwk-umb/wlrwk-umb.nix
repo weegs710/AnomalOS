@@ -56,10 +56,10 @@ let
   # system units restart in a float so the polkit FIDO prompt is the guard; user units just notify
   svcRestart = unit: "ghostty --title=svc-auth -e nu ${svcAuth} ${unit}";
   svcUserRestart = units: "nu ${svcUser} ${units}";
-  svcStatus = unit: "ghostty --title=svc-status -e nu ${runPause} systemctl --no-pager status ${unit}";
+  svcStatus =
+    unit: "ghostty --title=svc-status -e nu ${runPause} systemctl --no-pager status ${unit}";
   svcUserStatus =
-    units:
-    "ghostty --title=svc-status -e nu ${runPause} systemctl --user --no-pager status ${units}";
+    units: "ghostty --title=svc-status -e nu ${runPause} systemctl --user --no-pager status ${units}";
 
   systemUnits = [
     {
@@ -258,7 +258,7 @@ let
           (run "v" "record + mic" clipMicCmd)
         ])
         (sub "q" "session" [
-          (run "l" "lock" (noct "session lock"))
+          (run "l" "lock" (noct "session lock; umbriel msg dpms-off"))
           (run "o" "logout" (noct "session logout"))
           (run "r" "reboot" (noct "session reboot"))
           (run "s" "shutdown" (noct "session shutdown"))
