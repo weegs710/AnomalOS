@@ -17,6 +17,14 @@
       sha256 = "sha256-yK3ZYqeadh8AZ7q3TENdecAicGkBhSjZKlGUsBmzoMo=";
     };
   };
+  evelens = {
+    pname = "evelens";
+    version = "v1.5.2";
+    src = fetchurl {
+      url = "https://github.com/aliacollins/EveLens/releases/download/v1.5.2/EveLens-stable-linux-x86_64.AppImage";
+      sha256 = "sha256-hDbhz49wS50kGB01uvOdYfcL1fbE+WRtFKKK7hwddmc=";
+    };
+  };
   helium = {
     pname = "helium";
     version = "0.14.8.2";

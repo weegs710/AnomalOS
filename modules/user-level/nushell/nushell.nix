@@ -270,7 +270,7 @@ in
 
       "nushell/env.nu".source = ./env.nu;
 
-      "nushell/config.nu".source = ./config.nu;
+      "nushell/config.nu".text = builtins.readFile ./config.nu + config.mySystem.nushell.extraConfig;
 
       # Empty by design - all initialization in env.nu for consistency
       "nushell/login.nu".text = "";

@@ -24,6 +24,13 @@
       };
     };
 
+    # `use` is parse-time in nushell, so a tag-gated module cannot guard its own import at runtime
+    nushell.extraConfig = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      description = "Nushell config appended by gated modules that ship their own commands";
+    };
+
     hostName = lib.mkOption {
       type = lib.types.str;
       default = "anomalos";

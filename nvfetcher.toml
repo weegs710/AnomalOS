@@ -5,3 +5,8 @@ fetch.url = "https://github.com/imputnet/helium-linux/releases/download/$ver/hel
 [d2launcher]
 src.github_tag = "murkl/d2launcher"
 fetch.github = "murkl/d2launcher"
+
+# github_tag hands back the tag verbatim, so $ver already carries the v prefix
+[evelens]
+src.github_tag = "aliacollins/EveLens"
+fetch.url = "https://github.com/aliacollins/EveLens/releases/download/$ver/EveLens-stable-linux-x86_64.AppImage"
