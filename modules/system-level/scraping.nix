@@ -430,7 +430,8 @@ let
             exit 1
         }
 
-        ^yt-dlp --skip-download --write-thumbnail --convert-thumbnails jpg --no-warnings --playlist-items 1 --js-runtimes node --remote-components ejs:github -o $"($album_dir)/thumbnail:cover" $url | ignore
+        # -o is parsed as [TYPES:]TEMPLATE anchored at the start, so the type prefix must lead or the whole path falls through to the default template
+        ^yt-dlp --skip-download --write-thumbnail --convert-thumbnails jpg --no-warnings --playlist-items 1 --js-runtimes node --remote-components ejs:github -o $"thumbnail:($album_dir)/cover" $url | ignore
 
         print $"\n  (ansi green)Success!(ansi reset)"
         print $"  Album saved to: ($album_dir)"
