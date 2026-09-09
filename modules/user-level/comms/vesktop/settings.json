@@ -2,9 +2,13 @@
     "discordBranch": "stable",
     "minimizeToTray": true,
     "arRPC": false,
-    "splashColor": "rgb(243, 243, 244)",
-    "splashBackground": "rgb(44, 45, 50)",
+    "splashColor": "rgb(171, 180, 218)",
+    "splashBackground": "rgb(33, 35, 55)",
     "disableMinSize": true,
     "clickTrayToShowHide": true,
-    "enableTaskbarFlashing": true
+    "enableTaskbarFlashing": true,
+    "spellCheckLanguages": [
+        "en-US",
+        "en"
+    ]
 }

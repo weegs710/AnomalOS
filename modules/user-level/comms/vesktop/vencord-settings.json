@@ -106,7 +106,7 @@
             "enabled": false
         },
         "ClearURLs": {
-            "enabled": false
+            "enabled": true
         },
         "ClientTheme": {
             "enabled": false
@@ -242,9 +242,6 @@
             "enabled": false
         },
         "KeepCurrentChannel": {
-            "enabled": false
-        },
-        "LastFMRichPresence": {
             "enabled": false
         },
         "LoadingQuotes": {
@@ -524,7 +521,9 @@
             "enabled": false
         },
         "WebKeybinds": {
-            "enabled": true
+            "enabled": true,
+            "showNavigationButtons": true,
+            "overrideCommonKeybinds": true
         },
         "WebScreenShareFixes": {
             "enabled": true
@@ -561,6 +560,18 @@
         },
         "WebContextMenus": {
             "enabled": true
+        },
+        "MusicRichPresence": {
+            "enabled": false
+        },
+        "TenorGifSearch": {
+            "enabled": false
+        },
+        "ContextMenuAPI": {
+            "enabled": true
+        },
+        "NoticesAPI": {
+            "enabled": true
         }
     },
     "uiElements": {
@@ -577,6 +588,6 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1783984189819
+        "settingsSyncVersion": 1788866668805
     }
 }
