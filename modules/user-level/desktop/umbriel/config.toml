@@ -106,7 +106,7 @@ expand_single_column = true
 mode = "2560x1440@144"
 position = [0, 0]
 scale = 1.0
-vrr = "disabled"
+vrr = "always"
 workspaces = [
   "COMMS",
   "DEV",
