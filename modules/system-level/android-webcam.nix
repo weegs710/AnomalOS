@@ -6,7 +6,7 @@
 let
   username = config.mySystem.user.name;
 
-  phoneIp = "192.168.1.151";
+  phoneIp = "192.168.88.8";
   # Pinned by `adb tcpip`, which does not survive a phone reboot -- `phone-adb` re-pins it.
   phonePort = "5555";
   phone = "${phoneIp}:${phonePort}";
@@ -313,7 +313,8 @@ in
     description = "Phone camera to /dev/video9";
     serviceConfig = {
       Type = "simple";
-      ExecStartPre = "${pkgs.android-tools}/bin/adb connect ${phone}";
+      # A bare `adb connect` cannot recover a phone reboot, which drops the 5555 pin entirely.
+      ExecStartPre = "${phoneAdb}/bin/phone-adb";
       ExecStart = "${pkgs.scrcpy}/bin/scrcpy -s ${phone} --video-source=camera --camera-id=0 --camera-size=1920x1080 --camera-fps=60 --capture-orientation=180 --no-audio --no-window --v4l2-sink=/dev/video9";
       Restart = "no";
     };
