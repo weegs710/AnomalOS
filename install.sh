@@ -20,6 +20,8 @@ ASSEMBLE="$SCRIPT_DIR/assemble.nix"
 REQUIREMENTS="$SCRIPT_DIR/lib/requirements.nix"
 HOSTS_DIR="$SCRIPT_DIR/modules/hosts"
 NIX_FEATURES="nix-command flakes"
+# the only swap label the installer creates, so a host declaring swap has to name this one
+SWAP_LABEL="SWAP"
 
 PLAN_IN=""
 PLAN_OUT=""
@@ -511,9 +513,15 @@ build_plan() {
 	blank
 	local boot_mib swap_gib
 	boot_mib=1024
-	swap_gib="$(ask_number "How much swap should the installer use, in GiB?" 16)"
-	say "Swap is only used while installing. What the machine uses afterwards is"
-	say "whatever its configuration declares."
+	if [[ "$(jq -r '.swap | length' "$REQS")" -gt 0 ]]; then
+		say "This host's configuration swaps to a partition labelled \"$SWAP_LABEL\", so the"
+		say "one made here is kept and the machine goes on using it after it reboots."
+		swap_gib="$(ask_number "How large should the swap partition be, in GiB?" 16)"
+	else
+		swap_gib="$(ask_number "How much swap should the installer use, in GiB?" 16)"
+		say "This host's configuration declares no swap, so the partition is used while"
+		say "installing and then left out of the hardware configuration."
+	fi
 
 	blank
 	local encrypt=false
@@ -597,6 +605,29 @@ check_plan() {
 		ok "boot partition will be labelled \"$want_label\", which is what the configuration expects"
 	fi
 
+	local want_swap bad_swap swap_gib
+	want_swap="$(jq -r '.swap[]?' "$REQS")"
+	bad_swap="$(jq -r --arg l "/dev/disk/by-label/$SWAP_LABEL" '[ .swap[]? | select(. != $l) ] | .[]' "$REQS")"
+	swap_gib="$(jq -r '.swapGiB // 0' "$PLAN")"
+	if [[ -n "$bad_swap" ]]; then
+		problem "the configuration swaps to a device this plan does not create" \
+			"The installer makes one swap partition and labels it \"$SWAP_LABEL\"."
+		while read -r dev; do
+			printf '        - %s\n' "the configuration swaps to \"$dev\", which nothing here creates"
+		done <<<"$bad_swap"
+		blank
+		problems=$((problems + 1))
+	elif [[ -n "$want_swap" && "$swap_gib" -eq 0 ]]; then
+		problem "the configuration swaps to the installer's partition, but this plan sizes it at 0GiB" \
+			"Answer the swap question with a size in GiB, or remove swapDevices from the configuration."
+		blank
+		problems=$((problems + 1))
+	elif [[ -n "$want_swap" ]]; then
+		ok "swap partition will be labelled \"$SWAP_LABEL\" and kept, which is what the configuration expects"
+	else
+		ok "the configuration declares no swap, so the installer's partition will not be recorded"
+	fi
+
 	local hostid
 	hostid="$(jq -r '.hostId // ""' "$REQS")"
 	if [[ -z "$hostid" || "$hostid" == "null" ]]; then
@@ -672,7 +703,11 @@ show_plan() {
 	section "This is what will happen"
 	say "  Host:        $host"
 	say "  Boot disk:   $bootDisk  (${bootMiB}MiB partition labelled $bootLabel)"
-	say "  Swap:        ${swapGiB}GiB on $bootDisk, used during installation only"
+	if [[ "$(jq -r '.swap | length' "$REQS")" -gt 0 ]]; then
+		say "  Swap:        ${swapGiB}GiB on $bootDisk, labelled $SWAP_LABEL and kept"
+	else
+		say "  Swap:        ${swapGiB}GiB on $bootDisk, used during installation only"
+	fi
 	say "  Encryption:  $([[ "$encrypt" == "true" ]] && echo "yes, passphrase" || echo "no")"
 	blank
 	say "  Storage pools:"
@@ -707,8 +742,8 @@ partition_boot_disk() {
 	say "Formatting the boot partition."
 	mkfs.fat -F 32 "$BOOT_PART" -n "$label" >/dev/null
 
-	say "Enabling swap for the installation."
-	mkswap "$SWAP_PART" --label SWAP >/dev/null
+	say "Enabling swap."
+	mkswap "$SWAP_PART" --label "$SWAP_LABEL" >/dev/null
 	swapon "$SWAP_PART"
 }
 
@@ -855,14 +890,26 @@ handle_hardware_config() {
 		say "Kept $mp on its label \"$lbl\" rather than the generated device identifier."
 	done < <(jq -r '.labels[] | "\(.mountPoint) \(.label)"' "$REQS")
 
-	# the swap partition exists only for the installation, so recording it would make a temporary disk permanent
-	awk '
-		/^[[:space:]]*swapDevices[[:space:]]*=/ { print "  swapDevices = [ ];"; skip = 1; next }
+	# the generated entry is a uuid, and a host that declares swap declares it by label
+	local swapnix
+	swapnix="$(jq -r 'if (.swap | length) == 0 then "  swapDevices = [ ];"
+		else "  swapDevices = [\n" + ([ .swap[] | "    { device = \"" + . + "\"; }" ] | join("\n")) + "\n  ];" end' "$REQS")"
+	awk -v repl="$swapnix" '
+		/^[[:space:]]*swapDevices[[:space:]]*=/ {
+			print repl
+			# the empty form closes on the same line, so there is no block to skip
+			if ($0 !~ /\];/) skip = 1
+			next
+		}
 		skip && /\];/ { skip = 0; next }
 		skip { next }
 		{ print }
-	' "$gen" >"$gen.noswap" && mv "$gen.noswap" "$gen"
-	say "Left swap out of the hardware configuration; the installer's swap partition is temporary."
+	' "$gen" >"$gen.swap" && mv "$gen.swap" "$gen"
+	if [[ "$(jq -r '.swap | length' "$REQS")" -gt 0 ]]; then
+		say "Recorded swap on $(jq -r '.swap | join(", ")' "$REQS"), which this host's configuration declares."
+	else
+		say "Left swap out of the hardware configuration; this host declares none."
+	fi
 
 	# nixos-generate-config never emits neededForBoot, and without it /persist is missing from the initrd and /etc/machine-id never resolves
 	while read -r mp; do

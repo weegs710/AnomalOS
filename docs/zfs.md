@@ -20,7 +20,7 @@ ZFS is here for the snapshot safety net. Between ZFS, Jujutsu and NixOS generati
 
 Pools are created with `ashift=12`, `autotrim=on`, `compression=zstd`, `acltype=posixacl`, `atime=off`, `xattr=sa` and `normalization=formD`. Every dataset is `mountpoint=legacy`; NixOS does the mounting.
 
-There is no swap partition after the install. `zramSwap` takes over at 25% of RAM with zstd.
+Swap is a 16GiB partition labelled `SWAP` on the boot disk. `boot.zswap` compresses pages into RAM in front of it, up to 25% of total memory.
 
 The declarations live in `modules/hosts/HX99G/hardware.nix`, except `/` which `modules/system-level/persist.nix` overrides with `lib.mkForce`, and the media mounts which come from the `server`-gated `modules/system-level/media-server/`.
 

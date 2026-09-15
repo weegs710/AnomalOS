@@ -58,7 +58,7 @@ That asks the questions, runs every check, writes the plan to `/tmp/plan` and ex
 1. **Which host.** It lists every directory under `modules/hosts/` with its system and tags, read out of `metadata.nix`.
 2. **Which disk holds each pool.** The pools come from the host's configuration -- `zroot` and `zgames` for HX99G. One disk per pool; a disk can hold only one. Disks that already carry a ZFS pool are flagged with the pool's name and a warning that choosing it destroys everything on it.
 3. **Which disk to boot from.** Only asked when there is more than one pool. Defaults to the disk holding the first pool.
-4. **How much swap.** Default 16GiB, used during installation only. What the machine swaps to afterwards is whatever its configuration declares, which on HX99G is zram at 25% of RAM.
+4. **How much swap.** Default 16GiB, on a partition labelled `SWAP`. A host whose configuration declares a swap device keeps it; otherwise it is used during the install and left out of `hardware.nix`.
 5. **Encryption.** If yes, each pool is created with `aes-256-gcm` and a passphrase prompt. You also want `boot.zfs.requestEncryptionCredentials = true` in the host's config.
 6. **Whether to restore `/persist`.** See below.
 
@@ -73,6 +73,7 @@ The plan is checked against `lib/requirements.nix`, which reads the host's evalu
 | every pool the config needs has a disk         | names the unassigned pools                                             |
 | every dataset the config mounts is in the plan | names them, and says the machine would fail to mount them after reboot |
 | the boot label matches                         | names both labels, and says the machine would not boot                 |
+| the declared swap device is one the plan makes | names the device, or says the plan sizes swap at 0GiB                  |
 | the host has a `hostId`                        | points at `metadata.nix`                                               |
 | every disk in the plan is a real block device  | names the path                                                         |
 

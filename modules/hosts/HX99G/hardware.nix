@@ -88,13 +88,11 @@ in
     fsType = "zfs";
   };
 
-  swapDevices = [ ];
+  swapDevices = [ { device = "/dev/disk/by-label/SWAP"; } ];
 
-  zramSwap = {
+  boot.zswap = {
     enable = true;
-    memoryPercent = 25;
-    algorithm = "zstd";
-    priority = 100;
+    maxPoolPercent = 25;
   };
 
   environment.sessionVariables = {
