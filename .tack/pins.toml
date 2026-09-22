@@ -13,6 +13,9 @@ url = "gh:NixOS/nixpkgs/nixos-unstable"
 url = "gh:xddxdd/nix-cachyos-kernel/release"
 exclude_follow = ["nixpkgs"]
 
+[inputs.bumbriel]
+url = "gh:barrulus/bumbriel/main"
+
 [inputs.agenix]
 url = "gh:ryantm/agenix"
 
@@ -42,6 +45,6 @@ submodules = true
 url = "cb:weegs710/nix-shop"
 
 # The github tarball fetcher cannot carry subprojects/scenefx, and package.nix throws without it.
-[inputs.umbriel]
-url = "gh:noctalia-dev/umbriel"
-submodules = true
+# [inputs.umbriel]
+# url = "gh:noctalia-dev/umbriel"
+# submodules = true

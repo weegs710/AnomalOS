@@ -5,7 +5,7 @@
   ...
 }:
 {
-  imports = [ inputs.umbriel.nixosModules.default ];
+  imports = [ inputs.bumbriel.nixosModules.default ];
 
   hardware.graphics.enable = true;
 

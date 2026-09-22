@@ -7,6 +7,14 @@
     "narHash": "sha256-9VnK6Oqai65puVJ4WYtCTvlJeXxMzAp/69HhQuTdl/I=",
     "lastModified": 1770165109
   },
+  "bumbriel": {
+    "type": "github",
+    "owner": "barrulus",
+    "repo": "bumbriel",
+    "rev": "07f6f0a86df9454e389392e85dcb3000a5bb66d8",
+    "narHash": "sha256-MTN7l6LWE9NV7TOrtezF1066aAcshsKzNx1BpID8dtg=",
+    "lastModified": 1790071119
+  },
   "concord": {
     "type": "github",
     "owner": "chojs23",
