@@ -1,16 +1,16 @@
 { pkgs, ... }:
 let
-  # Built from source so nix owns the binary and plugins get a real python env; 3.2.6 is the stable release of the june 2026 steam-beta errorboundary fix
+  # Built from source so nix owns the binary and plugins get a real python env; 3.2.8 is the floor, where frontend init stopped calling App.BFinishedInitStageOne unguarded (the 64-bit client dropped it)
   # See: https://github.com/Jovian-Experiments/Jovian-NixOS/blob/master/pkgs/decky-loader/default.nix
   decky-loader = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "decky-loader";
-    version = "3.2.6";
+    version = "3.2.9";
 
     src = pkgs.fetchFromGitHub {
       owner = "SteamDeckHomebrew";
       repo = "decky-loader";
       rev = "v${version}";
-      hash = "sha256-p1bkLsZedTZ29POqdaXvVpPXzg9kBTKgUxkkEAyAkT0=";
+      hash = "sha256-XhW+bbsEhWnD/1c3QVHAQz6AAo824b/hbZ1t/VZE1po=";
     };
 
     # pnpm-workspace.yaml confuses the pnpm fetcher and build
@@ -27,7 +27,7 @@ let
       postPatch = ''
         rm pnpm-workspace.yaml
       '';
-      hash = "sha256-X1L8JYG5hgYMmfg0aa8XhkRU6/oFrYTPiXDIyq77puE=";
+      hash = "sha256-tbXB0MW6Y1lGQGYnxoaDpYs49cm7IYxHzLSq3UBcMl0=";
     };
 
     pyproject = true;
