@@ -1,0 +1,13 @@
+diff --git a/examples/shaders/biri/cursor/comet-0.glsl b/examples/shaders/biri/cursor/comet-0.glsl
+index 958b500..53aaad3 100644
+--- a/examples/shaders/biri/cursor/comet-0.glsl
++++ b/examples/shaders/biri/cursor/comet-0.glsl
+@@ -4,7 +4,7 @@ float biri_smoothstep(float a, float b, float x) {
+     return a > b ? 1.0 - smoothstep(b, a, x) : smoothstep(a, b, x);
+ }
+ vec4 postprocess(vec3 c){
+-            vec3 prev = max(tex2D_prev(c.xy).rgb * 0.98 - 0.004, vec3(0.0));
++            vec3 prev = max(tex2D_prev(c.xy).rgb * 0.0 - 0.004, vec3(0.0));
+             float hue = fract(umbriel_time*0.3);
+             vec3 rb = 0.5 + 0.5*cos(6.2831*(hue + vec3(0.0,0.33,0.67)));
+             float d = length(c.xy*umbriel_output_size - umbriel_cursor);

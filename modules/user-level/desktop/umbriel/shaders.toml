@@ -1,0 +1,32 @@
+[include]
+files = ["@SHADERS@/biri/collection.toml"]
+
+[shaders]
+global = "cursor.comet"
+
+[appearance.border_shader]
+enabled = true
+animated = true
+speed = 0.35
+# The ring outset is capped at 2.5x the border width, so less than that clips the sparks.
+padding = 30
+shader = "@SHADERS@/biri/rings/lightning.glsl"
+
+[appearance.border_shader.light]
+enabled = true
+spread = 80
+intensity = 1.6
+threshold = 0.5
+
+[animation.workspaces]
+shader = "@SHADERS@/reveal.glsl"
+
+[animation.pair.lightning-melt.open]
+shader = "@SHADERS@/biri/lightning-open.glsl"
+duration_ms = 400
+curve = "linear"
+
+[animation.pair.lightning-melt.close]
+shader = "@SHADERS@/biri/melt-close.glsl"
+duration_ms = 500
+curve = "linear"

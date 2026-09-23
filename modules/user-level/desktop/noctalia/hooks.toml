@@ -1,0 +1,3 @@
+# Umbriel watches its own config but not its includes, so a regenerated palette lands unread.
+[hooks]
+colors_changed = "@UMBRIEL@ msg config-reload"

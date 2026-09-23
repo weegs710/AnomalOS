@@ -1,10 +1,12 @@
 {
   config,
   inputs,
+  lib,
   ...
 }:
 let
   username = config.mySystem.user.name;
+  umbrielBin = "${config.programs.umbriel.package}/bin/umbriel";
 in
 {
   hjem.extraModules = [ inputs.noctalia.hjemModules.default ];
@@ -33,6 +35,11 @@ in
       type = "copy";
       clobber = false;
     };
+
+    # hooks are read from any *.toml here, so they stay out of the config.toml noctalia writes back to
+    xdg.config.files."noctalia/hooks.toml".text = lib.replaceStrings [ "@UMBRIEL@" ] [ umbrielBin ] (
+      builtins.readFile ./hooks.toml
+    );
 
     # qt6ct ships no config; without an icon theme Qt resolves named icons to the missing-icon checker
     xdg.config.files."qt6ct/qt6ct.conf".source = ./qt6ct.conf;

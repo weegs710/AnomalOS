@@ -2,6 +2,9 @@
 [include.optional]
 files = ["noctalia.toml"]
 
+[include]
+files = ["shaders.toml"]
+
 [general]
 autostart = []
 xwayland = true
@@ -21,6 +24,7 @@ empty_above = false
 enabled = true
 duration_ms = 300
 curve = "easeout"
+preset = "lightning-melt"
 
 [animation.beziers]
 zoom = [0.1, 0.9, 0.1, 1.2]
@@ -72,7 +76,7 @@ dim = 0.5
 
 [appearance]
 prefer_no_csd = true
-border_width = 1
+border_width = 12
 outer_border_width = 0
 corner_radius = 6
 drag_opacity = 0.75
@@ -81,7 +85,7 @@ drag_opacity = 0.75
 enabled = false
 
 [appearance.shadow]
-enabled = true
+enabled = false
 softness = 8
 offset_x = 2
 offset_y = 2
@@ -279,10 +283,12 @@ default_floating = true
 [[window_rule]]
 match.title = "^ghostty$"
 default_workspace = 2
+shader = "window.rainbow-smoke"
 
 [[window_rule]]
 match.title = "^rmpc$"
 default_workspace = 5
+shader = "window.fire-tendrils"
 
 # xdg-shell has no PiP role, and the two engines spell the title differently.
 [[window_rule]]
@@ -306,6 +312,7 @@ default_workspace = 1
 [[window_rule]]
 match.app_id = "^dev\\.zed\\.Zed$"
 default_workspace = 2
+shader = "window.rainbow-smoke"
 
 [[window_rule]]
 match.app_id = "^helium$"
@@ -315,15 +322,18 @@ focus_on_activate = true
 [[window_rule]]
 match.app_id = "^steam$"
 default_workspace = 4
+shader = "window.crt"
 
 [[window_rule]]
 match.app_id = "^steam_app_.*$"
 default_workspace = 4
+shader = "window.crt"
 focus_on_activate = true
 
 [[window_rule]]
 match.app_id = "^gamescope$"
 default_workspace = 4
+shader = "window.crt"
 default_fullscreen = true
 focus_on_activate = true
 
@@ -331,6 +341,7 @@ focus_on_activate = true
 match.app_id = "^steam_proton$"
 match.title = "^Diablo II$"
 default_workspace = 4
+shader = "window.crt"
 
 [[window_rule]]
 match.app_id = "^steam_proton$"
@@ -343,7 +354,13 @@ match.app_id = "^es-de$"
 default_workspace = 4
 
 [[window_rule]]
-match.app_id = "^(heroic|crawl-tiles|zelda3|dev\\.twilitrealm\\.dusk|2s2h\\.elf|DinosaurPlanetRecompiled)$"
+match.app_id = "^(heroic|crawl-tiles)$"
+default_workspace = 4
+shader = "window.crt"
+
+# These render through their own shader stacks, so a compositor filter would land on top of one.
+[[window_rule]]
+match.app_id = "^(zelda3|dev\\.twilitrealm\\.dusk|2s2h\\.elf|DinosaurPlanetRecompiled)$"
 default_workspace = 4
 
 # the wrapper basename is the app_id, leading dot included
@@ -356,11 +373,13 @@ default_workspace = 4
 match.app_id = "^dotnet$"
 match.title = "^OpenRA - "
 default_workspace = 4
+shader = "window.crt"
 
 # xwayland with no app_id, so the title is the only selector
 [[window_rule]]
 match.title = "^AM2R$"
 default_workspace = 4
+shader = "window.crt"
 
 [[window_rule]]
 match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape|org\\.pwmt\\.zathura)$"
