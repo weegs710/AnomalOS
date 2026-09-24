@@ -11,9 +11,9 @@
     "type": "github",
     "owner": "barrulus",
     "repo": "bumbriel",
-    "rev": "07f6f0a86df9454e389392e85dcb3000a5bb66d8",
-    "narHash": "sha256-MTN7l6LWE9NV7TOrtezF1066aAcshsKzNx1BpID8dtg=",
-    "lastModified": 1790071119
+    "rev": "9ab7c0a0d17e0cf4f8d66a094b6242f46f45eda1",
+    "narHash": "sha256-NzCQLb288lndShlqYkmoLAc15h8AmGOREEoV0Po5h+k=",
+    "lastModified": 1790190125
   },
   "concord": {
     "type": "github",
@@ -95,14 +95,5 @@
     "rev": "d9c0516ff654c8a48dd4294dd183db51154ffad2",
     "narHash": "sha256-GxJX6df+SqpZv3fkH+5oLQOVT/wI5CovnMaGGhtpvT0=",
     "lastModified": 1789107241
-  },
-  "umbriel": {
-    "type": "git",
-    "url": "https://github.com/noctalia-dev/umbriel.git",
-    "ref": "HEAD",
-    "rev": "6ab1f57201f5dd6ff8c9efc087f77bd0b3eb4acc",
-    "narHash": "sha256-PKTOn0lYTbnH4VKvPCU9PAPCZA2suge4fwooYy80yvM=",
-    "lastModified": 1789848980,
-    "submodules": true
   }
 }

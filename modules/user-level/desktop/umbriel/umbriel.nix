@@ -21,6 +21,11 @@ in
     xdg.config.files."umbriel/shaders.toml".text = lib.replaceStrings [ "@SHADERS@" ] [ shaders ] (
       builtins.readFile ./shaders.toml
     );
+
+    # Not in the umbriel package, so shaders.toml reaches them relative to its own directory.
+    xdg.config.files."umbriel/shaders/sentient-circuit-v2.glsl".source =
+      ./shaders/sentient-circuit-v2.glsl;
+    xdg.config.files."umbriel/shaders/sentient-spark.glsl".source = ./shaders/sentient-spark.glsl;
   };
 
   # umbriel resolves its [include] at startup, before noctalia can regenerate the palette on a wiped root

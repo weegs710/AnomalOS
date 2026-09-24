@@ -1,0 +1,496 @@
+diff --git a/docs/user/barrulus-shaders.md b/docs/user/barrulus-shaders.md
+index c498905..ff7f28b 100644
+--- a/docs/user/barrulus-shaders.md
++++ b/docs/user/barrulus-shaders.md
+@@ -44,6 +44,7 @@ shader = "shaders/barrulus/rings/lightning.glsl"
+ animated = true
+ speed = 1.0
+ padding = 24
++palette = false
+ ```
+
+ Paths resolve relative to the TOML file containing `shader`, including included
+@@ -77,6 +78,40 @@ match.app_id = "^foot$"
+ enabled = false
+ ```
+
++## Following the configured colours
++
++`palette = false` is the default and leaves every shader on the colours written
++into its own GLSL. Setting it true publishes four `[colors]` entries to the
++shader in this order:
++
++| Index | Key |
++| --- | --- |
++| 0 | `accent_primary` |
++| 1 | `accent_secondary` |
++| 2 | `warning` |
++| 3 | `error` |
++
++Only those four are published. The remaining entries are backgrounds, near-greys
++and duplicates, which muddy a cycle rather than extend it.
++
++```toml
++[appearance.border_shader]
++shader = "shaders/barrulus/rings/rainbow-ripple.glsl"
++palette = true
++```
++
++A shell that rewrites `[colors]`, such as one regenerating a scheme from the
++wallpaper, therefore moves the ring with it on the next config reload. Nothing
++restarts and no shader is recompiled.
++
++Of the supplied rings, `pulse.glsl`, `rainbow-ripple.glsl` and `lightning.glsl`
++read the palette. `lightning` takes its body from the ramp and drives its core
++toward white, so the bolt stays readable whatever the scheme.
++
++The others keep their own colours whatever this key says, because their
++appearance is the effect: `fuse.glsl` is a burning fuse and `portal-lava.glsl`
++is molten rock.
++
+ `speed` is clamped to 0–10 and padding to 0–1024 logical pixels. `animated = false`
+ or speed zero freezes the shader at time zero. A compiled program that does not
+ use time never requests animation frames; comments mentioning time do not count.
+@@ -227,6 +262,22 @@ applies the configured base alpha, punched client hole and premultiplication.
+ - `ring_base_color(coords)`: configured straight base colour.
+ - `umbriel_time`: monotonic elapsed seconds multiplied by configured speed.
+ - `umbriel_scale`: physical pixels per logical pixel for antialiasing.
++- `umbriel_palette_count`: published colours, zero unless `palette = true`.
++- `umbriel_palette_at(t)`: the ramp at `t`, wrapping so `t` and `t + 1` agree.
++
++A shader chooses whether to follow the palette by testing the count, which keeps
++it correct under either setting and needs no second source file:
++
++```glsl
++vec3 tint = umbriel_palette_count > 0
++    ? umbriel_palette_at(umbriel_time * 0.08).rgb
++    : vec3(0.15, 0.8, 1.0);
++```
++
++Pass a hue-wheel shader the same position it already gives the wheel and the
++ramp cycles where the spectrum did. `umbriel_palette_at` returns
++`ring_base_color(coords)` when the count is zero, so an unguarded call degrades
++to the configured border colour rather than to black.
+
+ These shader examples are authored by Barrulus.
+
+diff --git a/examples/shaders/barrulus/rings/lightning.glsl b/examples/shaders/barrulus/rings/lightning.glsl
+index b2890c9..3b57371 100644
+--- a/examples/shaders/barrulus/rings/lightning.glsl
++++ b/examples/shaders/barrulus/rings/lightning.glsl
+@@ -62,7 +62,14 @@ vec4 ring_color(vec2 coords) {
+     float fork = exp(-abs(d - fork_center) * 18.0) * energy;
+     float spark = exp(-pow(delta / 0.007, 2.0)) * exp(-abs(d - center) * 2.2);
+     float light = core * (0.18 + 0.82 * energy) + 0.7 * fork + 0.85 * spark;
+-    rgb = mix(vec3(0.08, 0.24, 0.8), vec3(0.78, 0.94, 1.0), clamp(light, 0.0, 1.0));
++    // A zero count means the palette is off, which is how a shader keeps its own colours.
++    vec3 body = umbriel_palette_count > 0
++        ? umbriel_palette_at(umbriel_time * 0.05).rgb
++        : vec3(0.08, 0.24, 0.8);
++    vec3 tip = umbriel_palette_count > 0
++        ? mix(body, vec3(1.0), 0.75)
++        : vec3(0.78, 0.94, 1.0);
++    rgb = mix(body, tip, clamp(light, 0.0, 1.0));
+     coverage = clamp(light + halo * (0.12 + 0.48 * energy), 0.0, 1.0);
+
+     float outer_limit = min(RING_OUTSET_MULTIPLIER * width, width + ring_padding);
+diff --git a/examples/shaders/barrulus/rings/pulse.glsl b/examples/shaders/barrulus/rings/pulse.glsl
+index 7e5143d..64277bf 100644
+--- a/examples/shaders/barrulus/rings/pulse.glsl
++++ b/examples/shaders/barrulus/rings/pulse.glsl
+@@ -5,5 +5,9 @@ vec4 ring_color(vec2 coords) {
+     float coverage = smoothstep(-half_px, half_px, d)
+         * (1.0 - smoothstep(ring_width - half_px, ring_width + half_px, d));
+     float pulse = 0.65 + 0.35 * sin(umbriel_time * 2.0);
+-    return vec4(vec3(0.15, 0.8, 1.0) * pulse, coverage);
++    // A zero count means the palette is off, which is how a shader keeps its own colour.
++    vec3 tint = umbriel_palette_count > 0
++        ? umbriel_palette_at(umbriel_time * 0.08).rgb
++        : vec3(0.15, 0.8, 1.0);
++    return vec4(tint * pulse, coverage);
+ }
+diff --git a/examples/shaders/barrulus/rings/rainbow-ripple.glsl b/examples/shaders/barrulus/rings/rainbow-ripple.glsl
+index 57b1eae..47e2cc1 100644
+--- a/examples/shaders/barrulus/rings/rainbow-ripple.glsl
++++ b/examples/shaders/barrulus/rings/rainbow-ripple.glsl
+@@ -41,7 +41,10 @@ vec4 ring_color(vec2 coords) {
+     float across = clamp((distance - inner_edge) / max(thickness, 0.01), 0.0, 1.0);
+     float pigment = u - phase + 0.10 * bend + 0.025 * fine
+         + 0.025 * sin(tau * (across * 0.65 + drift * 8.0 + phase));
+-    vec3 hue = clamp(abs(fract(pigment + vec3(0.0, 2.0/3.0, 1.0/3.0)) * 6.0 - 3.0) - 1.0, 0.0, 1.0);
++    // The angular position drives the palette cycle exactly as it drove the hue wheel.
++    vec3 hue = umbriel_palette_count > 0
++        ? umbriel_palette_at(pigment).rgb
++        : clamp(abs(fract(pigment + vec3(0.0, 2.0/3.0, 1.0/3.0)) * 6.0 - 3.0) - 1.0, 0.0, 1.0);
+     float milk = clamp(0.30 + 0.18 * bend + 0.12 * pool, 0.12, 0.62);
+     vec3 rgb = mix(hue, vec3(1.0), milk);
+     float ridge = 0.48 + 0.18 * fine;
+diff --git a/src/config/config.h b/src/config/config.h
+index 10d1dd3..ba9e334 100644
+--- a/src/config/config.h
++++ b/src/config/config.h
+@@ -208,6 +208,7 @@ namespace umbriel {
+     std::string overlay;
+     bool enabled = true;
+     bool animated = true;
++    bool palette = false;
+     double speed = 1.0;
+     int padding = 0;
+     struct Light {
+diff --git a/src/config/shaders.cpp b/src/config/shaders.cpp
+index c478ca4..a77e45f 100644
+--- a/src/config/shaders.cpp
++++ b/src/config/shaders.cpp
+@@ -14,6 +14,7 @@ namespace umbriel {
+         .text("overlay", target.overlay)
+         .boolean("enabled", target.enabled)
+         .boolean("animated", target.animated)
++        .boolean("palette", target.palette)
+         .real("speed", 0.0, 10.0, target.speed)
+         .integer("padding", 0, 1024, target.padding);
+     section.sub("light", [&](Section& light) {
+diff --git a/src/view/decoration.cpp b/src/view/decoration.cpp
+index 33f5aed..4256724 100644
+--- a/src/view/decoration.cpp
++++ b/src/view/decoration.cpp
+@@ -16,6 +16,22 @@ extern "C" {
+
+ namespace umbriel {
+
++  namespace {
++    // The chromatic palette entries only; the greys and darks would mud a cycle.
++    constexpr int kRingPaletteCount = 4;
++
++    std::array<float, kRingPaletteCount * 4> ringPalette(const Config::Colors& colors) {
++      const std::array<const std::array<float, 4>*, kRingPaletteCount> ramp{
++          &colors.accentPrimary, &colors.accentSecondary, &colors.warning, &colors.error
++      };
++      std::array<float, kRingPaletteCount * 4> out{};
++      for (size_t entry = 0; entry < ramp.size(); ++entry) {
++        std::ranges::copy(*ramp[entry], out.begin() + static_cast<std::ptrdiff_t>(entry * 4));
++      }
++      return out;
++    }
++  } // namespace
++
+   // Borders
+   void ViewDecoration::ensureBorders(wlr_scene_tree* parent) {
+     if (m_borderTree != nullptr) {
+@@ -45,6 +61,12 @@ namespace umbriel {
+     const auto parameters =
+         decorationParameters(m_shaderConfig, static_cast<float>(m_shaderConfig.padding), 1.0F, m_lightSuppressed);
+     wlr_scene_border_set_shader(m_border, shader, &parameters);
++    if (shader != nullptr && m_shaderConfig.palette) {
++      const auto palette = ringPalette(config().colors);
++      wlr_scene_border_set_palette(m_border, palette.data(), kRingPaletteCount);
++    } else {
++      wlr_scene_border_set_palette(m_border, nullptr, 0);
++    }
+     const int padding = shader != nullptr ? m_shaderConfig.padding : 0;
+     if (padding != m_shaderPadding) {
+       m_shaderPadding = padding;
+diff --git a/tests/harness/checks/208_shader_palette.sh b/tests/harness/checks/208_shader_palette.sh
+new file mode 100755
+index 0000000..2021b3d
+--- /dev/null
++++ b/tests/harness/checks/208_shader_palette.sh
+@@ -0,0 +1,101 @@
++#!/usr/bin/env bash
++# An opted-in ring draws the configured palette and follows it across a reload; opting out keeps its own colour.
++set -euo pipefail
++readonly SOURCE="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../examples/shaders/barrulus/rings" && pwd)"
++readonly IMAGE="$UMBRIEL_RUNTIME_DIR/palette.png"
++readonly PALETTE="$UMBRIEL_RUNTIME_DIR/palette.toml"
++cp "$SOURCE/pulse.glsl" "$UMBRIEL_RUNTIME_DIR/ring.glsl"
++cat >> "$UMBRIEL_CONFIG" <<TOML
++[include]
++files = ["$PALETTE"]
++[layout]
++gap = 40
++[animation]
++enabled = false
++[appearance]
++border_width = 6
++outer_border_width = 0
++corner_radius = 0
++shader_fps = 20
++[appearance.shadow]
++enabled = false
++[appearance.border_shader]
++shader = "ring.glsl"
++padding = 0
++palette = true
++TOML
++
++# Every ramp entry identical makes umbriel_palette_at() constant, so the assert needs no timing.
++write_palette() {
++  cat > "$PALETTE" <<TOML
++[colors]
++accent_primary = "$1"
++accent_secondary = "$1"
++warning = "$1"
++error = "$1"
++TOML
++}
++
++write_palette "#FF00FFFF"
++"$UMBRIEL" msg config-reload > /dev/null
++"$UMBRIEL_UNMAP_CLIENT" palette-ring 700 500 > "$UMBRIEL_RUNTIME_DIR/client.log" 2>&1 &
++for _ in $(seq 80); do
++  window=$("$UMBRIEL" windows --json | jq -c '.[] | select(.title == "palette-ring")')
++  [[ -n $window ]] && (( $(jq -r .y <<< "$window") >= 6 )) && break
++  sleep 0.025
++done
++[[ -n $window ]]
++x=$(jq -r '.x + (.w / 2 | floor)' <<< "$window")
++y=$(jq -r '.y - 3' <<< "$window")
++
++await_ring() {
++  local predicate=$1 label=$2 red green blue
++  for _ in $(seq 60); do
++    grim "$IMAGE"
++    read -r red green blue < <("$UMBRIEL_PIXEL_PROBE" "$IMAGE" pixel "$x" "$y")
++    (( $(echo "$red $green $blue" | awk "$predicate") )) && return 0
++    sleep 0.05
++  done
++  echo "$label: got $red $green $blue at $x,$y"
++  return 1
++}
++
++# The pulse envelope scales every channel, so compare channels against each other rather than absolutely.
++await_ring '{print ($1 > 60 && $3 > 60 && $2 < $1 / 2) ? 1 : 0}' "magenta palette never reached"
++
++write_palette "#00FF00FF"
++"$UMBRIEL" msg config-reload > /dev/null
++await_ring '{print ($2 > 60 && $1 < $2 / 2 && $3 < $2 / 2) ? 1 : 0}' "ring did not follow the palette change"
++
++# Opting out must restore the shader's own colour with the palette still configured.
++sed -i 's/^palette = true$/palette = false/' "$UMBRIEL_CONFIG"
++"$UMBRIEL" msg config-reload > /dev/null
++await_ring '{print ($3 > 40 && $2 > 25 && $1 < 90) ? 1 : 0}' "opting out did not restore the shader colour"
++
++# A cycling ring must place different ramp entries at different angles, which a constant ramp cannot show.
++# Red and blue interpolate through magenta and never through green, so a surviving hue wheel is detectable.
++sed -i 's/^palette = false$/palette = true/' "$UMBRIEL_CONFIG"
++cat > "$PALETTE" <<'TOML'
++[colors]
++accent_primary = "#FF0000FF"
++accent_secondary = "#FF0000FF"
++warning = "#0000FFFF"
++error = "#0000FFFF"
++TOML
++cp "$SOURCE/rainbow-ripple.glsl" "$UMBRIEL_RUNTIME_DIR/ring.glsl"
++"$UMBRIEL" msg config-reload > /dev/null
++for _ in $(seq 60); do
++  grim "$IMAGE"
++  read -r reds blues greens < <("$UMBRIEL_PIXEL_PROBE" "$IMAGE" count \
++    'r > 0.5 && g < 0.35 && b < 0.35' \
++    'b > 0.5 && r < 0.35 && g < 0.35' \
++    'g > 0.5 && r < 0.35 && b < 0.35')
++  (( reds > 30 && blues > 30 && greens == 0 )) && break
++  sleep 0.05
++done
++(( reds > 30 && blues > 30 )) \
++  || { echo "cycling ring did not spread the ramp: r=$reds b=$blues"; exit 1; }
++(( greens == 0 )) \
++  || { echo "hue wheel survived the palette: $greens green pixels off a red-blue ramp"; exit 1; }
++
++echo "opted-in ring tracked two palettes, opted out cleanly, and spread a four-entry ramp"
+diff --git a/tests/unit/config_load.cpp b/tests/unit/config_load.cpp
+index 993f4ba..e3c0749 100644
+--- a/tests/unit/config_load.cpp
++++ b/tests/unit/config_load.cpp
+@@ -2622,6 +2622,7 @@ shader_fps = 30
+ shader = "ring.glsl"
+ padding = 48
+ speed = 2
++palette = true
+ [appearance.border_shader.light]
+ enabled = true
+ spread = 90
+@@ -2642,6 +2643,7 @@ enabled = false
+     CHECK(settings.shader->file == tree.path("theme/ring.glsl"));
+   CHECK_EQ(settings.padding, 48);
+   CHECK_EQ(settings.speed, 2.0);
++  CHECK(settings.palette);
+   CHECK(settings.light.enabled);
+   CHECK_EQ(settings.light.spread, 90.0);
+   CHECK_EQ(settings.light.intensity, 1.4);
+@@ -2651,6 +2653,7 @@ enabled = false
+   CHECK(!store.config().windowRules[0].borderShader->enabled);
+   CHECK(!store.config().windowRules[0].borderShader->shader.has_value());
+   CHECK_EQ(store.config().windowRules[0].borderShader->padding, 0);
++  CHECK(!store.config().windowRules[0].borderShader->palette);
+   CHECK(!store.config().windowRules[0].borderShader->light.enabled);
+   CHECK_EQ(std::ranges::count(store.watchPaths(), tree.path("theme/ring.glsl")), 1);
+   CHECK(!containsDiagnostic(store, "unknown key"));
+diff --git a/umbrielfx/include/umbrielfx/render/pass.h b/umbrielfx/include/umbrielfx/render/pass.h
+index 4a1c183..25b0285 100644
+--- a/umbrielfx/include/umbrielfx/render/pass.h
++++ b/umbrielfx/include/umbrielfx/render/pass.h
+@@ -126,6 +126,8 @@ struct fx_render_border_options {
+ 	float outer_width;
+ 	struct wlr_render_color inner_color;
+ 	struct wlr_render_color outer_color;
++	const float *palette;
++	int palette_count;
+ };
+
+ struct fx_render_rounded_rect_grad_options {
+diff --git a/umbrielfx/include/umbrielfx/types/wlr_scene.h b/umbrielfx/include/umbrielfx/types/wlr_scene.h
+index ff67af3..92faea4 100644
+--- a/umbrielfx/include/umbrielfx/types/wlr_scene.h
++++ b/umbrielfx/include/umbrielfx/types/wlr_scene.h
+@@ -175,6 +175,9 @@ struct wlr_scene_rect {
+ 	struct clipped_region clipped_region;
+ };
+
++// Bounded so the ring palette stays a fixed-size uniform array in GLSL ES 1.00.
++#define FX_RING_PALETTE_MAX 8
++
+ /** A scene-graph node displaying a two-color rounded border in one pass */
+ struct wlr_scene_border {
+ 	struct wlr_scene_node node;
+@@ -185,6 +188,8 @@ struct wlr_scene_border {
+ 	struct clipped_region clipped_region;
+ 	struct fx_corner_radii seam_corners;
+ 	struct fx_corner_radii outer_corners;
++	float palette[FX_RING_PALETTE_MAX * 4];
++	int palette_count;
+ };
+
+ /** A scene-graph node displaying a shadow */
+@@ -679,6 +684,14 @@ void wlr_scene_border_set_geometry(struct wlr_scene_border *border,
+ void wlr_scene_border_set_colors(struct wlr_scene_border *border,
+ 		const float inner_color[4], const float outer_color[4]);
+
++/**
++ * The ordered colors a ring shader reads through umbriel_palette_at().
++ * Colors are straight, not premultiplied. A count of zero leaves shaders on
++ * ring_base_color(). Counts above FX_RING_PALETTE_MAX are truncated.
++ */
++void wlr_scene_border_set_palette(struct wlr_scene_border *border,
++		const float *colors, int count);
++
+ /**
+  * Add a node displaying a shadow to the scene-graph.
+  */
+diff --git a/umbrielfx/internal/render/fx_renderer/decoration.h b/umbrielfx/internal/render/fx_renderer/decoration.h
+index c62e112..ad0af0b 100644
+--- a/umbrielfx/internal/render/fx_renderer/decoration.h
++++ b/umbrielfx/internal/render/fx_renderer/decoration.h
+@@ -11,7 +11,7 @@ struct fx_decoration_shader {
+   GLuint program;
+   GLint proj, tex_proj, position;
+   GLint size, raster, origin, radius, width, padding, time, scale, color, linear;
+-  GLint emission, threshold, emission_bounds;
++  GLint emission, threshold, emission_bounds, palette, palette_count;
+   GLuint light_program;
+   GLint light_proj, light_tex_proj, light_position, light_tex, light_gain, light_linear;
+ };
+diff --git a/umbrielfx/render/fx_renderer/fx_pass.c b/umbrielfx/render/fx_renderer/fx_pass.c
+index d539c50..c7342e9 100644
+--- a/umbrielfx/render/fx_renderer/fx_pass.c
++++ b/umbrielfx/render/fx_renderer/fx_pass.c
+@@ -1766,6 +1766,10 @@ decoration_uniforms(struct fx_decoration_shader* shader, const struct fx_render_
+       shader->color, alpha > 0 ? base.r / alpha : 0, alpha > 0 ? base.g / alpha : 0, alpha > 0 ? base.b / alpha : 0,
+       alpha
+   );
++  const int palette_count = options->palette != NULL ? options->palette_count : 0;
++  glUniform1i(shader->palette_count, palette_count);
++  if (palette_count > 0)
++    glUniform4fv(shader->palette, palette_count, options->palette);
+   glUniform1i(shader->linear, linear);
+   glUniform1i(shader->emission, false);
+ }
+diff --git a/umbrielfx/render/fx_renderer/shaders.c b/umbrielfx/render/fx_renderer/shaders.c
+index 2990037..679d347 100644
+--- a/umbrielfx/render/fx_renderer/shaders.c
++++ b/umbrielfx/render/fx_renderer/shaders.c
+@@ -627,6 +627,8 @@ struct fx_decoration_shader *fx_decoration_shader_create(struct wlr_renderer *re
+ 	shader->emission = glGetUniformLocation(shader->program, "ring_emission");
+ 	shader->threshold = glGetUniformLocation(shader->program, "ring_threshold");
+ 	shader->emission_bounds = glGetUniformLocation(shader->program, "ring_emission_bounds");
++	shader->palette = glGetUniformLocation(shader->program, "umbriel_palette");
++	shader->palette_count = glGetUniformLocation(shader->program, "umbriel_palette_count");
+ 	shader->light_program = link_program(decoration_light_frag_src);
+ 	shader->light_proj = glGetUniformLocation(shader->light_program, "proj");
+ 	shader->light_tex_proj = glGetUniformLocation(shader->light_program, "tex_proj");
+diff --git a/umbrielfx/render/fx_renderer/shaders/decoration.frag b/umbrielfx/render/fx_renderer/shaders/decoration.frag
+index d5083c3..4cbbd87 100644
+--- a/umbrielfx/render/fx_renderer/shaders/decoration.frag
++++ b/umbrielfx/render/fx_renderer/shaders/decoration.frag
+@@ -13,6 +13,8 @@ uniform bool ring_linear;
+ uniform bool ring_emission;
+ uniform float ring_threshold;
+ uniform vec4 ring_emission_bounds;
++uniform vec4 umbriel_palette[8];
++uniform int umbriel_palette_count;
+
+ float ring_distance(vec2 coords) {
+     vec2 half_size = ring_size * 0.5;
+@@ -25,6 +27,22 @@ float ring_distance(vec2 coords) {
+     return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - radius;
+ }
+ vec4 ring_base_color(vec2 coords) { return ring_color_base; }
++// GLSL ES 1.00 only indexes a uniform array by constant expression, so the loop counter is the index.
++vec4 umbriel_palette_at(float position) {
++    if (umbriel_palette_count <= 0) return ring_color_base;
++    float span = float(umbriel_palette_count);
++    float scaled = fract(position) * span;
++    float index = floor(scaled);
++    float next = mod(index + 1.0, span);
++    vec4 from = ring_color_base;
++    vec4 to = ring_color_base;
++    for (int i = 0; i < 8; i++) {
++        if (i >= umbriel_palette_count) break;
++        if (float(i) == index) from = umbriel_palette[i];
++        if (float(i) == next) to = umbriel_palette[i];
++    }
++    return mix(from, to, scaled - index);
++}
+ vec4 ring_color(vec2 coords);
+ vec3 ring_srgb_to_linear(vec3 rgb) {
+     return mix(rgb / 12.92, pow(max((rgb + 0.055) / 1.055, 0.0), vec3(2.4)),
+diff --git a/umbrielfx/types/scene/wlr_scene.c b/umbrielfx/types/scene/wlr_scene.c
+index d5e572f..25ebec3 100644
+--- a/umbrielfx/types/scene/wlr_scene.c
++++ b/umbrielfx/types/scene/wlr_scene.c
+@@ -1937,6 +1937,19 @@ void wlr_scene_border_set_colors(
+   scene_node_update(&border->node, NULL);
+ }
+
++void wlr_scene_border_set_palette(struct wlr_scene_border* border, const float* colors, int count) {
++  const int clamped = colors == NULL || count < 0 ? 0 : count > FX_RING_PALETTE_MAX ? FX_RING_PALETTE_MAX : count;
++  const size_t bytes = (size_t)clamped * 4 * sizeof(float);
++  if (border->palette_count == clamped && (clamped == 0 || memcmp(border->palette, colors, bytes) == 0)) {
++    return;
++  }
++  border->palette_count = clamped;
++  if (clamped > 0) {
++    memcpy(border->palette, colors, bytes);
++  }
++  scene_node_update(&border->node, NULL);
++}
++
+ static void scene_buffer_handle_buffer_release(struct wl_listener* listener, void* data) {
+   struct wlr_scene_buffer* scene_buffer = wl_container_of(listener, scene_buffer, buffer_release);
+
+@@ -3153,6 +3166,8 @@ static void scene_entry_render(struct render_list_entry* entry, const struct ren
+           .outer_color = {
+               border->outer_color[0], border->outer_color[1], border->outer_color[2], border->outer_color[3]
+           },
++          .palette = border->palette,
++          .palette_count = border->palette_count,
+       };
+       fx_render_pass_add_decoration_light(
+           fx_pass, &light->light_cache, &ring, &light->parameters.light, &dst_box, &render_region
+@@ -3256,6 +3271,8 @@ static void scene_entry_render(struct render_list_entry* entry, const struct ren
+                 .b = scene_border->outer_color[2],
+                 .a = scene_border->outer_color[3],
+             },
++            .palette = scene_border->palette,
++            .palette_count = scene_border->palette_count,
+         }
+     );
+     break;

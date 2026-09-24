@@ -1,16 +1,29 @@
 [include]
-files = ["@SHADERS@/biri/collection.toml"]
+files = ["@SHADERS@/barrulus/collection.toml"]
 
 [shaders]
 global = "cursor.comet"
 
+# The shipped presets carry no palette key, so the two that follow noctalia's scheme are declared here.
+[shaders.preset."window.smoke"]
+scope = "window"
+palette = true
+passes = [{ shader = "@SHADERS@/barrulus/window/rainbow-smoke.glsl" }]
+
+# Relative to this file, so it resolves under ~/.config/umbriel rather than the package.
+[shaders.preset."window.sentient"]
+scope = "window"
+palette = true
+passes = [{ shader = "shaders/sentient-circuit-v2.glsl" }]
+
 [appearance.border_shader]
 enabled = true
 animated = true
+palette = true
 speed = 0.35
 # The ring outset is capped at 2.5x the border width, so less than that clips the sparks.
 padding = 30
-shader = "@SHADERS@/biri/rings/lightning.glsl"
+shader = "@SHADERS@/barrulus/rings/lightning.glsl"
 
 [appearance.border_shader.light]
 enabled = true
@@ -19,14 +32,14 @@ intensity = 1.6
 threshold = 0.5
 
 [animation.workspaces]
-shader = "@SHADERS@/reveal.glsl"
+shader = "@SHADERS@/barrulus/animations/reveal.glsl"
 
 [animation.pair.lightning-melt.open]
-shader = "@SHADERS@/biri/lightning-open.glsl"
+shader = "@SHADERS@/barrulus/animations/lightning-open.glsl"
 duration_ms = 400
 curve = "linear"
 
 [animation.pair.lightning-melt.close]
-shader = "@SHADERS@/biri/melt-close.glsl"
+shader = "@SHADERS@/barrulus/animations/melt-close.glsl"
 duration_ms = 500
 curve = "linear"

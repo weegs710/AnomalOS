@@ -283,12 +283,12 @@ default_floating = true
 [[window_rule]]
 match.title = "^ghostty$"
 default_workspace = 2
-shader = "window.rainbow-smoke"
+shader = "window.sentient"
 
 [[window_rule]]
 match.title = "^rmpc$"
 default_workspace = 5
-shader = "window.fire-tendrils"
+shader = "window.smoke"
 
 # xdg-shell has no PiP role, and the two engines spell the title differently.
 [[window_rule]]
@@ -312,7 +312,7 @@ default_workspace = 1
 [[window_rule]]
 match.app_id = "^dev\\.zed\\.Zed$"
 default_workspace = 2
-shader = "window.rainbow-smoke"
+shader = "window.sentient"
 
 [[window_rule]]
 match.app_id = "^helium$"
@@ -322,18 +322,15 @@ focus_on_activate = true
 [[window_rule]]
 match.app_id = "^steam$"
 default_workspace = 4
-shader = "window.crt"
 
 [[window_rule]]
 match.app_id = "^steam_app_.*$"
 default_workspace = 4
-shader = "window.crt"
 focus_on_activate = true
 
 [[window_rule]]
 match.app_id = "^gamescope$"
 default_workspace = 4
-shader = "window.crt"
 default_fullscreen = true
 focus_on_activate = true
 
@@ -341,7 +338,6 @@ focus_on_activate = true
 match.app_id = "^steam_proton$"
 match.title = "^Diablo II$"
 default_workspace = 4
-shader = "window.crt"
 
 [[window_rule]]
 match.app_id = "^steam_proton$"
@@ -356,7 +352,6 @@ default_workspace = 4
 [[window_rule]]
 match.app_id = "^(heroic|crawl-tiles)$"
 default_workspace = 4
-shader = "window.crt"
 
 # These render through their own shader stacks, so a compositor filter would land on top of one.
 [[window_rule]]
@@ -373,13 +368,11 @@ default_workspace = 4
 match.app_id = "^dotnet$"
 match.title = "^OpenRA - "
 default_workspace = 4
-shader = "window.crt"
 
 # xwayland with no app_id, so the title is the only selector
 [[window_rule]]
 match.title = "^AM2R$"
 default_workspace = 4
-shader = "window.crt"
 
 [[window_rule]]
 match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape|org\\.pwmt\\.zathura)$"

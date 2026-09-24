@@ -1,8 +1,8 @@
-diff --git a/examples/shaders/biri/cursor/comet-0.glsl b/examples/shaders/biri/cursor/comet-0.glsl
-index 958b500..53aaad3 100644
---- a/examples/shaders/biri/cursor/comet-0.glsl
-+++ b/examples/shaders/biri/cursor/comet-0.glsl
-@@ -4,7 +4,7 @@ float biri_smoothstep(float a, float b, float x) {
+diff --git a/examples/shaders/barrulus/cursor/comet-0.glsl b/examples/shaders/barrulus/cursor/comet-0.glsl
+index 1aeb64b..21e1d79 100644
+--- a/examples/shaders/barrulus/cursor/comet-0.glsl
++++ b/examples/shaders/barrulus/cursor/comet-0.glsl
+@@ -4,10 +4,10 @@ float barrulus_smoothstep(float a, float b, float x) {
      return a > b ? 1.0 - smoothstep(b, a, x) : smoothstep(a, b, x);
  }
  vec4 postprocess(vec3 c){
@@ -11,3 +11,7 @@ index 958b500..53aaad3 100644
              float hue = fract(umbriel_time*0.3);
              vec3 rb = 0.5 + 0.5*cos(6.2831*(hue + vec3(0.0,0.33,0.67)));
              float d = length(c.xy*umbriel_output_size - umbriel_cursor);
+-            float fresh = barrulus_smoothstep(40.0, 0.0, d)*0.9;
++            float fresh = barrulus_smoothstep(14.0, 0.0, d)*0.9;
+             return vec4(max(prev, rb*fresh), 1.0);
+         }
