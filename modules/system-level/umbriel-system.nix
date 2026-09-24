@@ -13,10 +13,8 @@
   programs.umbriel.package =
     inputs.bumbriel.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
       (old: {
-        # The first two are PRs 4 and 5 against barrulus/bumbriel verbatim; drop them once merged.
+        # Local tuning of the shipped shaders, not upstream and not meant to be.
         patches = (old.patches or [ ]) ++ [
-          ./umbriel-ring-palette-patch
-          ./umbriel-postprocess-palette-patch
           ./umbriel-lightning-ring-patch
           ./umbriel-comet-decay-patch
         ];

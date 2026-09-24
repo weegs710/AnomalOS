@@ -11,9 +11,9 @@
     "type": "github",
     "owner": "barrulus",
     "repo": "bumbriel",
-    "rev": "9ab7c0a0d17e0cf4f8d66a094b6242f46f45eda1",
-    "narHash": "sha256-NzCQLb288lndShlqYkmoLAc15h8AmGOREEoV0Po5h+k=",
-    "lastModified": 1790190125
+    "rev": "a2580532e718c7b744c5a4ae1131414703300dd0",
+    "narHash": "sha256-U3pgnEx510wM90Qc1uXvZOkheh2NtUsIpBtvtfUc1Z0=",
+    "lastModified": 1790257458
   },
   "concord": {
     "type": "github",
