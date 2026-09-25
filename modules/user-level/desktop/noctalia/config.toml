@@ -30,6 +30,9 @@ widget_spacing = 10
 [brightness]
 enable_ddcutil = false
 
+[hooks]
+colors_changed = "/nix/store/kadka8fvpwy7gqp867lq9dr6n180lrqj-umbriel-0.1.0/bin/umbriel msg config-reload"
+
 [idle.behavior.lock]
 command = "noctalia:session lock"
 enabled = false
@@ -230,25 +233,29 @@ transition_duration = 500
 transition_on_startup = false
 
     [wallpaper.automation]
-    enabled = false
-    interval_seconds = 60
+    enabled = true
+    interval_seconds = 300
     order = "random"
     recursive = true
 
     [wallpaper.default]
-    path = "/home/weegs/.local/share/wallpapers/the-neon-lit-streets-of-a-cyberpunk-anime-night-city-with-this-captivating-4k-wallpaper-generated-ai-free-photo.jpg"
+    path = "/home/weegs/.local/share/wallpapers/eve/Alpha primary.webp"
 
     [wallpaper.last]
-    path = "/home/weegs/.local/share/wallpapers/the-neon-lit-streets-of-a-cyberpunk-anime-night-city-with-this-captivating-4k-wallpaper-generated-ai-free-photo.jpg"
+    path = "/home/weegs/.local/share/wallpapers/eve/Alpha primary.webp"
 
     [wallpaper.monitors.FALLBACK]
     path = "/home/weegs/.local/share/wallpapers/cannabis-grow-room.webp"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/weegs/.local/share/wallpapers/the-neon-lit-streets-of-a-cyberpunk-anime-night-city-with-this-captivating-4k-wallpaper-generated-ai-free-photo.jpg"
+    path = "/home/weegs/.local/share/wallpapers/eve/Alpha primary.webp"
 
     [wallpaper.monitors.HDMI-A-2]
     path = "/home/weegs/.local/share/wallpapers/Sampo.webp"
+
+    [[wallpaper.favorite]]
+    path = "/home/weegs/.local/share/wallpapers/eve/The uni blob.webp"
+    theme_mode = "auto"
 
 [weather]
 effects = true
