@@ -24,7 +24,6 @@ empty_above = false
 enabled = true
 duration_ms = 300
 curve = "easeout"
-preset = "lightning-melt"
 
 [animation.beziers]
 zoom = [0.1, 0.9, 0.1, 1.2]
@@ -108,7 +107,7 @@ center_focused = "never"
 mode = "2560x1440@144"
 position = [0, 0]
 scale = 1.0
-vrr = "always"
+vrr = "fullscreen"
 workspaces = [
   "COMMS",
   "DEV",
@@ -283,12 +282,12 @@ default_floating = true
 [[window_rule]]
 match.title = "^ghostty$"
 default_workspace = 2
-shader = "window.sentient"
+effects = ["window.sentient"]
 
 [[window_rule]]
 match.title = "^rmpc$"
 default_workspace = 5
-shader = "window.smoke"
+effects = ["window.smoke"]
 
 # xdg-shell has no PiP role, and the two engines spell the title differently.
 [[window_rule]]
@@ -312,7 +311,7 @@ default_workspace = 1
 [[window_rule]]
 match.app_id = "^dev\\.zed\\.Zed$"
 default_workspace = 2
-shader = "window.sentient"
+effects = ["window.sentient"]
 
 [[window_rule]]
 match.app_id = "^helium$"

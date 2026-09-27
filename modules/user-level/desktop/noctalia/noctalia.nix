@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -24,6 +25,12 @@ in
     programs.noctalia = {
       enable = true;
       systemd.enable = true;
+      # The stock umbriel template emits upstream's per-rule border_color keys, which bumbriel drops; it takes them on [colors.border].
+      package =
+        inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+          (old: {
+            patches = (old.patches or [ ]) ++ [ ./noctalia-umbriel-template-patch ];
+          });
     };
 
     # umbriel publishes the session environment after graphical-session.target activates, so the unit inherits none of it
