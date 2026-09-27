@@ -701,53 +701,35 @@ def main [] {
 
     let assemble = $"($dotfiles)/assemble.nix"
 
-    # umbriel version from meson.build at the locked rev; it is a flake input, not a nixpkgs attr
+    # the compositor is a flake input, not a nixpkgs attr, and meson.build now defers to a VERSION file
     print "  · umbriel version..."
-    let umbriel_rev = ($lock | get "umbriel" | get rev)
-    let umbriel_meson = (
+    let umbriel_rev = ($lock | get "bumbriel" | get rev)
+    let umbriel_raw = (
         try {
-            ^gh api $"repos/noctalia-dev/umbriel/contents/meson.build?ref=($umbriel_rev)" --jq '.content'
+            ^gh api $"repos/barrulus/bumbriel/contents/VERSION?ref=($umbriel_rev)" --jq '.content'
             | ^base64 -d
         } catch { "" }
     )
     let umbriel_ver = (
-        if ($umbriel_meson | str length) > 0 {
-            let base = (
-                $umbriel_meson
-                | lines
-                | where { ($in | str contains "version") and ($in | str contains "'") and (not ($in | str contains "meson_version")) }
-                | first
-                | parse --regex "'(?P<ver>[0-9][^']*)'"
-                | get ver
-                | first
-            )
-            $"v($base)"
+        if (($umbriel_raw | str trim | str length) > 0) {
+            $"v(($umbriel_raw | str trim))"
         } else { "?" }
     )
     print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.nushell.version")
     print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.ghostty.version")
     print "  · zed version..."; let zed_ver = (nix-eval-raw $assemble "nixosConfigurations.HX99G.pkgs.zed-editor.version")
-    # noctalia version from meson.build at the locked rev (pkgs.version is stale nixpkgs metadata)
+    # read at the locked rev because pkgs.version is stale nixpkgs metadata; meson.build now defers to a VERSION file
     print "  · noctalia version..."
     let noctalia_rev  = ($lock | get "noctalia" | get rev)
-    let noctalia_meson = (
+    let noctalia_raw = (
         try {
-            ^gh api $"repos/noctalia-dev/noctalia/contents/meson.build?ref=($noctalia_rev)" --jq '.content'
+            ^gh api $"repos/noctalia-dev/noctalia/contents/VERSION?ref=($noctalia_rev)" --jq '.content'
             | ^base64 -d
         } catch { "" }
     )
     let noctalia_ver  = (
-        if ($noctalia_meson | str length) > 0 {
-            let base = (
-                $noctalia_meson
-                | lines
-                | where { ($in | str contains "version") and ($in | str contains "'") and (not ($in | str contains "meson_version")) }
-                | first
-                | parse --regex "'(?P<ver>[0-9][^']*)'"
-                | get ver
-                | first
-            )
-            $"v($base)"
+        if (($noctalia_raw | str trim | str length) > 0) {
+            $"v(($noctalia_raw | str trim))"
         } else { "?" }
     )
     print "  · system package count..."; let sys_pkg_count  = (nix-eval-count $assemble "nixosConfigurations.HX99G.config.environment.systemPackages")

@@ -15,14 +15,6 @@
     "narHash": "sha256-DCCWGOtO60Is9gMn2giqFamtllrLcn34sUcaw2vZzOE=",
     "lastModified": 1790351086
   },
-  "concord": {
-    "type": "github",
-    "owner": "chojs23",
-    "repo": "concord",
-    "rev": "72814de8eace05f16562872b7cde1ed3a9c17e0e",
-    "narHash": "sha256-5Zsznpg7kMPEl8Dpk9+al9J03eCKtfHbS9sYZOvJpjI=",
-    "lastModified": 1790076519
-  },
   "dusklight": {
     "type": "git",
     "url": "https://github.com/TwilitRealm/dusklight.git",
