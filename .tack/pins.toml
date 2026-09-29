@@ -7,7 +7,7 @@ nixpkgs = "https://channels.nixos.org/{path}/nixexprs.tar.zst"
 nixpkgs = "nixpkgs"
 
 [inputs.nixpkgs]
-url = "gh:NixOS/nixpkgs/nixos-unstable"
+url = "nixpkgs:nixos-unstable"
 
 # Not followed -- the cached build is keyed to its own pinned nixpkgs; following forces a local recompile.
 [inputs.nix-cachyos-kernel]
