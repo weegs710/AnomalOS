@@ -1,6 +1,7 @@
 [shorturls]
 gh = "github:{path}"
 cb = "git+https://codeberg.org/{path}"
+nixpkgs = "https://channels.nixos.org/{path}/nixexprs.tar.zst"
 
 [all_follow]
 nixpkgs = "nixpkgs"
