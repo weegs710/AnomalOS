@@ -12,7 +12,7 @@ in
     enable = true;
     control = "sufficient";
     settings = {
-      interactive = true;
+      cue = true;
       authFile = u2fKeys;
     };
   };
@@ -20,7 +20,6 @@ in
   security.pam.services = {
     login.u2fAuth = true;
     sudo.u2fAuth = true;
-    ly.u2fAuth = true;
     polkit-1.u2fAuth = true;
   };
 

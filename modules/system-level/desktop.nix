@@ -96,17 +96,16 @@ only.gate { tags = [ "desktop" ]; }
 
   services.displayManager = {
     defaultSession = "umbriel";
-    ly = {
+    noctalia-greeter = {
       enable = true;
+      # Stock greeter answers the first PAM prompt with an empty submit, which starves pam_unix's fallback behind the u2f cue.
+      # See: https://github.com/noctalia-dev/noctalia-greeter/issues/90
+      package = pkgs.noctalia-greeter.overrideAttrs (old: {
+        patches = (old.patches or [ ]) ++ [ ./noctalia-greeter-empty-submit-patch ];
+      });
       settings = {
-        clock = "%-I:%M %p  %a, %d %b %Y";
-        save = true;
-        show_tty = true;
-        hide_borders = true;
-        animation = "matrix";
-        animation_frame_delay = 1;
-        cmatrix_fg = "0x0004D1F9";
-        cmatrix_head_col = "0x0166E4FD";
+        session.default = "Umbriel";
+        auth.allow_empty_password = true;
       };
     };
   };

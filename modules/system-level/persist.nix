@@ -77,10 +77,6 @@ in
           file = "/etc/ssh/ssh_host_ed25519_key.pub";
           how = "symlink";
         }
-        {
-          file = "/etc/ly/save.txt";
-          how = "symlink";
-        }
       ];
       users.${username} = {
         directories = [

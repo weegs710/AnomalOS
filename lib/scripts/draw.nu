@@ -777,7 +777,7 @@ def main [] {
     }
 
     print "→ Evaluating system / gaming / weegsware..."
-    let dm = (["ly" "gdm" "sddm" "greetd"] | where {|d|
+    let dm = (["noctalia-greeter" "ly" "gdm" "sddm"] | where {|d|
         let r = (^nix eval --impure -f $assemble $"nixosConfigurations.HX99G.config.services.displayManager.($d).enable" | complete)
         ($r.exit_code == 0) and (($r.stdout | str trim) == "true")
     } | get -o 0 | default "?")

@@ -1,0 +1,16 @@
+diff --git a/src/greeter/greeter_surface.cpp b/src/greeter/greeter_surface.cpp
+index 1e709b1..78f2e3f 100644
+--- a/src/greeter/greeter_surface.cpp
++++ b/src/greeter/greeter_surface.cpp
+@@ -1389,9 +1389,9 @@ void GreeterSurface::tryAuthenticate() {
+     if (m_onAuthBeginRequested && !m_onAuthBeginRequested(this)) {
+       return;
+     }
+-    // Arm the typed input (possibly empty) to answer the first secret prompt.
++    // An empty submit defers to device modules, so only typed input may answer a prompt before it is shown.
+     m_pendingResponse = m_password;
+-    m_hasPendingResponse = true;
++    m_hasPendingResponse = !m_password.empty();
+     m_authenticating = true;
+     kLog.info("greetd: create_session for '{}'", m_username);
+     if (!m_greetdClient->requestCreateSession(m_username)) {

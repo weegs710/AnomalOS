@@ -28,7 +28,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <circle cx="292" cy="207" r="5" fill="#3dffb0" opacity="0.25"/>
 <circle cx="292" cy="207" r="3" fill="#3dffb0"/>
 <text x="306" y="211" font-size="13" fill="#e6f2ec" font-weight="700">nixpkgs</text>
-<text x="306" y="229" font-size="9" fill="#93b3ab" opacity="0.6">NixOS/nixpkgs/nixos-unstable</text>
+<text x="306" y="229" font-size="9" fill="#93b3ab" opacity="0.6">nixpkgs:nixos-unstable</text>
 <rect x="533" y="195" rx="5" width="27" height="15" fill="#517269" opacity="0.22"/>
 <text x="547" y="205" font-size="8" fill="#a6c3ba" font-weight="600" text-anchor="middle">root</text>
 <rect x="600" y="186" rx="9" width="300" height="56" fill="#151c24" stroke="#517269" stroke-width="1.5"/>
