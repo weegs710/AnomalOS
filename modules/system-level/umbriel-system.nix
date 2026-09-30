@@ -15,7 +15,6 @@
       (old: {
         # Local tuning of the shipped shaders, not upstream and not meant to be.
         patches = (old.patches or [ ]) ++ [
-          ./umbriel-lightning-ring-patch
           ./umbriel-comet-decay-patch
         ];
       });

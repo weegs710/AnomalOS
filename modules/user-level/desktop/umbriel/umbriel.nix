@@ -23,9 +23,9 @@ in
     );
 
     # Not in the umbriel package, so shaders.toml reaches them relative to its own directory.
-    xdg.config.files."umbriel/shaders/sentient-circuit-v2.glsl".source =
-      ./shaders/sentient-circuit-v2.glsl;
-    xdg.config.files."umbriel/shaders/sentient-spark.glsl".source = ./shaders/sentient-spark.glsl;
+    xdg.config.files."umbriel/shaders/anomalos.glsl".source = ./shaders/anomalos.glsl;
+    xdg.config.files."umbriel/shaders/anomalos-surge.glsl".source = ./shaders/anomalos-surge.glsl;
+    xdg.config.files."umbriel/shaders/anomalos-ring.glsl".source = ./shaders/anomalos-ring.glsl;
   };
 
   # umbriel resolves its [include] at startup, before noctalia can regenerate the palette on a wiped root

@@ -1,46 +1,51 @@
 [include]
 files = ["@SHADERS@/barrulus/collection.toml"]
 
-# The shipped definitions carry no palette key, so the two that follow noctalia's scheme are declared here.
+# The shipped definition carries no palette key, so smoke is redeclared here to follow noctalia's scheme.
 [effects."window.smoke".content]
 palette = true
 passes = [{ shader = "@SHADERS@/barrulus/window/rainbow-smoke.glsl" }]
 
 # Relative to this file, so it resolves under ~/.config/umbriel rather than the package.
-[effects."window.sentient".content]
+[effects.anomalos.content]
 palette = true
-passes = [{ shader = "shaders/sentient-circuit-v2.glsl" }]
+passes = [{ shader = "shaders/anomalos.glsl" }]
 
-# collection.toml registers no rings, so the lightning border is declared here with its own tuning.
-[effects.lightning-ring.border.outer]
+# anomalos-surge.glsl paces its glitch beat off its own DURATION, so the two must change together.
+[effects.anomalos.open]
+duration_ms = 1800
+curve = "linear"
+palette = true
+passes = [{ shader = "shaders/anomalos-surge.glsl" }]
+
+# speed stays 1.0 so the ring's clock matches anomalos.glsl's and both glitch on the same beat.
+[effects.anomalos-ring.border.outer]
 enabled = true
 animated = true
 palette = true
-speed = 0.35
-# The ring outset is capped at 2.5x the border width, so less than that clips the sparks.
-padding = 30
-passes = [{ shader = "@SHADERS@/barrulus/rings/lightning.glsl" }]
+speed = 1.0
+padding = 8
+passes = [{ shader = "shaders/anomalos-ring.glsl" }]
 
-[effects.lightning-ring.border.outer.light]
+[effects.anomalos-ring.border.outer.light]
 enabled = true
-spread = 80
-intensity = 1.6
+spread = 24
+intensity = 0.8
 threshold = 0.5
 
-[effects.lightning-ring.border.inner]
+[effects.anomalos-ring.border.inner]
+enabled = false
+
+# Defines only the content leaf, so a rule selecting it keeps the global border and open.
+[effects.no-content.content]
 enabled = false
 
 # reveal.glsl ships without a definition of its own, so the workspace leaf is declared here.
 [effects.workspace-reveal.workspace]
 passes = [{ shader = "@SHADERS@/barrulus/animations/reveal.glsl" }]
 
-# animations.toml already owns the name lightning-melt, so this open/close hybrid takes its own.
-[effects.lightning-melt-mix.open]
-duration_ms = 400
-curve = "linear"
-passes = [{ shader = "@SHADERS@/barrulus/animations/lightning-open.glsl" }]
-
-[effects.lightning-melt-mix.close]
+# The collection's melt owns an open leaf too, which would fight anomalos for it.
+[effects.melt-close.close]
 duration_ms = 500
 curve = "linear"
 passes = [{ shader = "@SHADERS@/barrulus/animations/melt-close.glsl" }]
@@ -49,7 +54,8 @@ passes = [{ shader = "@SHADERS@/barrulus/animations/melt-close.glsl" }]
 [appearance]
 effects = [
   "cursor.comet",
-  "lightning-ring",
+  "anomalos",
+  "anomalos-ring",
   "workspace-reveal",
-  "lightning-melt-mix",
+  "melt-close",
 ]

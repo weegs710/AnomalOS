@@ -299,7 +299,6 @@ default_floating = true
 [[window_rule]]
 match.title = "^ghostty$"
 default_workspace = 2
-effects = ["window.sentient"]
 
 [[window_rule]]
 match.title = "^rmpc$"
@@ -314,6 +313,7 @@ default_pinned = true
 default_floating_size_px = { width = 512, height = 288 }
 default_position = { x = 2034, y = 62, anchor = "top_left" }
 opacity = 1.0
+effects = ["no-content"]
 
 [[window_rule]]
 match.app_id = "^vesktop$"
@@ -322,13 +322,13 @@ default_workspace = 1
 [[window_rule]]
 match.app_id = "^dev\\.zed\\.Zed$"
 default_workspace = 2
-effects = ["window.sentient"]
 
 [[window_rule]]
 match.app_id = "^helium$"
 default_workspace = 3
 focus_on_activate = true
 opacity = 1.0
+effects = ["no-content"]
 
 [[window_rule]]
 match.app_id = "^steam$"
@@ -340,6 +340,7 @@ match.app_id = "^steam_app_.*$"
 default_workspace = 4
 focus_on_activate = true
 opacity = 1.0
+effects = ["no-content"]
 
 [[window_rule]]
 match.app_id = "^gamescope$"
@@ -347,12 +348,14 @@ default_workspace = 4
 default_fullscreen = true
 focus_on_activate = true
 opacity = 1.0
+effects = ["no-content"]
 
 [[window_rule]]
 match.app_id = "^steam_proton$"
 match.title = "^Diablo II$"
 default_workspace = 4
 opacity = 1.0
+effects = ["no-content"]
 
 [[window_rule]]
 match.app_id = "^steam_proton$"
@@ -366,21 +369,29 @@ default_workspace = 4
 opacity = 1.0
 
 [[window_rule]]
-match.app_id = "^(heroic|crawl-tiles)$"
+match.app_id = "^heroic$"
 default_workspace = 4
 opacity = 1.0
+
+[[window_rule]]
+match.app_id = "^crawl-tiles$"
+default_workspace = 4
+opacity = 1.0
+effects = ["no-content"]
 
 # These render through their own shader stacks, so a compositor filter would land on top of one.
 [[window_rule]]
 match.app_id = "^(zelda3|dev\\.twilitrealm\\.dusk|2s2h\\.elf|DinosaurPlanetRecompiled)$"
 default_workspace = 4
 opacity = 1.0
+effects = ["no-content"]
 
 # the wrapper basename is the app_id, leading dot included
 [[window_rule]]
 match.app_id = "^\\.EltaleRecompiled-wrapped$"
 default_workspace = 4
 opacity = 1.0
+effects = ["no-content"]
 
 # all three openra games report app_id dotnet, so only the title separates them
 [[window_rule]]
@@ -388,16 +399,19 @@ match.app_id = "^dotnet$"
 match.title = "^OpenRA - "
 default_workspace = 4
 opacity = 1.0
+effects = ["no-content"]
 
 # xwayland with no app_id, so the title is the only selector
 [[window_rule]]
 match.title = "^AM2R$"
 default_workspace = 4
 opacity = 1.0
+effects = ["no-content"]
 
 [[window_rule]]
 match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape|org\\.pwmt\\.zathura)$"
 default_workspace = 5
+effects = ["no-content"]
 
 [[window_rule]]
 match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape)$"
