@@ -47,6 +47,21 @@ in
     ];
   };
 
+  # ids pinned for users owning persisted state so allocation order can never reassign them
+  users.users = {
+    jellyfin.uid = 997;
+    prowlarr.uid = 991;
+    bazarr.uid = 999;
+    navidrome.uid = 995;
+    suricata.uid = 986;
+  };
+  users.groups = {
+    media.gid = 996;
+    prowlarr.gid = 990;
+    navidrome.gid = 995;
+    suricata.gid = 984;
+  };
+
   preservation.enable = true;
 
   preservation.preserveAt = {
@@ -54,7 +69,11 @@ in
       commonMountOptions = [ "x-gvfs-hide" ];
       directories = [
         "/var/log"
-        "/var/lib/nixos"
+        # uid/gid maps must exist before initrd activation creates users, or ids get reallocated alphabetically
+        {
+          directory = "/var/lib/nixos";
+          inInitrd = true;
+        }
         "/var/db/sudo"
         "/var/lib/tailscale"
         "/etc/NetworkManager/system-connections"
