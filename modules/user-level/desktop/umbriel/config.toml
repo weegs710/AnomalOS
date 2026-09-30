@@ -89,6 +89,10 @@ softness = 8
 offset_x = 2
 offset_y = 2
 
+[render.effects]
+# otherwise screencopy clients are handed a second frame rendered without the effects
+in_capture = true
+
 [layout]
 # edgePad is derived as gap + border, so one value covers both the old gaps_in and gaps_out.
 gap = 5
@@ -210,7 +214,7 @@ follows_mouse = false
 "XF86Launch8" = "spawn:noctalia msg panel-toggle control-center"
 
 "Mod" = "spawn:wlr-which-key"
-"Print" = "spawn:wlr-which-key -k s"
+"Print" = { action = 'spawn:grim - | satty -f - --fullscreen --initial-tool crop --copy-command wl-copy -o "~/Pictures/shots/shot_%Y%m%d_%H%M%S.png" --actions-on-enter save-to-clipboard,save-to-file,exit', repeat = false }
 "Ctrl+Alt+Delete" = "spawn:wlr-which-key -k q"
 "Mod+Tab" = "spawn:noctalia msg panel-toggle control-center"
 

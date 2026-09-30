@@ -22,7 +22,6 @@ let
   svcAuth = "${shared}/svc-auth.nu";
   svcUser = "${shared}/svc-user.nu";
   camToggleScript = "${shared}/cam-toggle.nu";
-  facecamToggleScript = "${shared}/facecam-toggle.nu";
 
   noct = cmd: "noctalia msg ${cmd}";
 
@@ -42,10 +41,6 @@ let
   journalCmd = "ghostty --title=journal -e journalctl -f";
   zpoolCmd = "ghostty --title=zpool -e nu ${runPause} zpool status";
   tailscaleCmd = "ghostty --title=tailscale -e nu ${runPause} tailscale status";
-
-  # the menu owns the foreground, so the shot has to wait for it to tear down
-  shotRegionCmd = "nu -c 'sleep 500ms; ^noctalia msg screenshot-region'";
-  facecamToggleCmd = "nu ${facecamToggleScript}";
 
   # system units restart in a float so the polkit FIDO prompt is the guard; user units just notify
   svcRestart = unit: "ghostty --title=svc-auth -e nu ${svcAuth} ${unit}";
@@ -243,10 +238,6 @@ let
             (run "z" "zpool status" zpoolCmd)
             (run "t" "tailscale status" tailscaleCmd)
           ])
-        ])
-        (sub "s" "capture" [
-          (run "r" "region" shotRegionCmd)
-          (run "f" "facecam toggle" facecamToggleCmd)
         ])
         (sub "q" "session" [
           (run "l" "lock" (noct "session lock; umbriel msg dpms-off"))

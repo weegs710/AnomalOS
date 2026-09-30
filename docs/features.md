@@ -51,7 +51,7 @@ The scratchpad holds things you summon and dismiss: `Super+grave` toggles it, `S
 | `Super+Backspace`                  | resize submap; arrows resize, `Esc` or `Enter` exits                   |
 | `Super+LMB` / `RMB`                | drag / resize window, built into the compositor                        |
 | `Super+Tab`                        | noctalia control center                                                |
-| `Print`                            | capture menu                                                           |
+| `Print`                            | screenshot into satty: crop, annotate, `Enter` copies and saves        |
 | `Super+F1` to `Super+F6`           | save the last 10s / 30s / 60s / 5m / 10m / 30m of the replay buffer    |
 | `Super+F12`                        | start / stop an on-demand recording                                    |
 | `Ctrl+Alt+Delete`                  | power menu                                                             |
@@ -59,7 +59,7 @@ The scratchpad holds things you summon and dismiss: `Super+grave` toggles it, `S
 | `XF86Launch6` / `Launch7`          | toggle scratchpad / close window (trackball)                           |
 | `XF86Launch8`                      | noctalia control center (trackball)                                    |
 
-wlr-which-key is the primary navigation layer. Tapping `Super` opens it, and it is where app launches, system tools, service control, screenshots and the power menu live. The menu is in `modules/user-level/desktop/wlrwk-umb/wlrwk-umb.nix`, with submenus for comms, games, media, tools, audio, notifications, wireless, services and capture. Capture is a region screenshot and the facecam toggle; the screenshot is noctalia's own, with a confirm step that copies on `Ctrl+c`, saves on `Ctrl+s`, or does both on `Enter`.
+wlr-which-key is the primary navigation layer. Tapping `Super` opens it, and it is where app launches, system tools, service control and the power menu live. The menu is in `modules/user-level/desktop/wlrwk-umb/wlrwk-umb.nix`, with submenus for comms, games, media, tools, audio, notifications, wireless and services.
 
 ## Security
 
