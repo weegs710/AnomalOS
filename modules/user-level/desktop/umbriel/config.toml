@@ -214,6 +214,16 @@ follows_mouse = false
 "Ctrl+Alt+Delete" = "spawn:wlr-which-key -k q"
 "Mod+Tab" = "spawn:noctalia msg panel-toggle control-center"
 
+# allowed when inhibited so a game grabbing the keyboard can't swallow a save
+"Mod+F1" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 10 && notify-send "saving last 10s"', repeat = false, allow_when_inhibited = true }
+"Mod+F2" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 30 && notify-send "saving last 30s"', repeat = false, allow_when_inhibited = true }
+"Mod+F3" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 60 && notify-send "saving last 60s"', repeat = false, allow_when_inhibited = true }
+"Mod+F4" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 300 && notify-send "saving last 5m"', repeat = false, allow_when_inhibited = true }
+"Mod+F5" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 600 && notify-send "saving last 10m"', repeat = false, allow_when_inhibited = true }
+"Mod+F6" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 1800 && notify-send "saving last 30m"', repeat = false, allow_when_inhibited = true }
+# gsr-cli has no state query, and stop fails exactly when nothing is recording
+"Mod+F12" = { action = 'spawn:if gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" stop-replay-recording; then notify-send "recording stopped"; else gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" start-replay-recording && notify-send "recording"; fi', repeat = false, allow_when_inhibited = true }
+
 "Mod+BackSpace" = { action = "submap:resize", repeat = false }
 "submap[resize],Right" = "window-modify-primary-extent:0.05"
 "submap[resize],Left" = "window-modify-primary-extent:-0.05"

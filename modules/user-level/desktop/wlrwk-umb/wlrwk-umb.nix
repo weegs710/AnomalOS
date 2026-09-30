@@ -21,11 +21,8 @@ let
   runPause = "${shared}/run-pause.nu";
   svcAuth = "${shared}/svc-auth.nu";
   svcUser = "${shared}/svc-user.nu";
-  clipStart = "${shared}/clip-start.nu";
   camToggleScript = "${shared}/cam-toggle.nu";
   facecamToggleScript = "${shared}/facecam-toggle.nu";
-  clipSave = "${shared}/clip-save.nu";
-  clipEncode = "${shared}/clip-encode.nu";
 
   noct = cmd: "noctalia msg ${cmd}";
 
@@ -48,10 +45,7 @@ let
 
   # the menu owns the foreground, so the shot has to wait for it to tear down
   shotRegionCmd = "nu -c 'sleep 500ms; ^noctalia msg screenshot-region'";
-  clipScreenCmd = "nu ${clipStart} screen";
-  clipMicCmd = "nu ${clipStart} mic";
   facecamToggleCmd = "nu ${facecamToggleScript}";
-  stopRecordCmd = ''nu -c 'if ("/tmp/gsr.pid" | path exists) { let pid = (open /tmp/gsr.pid | str trim | into int); ^kill -INT $pid; ^rm /tmp/gsr.pid; while (ps | where pid == $pid | is-not-empty) { sleep 100ms } }; ^wlr-which-key ~/.config/wlr-which-key/post-record.yaml' '';
 
   # system units restart in a float so the polkit FIDO prompt is the guard; user units just notify
   svcRestart = unit: "ghostty --title=svc-auth -e nu ${svcAuth} ${unit}";
@@ -251,11 +245,8 @@ let
           ])
         ])
         (sub "s" "capture" [
-          (run "x" "stop recording" stopRecordCmd)
           (run "r" "region" shotRegionCmd)
-          (run "c" "start recording" clipScreenCmd)
           (run "f" "facecam toggle" facecamToggleCmd)
-          (run "v" "record + mic" clipMicCmd)
         ])
         (sub "q" "session" [
           (run "l" "lock" (noct "session lock; umbriel msg dpms-off"))
@@ -263,13 +254,6 @@ let
           (run "r" "reboot" (noct "session reboot"))
           (run "s" "shutdown" (noct "session shutdown"))
         ])
-      ];
-    };
-
-    "post-record" = commonSettings // {
-      menu = [
-        (run "s" "save clip" "ghostty --title=name-clip -e nu ${clipSave} ${clipEncode}")
-        (run "d" "discard" "rm -f /tmp/gsr_clip.mp4")
       ];
     };
   };
