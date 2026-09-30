@@ -420,3 +420,8 @@ opacity = 1.0
 [[layer_rule]]
 match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd|desktop-widget-[^\"]*)$"
 blur = false
+
+# noctalia-wallpaper is a full-output background layer, so a content effect would cover the whole desktop.
+[[layer_rule]]
+match.namespace = "^noctalia-"
+effects = ["no-content"]
