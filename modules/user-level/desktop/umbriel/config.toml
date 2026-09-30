@@ -28,6 +28,8 @@ curve = "easeout"
 [animation.beziers]
 zoom = [0.1, 0.9, 0.1, 1.2]
 overshot = [0.13, 0.99, 0.29, 1.5]
+# Tiled moves fold any overshoot into forward travel, which stalls mid-slide, so this curve must end at 1.0.
+snappy_flat = [0.05, 0.9, 0.1, 1.0]
 
 [animation.windows_in]
 enabled = true
@@ -44,8 +46,8 @@ style = "fade"
 
 [animation.windows_move]
 enabled = true
-duration_ms = 300
-curve = "zoom"
+duration_ms = 250
+curve = "snappy_flat"
 
 [animation.workspaces]
 enabled = true
