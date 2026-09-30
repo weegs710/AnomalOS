@@ -107,6 +107,18 @@ only.gate { tags = [ "desktop" ]; }
         session.default = "Umbriel";
         auth.allow_empty_password = true;
       };
+      # noctalia auto-syncs on every wallpaper rotation, which would otherwise demand auth each time
+      passwordlessSyncUsers = [ config.mySystem.user.name ];
     };
   };
+
+  # sync.toml + wallpaper copies, so the greeter boots wearing the last synced look
+  preservation.preserveAt."/persist".directories = [
+    {
+      directory = "/var/lib/noctalia-greeter";
+      user = "greeter";
+      group = "greeter";
+      mode = "0750";
+    }
+  ];
 }

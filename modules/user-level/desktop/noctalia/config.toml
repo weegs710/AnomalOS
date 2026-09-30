@@ -31,7 +31,7 @@ widget_spacing = 10
 enable_ddcutil = false
 
 [hooks]
-colors_changed = "/nix/store/kadka8fvpwy7gqp867lq9dr6n180lrqj-umbriel-0.1.0/bin/umbriel msg config-reload"
+colors_changed = "/nix/store/bvqr63knpbvhm9chmcjxr9ipr327d8wv-umbriel-0.1.0/bin/umbriel msg config-reload"
 
 [idle.behavior.lock]
 command = "noctalia:session lock"
@@ -188,6 +188,9 @@ telemetry_enabled = false
     enabled = true
     speed = 1.0
 
+    [shell.greeter_sync]
+    auto_sync = true
+
     [shell.panel]
     borders = true
     shadow = true
@@ -239,16 +242,16 @@ transition_on_startup = false
     recursive = true
 
     [wallpaper.default]
-    path = "/home/weegs/.local/share/wallpapers/eve/Alpha primary.webp"
+    path = "/home/weegs/.local/share/wallpapers/eve/1DQ1-A Keepstar Rifter Bash-10.webp"
 
     [wallpaper.last]
-    path = "/home/weegs/.local/share/wallpapers/eve/Alpha primary.webp"
+    path = "/home/weegs/.local/share/wallpapers/eve/1DQ1-A Keepstar Rifter Bash-10.webp"
 
     [wallpaper.monitors.FALLBACK]
     path = "/home/weegs/.local/share/wallpapers/cannabis-grow-room.webp"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/weegs/.local/share/wallpapers/eve/Alpha primary.webp"
+    path = "/home/weegs/.local/share/wallpapers/eve/1DQ1-A Keepstar Rifter Bash-10.webp"
 
     [wallpaper.monitors.HDMI-A-2]
     path = "/home/weegs/.local/share/wallpapers/Sampo.webp"

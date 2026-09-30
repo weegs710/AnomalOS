@@ -54,12 +54,14 @@ in
     bazarr.uid = 999;
     navidrome.uid = 995;
     suricata.uid = 986;
+    greeter.uid = 984;
   };
   users.groups = {
     media.gid = 996;
     prowlarr.gid = 990;
     navidrome.gid = 995;
     suricata.gid = 984;
+    greeter.gid = 979;
   };
 
   preservation.enable = true;
