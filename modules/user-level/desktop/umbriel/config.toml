@@ -217,6 +217,7 @@ follows_mouse = false
 "Print" = { action = 'spawn:grim - | satty -f - --fullscreen --initial-tool crop --copy-command wl-copy -o "~/Pictures/shots/shot_%Y%m%d_%H%M%S.png" --actions-on-enter save-to-clipboard,save-to-file,exit', repeat = false }
 "Ctrl+Alt+Delete" = "spawn:wlr-which-key -k q"
 "Mod+Tab" = "spawn:noctalia msg panel-toggle control-center"
+"Alt+Tab" = { action = "overview-toggle", repeat = false }
 
 # allowed when inhibited so a game grabbing the keyboard can't swallow a save
 "Mod+F1" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 10 && notify-send "saving last 10s"', repeat = false, allow_when_inhibited = true }

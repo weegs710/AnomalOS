@@ -51,6 +51,7 @@ The scratchpad holds things you summon and dismiss: `Super+grave` toggles it, `S
 | `Super+Backspace`                  | resize submap; arrows resize, `Esc` or `Enter` exits                   |
 | `Super+LMB` / `RMB`                | drag / resize window, built into the compositor                        |
 | `Super+Tab`                        | noctalia control center                                                |
+| `Alt+Tab`                          | workspace overview                                                     |
 | `Print`                            | screenshot into satty: crop, annotate, `Enter` copies and saves        |
 | `Super+F1` to `Super+F6`           | save the last 10s / 30s / 60s / 5m / 10m / 30m of the replay buffer    |
 | `Super+F12`                        | start / stop an on-demand recording                                    |
