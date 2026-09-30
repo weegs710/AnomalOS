@@ -2,7 +2,11 @@ diff --git a/examples/shaders/barrulus/rings/lightning.glsl b/examples/shaders/b
 index 3b57371..199ff95 100644
 --- a/examples/shaders/barrulus/rings/lightning.glsl
 +++ b/examples/shaders/barrulus/rings/lightning.glsl
-@@ -4,6 +4,7 @@ const float SPEED = 1.0;
+@@ -1,9 +1,10 @@
+ // Shader by Barrulus, adapted for Umbriel.
+-const int LIGHTNING_COUNT = 1; // 1-4, clamped
++const int LIGHTNING_COUNT = 4; // 1-4, clamped
+ const float SPEED = 1.0;
  const float STRENGTH = 0.9;
  const float BRIGHTNESS = 1.0;
  const float RING_OUTSET_MULTIPLIER = 3.5;

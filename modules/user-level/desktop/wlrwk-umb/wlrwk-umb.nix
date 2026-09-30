@@ -26,9 +26,6 @@ let
   noct = cmd: "noctalia msg ${cmd}";
 
   terminalCmd = "ghostty --title=ghostty";
-  cairnCmd = "ghostty --title=Cairn -e claude-launcher cairn";
-  # helium hands off to its running pid, so a launch rule whiffs -- focus WEB instead
-  heliumCmd = "umbriel msg workspace-switch:3 ; helium";
   discordCmd = "/etc/profiles/per-user/${username}/bin/vesktop";
   gajimCmd = "/etc/profiles/per-user/${username}/bin/gajim";
   btopCmd = "ghostty --title=btop -e btop";
@@ -156,9 +153,8 @@ let
         # hot path
         (run "Return" "ghostty" terminalCmd)
         (run "space" "launcher" (noct "panel-toggle launcher"))
-        (run "h" "helium" heliumCmd)
+        (run "h" "helium" "helium")
         (run "e" "zed" "zeditor")
-        (run "C" "Cairn" cairnCmd)
         (run "r" "rmpc" rmpcCmd)
         (run "x" "Median XL" "d2launcher")
         # categories

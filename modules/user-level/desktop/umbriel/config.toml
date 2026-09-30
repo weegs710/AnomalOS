@@ -161,7 +161,7 @@ size = 32
 hardware_cursor = true
 
 [input.focus]
-follows_mouse = false
+follows_mouse = true
 
 [keybinds]
 # Direct terminal and launcher so the session is never dependent on wlr-which-key coming up.
@@ -238,6 +238,9 @@ follows_mouse = false
 "submap[resize],Return" = "submap:reset"
 
 [[window_rule]]
+opacity = 0.9
+
+[[window_rule]]
 match.is_alone = true
 default_scrolling_extent = 1.0
 
@@ -253,9 +256,10 @@ default_floating = true
 match.app_id = "^zenity$"
 default_floating = true
 
-# Polkit prompts must land in front; stay_focused has no umbriel equivalent so activation focus is the whole guard.
 [[window_rule]]
 match.app_id = "^gcr-prompter$"
+default_focused = true
+default_pinned = true
 focus_on_activate = true
 
 [[window_rule]]
@@ -272,7 +276,7 @@ default_floating_size_px = { width = 1600, height = 900 }
 default_position = { x = 531, y = 262, anchor = "top_left" }
 
 [[window_rule]]
-match.title = "^(cam-list|zpool|tailscale|svc-status)$"
+match.title = "^(zpool|tailscale|svc-status)$"
 default_floating = true
 default_floating_size_px = { width = 1200, height = 700 }
 default_position = { x = 680, y = 370, anchor = "top_left" }
@@ -282,12 +286,8 @@ match.title = "^svc-auth$"
 default_floating = true
 default_floating_size_px = { width = 900, height = 320 }
 default_position = { x = 830, y = 560, anchor = "top_left" }
-
-[[window_rule]]
-match.title = "^name-clip$"
-default_floating = true
-default_floating_size_px = { width = 360, height = 130 }
-default_position = { x = 0, y = 0, anchor = "center" }
+default_focused = true
+default_pinned = true
 focus_on_activate = true
 
 [[window_rule]]
@@ -311,13 +311,7 @@ default_floating = true
 default_pinned = true
 default_floating_size_px = { width = 512, height = 288 }
 default_position = { x = 2034, y = 62, anchor = "top_left" }
-
-[[window_rule]]
-match.app_id = "^phone-cam$"
-default_floating = true
-default_pinned = true
-default_floating_size_px = { width = 480, height = 270 }
-default_position = { x = 2071, y = 127, anchor = "top_left" }
+opacity = 1.0
 
 [[window_rule]]
 match.app_id = "^vesktop$"
@@ -332,26 +326,31 @@ effects = ["window.sentient"]
 match.app_id = "^helium$"
 default_workspace = 3
 focus_on_activate = true
+opacity = 1.0
 
 [[window_rule]]
 match.app_id = "^steam$"
 default_workspace = 4
+opacity = 1.0
 
 [[window_rule]]
 match.app_id = "^steam_app_.*$"
 default_workspace = 4
 focus_on_activate = true
+opacity = 1.0
 
 [[window_rule]]
 match.app_id = "^gamescope$"
 default_workspace = 4
 default_fullscreen = true
 focus_on_activate = true
+opacity = 1.0
 
 [[window_rule]]
 match.app_id = "^steam_proton$"
 match.title = "^Diablo II$"
 default_workspace = 4
+opacity = 1.0
 
 [[window_rule]]
 match.app_id = "^steam_proton$"
@@ -362,35 +361,45 @@ default_floating = true
 [[window_rule]]
 match.app_id = "^es-de$"
 default_workspace = 4
+opacity = 1.0
 
 [[window_rule]]
 match.app_id = "^(heroic|crawl-tiles)$"
 default_workspace = 4
+opacity = 1.0
 
 # These render through their own shader stacks, so a compositor filter would land on top of one.
 [[window_rule]]
 match.app_id = "^(zelda3|dev\\.twilitrealm\\.dusk|2s2h\\.elf|DinosaurPlanetRecompiled)$"
 default_workspace = 4
+opacity = 1.0
 
 # the wrapper basename is the app_id, leading dot included
 [[window_rule]]
 match.app_id = "^\\.EltaleRecompiled-wrapped$"
 default_workspace = 4
+opacity = 1.0
 
 # all three openra games report app_id dotnet, so only the title separates them
 [[window_rule]]
 match.app_id = "^dotnet$"
 match.title = "^OpenRA - "
 default_workspace = 4
+opacity = 1.0
 
 # xwayland with no app_id, so the title is the only selector
 [[window_rule]]
 match.title = "^AM2R$"
 default_workspace = 4
+opacity = 1.0
 
 [[window_rule]]
 match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape|org\\.pwmt\\.zathura)$"
 default_workspace = 5
+
+[[window_rule]]
+match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape)$"
+opacity = 1.0
 
 [[layer_rule]]
 match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd|desktop-widget-[^\"]*)$"
