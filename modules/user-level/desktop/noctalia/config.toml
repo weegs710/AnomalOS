@@ -31,7 +31,7 @@ widget_spacing = 10
 enable_ddcutil = false
 
 [hooks]
-colors_changed = "/nix/store/zwny4p641milkn171v02g2clixqqbicz-umbriel-0.1.0/bin/umbriel msg config-reload"
+colors_changed = "/nix/store/29zfga3rp2scqn8h3fdjqg9gixd5lqjs-umbriel-0.1.0/bin/umbriel msg config-reload"
 
 [idle.behavior.lock]
 command = "noctalia:session lock"
@@ -214,10 +214,10 @@ enabled = true
 
 [theme]
 builtin = "Eldritch"
-custom_palette = "Cymagentan"
+custom_palette = "sh1-6p-18-vib"
 mode = "dark"
 pure_black_dark = true
-source = "wallpaper"
+source = "custom"
 wallpaper_scheme = "vibrant"
 
     [theme.templates]
@@ -242,16 +242,16 @@ transition_on_startup = false
     recursive = true
 
     [wallpaper.default]
-    path = "/home/weegs/.local/share/wallpapers/eve/3KNK-A-7.webp"
+    path = "/home/weegs/.local/share/wallpapers/eve/SH1-6P-18.webp"
 
     [wallpaper.last]
-    path = "/home/weegs/.local/share/wallpapers/eve/3KNK-A-7.webp"
+    path = "/home/weegs/.local/share/wallpapers/eve/SH1-6P-18.webp"
 
     [wallpaper.monitors.FALLBACK]
     path = "/home/weegs/.local/share/wallpapers/cannabis-grow-room.webp"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/weegs/.local/share/wallpapers/eve/3KNK-A-7.webp"
+    path = "/home/weegs/.local/share/wallpapers/eve/SH1-6P-18.webp"
 
     [wallpaper.monitors.HDMI-A-2]
     path = "/home/weegs/.local/share/wallpapers/Sampo.webp"
