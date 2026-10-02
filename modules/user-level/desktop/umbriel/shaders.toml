@@ -1,61 +1,33 @@
 [include]
-files = ["@SHADERS@/barrulus/collection.toml"]
-
-# The shipped definition carries no palette key, so smoke is redeclared here to follow noctalia's scheme.
-[effects."window.smoke".content]
-palette = true
-passes = [{ shader = "@SHADERS@/barrulus/window/rainbow-smoke.glsl" }]
+files = ["@EFFECTS@/animation/reveal/effect.toml"]
 
 # Relative to this file, so it resolves under ~/.config/umbriel rather than the package.
-[effects.anomalos.content]
+[effects.preset.anomalos]
+kind = "window"
 palette = true
-passes = [{ shader = "shaders/anomalos.glsl" }]
-
-# anomalos-surge.glsl paces its glitch beat off its own DURATION, so the two must change together.
-[effects.anomalos.open]
-duration_ms = 1800
-curve = "linear"
-palette = true
-passes = [{ shader = "shaders/anomalos-surge.glsl" }]
+shader = "shaders/anomalos.glsl"
 
 # speed stays 1.0 so the ring's clock matches anomalos.glsl's and both glitch on the same beat.
-[effects.anomalos-ring.border.outer]
-enabled = true
-animated = true
+[effects.preset.anomalos-ring]
+kind = "border"
 palette = true
+animated = true
 speed = 1.0
 padding = 8
-passes = [{ shader = "shaders/anomalos-ring.glsl" }]
+shader = "shaders/anomalos-ring.glsl"
 
-[effects.anomalos-ring.border.outer.light]
-enabled = true
+[effects.preset.anomalos-ring.light]
 spread = 24
 intensity = 0.8
 threshold = 0.5
 
-[effects.anomalos-ring.border.inner]
-enabled = false
+[effects.preset.anomalos-surge]
+kind = "animation"
+palette = true
+shader = "shaders/anomalos-surge.glsl"
 
-# Defines only the content leaf, so a rule selecting it keeps the global border and open.
-[effects.no-content.content]
-enabled = false
-
-# reveal.glsl ships without a definition of its own, so the workspace leaf is declared here.
-[effects.workspace-reveal.workspace]
-passes = [{ shader = "@SHADERS@/barrulus/animations/reveal.glsl" }]
-
-# The collection's melt owns an open leaf too, which would fight anomalos for it.
-[effects.melt-close.close]
-duration_ms = 500
-curve = "linear"
-passes = [{ shader = "@SHADERS@/barrulus/animations/melt-close.glsl" }]
-
-# Registering a definition selects nothing, so every effect above is named here.
-[appearance]
-effects = [
-  "cursor.comet",
-  "anomalos",
-  "anomalos-ring",
-  "workspace-reveal",
-  "melt-close",
-]
+[effects]
+window = "anomalos"
+border = "anomalos-ring"
+# otherwise screencopy clients are handed a second frame rendered without the effects
+in_capture = true

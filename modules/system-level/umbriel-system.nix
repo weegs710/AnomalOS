@@ -10,14 +10,7 @@
   hardware.graphics.enable = true;
 
   programs.umbriel.enable = true;
-  programs.umbriel.package =
-    inputs.bumbriel.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
-      (old: {
-        # Local tuning of the shipped shaders, not upstream and not meant to be.
-        patches = (old.patches or [ ]) ++ [
-          ./umbriel-comet-decay-patch
-        ];
-      });
+  programs.umbriel.package = inputs.bumbriel.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   xdg.portal = {
     enable = true;

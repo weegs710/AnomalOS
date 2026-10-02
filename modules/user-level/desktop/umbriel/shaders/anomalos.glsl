@@ -161,14 +161,14 @@ void sh_edge(vec2 q0, vec2 dir, float len, float edge_id, float t, float period,
     }
 }
 
-vec4 postprocess(vec3 coords) {
+vec4 window(vec2 coords) {
     float scale = max(umbriel_scale, 0.01);
-    vec2 size = umbriel_size / scale;
-    vec2 p = coords.xy * size;
+    vec2 size = umbriel_size;
+    vec2 p = coords * size;
     float t = umbriel_time;
     float aa = 1.0 / scale;
     // umbriel_time is shared by every window, so the size is the only per-window seed available.
-    float seed = sh_hash(floor(umbriel_size) * 0.013 + 0.5);
+    float seed = sh_hash(floor(size * scale) * 0.013 + 0.5);
 
     float tick = floor(t / STEP);
     float roll = sh_hash(vec2(tick, 5.3));
@@ -186,8 +186,8 @@ vec4 postprocess(vec3 coords) {
         * (sh_hash(vec2(tick, 53.0 + seed)) < 0.5 ? -1.0 : 1.0)
         * TEAR_PX * (0.5 + 0.5 * sh_hash(vec2(tick, 59.0 + seed)));
 
-    vec2 uv = coords.xy - vec2(flinch * tear * scale / max(umbriel_size.x, 1.0), 0.0);
-    vec4 source = tex2D_screen(uv);
+    vec2 uv = coords - vec2(flinch * tear / max(size.x, 1.0), 0.0);
+    vec4 source = umbriel_sample(uv);
 
     // A zero count means the palette is off, which is how a shader keeps its own colours.
     bool pal = umbriel_palette_count > 0;
@@ -204,9 +204,9 @@ vec4 postprocess(vec3 coords) {
     vec3 result = original;
 
     if (flinch > 0.5) {
-        float dx = FLINCH_PX * scale / max(umbriel_size.x, 1.0);
-        vec4 sa = tex2D_screen(uv - vec2(dx, 0.0));
-        vec4 sb = tex2D_screen(uv + vec2(dx, 0.0));
+        float dx = FLINCH_PX / max(size.x, 1.0);
+        vec4 sa = umbriel_sample(uv - vec2(dx, 0.0));
+        vec4 sb = umbriel_sample(uv + vec2(dx, 0.0));
         float la = dot(sa.rgb / max(sa.a, 0.0001), LUMA);
         float lb = dot(sb.rgb / max(sb.a, 0.0001), LUMA);
         result += fringe_a * max(la - lc, 0.0) + fringe_b * max(lb - lc, 0.0);
@@ -240,12 +240,12 @@ vec4 postprocess(vec3 coords) {
         result += glow * protect * TRACE_STRENGTH * (1.0 + 0.6 * flinch);
     }
 
-    float scan = 0.5 + 0.5 * sin(coords.y * umbriel_size.y * 3.14159);
+    float scan = 0.5 + 0.5 * sin(p.y * scale * 3.14159);
     result *= mix(1.0 - SCANLINE_DEPTH, 1.0, scan);
-    float triad = mod(floor(coords.x * umbriel_size.x), 3.0);
+    float triad = mod(floor(p.x * scale), 3.0);
     vec3 grille = triad < 1.0 ? vec3(1.0, 0.5, 0.5) : (triad < 2.0 ? vec3(0.5, 1.0, 0.5) : vec3(0.5, 0.5, 1.0));
     result *= mix(vec3(1.0), grille, GRILLE_DEPTH);
-    vec2 cc = coords.xy - 0.5;
+    vec2 cc = coords - 0.5;
     result *= 1.0 - VIGNETTE * smoothstep(0.1, 0.5, dot(cc, cc));
     float sweep = exp(-pow((coords.y - (fract(t / ROLL_PERIOD) * 1.4 - 0.2)) / 0.06, 2.0));
     result += trace * sweep * ROLL_STRENGTH;

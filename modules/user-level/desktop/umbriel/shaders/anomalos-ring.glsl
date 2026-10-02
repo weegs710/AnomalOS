@@ -28,6 +28,11 @@ const float TENDRIL_REACH = 15.0;
 const float TUBE = 1.3; // tendrils are hollow, drawn as the two walls of a tube this wide
 const float PAD = 2.2;
 
+// The shape works in logical px from the client's top-left, so the prelude's uv distance is mapped back to that frame.
+float ring_distance(vec2 p) {
+    return umbriel_border_distance(umbriel_border_hole.xy + p / umbriel_size);
+}
+
 float sr_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
@@ -107,11 +112,12 @@ vec2 sr_shape(vec2 p, vec2 size, float t, float aa) {
     return vec2(max(max(lines, dash * 0.7), max(crescent, td.x)), crescent * 0.8 + td.y);
 }
 
-vec4 ring_color(vec2 coords) {
+vec4 border(vec2 uv) {
+    vec2 coords = (uv - umbriel_border_hole.xy) * umbriel_size;
     float t = umbriel_time;
     float scale = max(umbriel_scale, 0.01);
     float aa = 1.0 / scale;
-    vec2 size = ring_size;
+    vec2 size = umbriel_border_hole.zw * umbriel_size;
     // Same seed anomalos.glsl derives from its own window size, so both pick the same tear bands.
     float seed = sr_hash(floor(size * scale) * 0.013 + 0.5);
 
@@ -160,5 +166,5 @@ vec4 ring_color(vec2 coords) {
     col *= 1.0 + FLICKER * (sr_hash(vec2(floor(t * 30.0), 71.0)) - 0.5);
 
     float alpha = clamp(max(max(f.x, min(f.y, 1.0)), max(ga, gb)), 0.0, 1.0);
-    return vec4(clamp(col / max(alpha, 0.001), 0.0, 1.0), alpha);
+    return vec4(clamp(col / max(alpha, 0.001), 0.0, 1.0) * alpha, alpha);
 }

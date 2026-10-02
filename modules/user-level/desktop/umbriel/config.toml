@@ -31,12 +31,14 @@ overshot = [0.13, 0.99, 0.29, 1.5]
 # Tiled moves fold any overshoot into forward travel, which stalls mid-slide, so this curve must end at 1.0.
 snappy_flat = [0.05, 0.9, 0.1, 1.0]
 
+# anomalos-surge.glsl paces its glitch beat off its own DURATION, so the two must change together.
 [animation.windows_in]
 enabled = true
-duration_ms = 300
-curve = "zoom"
+duration_ms = 1800
+curve = "linear"
 style = "popin"
 scale = 0.85
+effect = "anomalos-surge"
 
 [animation.windows_out]
 enabled = true
@@ -53,6 +55,7 @@ curve = "snappy_flat"
 enabled = true
 duration_ms = 300
 curve = "overshot"
+effect = "reveal"
 
 [animation.border]
 enabled = true
@@ -90,10 +93,6 @@ enabled = false
 softness = 8
 offset_x = 2
 offset_y = 2
-
-[render.effects]
-# otherwise screencopy clients are handed a second frame rendered without the effects
-in_capture = true
 
 [layout]
 # edgePad is derived as gap + border, so one value covers both the old gaps_in and gaps_out.
@@ -303,7 +302,6 @@ default_workspace = 2
 [[window_rule]]
 match.title = "^rmpc$"
 default_workspace = 5
-effects = ["window.smoke"]
 
 # xdg-shell has no PiP role, and the two engines spell the title differently.
 [[window_rule]]
@@ -313,7 +311,7 @@ default_pinned = true
 default_floating_size_px = { width = 512, height = 288 }
 default_position = { x = 2034, y = 62, anchor = "top_left" }
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 [[window_rule]]
 match.app_id = "^vesktop$"
@@ -328,7 +326,7 @@ match.app_id = "^helium$"
 default_workspace = 3
 focus_on_activate = true
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 [[window_rule]]
 match.app_id = "^steam$"
@@ -340,7 +338,7 @@ match.app_id = "^steam_app_.*$"
 default_workspace = 4
 focus_on_activate = true
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 [[window_rule]]
 match.app_id = "^gamescope$"
@@ -348,14 +346,14 @@ default_workspace = 4
 default_fullscreen = true
 focus_on_activate = true
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 [[window_rule]]
 match.app_id = "^steam_proton$"
 match.title = "^Diablo II$"
 default_workspace = 4
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 [[window_rule]]
 match.app_id = "^steam_proton$"
@@ -377,21 +375,21 @@ opacity = 1.0
 match.app_id = "^crawl-tiles$"
 default_workspace = 4
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 # These render through their own shader stacks, so a compositor filter would land on top of one.
 [[window_rule]]
 match.app_id = "^(zelda3|dev\\.twilitrealm\\.dusk|2s2h\\.elf|DinosaurPlanetRecompiled)$"
 default_workspace = 4
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 # the wrapper basename is the app_id, leading dot included
 [[window_rule]]
 match.app_id = "^\\.EltaleRecompiled-wrapped$"
 default_workspace = 4
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 # all three openra games report app_id dotnet, so only the title separates them
 [[window_rule]]
@@ -399,19 +397,19 @@ match.app_id = "^dotnet$"
 match.title = "^OpenRA - "
 default_workspace = 4
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 # xwayland with no app_id, so the title is the only selector
 [[window_rule]]
 match.title = "^AM2R$"
 default_workspace = 4
 opacity = 1.0
-effects = ["no-content"]
+window_effect = "off"
 
 [[window_rule]]
 match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape|org\\.pwmt\\.zathura)$"
 default_workspace = 5
-effects = ["no-content"]
+window_effect = "off"
 
 [[window_rule]]
 match.app_id = "^(mpv|gimp|org\\.inkscape\\.Inkscape)$"
@@ -420,8 +418,3 @@ opacity = 1.0
 [[layer_rule]]
 match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd|desktop-widget-[^\"]*)$"
 blur = false
-
-# noctalia-wallpaper is a full-output background layer, so a content effect would cover the whole desktop.
-[[layer_rule]]
-match.namespace = "^noctalia-"
-effects = ["no-content"]

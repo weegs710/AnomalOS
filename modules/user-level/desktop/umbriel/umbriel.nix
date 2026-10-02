@@ -5,7 +5,7 @@
 }:
 let
   username = config.mySystem.user.name;
-  shaders = "${config.programs.umbriel.package}/share/umbriel/shaders";
+  effects = "${config.programs.umbriel.package}/share/umbriel/effects";
 in
 {
   hjem.users.${username} = {
@@ -17,8 +17,8 @@ in
       permissions = "0644";
     };
 
-    # the shaders ship inside the umbriel package, so their path is only known at build time
-    xdg.config.files."umbriel/shaders.toml".text = lib.replaceStrings [ "@SHADERS@" ] [ shaders ] (
+    # the effect presets ship inside the umbriel package, so their path is only known at build time
+    xdg.config.files."umbriel/shaders.toml".text = lib.replaceStrings [ "@EFFECTS@" ] [ effects ] (
       builtins.readFile ./shaders.toml
     );
 

@@ -1,4 +1,4 @@
-const float DURATION = 1.8; // seconds; must match duration_ms on the open leaf
+const float DURATION = 1.8; // seconds; must match [animation.windows_in] duration_ms
 const float PEAK = 0.36;
 const float STEP = 0.15; // seconds; the SHODAN reference gif's 3-frame beat at 20 fps
 const float SURGE_BAND = 0.30; // fraction of the shorter side the bolts reach in
