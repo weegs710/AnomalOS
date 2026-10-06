@@ -1,7 +1,7 @@
 const float CELL = 56.0;
-const float TRACE_CHANCE = 0.6;
+const float TRACE_CHANCE = 0.9;
 const float EDGE_BAND = 64.0; // logical px
-const float ACTIVE_TRACES = 16.0; // an average, not a cap
+const float ACTIVE_TRACES = 40.0; // an average, not a cap
 const float LIFE = 2.6;
 const float ATTACK = 0.28;
 const float DECAY_RATE = 2.2;
@@ -35,6 +35,11 @@ const float ROLL_PERIOD = 7.0;
 const float ROLL_STRENGTH = 0.06;
 const float FLICKER = 0.03;
 const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
+
+// Music falls off with frequency, so each band is scaled by a tilt that puts its loud passages near 1.0.
+float au_band(float pos) {
+    return umbriel_audio_available() * clamp((60.0 + 220.0 * pow(pos, 2.5)) * umbriel_audio_band(pos), 0.0, 1.0);
+}
 
 float sh_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -123,13 +128,15 @@ void sh_edge(vec2 q0, vec2 dir, float len, float edge_id, float t, float period,
         vec2 a, b, c, d, e, h, g;
         float lanes, padsize;
         sh_trace(key.x, key + cycle * vec2(7.13, 3.71), len, a, b, c, d, e, h, g, lanes, padsize);
+        float bpos = (edge_id == 0.0 ? 0.0 : (edge_id == 3.0 ? 0.25 : (edge_id == 1.0 ? 0.5 : 0.75))) + 0.25 * clamp(a.x / max(len, 1.0), 0.0, 1.0);
+        float bl = au_band(0.85 * (1.0 - abs(2.0 * bpos - 1.0)));
         float attack = 1.0 - smoothstep(ATTACK * 0.7, ATTACK, age);
         float flick = floor(age * FLICKER_HZ);
         // Phosphor never drops to black between flicker frames.
         float on = age < ATTACK ? mix(0.3, 1.0, step(0.35, sh_hash(key + vec2(flick, 21.0)))) : 1.0;
         float power = age < ATTACK ? 1.6
             : exp(-(age - ATTACK) * DECAY_RATE) * (1.0 - smoothstep(LIFE - 0.3, LIFE, age));
-        float k = on * power;
+        float k = on * power * smoothstep(0.1, 0.45, bl) * (0.8 + 1.2 * bl);
         float linger = age < ATTACK ? 1.0 : exp((age - ATTACK) * DECAY_RATE * PHOSPHOR_HOLD);
         vec2 q = q0 - vec2((sh_hash(key + vec2(flick, 33.0)) - 0.5) * 2.0 * JITTER_PX * attack, 0.0);
         float s = split + ATTACK_SPLIT_PX * attack;
@@ -178,6 +185,11 @@ vec4 window(vec2 coords) {
     float start = floor(sh_hash(vec2(slot, seed * 91.0)) * floor((FLINCH_PERIOD - FLINCH_LEN) / STEP)) * STEP;
     float flinch = (into >= start && into < start + FLINCH_LEN
         && sh_hash(vec2(slot, 13.7 + seed)) < FLINCH_CHANCE) ? 1.0 : 0.0;
+    // Audio drives it: level lifts the glow, bass pulses the current, treble widens the split. The flinch stays on its timer.
+    float au = umbriel_audio_available();
+    float lvl = au * clamp(max(umbriel_audio_rms(), 0.5 * umbriel_audio_level()) / 0.045, 0.0, 1.0);
+    float bass = au_band(0.08);
+    float treble = au_band(0.7);
 
     float tear_mid = sh_hash(vec2(tick, 43.0 + seed)) * size.y;
     float tear_half = 0.5 * mix(TEAR_MIN, TEAR_MAX, sh_hash(vec2(tick, 47.0 + seed))) * size.y;
@@ -219,7 +231,7 @@ vec4 window(vec2 coords) {
         // Respawn spacing scales with the wiring so ACTIVE_TRACES holds on any window size.
         float wired = 2.0 * (size.x + size.y) / CELL * TRACE_CHANCE;
         float period = max(wired * LIFE / ACTIVE_TRACES, LIFE + 1.0);
-        float split = (0.3 + 0.7 * roll) * SPLIT_PX * (1.0 + flinch);
+        float split = (0.3 + 0.7 * roll) * SPLIT_PX * (1.0 + flinch + 3.0 * treble);
         vec2 pt = p - vec2(tear, 0.0);
         vec4 f = vec4(0.0);
         vec2 gh = vec2(0.0);
@@ -237,7 +249,7 @@ vec4 window(vec2 coords) {
             + accent * f.w * breath
             + (fringe_a * gh.x + fringe_b * gh.y) * 0.8;
         result = mix(result, mix(trace, vec3(1.0), PHOSPHOR_CORE), min(f.x, 1.0) * 0.6 * TRACE_STRENGTH);
-        result += glow * protect * TRACE_STRENGTH * (1.0 + 0.6 * flinch);
+        result += glow * protect * TRACE_STRENGTH * (1.0 + 0.6 * flinch) * (0.5 + 2.0 * lvl);
     }
 
     float scan = 0.5 + 0.5 * sin(p.y * scale * 3.14159);

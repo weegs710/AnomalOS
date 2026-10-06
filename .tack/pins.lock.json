@@ -1,7 +1,7 @@
 {
   "$declared": {
     "agenix": "github:ryantm/agenix",
-    "bumbriel": "github:barrulus/bumbriel/main",
+    "bumbriel": "github:weegs710/bumbriel/feat/audio-reactive-effects",
     "dusklight": "github:TwilitRealm/dusklight/v1.4.1",
     "hjem": "github:feel-co/hjem",
     "nix-cachyos-kernel": "github:xddxdd/nix-cachyos-kernel/release",
@@ -22,11 +22,11 @@
   },
   "bumbriel": {
     "type": "github",
-    "owner": "barrulus",
+    "owner": "weegs710",
     "repo": "bumbriel",
-    "rev": "930419d9c1e7990585f9c93a51a71ccb5f3749a4",
-    "narHash": "sha256-UM+N8KxCdpjHi6cvJ6XUFFuplyrJyLtAsug59Lc8vMM=",
-    "lastModified": 1791103691
+    "rev": "bdb108d3c90bff38ec0144a3e0d3c0769bca2d60",
+    "narHash": "sha256-Rq/7esVG4fxrGG4dkmAegn8neBlz2BR71TS0tLg6OnU=",
+    "lastModified": 1791325832
   },
   "dusklight": {
     "type": "git",

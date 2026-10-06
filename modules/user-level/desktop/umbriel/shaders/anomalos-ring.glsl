@@ -23,7 +23,7 @@ const float DASH_RADIUS = 6.5;
 const float DASH_LEN = 7.0;
 const float DASH_SPEED = 6.0;
 const float TENDRIL_CELL = 18.0;
-const float TENDRIL_CHANCE = 0.55;
+const float TENDRIL_CHANCE = 0.9;
 const float TENDRIL_REACH = 15.0;
 const float TUBE = 1.3; // tendrils are hollow, drawn as the two walls of a tube this wide
 const float PAD = 2.2;
@@ -31,6 +31,11 @@ const float PAD = 2.2;
 // The shape works in logical px from the client's top-left, so the prelude's uv distance is mapped back to that frame.
 float ring_distance(vec2 p) {
     return umbriel_border_distance(umbriel_border_hole.xy + p / umbriel_size);
+}
+
+// Music falls off with frequency, so each band is scaled by a tilt that puts its loud passages near 1.0.
+float au_band(float pos) {
+    return umbriel_audio_available() * clamp((60.0 + 220.0 * pow(pos, 2.5)) * umbriel_audio_band(pos), 0.0, 1.0);
 }
 
 float sr_hash(vec2 p) {
@@ -109,7 +114,10 @@ vec2 sr_shape(vec2 p, vec2 size, float t, float aa) {
     td = max(td, sr_tendrils(vec2(p.y, -p.x), size.y, 2.0, t, aa));
     td = max(td, sr_tendrils(vec2(p.y, p.x - size.x), size.y, 3.0, t, aa));
 
-    return vec2(max(max(lines, dash * 0.7), max(crescent, td.x)), crescent * 0.8 + td.y);
+    float bpos = clamp(s / max(2.0 * (size.x + size.y), 1.0), 0.0, 1.0);
+    float bl = au_band(0.85 * (1.0 - abs(2.0 * bpos - 1.0)));
+    float g = smoothstep(0.1, 0.45, bl) * (0.8 + 1.2 * bl);
+    return vec2(max(max(lines, dash * 0.7 * (0.6 + 0.4 * g)), max(crescent * (0.6 + 0.4 * g), td.x * (0.45 + 0.55 * g))), (crescent * 0.8 + td.y) * g);
 }
 
 vec4 border(vec2 uv) {
@@ -129,12 +137,18 @@ vec4 border(vec2 uv) {
     float start = floor(sr_hash(vec2(slot, seed * 91.0)) * floor((FLINCH_PERIOD - FLINCH_LEN) / STEP)) * STEP;
     float flinch = (into >= start && into < start + FLINCH_LEN
         && sr_hash(vec2(slot, 13.7 + seed)) < FLINCH_CHANCE) ? 1.0 : 0.0;
-    float tear_mid = sr_hash(vec2(tick, 43.0 + seed)) * size.y;
-    float tear_half = 0.5 * mix(TEAR_MIN, TEAR_MAX, sr_hash(vec2(tick, 47.0 + seed))) * size.y;
-    float tear = step(sr_hash(vec2(tick, 41.0 + seed)), TEAR_CHANCE)
+    // Audio drives it: level lifts the glow, bass pulses the current, treble widens the split. The flinch stays on its timer.
+    float au = umbriel_audio_available();
+    float lvl = au * clamp(max(umbriel_audio_rms(), 0.5 * umbriel_audio_level()) / 0.045, 0.0, 1.0);
+    float bass = au_band(0.08);
+    float treble = au_band(0.7);
+    float ttick = tick + 13.0 * floor(bass * 5.0 + treble * 3.0);
+    float tear_mid = sr_hash(vec2(ttick, 43.0 + seed)) * size.y;
+    float tear_half = 0.5 * mix(TEAR_MIN, TEAR_MAX, sr_hash(vec2(ttick, 47.0 + seed))) * size.y;
+    float tear = step(sr_hash(vec2(ttick, 41.0 + seed)), TEAR_CHANCE)
         * step(abs(coords.y - tear_mid), tear_half)
-        * (sr_hash(vec2(tick, 53.0 + seed)) < 0.5 ? -1.0 : 1.0)
-        * TEAR_PX * (0.5 + 0.5 * sr_hash(vec2(tick, 59.0 + seed)));
+        * (sr_hash(vec2(ttick, 53.0 + seed)) < 0.5 ? -1.0 : 1.0)
+        * TEAR_PX * (0.5 + 0.5 * sr_hash(vec2(ttick, 59.0 + seed))) * (0.5 + 3.0 * lvl);
 
     // A zero count means the palette is off, which is how a shader keeps its own colours.
     bool pal = umbriel_palette_count > 0;
@@ -147,14 +161,14 @@ vec4 border(vec2 uv) {
     vec3 hot = mix(trace, vec3(1.0), 0.5);
 
     vec2 p = coords - vec2(tear, 0.0);
-    float split = (0.3 + 0.7 * roll) * SPLIT_PX * (1.0 + flinch);
+    float split = (0.3 + 0.7 * roll) * SPLIT_PX * (1.0 + flinch + 3.0 * treble);
     vec2 f = sr_shape(p, size, t, aa);
     float ga = max(sr_shape(p - vec2(split, 0.0), size, t, aa).x - f.x, 0.0);
     float gb = max(sr_shape(p + vec2(split, 0.0), size, t, aa).x - f.x, 0.0);
 
-    vec3 col = trace * f.x + hot * min(f.y, 1.0) + fringe_a * ga + fringe_b * gb;
+    vec3 col = trace * f.x + hot * min(f.y * (1.0 + 3.0 * bass), 1.0) + fringe_a * ga + fringe_b * gb;
     col = mix(col, accent, min(f.y, 1.0) * 0.25);
-    col *= 1.0 + 0.6 * flinch;
+    col *= (1.0 + 0.6 * flinch) * (0.85 + 0.9 * lvl);
 
     float scan = 0.5 + 0.5 * sin(coords.y * scale * 3.14159);
     col *= mix(1.0 - SCANLINE_DEPTH, 1.0, scan);
@@ -165,6 +179,6 @@ vec4 border(vec2 uv) {
     col += trace * sweep * ROLL_STRENGTH;
     col *= 1.0 + FLICKER * (sr_hash(vec2(floor(t * 30.0), 71.0)) - 0.5);
 
-    float alpha = clamp(max(max(f.x, min(f.y, 1.0)), max(ga, gb)), 0.0, 1.0);
+    float alpha = clamp(max(max(f.x, min(f.y, 1.0)), max(ga, gb)), 0.0, 1.0) * (0.85 + 0.15 * clamp(1.5 * lvl, 0.0, 1.0));
     return vec4(clamp(col / max(alpha, 0.001), 0.0, 1.0) * alpha, alpha);
 }

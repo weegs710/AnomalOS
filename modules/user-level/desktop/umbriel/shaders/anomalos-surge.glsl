@@ -11,6 +11,11 @@ const float TEAR_MIN = 0.06; // fraction of the window height
 const float TEAR_MAX = 0.35;
 const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
 
+// Music falls off with frequency, so each band is scaled by a tilt that puts its loud passages near 1.0.
+float au_band(float pos) {
+    return umbriel_audio_available() * clamp((60.0 + 220.0 * pow(pos, 2.5)) * umbriel_audio_band(pos), 0.0, 1.0);
+}
+
 float so_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
@@ -32,6 +37,9 @@ vec2 so_edge(vec2 e, float len, float edge_id, float reach, float grow, float be
         if (so_hash(vec2(so_hash(key), beat)) > 0.35 + 0.55 * energy) continue;
         float u0 = (id + 0.2 + 0.6 * so_hash(key + 1.0)) * CELL;
         if (u0 < 8.0 || u0 > len - 8.0) continue;
+        float bpos = (edge_id == 0.0 ? 0.0 : (edge_id == 3.0 ? 0.25 : (edge_id == 1.0 ? 0.5 : 0.75))) + 0.25 * clamp(u0 / max(len, 1.0), 0.0, 1.0);
+        float bl = au_band(0.85 * (1.0 - abs(2.0 * bpos - 1.0)));
+        float k = smoothstep(0.1, 0.45, bl) * (0.8 + 1.2 * bl);
         float d1 = reach * (0.15 + 0.3 * so_hash(key + 2.0));
         float jog = 6.0 + so_hash(key + 3.0) * 26.0;
         float side = so_hash(key + 4.0) < 0.5 ? -1.0 : 1.0;
@@ -50,8 +58,8 @@ vec2 so_edge(vec2 e, float len, float edge_id, float reach, float grow, float be
         float total = d1 + 2.0 + jog * 1.41421356 + d2;
         float cut = total * grow;
         float on = 1.0 - smoothstep(cut - 4.0, cut, r.y);
-        acc.x = max(acc.x, (1.0 - smoothstep(0.9, 1.9, r.x)) * on);
-        acc.y += exp(-r.x * 0.12) * on;
+        acc.x = max(acc.x, (1.0 - smoothstep(0.9, 1.9, r.x)) * on * k);
+        acc.y += exp(-r.x * 0.12) * on * k;
     }
     return acc;
 }
@@ -61,10 +69,16 @@ vec4 animation(vec2 uv) {
     float rise = pow(clamp(lp / PEAK, 0.0, 1.0), 2.2);
     float fall = exp(-max(lp - PEAK, 0.0) * 7.0) * (1.0 - smoothstep(0.85, 1.0, lp));
     float energy = lp < PEAK ? rise : fall;
+    // Audio drives it: level lifts the glow, bass pulses the current, treble widens the split. The flinch stays on its timer.
+    float au = umbriel_audio_available();
+    float lvl = au * clamp(max(umbriel_audio_rms(), 0.5 * umbriel_audio_level()) / 0.045, 0.0, 1.0);
+    float bass = au_band(0.08);
+    float treble = au_band(0.7);
+    energy = clamp(energy * (0.4 + 1.3 * lvl), 0.0, 1.0);
     float reveal = smoothstep(0.04, PEAK, lp);
     float grow = clamp(lp / PEAK, 0.0, 1.0);
     float flinch = smoothstep(0.0, 0.03, lp) * (1.0 - smoothstep(0.85, 0.98, lp));
-    float beat = floor(lp * DURATION / STEP);
+    float beat = floor(lp * DURATION / STEP) + 13.0 * floor(bass * 5.0 + treble * 3.0);
     float roll = so_hash(vec2(beat, umbriel_random_seed.x * 100.0));
     float tseed = umbriel_random_seed.z * 50.0;
 
