@@ -1,7 +1,7 @@
 {
   "$declared": {
     "agenix": "github:ryantm/agenix",
-    "bumbriel": "github:weegs710/bumbriel/feat/audio-reactive-effects",
+    "bumbriel": "github:weegs710/bumbriel/feat/audio-shader-input",
     "dusklight": "github:TwilitRealm/dusklight/v1.4.1",
     "hjem": "github:feel-co/hjem",
     "nix-cachyos-kernel": "github:xddxdd/nix-cachyos-kernel/release",
@@ -24,9 +24,9 @@
     "type": "github",
     "owner": "weegs710",
     "repo": "bumbriel",
-    "rev": "bdb108d3c90bff38ec0144a3e0d3c0769bca2d60",
-    "narHash": "sha256-Rq/7esVG4fxrGG4dkmAegn8neBlz2BR71TS0tLg6OnU=",
-    "lastModified": 1791325832
+    "rev": "a0fa79687ebc7a66ce80b9b6f6e5bf30f34b05a8",
+    "narHash": "sha256-mcXAKz/UhYM/Np9nbAduB215FePKFebau2k/uHDI4Rs=",
+    "lastModified": 1791434717
   },
   "dusklight": {
     "type": "git",

@@ -10,10 +10,7 @@
   hardware.graphics.enable = true;
 
   programs.umbriel.enable = true;
-  programs.umbriel.package = inputs.bumbriel.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
-    # Builds the optional umbriel-audio helper that audio effects spawn.
-    enableAudio = true;
-  };
+  programs.umbriel.package = inputs.bumbriel.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   xdg.portal = {
     enable = true;

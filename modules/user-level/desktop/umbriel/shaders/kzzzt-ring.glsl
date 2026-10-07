@@ -33,13 +33,14 @@ float ring_distance(vec2 p) {
     return umbriel_border_distance(umbriel_border_hole.xy + p / umbriel_size);
 }
 
-// Music falls off with frequency, so each band is scaled by a tilt that puts its loud passages near 1.0.
-float au_band(float pos) {
-    return umbriel_audio_available() * clamp((60.0 + 220.0 * pow(pos, 2.5)) * umbriel_audio_band(pos), 0.0, 1.0);
-}
-
 float sr_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+// One level and no spectrum, so each band is the level with its own flutter: steadier low, spikier high.
+float au_band(float pos) {
+    float flutter = sr_hash(vec2(floor(pos * 16.0), floor(umbriel_time * 12.0)));
+    return umbriel_audio_available() * umbriel_audio_level() * mix(1.0, flutter, 0.35 + 0.65 * pos);
 }
 
 vec2 sr_segment(vec2 p, vec2 a, vec2 b) {
@@ -139,7 +140,7 @@ vec4 border(vec2 uv) {
         && sr_hash(vec2(slot, 13.7 + seed)) < FLINCH_CHANCE) ? 1.0 : 0.0;
     // Audio drives it: level lifts the glow, bass pulses the current, treble widens the split. The flinch stays on its timer.
     float au = umbriel_audio_available();
-    float lvl = au * clamp(max(umbriel_audio_rms(), 0.5 * umbriel_audio_level()) / 0.045, 0.0, 1.0);
+    float lvl = au * umbriel_audio_level();
     float bass = au_band(0.08);
     float treble = au_band(0.7);
     float ttick = tick + 13.0 * floor(bass * 5.0 + treble * 3.0);

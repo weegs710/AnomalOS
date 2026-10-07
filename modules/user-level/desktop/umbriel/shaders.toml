@@ -1,20 +1,12 @@
 [include]
 files = [
   "@EFFECTS@/animation/reveal/effect.toml",
-  "@EFFECTS@/border/spectrum/effect.toml",
 ]
-
-# One playback source shared by the kzzzt window and ring effects, so a single umbriel-audio helper serves both.
-[effects.audio.sources.kzzzt_playback]
-provider = "pipewire"
-mode = "playback"
-follow_default = true
 
 # Relative to this file, so it resolves under ~/.config/umbriel rather than the package.
 [effects.preset.kzzzt]
 kind = "window"
 palette = true
-audio = "kzzzt_playback"
 shader = "shaders/kzzzt.glsl"
 
 # speed stays 1.0 so the ring's clock matches kzzzt.glsl's and both glitch on the same beat.
@@ -24,7 +16,6 @@ palette = true
 animated = true
 speed = 1.0
 padding = 8
-audio = "kzzzt_playback"
 shader = "shaders/kzzzt-ring.glsl"
 
 [effects.preset.kzzzt-ring.light]

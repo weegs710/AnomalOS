@@ -22,7 +22,7 @@
       substituters = [
         "https://anomalos.cachix.org"
         "https://noctalia.cachix.org"
-        "https://attic.xuyh0120.win/lantian"
+        # "https://attic.xuyh0120.win/lantian"
         "https://cache.nixos.org/"
       ];
       trusted-public-keys = [
