@@ -31,20 +31,22 @@ overshot = [0.13, 0.99, 0.29, 1.5]
 # Tiled moves fold any overshoot into forward travel, which stalls mid-slide, so this curve must end at 1.0.
 snappy_flat = [0.05, 0.9, 0.1, 1.0]
 
-# anomalos-surge.glsl paces its glitch beat off its own DURATION, so the two must change together.
+# kzzzt-surge.glsl paces its glitch beat off its own DURATION, so the two must change together.
 [animation.windows_in]
 enabled = true
 duration_ms = 1800
 curve = "linear"
 style = "popin"
 scale = 0.85
-effect = "anomalos-surge"
+effect = "kzzzt-surge"
 
+# kzzzt-close.glsl paces its surge and fuse cutout off its own DURATION, so the two must change together.
 [animation.windows_out]
 enabled = true
-duration_ms = 300
-curve = "zoom"
+duration_ms = 700
+curve = "linear"
 style = "fade"
+effect = "kzzzt-close"
 
 [animation.windows_move]
 enabled = true
@@ -57,8 +59,9 @@ duration_ms = 300
 curve = "overshot"
 effect = "reveal"
 
+# Off so a focus change snaps the border; the fade shows a flash of the focused colour on its way to transparent.
 [animation.border]
-enabled = true
+enabled = false
 duration_ms = 300
 curve = "easeout"
 
@@ -240,6 +243,11 @@ follows_mouse = true
 
 [[window_rule]]
 opacity = 0.9
+
+# A rule rather than [colors.border], which noctalia regenerates on every wallpaper change; the scratchpad keeps its own colour.
+[[window_rule]]
+match.is_scratchpad = false
+border_color_unfocused = "#00000000"
 
 [[window_rule]]
 match.is_alone = true

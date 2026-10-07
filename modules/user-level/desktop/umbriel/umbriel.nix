@@ -23,9 +23,10 @@ in
     );
 
     # Not in the umbriel package, so shaders.toml reaches them relative to its own directory.
-    xdg.config.files."umbriel/shaders/anomalos.glsl".source = ./shaders/anomalos.glsl;
-    xdg.config.files."umbriel/shaders/anomalos-surge.glsl".source = ./shaders/anomalos-surge.glsl;
-    xdg.config.files."umbriel/shaders/anomalos-ring.glsl".source = ./shaders/anomalos-ring.glsl;
+    xdg.config.files."umbriel/shaders/kzzzt.glsl".source = ./shaders/kzzzt.glsl;
+    xdg.config.files."umbriel/shaders/kzzzt-surge.glsl".source = ./shaders/kzzzt-surge.glsl;
+    xdg.config.files."umbriel/shaders/kzzzt-close.glsl".source = ./shaders/kzzzt-close.glsl;
+    xdg.config.files."umbriel/shaders/kzzzt-ring.glsl".source = ./shaders/kzzzt-ring.glsl;
   };
 
   # umbriel resolves its [include] at startup, before noctalia can regenerate the palette on a wiped root

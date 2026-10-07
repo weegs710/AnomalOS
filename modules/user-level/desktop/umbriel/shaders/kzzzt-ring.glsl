@@ -1,4 +1,4 @@
-// The glitch clock and every glitch constant must match anomalos.glsl, so the border shudders with its window.
+// The glitch clock and every glitch constant must match kzzzt.glsl, so the border shudders with its window.
 const float STEP = 0.15;
 const float SPLIT_PX = 2.5;
 const float TEAR_CHANCE = 0.85;
@@ -126,7 +126,7 @@ vec4 border(vec2 uv) {
     float scale = max(umbriel_scale, 0.01);
     float aa = 1.0 / scale;
     vec2 size = umbriel_border_hole.zw * umbriel_size;
-    // Same seed anomalos.glsl derives from its own window size, so both pick the same tear bands.
+    // Same seed kzzzt.glsl derives from its own window size, so both pick the same tear bands.
     float seed = sr_hash(floor(size * scale) * 0.013 + 0.5);
 
     float tick = floor(t / STEP);
