@@ -24,7 +24,7 @@ in
 
     # Not in the umbriel package, so shaders.toml reaches them relative to its own directory.
     xdg.config.files."umbriel/shaders/kzzzt.glsl".source = ./shaders/kzzzt.glsl;
-    xdg.config.files."umbriel/shaders/kzzzt-surge.glsl".source = ./shaders/kzzzt-surge.glsl;
+    xdg.config.files."umbriel/shaders/kzzzt-open.glsl".source = ./shaders/kzzzt-open.glsl;
     xdg.config.files."umbriel/shaders/kzzzt-close.glsl".source = ./shaders/kzzzt-close.glsl;
     xdg.config.files."umbriel/shaders/kzzzt-ring.glsl".source = ./shaders/kzzzt-ring.glsl;
   };

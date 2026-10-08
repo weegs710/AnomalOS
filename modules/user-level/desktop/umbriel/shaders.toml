@@ -23,10 +23,10 @@ spread = 24
 intensity = 0.8
 threshold = 0.5
 
-[effects.preset.kzzzt-surge]
+[effects.preset.kzzzt-open]
 kind = "animation"
 palette = true
-shader = "shaders/kzzzt-surge.glsl"
+shader = "shaders/kzzzt-open.glsl"
 
 [effects.preset.kzzzt-close]
 kind = "animation"
