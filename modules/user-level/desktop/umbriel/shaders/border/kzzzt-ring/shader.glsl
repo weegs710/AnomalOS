@@ -1,4 +1,4 @@
-// The glitch clock and every glitch constant must match kzzzt.glsl, so the border shudders with its window.
+// The glitch clock and every glitch constant must match the window effect's, so the border shudders with its window.
 const float STEP = 0.15;
 const float SPLIT_PX = 2.5;
 const float TEAR_CHANCE = 0.85;
@@ -24,6 +24,10 @@ const float DASH_LEN = 7.0;
 const float DASH_SPEED = 6.0;
 const float TENDRIL_CELL = 18.0;
 const float TENDRIL_CHANCE = 0.9;
+const float IDLE_TENDRIL_CHANCE = 0.55;
+// A feed that is connected but silent counts as no feed, so the effect keeps its idle look.
+const float SILENCE_LOW = 0.02;
+const float SILENCE_HIGH = 0.10;
 const float TENDRIL_REACH = 15.0;
 const float TUBE = 1.3; // tendrils are hollow, drawn as the two walls of a tube this wide
 const float PAD = 2.2;
@@ -37,10 +41,18 @@ float sr_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
 
+float sr_sq(float x) {
+    return x * x;
+}
+
+float audio_live() {
+    return umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, umbriel_audio_level());
+}
+
 // One level and no spectrum, so each band is the level with its own flutter: steadier low, spikier high.
 float au_band(float pos) {
     float flutter = sr_hash(vec2(floor(pos * 16.0), floor(umbriel_time * 12.0)));
-    return umbriel_audio_available() * umbriel_audio_level() * mix(1.0, flutter, 0.35 + 0.65 * pos);
+    return audio_live() * umbriel_audio_level() * mix(1.0, flutter, 0.35 + 0.65 * pos);
 }
 
 vec2 sr_segment(vec2 p, vec2 a, vec2 b) {
@@ -54,13 +66,13 @@ float sr_line(float d, float center, float width, float aa) {
 }
 
 // e is (along one side, distance out from it). x: tube walls and pads, y: current.
-vec2 sr_tendrils(vec2 e, float len, float side_id, float t, float aa) {
+vec2 sr_tendrils(vec2 e, float len, float side_id, float t, float chance, float aa) {
     vec2 acc = vec2(0.0);
     if (e.y < -1.0 || e.y > TENDRIL_REACH + 4.0) return acc;
     float cell = floor(e.x / TENDRIL_CELL);
     for (int i = -1; i <= 1; i++) {
         vec2 key = vec2(cell + float(i), side_id * 13.0);
-        if (sr_hash(key) > TENDRIL_CHANCE) continue;
+        if (sr_hash(key) > chance) continue;
         float u0 = (key.x + 0.2 + 0.6 * sr_hash(key + 1.0)) * TENDRIL_CELL;
         if (u0 < 10.0 || u0 > len - 10.0) continue;
         float o1 = 5.0 + 4.0 * sr_hash(key + 2.0);
@@ -85,7 +97,7 @@ vec2 sr_tendrils(vec2 e, float len, float side_id, float t, float aa) {
         float pad = 1.0 - smoothstep(0.35, 0.35 + aa, abs(box - loop_w));
         float period = 1.5 + 3.0 * sr_hash(key + 7.0);
         float head = fract(t / period + sr_hash(key + 8.0)) * (total + 20.0) - 10.0;
-        float pulse = exp(-pow((r.y - head) / 4.0, 2.0)) * exp(-r.x * 0.6);
+        float pulse = exp(-sr_sq((r.y - head) / 4.0)) * exp(-r.x * 0.6);
         acc.x = max(acc.x, max(walls, pad));
         acc.y += pulse;
     }
@@ -110,14 +122,16 @@ vec2 sr_shape(vec2 p, vec2 size, float t, float aa) {
     float crescent = max(sr_line(d, ARC_RADIUS, 0.2 + 0.9 * arc_a, aa) * step(0.001, arc_a),
                          sr_line(d, ARC_RADIUS, 0.2 + 0.7 * arc_b, aa) * step(0.001, arc_b));
 
-    vec2 td = sr_tendrils(vec2(p.x, -p.y), size.x, 0.0, t, aa);
-    td = max(td, sr_tendrils(vec2(p.x, p.y - size.y), size.x, 1.0, t, aa));
-    td = max(td, sr_tendrils(vec2(p.y, -p.x), size.y, 2.0, t, aa));
-    td = max(td, sr_tendrils(vec2(p.y, p.x - size.x), size.y, 3.0, t, aa));
+    float au = audio_live();
+    float chance = mix(IDLE_TENDRIL_CHANCE, TENDRIL_CHANCE, au);
+    vec2 td = sr_tendrils(vec2(p.x, -p.y), size.x, 0.0, t, chance, aa);
+    td = max(td, sr_tendrils(vec2(p.x, p.y - size.y), size.x, 1.0, t, chance, aa));
+    td = max(td, sr_tendrils(vec2(p.y, -p.x), size.y, 2.0, t, chance, aa));
+    td = max(td, sr_tendrils(vec2(p.y, p.x - size.x), size.y, 3.0, t, chance, aa));
 
     float bpos = clamp(s / max(2.0 * (size.x + size.y), 1.0), 0.0, 1.0);
     float bl = au_band(0.85 * (1.0 - abs(2.0 * bpos - 1.0)));
-    float g = smoothstep(0.1, 0.45, bl) * (0.8 + 1.2 * bl);
+    float g = mix(1.0, smoothstep(0.1, 0.45, bl) * (0.8 + 1.2 * bl), au);
     return vec2(max(max(lines, dash * 0.7 * (0.6 + 0.4 * g)), max(crescent * (0.6 + 0.4 * g), td.x * (0.45 + 0.55 * g))), (crescent * 0.8 + td.y) * g);
 }
 
@@ -127,7 +141,7 @@ vec4 border(vec2 uv) {
     float scale = max(umbriel_scale, 0.01);
     float aa = 1.0 / scale;
     vec2 size = umbriel_border_hole.zw * umbriel_size;
-    // Same seed kzzzt.glsl derives from its own window size, so both pick the same tear bands.
+    // Same seed the window effect derives from its own window size, so both pick the same tear bands.
     float seed = sr_hash(floor(size * scale) * 0.013 + 0.5);
 
     float tick = floor(t / STEP);
@@ -138,8 +152,8 @@ vec4 border(vec2 uv) {
     float start = floor(sr_hash(vec2(slot, seed * 91.0)) * floor((FLINCH_PERIOD - FLINCH_LEN) / STEP)) * STEP;
     float flinch = (into >= start && into < start + FLINCH_LEN
         && sr_hash(vec2(slot, 13.7 + seed)) < FLINCH_CHANCE) ? 1.0 : 0.0;
-    // Audio drives it: level lifts the glow, bass pulses the current, treble widens the split. The flinch stays on its timer.
-    float au = umbriel_audio_available();
+    // The flinch stays on its own timer whatever the audio does.
+    float au = audio_live();
     float lvl = au * umbriel_audio_level();
     float bass = au_band(0.08);
     float treble = au_band(0.7);
@@ -149,7 +163,7 @@ vec4 border(vec2 uv) {
     float tear = step(sr_hash(vec2(ttick, 41.0 + seed)), TEAR_CHANCE)
         * step(abs(coords.y - tear_mid), tear_half)
         * (sr_hash(vec2(ttick, 53.0 + seed)) < 0.5 ? -1.0 : 1.0)
-        * TEAR_PX * (0.5 + 0.5 * sr_hash(vec2(ttick, 59.0 + seed))) * (0.5 + 3.0 * lvl);
+        * TEAR_PX * (0.5 + 0.5 * sr_hash(vec2(ttick, 59.0 + seed))) * mix(1.0, 0.5 + 3.0 * lvl, au);
 
     // A zero count means the palette is off, which is how a shader keeps its own colours.
     bool pal = umbriel_palette_count > 0;
@@ -169,17 +183,17 @@ vec4 border(vec2 uv) {
 
     vec3 col = trace * f.x + hot * min(f.y * (1.0 + 3.0 * bass), 1.0) + fringe_a * ga + fringe_b * gb;
     col = mix(col, accent, min(f.y, 1.0) * 0.25);
-    col *= (1.0 + 0.6 * flinch) * (0.85 + 0.9 * lvl);
+    col *= (1.0 + 0.6 * flinch) * mix(1.0, 0.85 + 0.9 * lvl, au);
 
     float scan = 0.5 + 0.5 * sin(coords.y * scale * 3.14159);
     col *= mix(1.0 - SCANLINE_DEPTH, 1.0, scan);
     float triad = mod(floor(coords.x * scale), 3.0);
     vec3 grille = triad < 1.0 ? vec3(1.0, 0.5, 0.5) : (triad < 2.0 ? vec3(0.5, 1.0, 0.5) : vec3(0.5, 0.5, 1.0));
     col *= mix(vec3(1.0), grille, GRILLE_DEPTH);
-    float sweep = exp(-pow((coords.y / max(size.y, 1.0) - (fract(t / ROLL_PERIOD) * 1.4 - 0.2)) / 0.06, 2.0));
+    float sweep = exp(-sr_sq((coords.y / max(size.y, 1.0) - (fract(t / ROLL_PERIOD) * 1.4 - 0.2)) / 0.06));
     col += trace * sweep * ROLL_STRENGTH;
     col *= 1.0 + FLICKER * (sr_hash(vec2(floor(t * 30.0), 71.0)) - 0.5);
 
-    float alpha = clamp(max(max(f.x, min(f.y, 1.0)), max(ga, gb)), 0.0, 1.0) * (0.85 + 0.15 * clamp(1.5 * lvl, 0.0, 1.0));
+    float alpha = clamp(max(max(f.x, min(f.y, 1.0)), max(ga, gb)), 0.0, 1.0) * mix(1.0, 0.85 + 0.15 * clamp(1.5 * lvl, 0.0, 1.0), au);
     return vec4(clamp(col / max(alpha, 0.001), 0.0, 1.0) * alpha, alpha);
 }

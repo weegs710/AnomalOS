@@ -1,12 +1,11 @@
 const float DURATION = 0.9; // seconds; must match [animation.windows_in] duration_ms
 const float FPS = 30.0; // the surge steps in hard frames, never smoothly
-const float STRIKE_FR = 3.0; // the frame power hits: one overexposed pop, then the picture catches in stutters
+const float STRIKE_FR = 3.0; // frame of the overexposed strike; nothing is drawn before it
 const float PEAK = 0.36; // progress at which the surge crests and the tension starts to drain
 const float SPLIT_PX = 9.0;
 const float TEAR_PX = 60.0;
 const float TEAR_MIN = 0.06; // fraction of the window height
 const float TEAR_MAX = 0.35;
-// The traces are kzzzt.glsl's own, lit all at once by the strike and run at the animation's pace.
 const float CELL = 56.0;
 const float TRACE_CHANCE = 0.9;
 const float EDGE_BAND = 64.0; // logical px
@@ -29,6 +28,10 @@ const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
 
 float ko_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+float ko_sq(float x) {
+    return x * x;
 }
 
 vec3 ko_unpremul(vec4 c) {
@@ -141,14 +144,14 @@ void ko_edge(vec2 q0, vec2 dir, float len, float edge_id, float t, float aa, flo
         float cb = (1.0 - smoothstep(0.8, 0.8 + aa, abs(ko_route(q + dir * s, a, b, c, d, e, h, g).x - lane))) * reveal;
         float halo = (exp(-r.x * 0.25) + PHOSPHOR_BLOOM * exp(-r.x * 0.07)) * reveal * linger;
         float head = (age - ATTACK) * PACKET_SPEED;
-        float packet = exp(-pow((r.y - head) / 10.0, 2.0)) * exp(-r.x * 0.3) * step(ATTACK, age);
+        float packet = exp(-ko_sq((r.y - head) / 10.0)) * exp(-r.x * 0.3) * step(ATTACK, age);
         vec2 pe = q - e;
         vec2 pg = q - g;
         float ring = max(
             1.0 - smoothstep(0.7, 0.7 + aa, abs(max(abs(pe.x), abs(pe.y)) - padsize)),
             (1.0 - smoothstep(0.7, 0.7 + aa, abs(max(abs(pg.x), abs(pg.y)) - padsize))) * step(0.5, length(g - h)));
         ring *= step(total, drawn + 0.5);
-        float arrive = exp(-pow((total - head) / 14.0, 2.0));
+        float arrive = exp(-ko_sq((total - head) / 14.0));
         acc.x = max(acc.x, max(core, ring) * k);
         acc.y += (packet + attack * core) * k;
         acc.z += halo * k;
@@ -165,11 +168,10 @@ vec4 animation(vec2 uv) {
     float tseed = umbriel_random_seed.z * 50.0;
     float roll = ko_hash(vec2(fr, umbriel_random_seed.x * 100.0));
 
-    // Dead until the strike frame, which overexposes, and then the picture catches in stutters.
     float live = step(STRIKE_FR, fr);
     float strike = live * (1.0 - step(STRIKE_FR + 1.0, fr));
 
-    // The surge climbs to a crest and drains, but every frame it dips hard or spikes past the last one.
+    // Per-frame spikes and dips keep the surge from reading as a smooth ramp.
     float climb = pow(clamp(lp / PEAK, 0.0, 1.0), 1.5);
     float drain = exp(-max(lp - PEAK, 0.0) * 5.0) * (1.0 - smoothstep(0.8, 1.0, lp));
     float env = lp < PEAK ? mix(0.25, 1.0, climb) : drain;
@@ -178,7 +180,7 @@ vec4 animation(vec2 uv) {
     float ten = max(clamp(surge, 0.0, 1.4), 0.9 * strike);
     float od = min(ten, 1.0);
 
-    // The fuse in reverse: more and more frames of the picture come back until it holds.
+    // A rising duty makes the picture stutter in instead of fading in.
     float duty = mix(0.4, 1.0, smoothstep(STRIKE_FR / (DURATION * FPS), 0.7 * PEAK, lp));
     float on = lp >= PEAK ? 1.0 : step(ko_hash(vec2(fr, tseed + 2.0)), duty);
     float vis = max(on * live, strike);
@@ -199,7 +201,6 @@ vec4 animation(vec2 uv) {
     vec2 size = umbriel_size;
     vec2 p = uv * size;
 
-    // The window itself tears, in bands that get wilder as the surge climbs.
     float tear = 0.0;
     for (int i = 0; i < 4; i++) {
         float fi = float(i) * 7.0;
@@ -211,7 +212,6 @@ vec4 animation(vec2 uv) {
             * TEAR_PX * ten * (0.4 + 0.6 * ko_hash(vec2(fr, 59.0 + fi + tseed))) * (1.0 + 2.0 * strike);
     }
 
-    // Strips a few pixels tall slip sideways, and whole tiles hop.
     float strip_hot = step(0.5, ko_hash(vec2(floor(p.y / 48.0), fr + 5.0 + tseed)));
     float strip = (ko_hash(vec2(floor(p.y / 3.0), fr + tseed)) - 0.5) * 28.0 * strip_hot * ten * ten;
     vec2 tile = floor(p / vec2(64.0, 16.0));
@@ -225,21 +225,19 @@ vec4 animation(vec2 uv) {
     vec3 original = ko_unpremul(base);
     float lc = dot(original, LUMA);
 
-    // The set's edge fringing in palette colours, split wider the harder the surge hits.
     float dx = (1.5 + SPLIT_PX * (0.4 + 1.6 * ten) * (0.35 + 0.65 * roll)) / size.x;
     float la = dot(ko_unpremul(umbriel_sample(suv - vec2(dx, 0.0))), LUMA);
     float lb = dot(ko_unpremul(umbriel_sample(suv + vec2(dx, 0.0))), LUMA);
     vec3 col = original;
-    col += fringe_a * max(la - lc, 0.0) + fringe_b * max(lb - lc, 0.0);
-    col *= mix(vec3(1.0), fringe_a, clamp(lc - la, 0.0, 1.0));
-    col *= mix(vec3(1.0), fringe_b, clamp(lc - lb, 0.0, 1.0));
+    float fringe_amt = clamp(4.0 * ten, 0.0, 1.0);
+    col += fringe_amt * (fringe_a * max(la - lc, 0.0) + fringe_b * max(lb - lc, 0.0));
+    col *= mix(vec3(1.0), fringe_a, fringe_amt * clamp(lc - la, 0.0, 1.0));
+    col *= mix(vec3(1.0), fringe_b, fringe_amt * clamp(lc - lb, 0.0, 1.0));
 
-    // The picture overdrives and drains of its own colour toward the phosphor, then gets it back as the tension drains.
     col *= mix(1.0, 0.15 + 1.6 * ko_hash(vec2(fr, tseed + 3.0)), od);
     col = mix(col, trace * lc * 2.2, 0.55 * od);
     col = pow(max(col, vec3(0.0)), vec3(1.0 + 0.9 * od));
 
-    // Phosphor bloom: what is bright in the window burns into the dark around it.
     vec3 glow = vec3(0.0);
     float seen = 0.0;
     float spread = 5.0 + 26.0 * clamp(surge, 0.0, 1.4) + 30.0 * strike;
@@ -254,7 +252,6 @@ vec4 animation(vec2 uv) {
     // A mostly dark window has little to burn, so what it has burns harder; a bright one is held back.
     float exposure = 1.8 / (0.3 + 3.0 * seen / 12.0);
 
-    // And it bleeds sideways along the line, the way a hot phosphor smears.
     vec3 bleed = vec3(0.0);
     for (int i = 1; i <= 6; i++) {
         float w = exp(-float(i) * 0.35);
@@ -268,10 +265,9 @@ vec4 animation(vec2 uv) {
     vec3 phos = mix(lit, trace * dot(lit, vec3(1.0)) * 1.1, 0.7);
     float gain = 1.4 * exposure * ten * mix(0.4, 1.0, vis) * (1.0 + 1.5 * strike);
 
-    // The strike overexposes the picture past what the tube can show.
     col = col * (1.0 + 1.6 * strike) + hot * 0.25 * strike;
 
-    // kzzzt.glsl's traces, every one of them lit by the strike; they do not wait for the picture.
+    // The traces draw on the frames where the picture is out too.
     float split = (0.3 + 0.7 * roll) * TRACE_SPLIT_PX * (1.0 + 3.0 * strike);
     vec2 pt = p - vec2(tear, 0.0);
     vec4 f = vec4(0.0);

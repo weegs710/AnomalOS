@@ -1,0 +1,12 @@
+[effects.preset.kzzzt-ring]
+kind = "border"
+shader = "shader.glsl"
+palette = true
+animated = true
+speed = 1.0
+padding = 8
+
+[effects.preset.kzzzt-ring.light]
+spread = 24
+intensity = 0.8
+threshold = 0.5

@@ -23,10 +23,14 @@ in
     );
 
     # Not in the umbriel package, so shaders.toml reaches them relative to its own directory.
-    xdg.config.files."umbriel/shaders/kzzzt.glsl".source = ./shaders/kzzzt.glsl;
-    xdg.config.files."umbriel/shaders/kzzzt-open.glsl".source = ./shaders/kzzzt-open.glsl;
-    xdg.config.files."umbriel/shaders/kzzzt-close.glsl".source = ./shaders/kzzzt-close.glsl;
-    xdg.config.files."umbriel/shaders/kzzzt-ring.glsl".source = ./shaders/kzzzt-ring.glsl;
+    xdg.config.files."umbriel/shaders/window/kzzzt/effect.toml".source = ./shaders/window/kzzzt/effect.toml;
+    xdg.config.files."umbriel/shaders/window/kzzzt/shader.glsl".source = ./shaders/window/kzzzt/shader.glsl;
+    xdg.config.files."umbriel/shaders/border/kzzzt-ring/effect.toml".source = ./shaders/border/kzzzt-ring/effect.toml;
+    xdg.config.files."umbriel/shaders/border/kzzzt-ring/shader.glsl".source = ./shaders/border/kzzzt-ring/shader.glsl;
+    xdg.config.files."umbriel/shaders/animation/kzzzt-open/effect.toml".source = ./shaders/animation/kzzzt-open/effect.toml;
+    xdg.config.files."umbriel/shaders/animation/kzzzt-open/shader.glsl".source = ./shaders/animation/kzzzt-open/shader.glsl;
+    xdg.config.files."umbriel/shaders/animation/kzzzt-close/effect.toml".source = ./shaders/animation/kzzzt-close/effect.toml;
+    xdg.config.files."umbriel/shaders/animation/kzzzt-close/shader.glsl".source = ./shaders/animation/kzzzt-close/shader.glsl;
   };
 
   # umbriel resolves its [include] at startup, before noctalia can regenerate the palette on a wiped root

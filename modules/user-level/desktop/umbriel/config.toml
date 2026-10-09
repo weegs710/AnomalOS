@@ -31,7 +31,7 @@ overshot = [0.13, 0.99, 0.29, 1.5]
 # Tiled moves fold any overshoot into forward travel, which stalls mid-slide, so this curve must end at 1.0.
 snappy_flat = [0.05, 0.9, 0.1, 1.0]
 
-# kzzzt-open.glsl paces its strike, catch and drain off its own DURATION, so the two must change together.
+# The kzzzt-open shader paces its strike, catch and drain off its own DURATION, so the two must change together.
 [animation.windows_in]
 enabled = true
 duration_ms = 900
@@ -40,7 +40,7 @@ style = "popin"
 scale = 0.85
 effect = "kzzzt-open"
 
-# kzzzt-close.glsl paces its surge and fuse cutout off its own DURATION, so the two must change together.
+# The kzzzt-close shader paces its surge and fuse cutout off its own DURATION, so the two must change together.
 [animation.windows_out]
 enabled = true
 duration_ms = 700

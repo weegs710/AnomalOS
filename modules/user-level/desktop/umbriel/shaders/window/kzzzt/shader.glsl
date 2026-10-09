@@ -1,7 +1,12 @@
 const float CELL = 56.0;
 const float TRACE_CHANCE = 0.9;
+const float IDLE_TRACE_CHANCE = 0.6;
 const float EDGE_BAND = 64.0; // logical px
 const float ACTIVE_TRACES = 40.0; // an average, not a cap
+const float IDLE_ACTIVE_TRACES = 16.0;
+// A feed that is connected but silent counts as no feed, so the effect keeps its idle look.
+const float SILENCE_LOW = 0.02;
+const float SILENCE_HIGH = 0.10;
 const float LIFE = 2.6;
 const float ATTACK = 0.28;
 const float DECAY_RATE = 2.2;
@@ -27,10 +32,9 @@ const float FLINCH_CHANCE = 0.8;
 const float FLINCH_PX = 3.0;
 const float PIN_PITCH = 6.0;
 const float PIN_STRENGTH = 0.35;
-// barrulus's crt.glsl minus the barrel warp, shallow enough to read text through.
+// Scanlines and an RGB column mask, kept shallow enough to read text through.
 const float SCANLINE_DEPTH = 0.18;
 const float GRILLE_DEPTH = 0.12;
-const float VIGNETTE = 0.25;
 const float ROLL_PERIOD = 7.0;
 const float ROLL_STRENGTH = 0.06;
 const float FLICKER = 0.03;
@@ -40,10 +44,18 @@ float sh_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
 
+float sh_sq(float x) {
+    return x * x;
+}
+
+float audio_live() {
+    return umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, umbriel_audio_level());
+}
+
 // One level and no spectrum, so each band is the level with its own flutter: steadier low, spikier high.
 float au_band(float pos) {
     float flutter = sh_hash(vec2(floor(pos * 16.0), floor(umbriel_time * 12.0)));
-    return umbriel_audio_available() * umbriel_audio_level() * mix(1.0, flutter, 0.35 + 0.65 * pos);
+    return audio_live() * umbriel_audio_level() * mix(1.0, flutter, 0.35 + 0.65 * pos);
 }
 
 vec2 sh_segment(vec2 p, vec2 a, vec2 b) {
@@ -115,13 +127,13 @@ vec2 sh_route(vec2 p, vec2 a, vec2 b, vec2 c, vec2 d, vec2 e, vec2 h, vec2 g) {
 }
 
 // q0 is (along the edge, depth inward); dir is screen +x in edge space. acc: core, current, halo, pad. ghost: split fringes.
-void sh_edge(vec2 q0, vec2 dir, float len, float edge_id, float t, float period, float aa, float split,
-             inout vec4 acc, inout vec2 ghost) {
+void sh_edge(vec2 q0, vec2 dir, float len, float edge_id, float t, float period, float chance, float live, float aa,
+             float split, inout vec4 acc, inout vec2 ghost) {
     if (q0.y > EDGE_BAND + 24.0) return;
     float cell = floor(q0.x / CELL);
     for (int i = -2; i <= 2; i++) {
         vec2 key = vec2(cell + float(i), edge_id * 17.0);
-        if (sh_hash(key) > TRACE_CHANCE) continue;
+        if (sh_hash(key) > chance) continue;
         float clock = t / period + sh_hash(key + 3.1);
         float cycle = floor(clock);
         float age = (clock - cycle) * period - sh_hash(key + vec2(cycle, 9.0)) * (period - LIFE);
@@ -137,7 +149,7 @@ void sh_edge(vec2 q0, vec2 dir, float len, float edge_id, float t, float period,
         float on = age < ATTACK ? mix(0.3, 1.0, step(0.35, sh_hash(key + vec2(flick, 21.0)))) : 1.0;
         float power = age < ATTACK ? 1.6
             : exp(-(age - ATTACK) * DECAY_RATE) * (1.0 - smoothstep(LIFE - 0.3, LIFE, age));
-        float k = on * power * smoothstep(0.1, 0.45, bl) * (0.8 + 1.2 * bl);
+        float k = on * power * mix(1.0, smoothstep(0.1, 0.45, bl) * (0.8 + 1.2 * bl), live);
         float linger = age < ATTACK ? 1.0 : exp((age - ATTACK) * DECAY_RATE * PHOSPHOR_HOLD);
         vec2 q = q0 - vec2((sh_hash(key + vec2(flick, 33.0)) - 0.5) * 2.0 * JITTER_PX * attack, 0.0);
         float s = split + ATTACK_SPLIT_PX * attack;
@@ -152,14 +164,14 @@ void sh_edge(vec2 q0, vec2 dir, float len, float edge_id, float t, float period,
         float cb = (1.0 - smoothstep(0.8, 0.8 + aa, abs(sh_route(q + dir * s, a, b, c, d, e, h, g).x - lane))) * reveal;
         float halo = (exp(-r.x * 0.25) + PHOSPHOR_BLOOM * exp(-r.x * 0.07)) * reveal * linger;
         float head = (age - ATTACK) * PACKET_SPEED;
-        float packet = exp(-pow((r.y - head) / 10.0, 2.0)) * exp(-r.x * 0.3) * step(ATTACK, age);
+        float packet = exp(-sh_sq((r.y - head) / 10.0)) * exp(-r.x * 0.3) * step(ATTACK, age);
         vec2 pe = q - e;
         vec2 pg = q - g;
         float ring = max(
             1.0 - smoothstep(0.7, 0.7 + aa, abs(max(abs(pe.x), abs(pe.y)) - padsize)),
             (1.0 - smoothstep(0.7, 0.7 + aa, abs(max(abs(pg.x), abs(pg.y)) - padsize))) * step(0.5, length(g - h)));
         ring *= step(total, drawn + 0.5);
-        float arrive = exp(-pow((total - head) / 14.0, 2.0));
+        float arrive = exp(-sh_sq((total - head) / 14.0));
         acc.x = max(acc.x, max(core, ring) * k);
         acc.y += (packet + attack * core) * k;
         acc.z += halo * k;
@@ -167,6 +179,17 @@ void sh_edge(vec2 q0, vec2 dir, float len, float edge_id, float t, float period,
         ghost.x = max(ghost.x, max(ca - core, 0.0) * k);
         ghost.y = max(ghost.y, max(cb - core, 0.0) * k);
     }
+}
+
+void sh_traces(vec2 pt, vec2 size, float t, float aa, float split, float live, inout vec4 f, inout vec2 gh) {
+    float chance = mix(IDLE_TRACE_CHANCE, TRACE_CHANCE, live);
+    // Respawn spacing scales with the wiring so ACTIVE_TRACES holds on any window size.
+    float wired = 2.0 * (size.x + size.y) / CELL * chance;
+    float period = max(wired * LIFE / mix(IDLE_ACTIVE_TRACES, ACTIVE_TRACES, live), LIFE + 1.0);
+    sh_edge(pt, vec2(1.0, 0.0), size.x, 0.0, t, period, chance, live, aa, split, f, gh);
+    sh_edge(vec2(pt.x, size.y - pt.y), vec2(1.0, 0.0), size.x, 1.0, t, period, chance, live, aa, split, f, gh);
+    sh_edge(vec2(pt.y, pt.x), vec2(0.0, 1.0), size.y, 2.0, t, period, chance, live, aa, split, f, gh);
+    sh_edge(vec2(pt.y, size.x - pt.x), vec2(0.0, -1.0), size.y, 3.0, t, period, chance, live, aa, split, f, gh);
 }
 
 vec4 window(vec2 coords) {
@@ -186,10 +209,9 @@ vec4 window(vec2 coords) {
     float start = floor(sh_hash(vec2(slot, seed * 91.0)) * floor((FLINCH_PERIOD - FLINCH_LEN) / STEP)) * STEP;
     float flinch = (into >= start && into < start + FLINCH_LEN
         && sh_hash(vec2(slot, 13.7 + seed)) < FLINCH_CHANCE) ? 1.0 : 0.0;
-    // Audio drives it: level lifts the glow, bass pulses the current, treble widens the split. The flinch stays on its timer.
-    float au = umbriel_audio_available();
+    // The flinch stays on its own timer whatever the audio does.
+    float au = audio_live();
     float lvl = au * umbriel_audio_level();
-    float bass = au_band(0.08);
     float treble = au_band(0.7);
 
     float tear_mid = sh_hash(vec2(tick, 43.0 + seed)) * size.y;
@@ -229,17 +251,17 @@ vec4 window(vec2 coords) {
 
     float edge = min(min(p.x, p.y), min(size.x - p.x, size.y - p.y));
     if (edge < EDGE_BAND + 24.0 + TEAR_PX) {
-        // Respawn spacing scales with the wiring so ACTIVE_TRACES holds on any window size.
-        float wired = 2.0 * (size.x + size.y) / CELL * TRACE_CHANCE;
-        float period = max(wired * LIFE / ACTIVE_TRACES, LIFE + 1.0);
         float split = (0.3 + 0.7 * roll) * SPLIT_PX * (1.0 + flinch + 3.0 * treble);
         vec2 pt = p - vec2(tear, 0.0);
         vec4 f = vec4(0.0);
         vec2 gh = vec2(0.0);
-        sh_edge(pt, vec2(1.0, 0.0), size.x, 0.0, t, period, aa, split, f, gh);
-        sh_edge(vec2(pt.x, size.y - pt.y), vec2(1.0, 0.0), size.x, 1.0, t, period, aa, split, f, gh);
-        sh_edge(vec2(pt.y, pt.x), vec2(0.0, 1.0), size.y, 2.0, t, period, aa, split, f, gh);
-        sh_edge(vec2(pt.y, size.x - pt.x), vec2(0.0, -1.0), size.y, 3.0, t, period, aa, split, f, gh);
+        vec4 fl = vec4(0.0);
+        vec2 ghl = vec2(0.0);
+        // Blending the density would race the trace clock, so both sets run and crossfade only near silence.
+        if (au < 1.0) sh_traces(pt, size, t, aa, split, 0.0, f, gh);
+        if (au > 0.0) sh_traces(pt, size, t, aa, split, 1.0, fl, ghl);
+        f = mix(f, fl, au);
+        gh = mix(gh, ghl, au);
         float breath = 0.85 + 0.15 * sin(t * BREATH_RATE);
         // Bright content keeps its contrast, so glow is held back where text already is.
         float protect = 1.0 - 0.7 * smoothstep(0.4, 0.95, lc);
@@ -250,7 +272,7 @@ vec4 window(vec2 coords) {
             + accent * f.w * breath
             + (fringe_a * gh.x + fringe_b * gh.y) * 0.8;
         result = mix(result, mix(trace, vec3(1.0), PHOSPHOR_CORE), min(f.x, 1.0) * 0.6 * TRACE_STRENGTH);
-        result += glow * protect * TRACE_STRENGTH * (1.0 + 0.6 * flinch) * (0.5 + 2.0 * lvl);
+        result += glow * protect * TRACE_STRENGTH * (1.0 + 0.6 * flinch) * mix(1.0, 0.5 + 2.0 * lvl, au);
     }
 
     float scan = 0.5 + 0.5 * sin(p.y * scale * 3.14159);
@@ -258,9 +280,7 @@ vec4 window(vec2 coords) {
     float triad = mod(floor(p.x * scale), 3.0);
     vec3 grille = triad < 1.0 ? vec3(1.0, 0.5, 0.5) : (triad < 2.0 ? vec3(0.5, 1.0, 0.5) : vec3(0.5, 0.5, 1.0));
     result *= mix(vec3(1.0), grille, GRILLE_DEPTH);
-    vec2 cc = coords - 0.5;
-    result *= 1.0 - VIGNETTE * smoothstep(0.1, 0.5, dot(cc, cc));
-    float sweep = exp(-pow((coords.y - (fract(t / ROLL_PERIOD) * 1.4 - 0.2)) / 0.06, 2.0));
+    float sweep = exp(-sh_sq((coords.y - (fract(t / ROLL_PERIOD) * 1.4 - 0.2)) / 0.06));
     result += trace * sweep * ROLL_STRENGTH;
     result *= 1.0 + FLICKER * (sh_hash(vec2(floor(t * 30.0), 71.0)) - 0.5);
 

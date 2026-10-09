@@ -1,0 +1,4 @@
+[effects.preset.kzzzt-close]
+kind = "animation"
+shader = "shader.glsl"
+palette = true

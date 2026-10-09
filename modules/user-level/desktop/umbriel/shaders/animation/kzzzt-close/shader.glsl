@@ -28,12 +28,11 @@ vec4 animation(vec2 uv) {
     float tseed = umbriel_random_seed.z * 50.0;
     float roll = fz_hash(vec2(fr, umbriel_random_seed.x * 100.0));
 
-    // The surge climbs, but every frame it dips hard or spikes past the last one.
+    // Per-frame spikes and dips keep the surge from reading as a smooth ramp.
     float ramp = smoothstep(0.0, PEAK, lp);
     float spike = fz_hash(vec2(fr, tseed + 1.0));
     float surge = ramp * (spike < 0.14 ? 0.1 : 0.35 + 1.65 * spike);
 
-    // The fuse: past the crest the picture cuts out in hard frames, and fewer and fewer of them come back.
     float pop_len = 1.0 / (DURATION * FPS);
     float pop = step(POP, lp) * (1.0 - step(POP + pop_len, lp));
     float gone = step(POP + pop_len, lp);
@@ -53,7 +52,6 @@ vec4 animation(vec2 uv) {
     vec2 size = umbriel_size;
     vec2 p = uv * size;
 
-    // The window itself tears, in bands that get wilder as the surge climbs.
     float tear = 0.0;
     for (int i = 0; i < 4; i++) {
         float fi = float(i) * 7.0;
@@ -65,7 +63,6 @@ vec4 animation(vec2 uv) {
             * TEAR_PX * ten * (0.4 + 0.6 * fz_hash(vec2(fr, 59.0 + fi + tseed))) * (1.0 + 2.0 * pop);
     }
 
-    // Strips a few pixels tall slip sideways, and whole tiles hop.
     float strip_hot = step(0.5, fz_hash(vec2(floor(p.y / 48.0), fr + 5.0 + tseed)));
     float strip = (fz_hash(vec2(floor(p.y / 3.0), fr + tseed)) - 0.5) * 28.0 * strip_hot * ten * ten;
     vec2 tile = floor(p / vec2(64.0, 16.0));
@@ -79,21 +76,19 @@ vec4 animation(vec2 uv) {
     vec3 original = fz_unpremul(base);
     float lc = dot(original, LUMA);
 
-    // The set's edge fringing in palette colours, split wider the harder the surge hits.
     float dx = (1.5 + SPLIT_PX * (0.4 + 1.6 * ten) * (0.35 + 0.65 * roll)) / size.x;
     float la = dot(fz_unpremul(umbriel_sample(suv - vec2(dx, 0.0))), LUMA);
     float lb = dot(fz_unpremul(umbriel_sample(suv + vec2(dx, 0.0))), LUMA);
     vec3 col = original;
-    col += fringe_a * max(la - lc, 0.0) + fringe_b * max(lb - lc, 0.0);
-    col *= mix(vec3(1.0), fringe_a, clamp(lc - la, 0.0, 1.0));
-    col *= mix(vec3(1.0), fringe_b, clamp(lc - lb, 0.0, 1.0));
+    float fringe_amt = clamp(4.0 * ten, 0.0, 1.0);
+    col += fringe_amt * (fringe_a * max(la - lc, 0.0) + fringe_b * max(lb - lc, 0.0));
+    col *= mix(vec3(1.0), fringe_a, fringe_amt * clamp(lc - la, 0.0, 1.0));
+    col *= mix(vec3(1.0), fringe_b, fringe_amt * clamp(lc - lb, 0.0, 1.0));
 
-    // The picture overdrives and drains of its own colour toward the phosphor, flickering hard from frame to frame.
     col *= mix(1.0, 0.15 + 1.6 * fz_hash(vec2(fr, tseed + 3.0)), ramp);
     col = mix(col, trace * lc * 2.2, 0.55 * ramp);
     col = pow(max(col, vec3(0.0)), vec3(1.0 + 0.9 * ramp));
 
-    // Phosphor bloom: what is bright in the window burns into the dark around it.
     vec3 glow = vec3(0.0);
     float seen = 0.0;
     float spread = 5.0 + 26.0 * clamp(surge, 0.0, 1.4) + 30.0 * pop;
@@ -108,7 +103,6 @@ vec4 animation(vec2 uv) {
     // A mostly dark window has little to burn, so what it has burns harder; a bright one is held back.
     float exposure = 1.8 / (0.3 + 3.0 * seen / 12.0);
 
-    // And it bleeds sideways along the line, the way a hot phosphor smears.
     vec3 bleed = vec3(0.0);
     for (int i = 1; i <= 6; i++) {
         float w = exp(-float(i) * 0.35);
@@ -122,11 +116,9 @@ vec4 animation(vec2 uv) {
     vec3 phos = mix(lit, trace * dot(lit, vec3(1.0)) * 1.1, 0.7);
     float gain = 1.4 * exposure * ten * mix(0.4, 1.0, vis) * (1.0 + 1.5 * pop);
 
-    // After the pop only the afterglow is left, guttering out.
     float after = exp(-max(lp - POP - pop_len, 0.0) * 16.0) * step(0.4, fz_hash(vec2(fr, tseed + 4.0))) * (1.0 - smoothstep(0.94, 1.0, lp));
     gain = mix(gain, 2.0 * after, gone);
 
-    // The last frame overexposes the picture past what the tube can show.
     col = col * (1.0 + 1.6 * pop) + hot * 0.25 * pop;
 
     // Light piles up softly instead of clipping, so bright windows burn hot without turning to a white wall.

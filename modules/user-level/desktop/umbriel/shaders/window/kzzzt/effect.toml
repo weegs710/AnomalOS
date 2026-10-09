@@ -1,0 +1,4 @@
+[effects.preset.kzzzt]
+kind = "window"
+shader = "shader.glsl"
+palette = true
