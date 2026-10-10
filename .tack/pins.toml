@@ -15,7 +15,7 @@ url = "gh:xddxdd/nix-cachyos-kernel/release"
 exclude_follow = ["nixpkgs"]
 
 [inputs.bumbriel]
-url = "gh:weegs710/bumbriel/feat/audio-shader-input"
+url = "gh:weegs710/bumbriel/feat/audio-lifecycle"
 
 [inputs.agenix]
 url = "gh:ryantm/agenix"

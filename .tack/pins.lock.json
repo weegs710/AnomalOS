@@ -1,7 +1,7 @@
 {
   "$declared": {
     "agenix": "github:ryantm/agenix",
-    "bumbriel": "github:weegs710/bumbriel/feat/audio-shader-input",
+    "bumbriel": "github:weegs710/bumbriel/feat/audio-lifecycle",
     "dusklight": "github:TwilitRealm/dusklight/v1.4.1",
     "hjem": "github:feel-co/hjem",
     "nix-cachyos-kernel": "github:xddxdd/nix-cachyos-kernel/release",
@@ -24,9 +24,9 @@
     "type": "github",
     "owner": "weegs710",
     "repo": "bumbriel",
-    "rev": "a0fa79687ebc7a66ce80b9b6f6e5bf30f34b05a8",
-    "narHash": "sha256-mcXAKz/UhYM/Np9nbAduB215FePKFebau2k/uHDI4Rs=",
-    "lastModified": 1791434717
+    "rev": "931d14961a415715f21518bb6e798a705c8b6946",
+    "narHash": "sha256-HkRwlMY73SipeeI3Knuun2bol7aJuqafFuEibrauiJA=",
+    "lastModified": 1791618990
   },
   "dusklight": {
     "type": "git",
