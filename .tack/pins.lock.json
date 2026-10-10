@@ -1,7 +1,6 @@
 {
   "$declared": {
     "agenix": "github:ryantm/agenix",
-    "bumbriel": "github:weegs710/bumbriel/feat/audio-lifecycle",
     "dusklight": "github:TwilitRealm/dusklight/v1.4.1",
     "hjem": "github:feel-co/hjem",
     "nix-cachyos-kernel": "github:xddxdd/nix-cachyos-kernel/release",
@@ -10,7 +9,8 @@
     "nixpkgs": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst",
     "noctalia": "github:noctalia-dev/noctalia",
     "preservation": "github:nix-community/preservation",
-    "tack": "github:manic-systems/tack"
+    "tack": "github:manic-systems/tack",
+    "umbriel": "github:noctalia-dev/umbriel"
   },
   "agenix": {
     "type": "github",
@@ -19,14 +19,6 @@
     "rev": "3daa710894355fa2fad8243380af373a2b4046ef",
     "narHash": "sha256-n7wew722m1OTBT9DOIMxNX/NF4zfsSUABAO5eW3wikE=",
     "lastModified": 1790734419
-  },
-  "bumbriel": {
-    "type": "github",
-    "owner": "weegs710",
-    "repo": "bumbriel",
-    "rev": "931d14961a415715f21518bb6e798a705c8b6946",
-    "narHash": "sha256-HkRwlMY73SipeeI3Knuun2bol7aJuqafFuEibrauiJA=",
-    "lastModified": 1791618990
   },
   "dusklight": {
     "type": "git",
@@ -98,5 +90,14 @@
     "rev": "4a8b68df58488b311840eb0244c75b4857871789",
     "narHash": "sha256-ST/08SMwfjtXeP/+72GJYVFkO2xT6PDU5ofh9Gh9IJ8=",
     "lastModified": 1791058919
+  },
+  "umbriel": {
+    "type": "git",
+    "url": "https://github.com/noctalia-dev/umbriel.git",
+    "ref": "HEAD",
+    "rev": "63e282acb1bf6734860a2bafab624eef774fb305",
+    "narHash": "sha256-tn7rFcQsiSEW/1wROrDIN2nIDGF+yGbqSlp4LJ4/drw=",
+    "lastModified": 1791642567,
+    "submodules": true
   }
 }

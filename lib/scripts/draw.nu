@@ -703,10 +703,10 @@ def main [] {
 
     # the compositor is a flake input, not a nixpkgs attr, and meson.build now defers to a VERSION file
     print "  · umbriel version..."
-    let umbriel_rev = ($lock | get "bumbriel" | get rev)
+    let umbriel_rev = ($lock | get "umbriel" | get rev)
     let umbriel_raw = (
         try {
-            ^gh api $"repos/barrulus/bumbriel/contents/VERSION?ref=($umbriel_rev)" --jq '.content'
+            ^gh api $"repos/noctalia-dev/umbriel/contents/VERSION?ref=($umbriel_rev)" --jq '.content'
             | ^base64 -d
         } catch { "" }
     )
