@@ -33,4 +33,12 @@
       sha256 = "sha256-3XUwBw9sSQgPjTVX3oBGwK9PQXgN5J+ktdICey67wAE=";
     };
   };
+  tfm = {
+    pname = "tfm";
+    version = "v1.0.0";
+    src = fetchurl {
+      url = "https://github.com/clarkarch/tfm-tui/releases/download/v1.0.0/tfm-x86_64-linux.gz";
+      sha256 = "sha256-1iAdltdj8WvlZ/Vqsiwd1SMUKzW3p85PH/0sXrifMmw=";
+    };
+  };
 }

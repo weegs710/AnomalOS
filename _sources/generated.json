@@ -49,5 +49,20 @@
             "url": "https://github.com/imputnet/helium-linux/releases/download/0.14.8.2/helium-0.14.8.2-x86_64_linux.tar.xz"
         },
         "version": "0.14.8.2"
+    },
+    "tfm": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "tfm",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-1iAdltdj8WvlZ/Vqsiwd1SMUKzW3p85PH/0sXrifMmw=",
+            "type": "url",
+            "url": "https://github.com/clarkarch/tfm-tui/releases/download/v1.0.0/tfm-x86_64-linux.gz"
+        },
+        "version": "v1.0.0"
     }
 }

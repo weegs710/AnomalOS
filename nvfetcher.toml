@@ -10,3 +10,7 @@ fetch.github = "murkl/d2launcher"
 [evelens]
 src.github_tag = "aliacollins/EveLens"
 fetch.url = "https://github.com/aliacollins/EveLens/releases/download/$ver/EveLens-stable-linux-x86_64.AppImage"
+
+[tfm]
+src.github_tag = "clarkarch/tfm-tui"
+fetch.url = "https://github.com/clarkarch/tfm-tui/releases/download/$ver/tfm-x86_64-linux.gz"
