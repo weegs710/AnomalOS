@@ -13,8 +13,8 @@ focus_on_activate = false
 honor_restored_maximize = false
 
 [environment]
-TERMINAL = "ghostty"
-XDG_TERMINAL_EDITOR = "ghostty"
+TERMINAL = "kitty"
+XDG_TERMINAL_EDITOR = "kitty"
 
 [workspaces]
 back_and_forth = false
@@ -169,7 +169,7 @@ follows_mouse = true
 
 [keybinds]
 # Direct terminal and launcher so the session is never dependent on wlr-which-key coming up.
-"Mod+Return" = "spawn:ghostty"
+"Mod+Return" = "spawn:kitty --title=kitty"
 "Mod+D" = "spawn:noctalia msg panel-toggle launcher"
 
 "Mod+Escape" = "window-close"
@@ -177,7 +177,7 @@ follows_mouse = true
 "Mod+G" = "window-toggle-floating"
 "Mod+O" = "window-consume-or-expel-right"
 "Mod+Backslash" = "window-toggle-pinned"
-"Mod+Space" = "spawn:ghostty --title=yazi -e yazi"
+"Mod+Space" = "spawn:kitty --title=tfm tfm"
 
 "Mod+1" = "workspace-switch:1"
 "Mod+2" = "workspace-switch:2"
@@ -279,7 +279,7 @@ default_position = { x = 531, y = 262, anchor = "top_left" }
 
 # Placement keys off the menu's --title flags, since umbriel has no exec-time rule for a spawned process.
 [[window_rule]]
-match.title = "^(yazi|tremc)$"
+match.title = "^(tfm|tremc)$"
 default_floating = true
 default_floating_size_px = { width = 1600, height = 900 }
 default_position = { x = 531, y = 262, anchor = "top_left" }
@@ -304,7 +304,7 @@ match.title = "^btop$"
 default_floating = true
 
 [[window_rule]]
-match.title = "^ghostty$"
+match.title = "^kitty$"
 default_workspace = 2
 
 [[window_rule]]

@@ -67,7 +67,7 @@ Fork it and do whatever. Bug reports and improvements are welcome -- run `nix-sh
 
 MIT, please see [LICENSE](LICENSE).
 
-Three bundled things aren't mine and carry their own terms: the vendored sprinkles engine, the ghostty cursor shader, and the phinger cursor art. The carve-out is in [LICENSE](LICENSE) and the full texts are in [LICENSES/](LICENSES/).
+Two bundled things aren't mine and carry their own terms: the vendored sprinkles engine and the phinger cursor art. The carve-out is in [LICENSE](LICENSE) and the full texts are in [LICENSES/](LICENSES/).
 
 ## Links
 

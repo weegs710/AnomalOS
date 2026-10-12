@@ -170,7 +170,7 @@ def generate-overview [d: record] {
         ...(ov-header (svg-escape $d.nixos_version) (svg-escape $d.linux_version)),
         ...(ov-top-card 70  "#3dffb0" "WM"       "Umbriel"        (svg-escape $d.umbriel_ver)),
         ...(ov-top-card 286 "#34e0ff" "SHELL"    "nu"             (svg-escape $d.nushell_ver)),
-        ...(ov-top-card 502 "#b673ff" "TERMINAL" "ghostty"        (svg-escape $d.ghostty_ver)),
+        ...(ov-top-card 502 "#b673ff" "TERMINAL" "kitty"          (svg-escape $d.kitty_ver)),
         ...(ov-top-card 718 "#ff5d8a" "EDITOR"   "zed"            (svg-escape $d.zed_ver)),
         ...(ov-top-card 934 "#6ae9ff" "UI"       "Noctalia Shell"  (svg-escape $d.noctalia_ver)),
         ...(ov-hardware 70  255 $d.hardware),
@@ -716,7 +716,7 @@ def main [] {
         } else { "?" }
     )
     print "  · nushell version...";      let nushell_ver   = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.nushell.version")
-    print "  · ghostty version...";      let ghostty_ver   = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.ghostty.version")
+    print "  · kitty version...";        let kitty_ver     = (nix-eval-raw  $assemble "nixosConfigurations.HX99G.pkgs.kitty.version")
     print "  · zed version..."; let zed_ver = (nix-eval-raw $assemble "nixosConfigurations.HX99G.pkgs.zed-editor.version")
     # read at the locked rev because pkgs.version is stale nixpkgs metadata; meson.build now defers to a VERSION file
     print "  · noctalia version..."
@@ -812,7 +812,7 @@ def main [] {
         linux_version:      $linux_version
         umbriel_ver:        $umbriel_ver
         nushell_ver:        $nushell_ver
-        ghostty_ver:        $ghostty_ver
+        kitty_ver:          $kitty_ver
         zed_ver:            $zed_ver
         noctalia_ver:       $noctalia_ver
         sys_pkg_count:      $sys_pkg_count

@@ -1,4 +1,4 @@
-# runs inside a floating ghostty so the polkit FIDO prompt is visible; window closes itself on exit
+# runs inside a floating terminal so the polkit FIDO prompt is visible; window closes itself on exit
 def main [unit: string] {
   print $"restarting ($unit) -- authenticate to proceed"
   try { ^systemctl restart $unit } catch { }

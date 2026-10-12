@@ -25,27 +25,26 @@ let
 
   noct = cmd: "noctalia msg ${cmd}";
 
-  terminalCmd = "ghostty --title=ghostty";
+  terminalCmd = "kitty --title=kitty";
   discordCmd = "/etc/profiles/per-user/${username}/bin/vesktop";
   gajimCmd = "/etc/profiles/per-user/${username}/bin/gajim";
-  btopCmd = "ghostty --title=btop -e btop";
-  rmpcCmd = "ghostty --title=rmpc -e rmpc";
-  fileManagerCmd = "ghostty --title=yazi -e yazi";
-  tremcCmd = "ghostty --title=tremc -e tremc";
-  camListCmd = "ghostty --title=cam-list -e nu ${runPause} phone-cam-list";
+  btopCmd = "kitty --title=btop btop";
+  rmpcCmd = "kitty --title=rmpc rmpc";
+  fileManagerCmd = "kitty --title=tfm tfm";
+  tremcCmd = "kitty --title=tremc tremc";
+  camListCmd = "kitty --title=cam-list nu ${runPause} phone-cam-list";
   camToggle = action: "nu ${camToggleScript} ${action}";
 
-  journalCmd = "ghostty --title=journal -e journalctl -f";
-  zpoolCmd = "ghostty --title=zpool -e nu ${runPause} zpool status";
-  tailscaleCmd = "ghostty --title=tailscale -e nu ${runPause} tailscale status";
+  journalCmd = "kitty --title=journal journalctl -f";
+  zpoolCmd = "kitty --title=zpool nu ${runPause} zpool status";
+  tailscaleCmd = "kitty --title=tailscale nu ${runPause} tailscale status";
 
   # system units restart in a float so the polkit FIDO prompt is the guard; user units just notify
-  svcRestart = unit: "ghostty --title=svc-auth -e nu ${svcAuth} ${unit}";
+  svcRestart = unit: "kitty --title=svc-auth nu ${svcAuth} ${unit}";
   svcUserRestart = units: "nu ${svcUser} ${units}";
-  svcStatus =
-    unit: "ghostty --title=svc-status -e nu ${runPause} systemctl --no-pager status ${unit}";
+  svcStatus = unit: "kitty --title=svc-status nu ${runPause} systemctl --no-pager status ${unit}";
   svcUserStatus =
-    units: "ghostty --title=svc-status -e nu ${runPause} systemctl --user --no-pager status ${units}";
+    units: "kitty --title=svc-status nu ${runPause} systemctl --user --no-pager status ${units}";
 
   systemUnits = [
     {
@@ -151,7 +150,7 @@ let
       rows_per_column = 9;
       menu = [
         # hot path
-        (run "Return" "ghostty" terminalCmd)
+        (run "Return" "kitty" terminalCmd)
         (run "space" "launcher" (noct "panel-toggle launcher"))
         (run "h" "helium" "helium")
         (run "e" "zed" "zeditor")
@@ -187,7 +186,7 @@ let
         ])
         (sub "t" "tools" [
           (run "b" "btop" btopCmd)
-          (run "y" "yazi" fileManagerCmd)
+          (run "f" "tfm" fileManagerCmd)
           (run "l" "lact" "lact gui")
           (run "p" "gparted" "gparted")
           (run "t" "protontricks" "protontricks --no-term --gui")

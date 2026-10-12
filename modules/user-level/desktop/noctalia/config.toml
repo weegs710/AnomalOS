@@ -221,8 +221,8 @@ source = "custom"
 wallpaper_scheme = "vibrant"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "umbriel", "kcolorscheme", "qt" ]
-    community_ids = [ "claude-code", "gimp", "inkscape", "zed", "heroiclauncher", "steam", "zathura", "hyprtoolkit", "yazi" ]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "kitty", "umbriel", "kcolorscheme", "qt" ]
+    community_ids = [ "claude-code", "gimp", "inkscape", "zed", "heroiclauncher", "steam", "zathura", "hyprtoolkit" ]
     enable_builtin_templates = true
     enable_community_templates = true
 

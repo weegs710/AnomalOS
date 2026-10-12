@@ -13,18 +13,6 @@ where I modified it.
   this is both flattened into one, reformatted with nixfmt, with the upstream doc comments removed
   and one internal binding renamed. Behaviour is unchanged.
 
-## `modules/user-level/desktop/ghostty/cursor_tail.glsl`
-
-- **From:** <https://github.com/sahaj-b/ghostty-cursor-shaders>
-- **Terms:** MIT, Copyright (c) 2026 Sahaj Bhatt. Full text in
-  [`MIT-ghostty-cursor-shaders.txt`](MIT-ghostty-cursor-shaders.txt).
-- **Modified:** yes, substantially. Trimmed from 239 lines to ~127 by removing the commented-out
-  easing-function variants, renamed two helpers (`normalize` → `normalizeCoord`,
-  `antialising` → `antialias`), reformatted, and added a visibility/progress gate so the collapsed
-  trail stops drawing a lingering ring when a TUI hides the cursor.
-- Upstream's rectangle SDF is itself based on Inigo Quilez's 2D distance functions article,
-  <https://iquilezles.org/articles/distfunctions2d/>.
-
 ## `modules/user-level/desktop/xdg/phinger-cursors-dark-hyprcursor/`
 
 - **From:** phinger-cursors by phisch, <https://github.com/phisch/phinger-cursors>

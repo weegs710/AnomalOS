@@ -31,7 +31,7 @@ The scratchpad holds things you summon and dismiss: `Super+grave` toggles it, `S
 | Key                                | Action                                                                 |
 | ---------------------------------- | ---------------------------------------------------------------------- |
 | `Super` (tap, on release)          | wlr-which-key menu                                                     |
-| `Super+Return`                     | ghostty                                                                |
+| `Super+Return`                     | kitty                                                                  |
 | `Super+D`                          | noctalia launcher                                                      |
 | `Super+1` to `Super+5`             | switch workspace                                                       |
 | `Super+Shift+1` to `Super+Shift+5` | move window to workspace                                               |
@@ -39,7 +39,7 @@ The scratchpad holds things you summon and dismiss: `Super+grave` toggles it, `S
 | `Super+MouseWheel`                 | cycle workspaces                                                       |
 | `Super+grave`                      | toggle the scratchpad                                                  |
 | `Super+Shift+grave`                | add window to the scratchpad, or pull it back out                      |
-| `Super+Space`                      | yazi, floating                                                         |
+| `Super+Space`                      | tfm, floating                                                          |
 | `Super+Escape`                     | close window                                                           |
 | `Super+F`                          | fullscreen                                                             |
 | `Super+G`                          | toggle floating                                                        |

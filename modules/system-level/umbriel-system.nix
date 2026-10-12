@@ -14,7 +14,8 @@
 
   xdg.portal = {
     enable = true;
-    xdgOpenUsePortal = true;
+    # OpenURI only honours a default for web schemes and inode/directory, so routing xdg-open through it shows an app chooser for every other type regardless of mimeapps
+    xdgOpenUsePortal = false;
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
       pkgs.xdg-desktop-portal-termfilechooser

@@ -39,9 +39,9 @@ in
   environment.sessionVariables = {
     EDITOR = "zeditor --wait";
     NIXOS_OZONE_WL = "1";
-    TERMINAL = "ghostty";
+    TERMINAL = "kitty";
     VISUAL = "zeditor --wait";
-    XDG_TERMINAL_EDITOR = "ghostty";
+    XDG_TERMINAL_EDITOR = "kitty";
     XDG_DATA_DIRS = [
       "$HOME/.local/share"
     ];
@@ -71,7 +71,6 @@ in
 
     xdg.data.files = {
       "icons/default/index.theme".source = ./index.theme;
-      "applications/yazi.desktop".source = ./yazi.desktop;
     };
   };
 }

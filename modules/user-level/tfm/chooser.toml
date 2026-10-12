@@ -1,0 +1,3 @@
+# emptying the core bind is what frees `return` for the chooser plugin, since plugin binds never win a tie
+[keys]
+open-selected = []
