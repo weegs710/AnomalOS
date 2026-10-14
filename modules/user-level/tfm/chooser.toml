@@ -1,3 +1,7 @@
+# TFM_CONFIG replaces the user config outright, so the palette has to be re-derived here too
+[ui]
+follow-terminal = true
+
 # emptying the core bind is what frees `return` for the chooser plugin, since plugin binds never win a tie
 [keys]
 open-selected = []

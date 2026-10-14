@@ -36,6 +36,13 @@ in
 
   hjem.users.${username} = {
     xdg.config.files = {
+      # the settings panel rewrites this file, so it lands as a real 0644 copy rather than a store symlink
+      "tfm/config.toml" = {
+        source = ./config.toml;
+        type = "copy";
+        permissions = "0644";
+      };
+
       # the plugin loader lstats each entry and skips symlinks, so a linked .ts hashes to an empty folder and never loads
       "tfm/plugins/chooser/chooser.ts" = {
         source = ./plugins/chooser/chooser.ts;

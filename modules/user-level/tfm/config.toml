@@ -1,0 +1,3 @@
+# the whole palette is derived from the terminal's own OSC colors, and kitty already follows noctalia
+[ui]
+follow-terminal = true
