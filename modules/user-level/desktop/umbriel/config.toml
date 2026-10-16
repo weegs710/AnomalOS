@@ -266,6 +266,11 @@ match.app_id = "^zenity$"
 default_floating = true
 
 [[window_rule]]
+match.app_id = "^peepers-popout$"
+default_floating = true
+default_floating_size_px = { width = 585, height = 925 }
+
+[[window_rule]]
 match.app_id = "^gcr-prompter$"
 default_focused = true
 default_pinned = true
