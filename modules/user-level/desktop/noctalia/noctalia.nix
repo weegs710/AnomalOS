@@ -51,5 +51,6 @@ in
     xdg.config.files."noctalia/palettes/Great-Below.json".source = ./palettes/Great-Below.json;
     xdg.config.files."noctalia/palettes/Cold-Wind.json".source = ./palettes/Cold-Wind.json;
     xdg.config.files."noctalia/palettes/Cymagentan.json".source = ./palettes/Cymagentan.json;
+    xdg.config.files."noctalia/palettes/alliance-tournament-xxi-48-vib.json".source = ./palettes/alliance-tournament-xxi-48-vib.json;
   };
 }
