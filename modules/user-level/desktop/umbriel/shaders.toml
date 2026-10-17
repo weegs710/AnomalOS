@@ -13,3 +13,5 @@ window = "kzzzt"
 border = "kzzzt-ring"
 # otherwise screencopy clients are handed a second frame rendered without the effects
 in_capture = true
+# unset follows the output refresh, so the animated ring and its light redrew at 144Hz forever
+max_fps = 60
