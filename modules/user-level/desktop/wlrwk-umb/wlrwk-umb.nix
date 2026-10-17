@@ -32,6 +32,8 @@ let
   rmpcCmd = "kitty --title=rmpc rmpc";
   fileManagerCmd = "kitty --title=tfm tfm";
   tremcCmd = "kitty --title=tremc tremc";
+  # Not packaged yet, so this runs the build in the working tree inside the shell that gives it wayland.
+  peepersCmd = "nix-shell $HOME/claude-projects/peepers/shell.nix --run $HOME/.cache/cargo-target/peepers/release/peepers";
   camListCmd = "kitty --title=cam-list nu ${runPause} phone-cam-list";
   camToggle = action: "nu ${camToggleScript} ${action}";
 
@@ -188,6 +190,7 @@ let
           (run "b" "btop" btopCmd)
           (run "f" "tfm" fileManagerCmd)
           (run "l" "lact" "lact gui")
+          (run "m" "peepers" peepersCmd)
           (run "p" "gparted" "gparted")
           (run "t" "protontricks" "protontricks --no-term --gui")
           (run "u" "protonup-qt" "protonup-qt")

@@ -200,6 +200,9 @@ follows_mouse = true
 # One chord both ways: adds the focused window, or pulls it back out when it is the scratchpad's focused entry.
 "Mod+Shift+Grave" = "window-toggle-scratchpad"
 
+# peepers is not packaged yet, so this runs the build in the working tree.
+"Mod+P" = { action = 'spawn:$HOME/.cache/cargo-target/peepers/release/peepers --toggle-pop', repeat = false }
+
 "Mod+Left" = "window-focus-left"
 "Mod+Right" = "window-focus-right"
 "Mod+Up" = "window-focus-up"
@@ -265,10 +268,22 @@ default_floating = true
 match.app_id = "^zenity$"
 default_floating = true
 
+# The main window starts hidden in the scratchpad; the popout is what gets summoned.
+[[window_rule]]
+match.app_id = "^peepers$"
+default_scratchpad = "default"
+default_focused = false
+focus_on_activate = false
+
+# Pinned so it does not inherit a visible parent's scratchpad.
 [[window_rule]]
 match.app_id = "^peepers-popout$"
 default_floating = true
 default_floating_size_px = { width = 585, height = 925 }
+default_pinned = true
+default_focused = true
+default_position = { x = 0, y = 0, anchor = "center" }
+focus_on_activate = true
 
 [[window_rule]]
 match.app_id = "^gcr-prompter$"
