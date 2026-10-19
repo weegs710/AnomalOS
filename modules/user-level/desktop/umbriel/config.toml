@@ -109,7 +109,7 @@ preserve_split = true
 [layout.scrolling]
 default_extent_fraction = 0.9
 center_underfull_strip = true
-center_focused = "never"
+center_focused = "always"
 
 [output."HDMI-A-1"]
 mode = "2560x1440@144"
@@ -243,9 +243,6 @@ follows_mouse = true
 "submap[resize],Up" = "window-modify-secondary-extent:-0.05"
 "submap[resize],Escape" = "submap:reset"
 "submap[resize],Return" = "submap:reset"
-
-[[window_rule]]
-opacity = 0.9
 
 # A rule rather than [colors.border], which noctalia regenerates on every wallpaper change; the scratchpad keeps its own colour.
 [[window_rule]]
