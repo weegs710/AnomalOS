@@ -42,6 +42,9 @@ in
 
   services.lact.enable = true;
 
+  # amd-pstate-epp pins EPP to performance under the performance governor, so this sets both.
+  powerManagement.cpuFreqGovernor = "performance";
+
   fileSystems."/" = {
     device = "zroot/root";
     fsType = "zfs";
