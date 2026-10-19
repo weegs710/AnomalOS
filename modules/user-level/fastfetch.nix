@@ -4,15 +4,13 @@
   ...
 }:
 let
-  logo = ../../assets/fetch-logo.webp;
+  logo = ../../assets/nun.ans;
   configFile = pkgs.writeText "fastfetch-config.jsonc" ''
         {
       "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
       "logo": {
         "source": "${logo}",
-        "type": "kitty",
-        "width": 39,
-        "height": 20,
+        "type": "file-raw",
         "padding": {
           "left": 2,
           "right": 2,
