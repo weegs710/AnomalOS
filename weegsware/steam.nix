@@ -4,13 +4,13 @@ let
   # See: https://github.com/Jovian-Experiments/Jovian-NixOS/blob/master/pkgs/decky-loader/default.nix
   decky-loader = pkgs.python3.pkgs.buildPythonPackage rec {
     pname = "decky-loader";
-    version = "3.2.9";
+    version = "3.3.0";
 
     src = pkgs.fetchFromGitHub {
       owner = "SteamDeckHomebrew";
       repo = "decky-loader";
       rev = "v${version}";
-      hash = "sha256-XhW+bbsEhWnD/1c3QVHAQz6AAo824b/hbZ1t/VZE1po=";
+      hash = "sha256-R+nccOepmodIFlGCede1UyZEzC7+zY7vjwjRDNl/mq8=";
     };
 
     # pnpm-workspace.yaml confuses the pnpm fetcher and build
@@ -27,7 +27,7 @@ let
       postPatch = ''
         rm pnpm-workspace.yaml
       '';
-      hash = "sha256-tbXB0MW6Y1lGQGYnxoaDpYs49cm7IYxHzLSq3UBcMl0=";
+      hash = "sha256-9dIrpMB8IrweGVaXCew/cufKBHZbuH2AUwIlkXrK5HI=";
     };
 
     pyproject = true;
