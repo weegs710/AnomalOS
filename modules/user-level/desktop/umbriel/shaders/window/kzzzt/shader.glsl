@@ -48,14 +48,21 @@ float sh_sq(float x) {
     return x * x;
 }
 
-float audio_live() {
-    return umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, umbriel_audio_level());
+// The spectrum has no single level, so the gate and the loudness scale use its mean over eight evenly spaced bands.
+float audio_level() {
+    float sum = 0.0;
+    for (int i = 0; i < 8; i++) {
+        sum += umbriel_audio_spectrum((float(i) + 0.5) / 8.0);
+    }
+    return sum * 0.125;
 }
 
-// One level and no spectrum, so each band is the level with its own flutter: steadier low, spikier high.
+float audio_live() {
+    return umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, audio_level());
+}
+
 float au_band(float pos) {
-    float flutter = sh_hash(vec2(floor(pos * 16.0), floor(umbriel_time * 12.0)));
-    return audio_live() * umbriel_audio_level() * mix(1.0, flutter, 0.35 + 0.65 * pos);
+    return audio_live() * umbriel_audio_spectrum(pos);
 }
 
 vec2 sh_segment(vec2 p, vec2 a, vec2 b) {
@@ -211,7 +218,7 @@ vec4 window(vec2 coords) {
         && sh_hash(vec2(slot, 13.7 + seed)) < FLINCH_CHANCE) ? 1.0 : 0.0;
     // The flinch stays on its own timer whatever the audio does.
     float au = audio_live();
-    float lvl = au * umbriel_audio_level();
+    float lvl = au * audio_level();
     float treble = au_band(0.7);
 
     float tear_mid = sh_hash(vec2(tick, 43.0 + seed)) * size.y;

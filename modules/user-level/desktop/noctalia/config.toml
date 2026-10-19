@@ -183,6 +183,7 @@ clipboard_enabled = false
 clipboard_keep_from_closed_apps = true
 font_family = "Terminess Nerd Font"
 telemetry_enabled = false
+umbriel_audio_provider_enabled = true
 
     [shell.animation]
     enabled = true

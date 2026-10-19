@@ -10,7 +10,12 @@
   hardware.graphics.enable = true;
 
   programs.umbriel.enable = true;
-  programs.umbriel.package = inputs.umbriel.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  # The HKC drops HDMI hotplug detect ~11s into dpms-off, and the rebuilt output would otherwise power straight back on.
+  programs.umbriel.package =
+    inputs.umbriel.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
+      (old: {
+        patches = (old.patches or [ ]) ++ [ ./umbriel-dpms-reconnect-hold-patch ];
+      });
 
   xdg.portal = {
     enable = true;

@@ -1,0 +1,302 @@
+diff --git a/meson.build b/meson.build
+index 1f69acb..1388ba4 100644
+--- a/meson.build
++++ b/meson.build
+@@ -637,6 +637,7 @@ pure_sources = files(
+   'src/layout/master.cpp',
+   'src/output/direction.cpp',
+   'src/output/identity.cpp',
++  'src/output/dpms_hold.cpp',
+   'src/output/enable_overrides.cpp',
+   'src/output/format_sequence.cpp',
+   'src/output/gamma_transition.cpp',
+diff --git a/src/output/dpms_hold.cpp b/src/output/dpms_hold.cpp
+new file mode 100644
+index 0000000..b263fcc
+--- /dev/null
++++ b/src/output/dpms_hold.cpp
+@@ -0,0 +1,43 @@
++#include "output/dpms_hold.h"
++
++#include <algorithm>
++
++namespace umbriel {
++
++  namespace {
++
++    std::string descriptorFor(const OutputIdentity& identity) {
++      if (identity.make.empty() && identity.model.empty() && identity.serial.empty()) {
++        return {};
++      }
++      return outputDescriptor(identity);
++    }
++
++  } // namespace
++
++  void OutputDpmsHold::remember(const OutputIdentity& identity, Clock::time_point now) {
++    const std::string descriptor = descriptorFor(identity);
++    const auto same = std::ranges::find_if(m_entries, [&](const Entry& entry) {
++      return outputNamesEqual(entry.connector, identity.connector) && outputNamesEqual(entry.descriptor, descriptor);
++    });
++    if (same != m_entries.end()) {
++      same->since = now;
++      return;
++    }
++    m_entries.push_back({.connector = std::string(identity.connector), .descriptor = descriptor, .since = now});
++  }
++
++  bool OutputDpmsHold::take(const OutputIdentity& identity, Clock::time_point now) {
++    std::erase_if(m_entries, [now](const Entry& entry) { return now - entry.since > kWindow; });
++    const std::string descriptor = descriptorFor(identity);
++    const auto match = std::ranges::find_if(m_entries, [&](const Entry& entry) {
++      return outputNamesEqual(entry.connector, identity.connector) && outputNamesEqual(entry.descriptor, descriptor);
++    });
++    if (match == m_entries.end()) {
++      return false;
++    }
++    m_entries.erase(match);
++    return true;
++  }
++
++} // namespace umbriel
+diff --git a/src/output/dpms_hold.h b/src/output/dpms_hold.h
+new file mode 100644
+index 0000000..bc0c775
+--- /dev/null
++++ b/src/output/dpms_hold.h
+@@ -0,0 +1,34 @@
++#pragma once
++
++#include "output/identity.h"
++
++#include <chrono>
++#include <string>
++#include <vector>
++
++namespace umbriel {
++
++  // A DPMS-off output whose connector vanished and came back right away. Some sinks drop and re-assert hotplug detect
++  // while they sleep, which destroys the Output and builds a fresh one that would otherwise power on.
++  class OutputDpmsHold {
++  public:
++    using Clock = std::chrono::steady_clock;
++
++    // Longer than the sink's drop-and-return, short enough that a real replug still wakes the display.
++    static constexpr std::chrono::seconds kWindow{5};
++
++    void remember(const OutputIdentity& identity, Clock::time_point now);
++    // True once per remembered output that returns inside the window.
++    [[nodiscard]] bool take(const OutputIdentity& identity, Clock::time_point now);
++
++  private:
++    struct Entry {
++      std::string connector;
++      std::string descriptor;
++      Clock::time_point since;
++    };
++
++    std::vector<Entry> m_entries;
++  };
++
++} // namespace umbriel
+diff --git a/src/output/output.cpp b/src/output/output.cpp
+index a110292..f2ea52b 100644
+--- a/src/output/output.cpp
++++ b/src/output/output.cpp
+@@ -137,10 +137,16 @@ namespace umbriel {
+
+     applyCursorConfig();
+     m_desktopEnabled = m_server->initialOutputEnabled(*this);
++    // A sink that dropped hotplug detect while asleep comes back as a new output, which must not undo the DPMS-off.
++    m_dpmsOff = m_desktopEnabled && m_server->takeDpmsHold(*this);
++    if (m_dpmsOff) {
++      kLog.info("output '{}': staying powered off across reconnect", m_output->name);
++    }
+     if (!applyConfiguredState()) {
+       // Do not advertise a logical output whose initial backend enable failed.
+       // Keeping it disabled lets a later output-enable action retry the commit.
+       m_desktopEnabled = false;
++      m_dpmsOff = false;
+     }
+     updateSceneSdrWhite();
+     if (desktopEnabled()) {
+diff --git a/src/server/server.h b/src/server/server.h
+index 9bec47b..4d456e2 100644
+--- a/src/server/server.h
++++ b/src/server/server.h
+@@ -9,6 +9,7 @@
+ #include "input/modifier_tap.h"
+ #include "input/shortcuts_inhibit.h"
+ #include "input/surface_layouts.h"
++#include "output/dpms_hold.h"
+ #include "output/enable_overrides.h"
+ #include "scene/border_rect.h"
+ #include "scene/effect_registry.h"
+@@ -634,6 +635,7 @@ namespace umbriel {
+     bool applyOutputManagerConfig(wlr_output_configuration_v1* config, bool testOnly);
+     bool commitOutputEnabled(Output& output, bool enabled);
+     [[nodiscard]] bool initialOutputEnabled(const Output& output);
++    [[nodiscard]] bool takeDpmsHold(const Output& output);
+     void rememberOutputEnableOverride(const Output& output, bool enabled);
+     void restoreDisplacedViews();
+     void refreshDisplacedWorkspace(Workspace& workspace);
+@@ -966,6 +968,7 @@ namespace umbriel {
+     // different identified monitors. An output-policy config reload clears
+     // them.
+     OutputEnableOverrides m_outputEnableOverrides;
++    OutputDpmsHold m_outputDpmsHold;
+     Dirty m_dirty = Dirty::None;
+     ViewRegistry m_registry;
+     FocusManager m_focus{*this};
+diff --git a/src/server/server_events.cpp b/src/server/server_events.cpp
+index dbfbf79..f4c87cb 100644
+--- a/src/server/server_events.cpp
++++ b/src/server/server_events.cpp
+@@ -2458,6 +2458,9 @@ namespace umbriel {
+   }
+
+   void Server::removeOutput(Output* output) {
++    if (output->dpmsOff() && !m_stopping) {
++      m_outputDpmsHold.remember(output->identity(), OutputDpmsHold::Clock::now());
++    }
+     const bool hadRuntimeEffect = output->screenEffectSlot().runtimeSelector.has_value();
+     m_overview->onOutputRemoved(output);
+     m_gestures->cancelForOutput(output);
+@@ -3541,6 +3544,10 @@ namespace umbriel {
+     return output.configuredEnabled();
+   }
+
++  bool Server::takeDpmsHold(const Output& output) {
++    return m_outputDpmsHold.take(output.identity(), OutputDpmsHold::Clock::now());
++  }
++
+   void Server::rememberOutputEnableOverride(const Output& output, bool enabled) {
+     m_outputEnableOverrides.remember(output.identity(), enabled);
+   }
+diff --git a/tests/harness/checks/output/dpms_reconnect.sh b/tests/harness/checks/output/dpms_reconnect.sh
+new file mode 100755
+index 0000000..2bcb12b
+--- /dev/null
++++ b/tests/harness/checks/output/dpms_reconnect.sh
+@@ -0,0 +1,49 @@
++#!/usr/bin/env bash
++# harness: outputs=2
++# Some sinks drop and re-assert hotplug detect while they sleep, so a DPMS-off output is destroyed and rebuilt a moment
++# later. The rebuilt output must stay powered off, and only the output that was off may be held.
++set -euo pipefail
++
++log_mark() { wc -l < "$UMBRIEL_LOG"; }
++
++wait_for_log_since() {
++  local mark=$1 pattern=$2
++  for _ in $(seq 40); do
++    if tail -n +"$((mark + 1))" "$UMBRIEL_LOG" | grep -q "$pattern"; then
++      return 0
++    fi
++    sleep 0.1
++  done
++  echo "timed out waiting for log: $pattern"
++  tail -12 "$UMBRIEL_LOG" | sed 's/^/  | /'
++  return 1
++}
++
++power_of() { "$UMBRIEL" outputs | awk -v name="$1" '$1 == name { found = 1 } found && /Power:/ { print $2; exit }'; }
++
++"$UMBRIEL" msg dpms-off:headless-2 > /dev/null
++[[ $(power_of HEADLESS-2) == off ]] || { echo "HEADLESS-2 did not power off"; exit 1; }
++
++mark=$(log_mark)
++"$UMBRIEL" output-destroy HEADLESS-2 > /dev/null
++"$UMBRIEL" output-create HEADLESS-2 > /dev/null
++wait_for_log_since "$mark" "output 'HEADLESS-2': staying powered off across reconnect"
++[[ $(power_of HEADLESS-2) == off ]] || { echo "rebuilt HEADLESS-2 powered on"; exit 1; }
++[[ $(power_of HEADLESS-1) == on ]] || { echo "HEADLESS-1 lost power"; exit 1; }
++
++# The hold is consumed by the first return, so a second rebuild of a woken output stays awake.
++"$UMBRIEL" msg dpms-on:headless-2 > /dev/null
++mark=$(log_mark)
++"$UMBRIEL" output-destroy HEADLESS-2 > /dev/null
++"$UMBRIEL" output-create HEADLESS-2 > /dev/null
++for _ in $(seq 40); do
++  [[ $(power_of HEADLESS-2) == on ]] && break
++  sleep 0.1
++done
++[[ $(power_of HEADLESS-2) == on ]] || { echo "woken HEADLESS-2 came back off"; exit 1; }
++if tail -n +"$((mark + 1))" "$UMBRIEL_LOG" | grep -q "staying powered off"; then
++  echo "a woken output was held off"
++  exit 1
++fi
++
++echo "a DPMS-off output stays off across a quick reconnect and a woken one does not"
+diff --git a/tests/meson.build b/tests/meson.build
+index 0eaa765..ebfa4e0 100644
+--- a/tests/meson.build
++++ b/tests/meson.build
+@@ -19,6 +19,7 @@ unit_tests = [
+   ['value-parse', ['unit/value_parse.cpp'], []],
+   ['keybind-parse', ['unit/keybind_parse.cpp'], []],
+   ['lid-state', ['unit/lid_state.cpp'], []],
++  ['output-dpms-hold', ['unit/output_dpms_hold.cpp'], []],
+   ['output-enable-overrides', ['unit/output_enable_overrides.cpp'], []],
+   ['modifier-tap', ['unit/modifier_tap.cpp'], []],
+   ['keyboard-layout', ['unit/keyboard_layout.cpp'], []],
+diff --git a/tests/unit/output_dpms_hold.cpp b/tests/unit/output_dpms_hold.cpp
+new file mode 100644
+index 0000000..0aa054c
+--- /dev/null
++++ b/tests/unit/output_dpms_hold.cpp
+@@ -0,0 +1,54 @@
++#include "check.h"
++#include "output/dpms_hold.h"
++
++using umbriel::OutputDpmsHold;
++using umbriel::OutputIdentity;
++using Clock = OutputDpmsHold::Clock;
++
++namespace {
++
++  OutputIdentity identified(std::string_view connector, std::string_view serial) {
++    return {
++        .connector = connector,
++        .make = "Example",
++        .model = "Panel",
++        .serial = serial,
++    };
++  }
++
++  const Clock::time_point kStart{};
++
++} // namespace
++
++UMBRIEL_TEST(sameOutputReturningInsideTheWindowStaysOff) {
++  OutputDpmsHold hold;
++  hold.remember(identified("HDMI-A-1", "A"), kStart);
++  CHECK(hold.take(identified("HDMI-A-1", "A"), kStart + std::chrono::seconds(1)));
++}
++
++UMBRIEL_TEST(holdIsConsumedByTheFirstReturn) {
++  OutputDpmsHold hold;
++  hold.remember(identified("HDMI-A-1", "A"), kStart);
++  CHECK(hold.take(identified("HDMI-A-1", "A"), kStart + std::chrono::seconds(1)));
++  CHECK(!hold.take(identified("HDMI-A-1", "A"), kStart + std::chrono::seconds(2)));
++}
++
++UMBRIEL_TEST(outputReturningAfterTheWindowWakes) {
++  OutputDpmsHold hold;
++  hold.remember(identified("HDMI-A-1", "A"), kStart);
++  CHECK(!hold.take(identified("HDMI-A-1", "A"), kStart + OutputDpmsHold::kWindow + std::chrono::seconds(1)));
++}
++
++UMBRIEL_TEST(differentMonitorOnTheSameConnectorWakes) {
++  OutputDpmsHold hold;
++  hold.remember(identified("HDMI-A-1", "A"), kStart);
++  CHECK(!hold.take(identified("HDMI-A-1", "B"), kStart + std::chrono::seconds(1)));
++}
++
++UMBRIEL_TEST(sameMonitorOnAnotherConnectorWakes) {
++  OutputDpmsHold hold;
++  hold.remember(identified("HDMI-A-1", "A"), kStart);
++  CHECK(!hold.take(identified("HDMI-A-2", "A"), kStart + std::chrono::seconds(1)));
++}
++
++int main() { return RUN_TESTS(); }
