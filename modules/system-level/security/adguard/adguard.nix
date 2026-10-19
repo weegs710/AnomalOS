@@ -9,11 +9,11 @@ in
   services.adguardhome = {
     enable = true;
     mutableSettings = true;
-    # firewall trusts only tailscale0, so binding wide stays tailnet-only
-    host = "0.0.0.0";
-    port = 3000;
 
     settings = {
+      # firewall trusts only tailscale0, so binding wide stays tailnet-only
+      http.address = "0.0.0.0:3000";
+
       dns = {
         bind_hosts = [
           "127.0.0.1"
