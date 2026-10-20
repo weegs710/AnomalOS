@@ -4,7 +4,25 @@
 
   networking = {
     hostName = config.mySystem.hostName;
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      # DHCP handed out a new address after every link flap, orphaning sessions bound to the old one
+      ensureProfiles.profiles.enp5s0-static = {
+        connection = {
+          id = "enp5s0-static";
+          type = "ethernet";
+          interface-name = "enp5s0";
+          # outranks the generated "Wired connection 1" at -999 on the same device
+          autoconnect-priority = 100;
+        };
+        ipv4 = {
+          method = "manual";
+          address1 = "192.168.88.5/24,192.168.88.1";
+          dns = "192.168.88.1;";
+        };
+        ipv6.method = "auto";
+      };
+    };
     nftables.enable = true;
 
     firewall = {
