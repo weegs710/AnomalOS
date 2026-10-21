@@ -22,11 +22,10 @@
       };
       efi.canTouchEfiVariables = true;
     };
-    # tcp_bbr3 and tcp_bbr export the same bpf kfunc, so loading one blocks the other.
-    kernelModules = [ "tcp_bbr3" ];
+    kernelModules = [ "tcp_bbr" ];
     kernel.sysctl = {
       "net.core.default_qdisc" = "fq";
-      "net.ipv4.tcp_congestion_control" = "bbr3";
+      "net.ipv4.tcp_congestion_control" = "bbr";
       "net.ipv4.conf.all.forwarding" = false;
       "net.ipv4.conf.all.rp_filter" = 1;
       "net.ipv4.conf.default.rp_filter" = 1;

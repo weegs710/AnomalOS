@@ -39,7 +39,6 @@
   };
 
   services = {
-    hypridle.enable = true;
     xserver.enable = false;
 
     # Umbriel rejects bare mouse binds and names only 5 buttons, so the ball's extra buttons are remapped below evdev.

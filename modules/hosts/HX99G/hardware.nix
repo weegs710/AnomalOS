@@ -2,14 +2,8 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
-let
-  # Unmodified so it resolves to xddxdd's cached build -- any .override forces a local recompile.
-  # See: https://github.com/xddxdd/nix-cachyos-kernel
-  cachyPkgs = (pkgs.extend inputs.nix-cachyos-kernel.overlays.pinned).cachyosKernels;
-in
 {
   boot = {
     initrd.availableKernelModules = [
@@ -27,10 +21,10 @@ in
     ];
     extraModulePackages = [ ];
     zfs.devNodes = "/dev/disk/by-partuuid";
-    kernelPackages = cachyPkgs.linuxPackages-cachyos-bore-x86_64-v3;
+    # zfs_2_4 is marked broken on linux_7_3, so pinned to the newest kernel it supports.
+    kernelPackages = pkgs.linuxKernel.packages.linux_7_2;
     kernelParams = [ "hid_apple.fnmode=2" ];
     supportedFilesystems.zfs = true;
-    zfs.package = config.boot.kernelPackages.zfs_cachyos;
   };
 
   networking.useDHCP = lib.mkDefault true;

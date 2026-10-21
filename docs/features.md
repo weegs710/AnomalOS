@@ -145,5 +145,5 @@ Untagged, because they are true of every machine:
 - preservation and the tmpfs root, see [ZFS and snapshots](./zfs.md)
 - sanoid snapshots
 - nushell as the shell, with the whole def library
-- the Nix substituters -- `anomalos.cachix.org`, `noctalia.cachix.org`, `attic.xuyh0120.win/lantian` and `cache.nixos.org` -- declared fleet-wide in `core.nix` so a new host gets them without being told
+- the Nix substituters -- `anomalos.cachix.org`, `noctalia.cachix.org` and `cache.nixos.org` -- declared fleet-wide in `core.nix` so a new host gets them without being told
 - automatic GC daily at 90 days, store optimisation nightly, and a 5GB/15GB `min-free`/`max-free` band

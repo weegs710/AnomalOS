@@ -63,12 +63,13 @@ let
 
     # plugins shell out to these at runtime
     makeWrapperArgs = [
-      "--prefix PATH : ${
-        pkgs.lib.makeBinPath [
-          pkgs.coreutils
-          pkgs.psmisc
-        ]
-      }"
+      "--prefix"
+      "PATH"
+      ":"
+      (pkgs.lib.makeBinPath [
+        pkgs.coreutils
+        pkgs.psmisc
+      ])
     ];
 
     pythonRelaxDeps = [

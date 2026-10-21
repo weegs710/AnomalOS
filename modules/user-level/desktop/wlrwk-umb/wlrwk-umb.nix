@@ -17,11 +17,9 @@ let
   sub = key: desc: submenu: { inherit key desc submenu; };
 
   # Placement is declarative here, so every command is bare and the matching rule lives in umbriel's config.toml.
-  shared = ../wlr-which-key;
-  runPause = "${shared}/run-pause.nu";
-  svcAuth = "${shared}/svc-auth.nu";
-  svcUser = "${shared}/svc-user.nu";
-  camToggleScript = "${shared}/cam-toggle.nu";
+  runPause = "${./run-pause.nu}";
+  svcAuth = "${./svc-auth.nu}";
+  svcUser = "${./svc-user.nu}";
 
   noct = cmd: "noctalia msg ${cmd}";
 
@@ -34,8 +32,6 @@ let
   tremcCmd = "kitty --title=tremc tremc";
   # Not packaged yet, so this runs the build in the working tree inside the shell that gives it wayland.
   peepersCmd = "nix-shell $HOME/claude-projects/peepers/shell.nix --run $HOME/.cache/cargo-target/peepers/release/peepers";
-  camListCmd = "kitty --title=cam-list nu ${runPause} phone-cam-list";
-  camToggle = action: "nu ${camToggleScript} ${action}";
 
   journalCmd = "kitty --title=journal journalctl -f";
   zpoolCmd = "kitty --title=zpool nu ${runPause} zpool status";
@@ -87,18 +83,6 @@ let
     }
   ];
   userUnits = [
-    {
-      key = "c";
-      unit = "phone-cam";
-    }
-    {
-      key = "v";
-      unit = "phone-mic";
-    }
-    {
-      key = "z";
-      unit = "phone-mic-filter";
-    }
     {
       key = "m";
       unit = "mpd";
@@ -195,12 +179,6 @@ let
           (run "t" "protontricks" "protontricks --no-term --gui")
           (run "u" "protonup-qt" "protonup-qt")
           (run "x" "transmission" tremcCmd)
-          (sub "c" "cam" [
-            (run "o" "cam on" (camToggle "start"))
-            (run "x" "cam off" (camToggle "stop"))
-            (run "v" "cam preview" "phone-cam-preview")
-            (run "l" "cam list" camListCmd)
-          ])
         ])
         (sub "a" "audio" [
           (hold "Left" "vol down" (noct "volume-down"))

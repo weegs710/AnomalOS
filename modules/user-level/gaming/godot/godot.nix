@@ -13,7 +13,6 @@ in
     pkgs.pixelorama
     pkgs.tiled
     pkgs.sfxr-qt
-    pkgs.audacity
   ];
 
   # symlink the whole dir so godot finds templates by version-subdir and re-points itself on every godot bump, no hardcoded version
