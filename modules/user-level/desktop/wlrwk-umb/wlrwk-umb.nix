@@ -179,6 +179,7 @@ let
           (run "t" "protontricks" "protontricks --no-term --gui")
           (run "u" "protonup-qt" "protonup-qt")
           (run "x" "transmission" tremcCmd)
+          (run "z" "zennotes" "zennotes-desktop")
         ])
         (sub "a" "audio" [
           (hold "Left" "vol down" (noct "volume-down"))
