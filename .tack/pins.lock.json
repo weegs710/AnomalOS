@@ -63,9 +63,9 @@
     "type": "github",
     "owner": "noctalia-dev",
     "repo": "noctalia",
-    "rev": "8daaa253ac3ea793677f53b4d0be5dc1dd88f8e4",
-    "narHash": "sha256-GsL/FqnR8wvb35V0H69N5Op5UFO0PDsoM9E2ekkpsvY=",
-    "lastModified": 1792571353
+    "rev": "5f90509b7d0a4bc0c2c6d124cc0bf9ec101909c5",
+    "narHash": "sha256-iJzOkmA3RM210L82abth/xyEYp2bnjqXxifvoJ7aATk=",
+    "lastModified": 1792765407
   },
   "preservation": {
     "type": "github",
@@ -79,17 +79,17 @@
     "type": "github",
     "owner": "manic-systems",
     "repo": "tack",
-    "rev": "8573f1f1bda4aa467fa341b33f6004661833c022",
-    "narHash": "sha256-wwkmmsr5u8MknxrF9ZdIN90wk09weXCaVQp8aeWdYaE=",
-    "lastModified": 1792416927
+    "rev": "f7cce4f7e53c9482661b158824522fefef2d7920",
+    "narHash": "sha256-vOIIx/QU6xEjMZTMZM8GNNXS/p4Idvw8V09KT5zNwTI=",
+    "lastModified": 1792630541
   },
   "umbriel": {
     "type": "git",
     "url": "https://github.com/noctalia-dev/umbriel.git",
     "ref": "HEAD",
-    "rev": "9c8b22ebd41a2a97c7b6d424bedbe60f6eaa89e5",
-    "narHash": "sha256-rnrZrWko8VtFhIEErdEbA6V1gumspqbdIcD0FkGhvzE=",
-    "lastModified": 1792574686,
+    "rev": "9ebb0573ba024363530ef237294b0667d8b0acdb",
+    "narHash": "sha256-Y3nOZrxS9+YPUFq8cNvYJrsROFO9gfYJDJh9p2HbqYI=",
+    "lastModified": 1792775217,
     "submodules": true
   }
 }
