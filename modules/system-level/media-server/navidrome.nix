@@ -16,6 +16,8 @@ in
       MusicFolder = "/persist/home/${username}/Music";
       # nix store is bind-mounted into the sandbox; give navidrome the store path directly
       FFmpegPath = "${pkgs.ffmpeg}/bin/ffmpeg";
+      # the module's readOnly Plugins.Folder is a share/plugins the plugin-less wrapper never creates, and navidrome dies mkdir-ing it
+      Plugins.Enabled = false;
     };
   };
 
