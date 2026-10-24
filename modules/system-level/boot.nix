@@ -7,10 +7,8 @@
   services.zfs.autoScrub.enable = true;
 
   boot = {
-    initrd.systemd.enable = true;
     kernelParams = [ "quiet" ];
     consoleLogLevel = 0;
-    initrd.verbose = false;
     supportedFilesystems.ntfs = true;
     supportedFilesystems.exfat = true;
     zfs.forceImportRoot = false;

@@ -15,8 +15,11 @@ url = "nixpkgs:nixos-unstable"
 [inputs.agenix]
 url = "gh:ryantm/agenix"
 
+# Reading the removed boot.initrd.systemd.enable throws, and upstream has not merged the fix.
+# See: https://github.com/nix-community/preservation/pull/36
 [inputs.preservation]
 url = "gh:nix-community/preservation"
+patches = ["patches/preservation/preservation-drop-initrd-assertion"]
 
 [inputs.hjem]
 url = "gh:feel-co/hjem"

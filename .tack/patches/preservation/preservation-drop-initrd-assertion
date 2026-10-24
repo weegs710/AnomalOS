@@ -1,0 +1,18 @@
+diff --git a/module.nix b/module.nix
+index 9daaa2a..0a058ec 100644
+--- a/module.nix
++++ b/module.nix
+@@ -16,13 +16,6 @@ in
+   ];
+ 
+   config = lib.mkIf cfg.enable {
+-    assertions = [
+-      {
+-        assertion = config.boot.initrd.systemd.enable;
+-        message = "This module cannot be used with scripted initrd.";
+-      }
+-    ];
+-
+     boot.initrd.systemd = {
+       targets.initrd-preservation = {
+         description = "Initrd Preservation Mounts";
