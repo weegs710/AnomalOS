@@ -213,7 +213,7 @@ in
   '';
 
   # Steam symlinks must exist before Decky Loader starts, otherwise Decky creates .steam/steam as a directory which ln can't replace.
-  systemd.user.tmpfiles.rules = [
+  systemd.user.tmpfiles.users.${username}.rules = [
     "d %h/.steam 0755 - - -"
     "L %h/.steam/steam - - - - %h/.local/share/Steam"
     "L %h/.steam/root - - - - %h/.local/share/Steam"

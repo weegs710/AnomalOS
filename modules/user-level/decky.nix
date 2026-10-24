@@ -19,7 +19,7 @@ only.gate { tags = [ "gaming" ]; }
   ];
 
   # Steam reads this at launch to expose its CEF debugger on :8080, which decky and every plugin hook into
-  systemd.user.tmpfiles.rules = [
+  systemd.user.tmpfiles.users.${username}.rules = [
     "f %h/.local/share/Steam/.cef-enable-remote-debugging 0644 - - -"
   ];
 

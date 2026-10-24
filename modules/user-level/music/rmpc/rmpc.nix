@@ -44,7 +44,7 @@ in
     xdg.config.files."rmpc/themes/eldritch.ron".source = ./eldritch.ron;
   };
 
-  systemd.user.tmpfiles.rules = [
+  systemd.user.tmpfiles.users.${username}.rules = [
     "d ${lyricsDir} 0755 - - -"
   ];
 

@@ -20,7 +20,7 @@ in
   hjem.users.${username}.xdg.data.files."godot/export_templates".source =
     "${pkgs.godot_4.export-templates-bin}/share/godot/export_templates";
 
-  systemd.user.tmpfiles.rules = [
+  systemd.user.tmpfiles.users.${username}.rules = [
     "d %h/.local/share/godot/projects 0755 - - -"
   ];
 
