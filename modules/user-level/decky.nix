@@ -23,7 +23,7 @@ only.gate { tags = [ "gaming" ]; }
     "f %h/.local/share/Steam/.cef-enable-remote-debugging 0644 - - -"
   ];
 
-  systemd.user.services.decky-loader = {
+  hjem.users.${username}.systemd.services.decky-loader = {
     description = "Decky Loader - Steam Deck plugin system";
     after = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];

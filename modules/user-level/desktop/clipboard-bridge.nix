@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   ...
 }:
@@ -16,7 +17,7 @@ let
   '';
 in
 {
-  systemd.user.services.wl-to-x-clipboard = {
+  hjem.users.${config.mySystem.user.name}.systemd.services.wl-to-x-clipboard = {
     description = "Mirror the Wayland clipboard onto X11 for Xwayland clients";
     partOf = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];

@@ -60,7 +60,7 @@ only.gate { tags = [ "gaming" ]; }
     serviceConfig.ExecStart = "${dmemcg-booster}/bin/dmemcg-booster --use-system-bus";
   };
 
-  systemd.user.services.dmemcg-booster-user = {
+  hjem.users.${config.mySystem.user.name}.systemd.services.dmemcg-booster-user = {
     description = "dmemcg-booster user service";
     # umbriel does activate graphical-session-pre.target; default.target here predates the migration
     wantedBy = [ "default.target" ];
