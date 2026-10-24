@@ -8,9 +8,9 @@ let
   username = config.mySystem.user.name;
 in
 {
+  # mpd-mpris stays out of the profile: its XDG autostart entry dials :6600 while mpd listens only on the socket, so it fails every login
   users.users.${username}.packages = [
     pkgs.mpd
-    pkgs.mpd-mpris
   ];
 
   hjem.users.${username} = {
