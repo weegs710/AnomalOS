@@ -1,6 +1,7 @@
 {
   "$declared": {
     "agenix": "github:ryantm/agenix",
+    "concord": "github:chojs23/concord/v2.6.3",
     "dusklight": "github:TwilitRealm/dusklight/v1.4.1",
     "hjem": "github:feel-co/hjem",
     "nix-index-database": "github:nix-community/nix-index-database",
@@ -18,6 +19,14 @@
     "rev": "5e5b88a0c8e56f291a108c2fe9934054d9745b2e",
     "narHash": "sha256-8tKjSQajD3mUND1GaAuaWTcuyUpgcGsh5V+l4ibzC7U=",
     "lastModified": 1792507013
+  },
+  "concord": {
+    "type": "github",
+    "owner": "chojs23",
+    "repo": "concord",
+    "rev": "ffa2edcca58bc5d376df10723d830f876c2c8eec",
+    "narHash": "sha256-B0bIwhU/hOIqap3nRwWXQUB4UvXqQs+PDwfaiSBOaA8=",
+    "lastModified": 1792330818
   },
   "dusklight": {
     "type": "git",
@@ -71,21 +80,9 @@
     "type": "github",
     "owner": "nix-community",
     "repo": "preservation",
-    "rev": "93416f4614ad2dfed5b0dcf12f27e57d27a5ab11",
-    "narHash": "sha256-mMI9IanU+Xw+pVogD2oT0I2kTmvz2Un/Apc5+CwUpEY=",
-    "lastModified": 1757436102,
-    "patched": {
-      "path": "/nix/store/f92418jzq738qm1qvnzx52jp5agy5ybm-source",
-      "narHash": "sha256-v9RaUbbtUDL9yf/byLCIeKNmIAOK+GTEz2MaD9j8pmE=",
-      "lastModified": 1757436102,
-      "patches": [
-        {
-          "source": "patches/preservation/preservation-drop-initrd-assertion",
-          "file": "patches/preservation/preservation-drop-initrd-assertion",
-          "sha256": "2bd0a2612456ad374523af8356c987e6efe01cfdb77521421dc77be93940819e"
-        }
-      ]
-    }
+    "rev": "00be7f7dd1a11ae0605386f2272288de7cf33abe",
+    "narHash": "sha256-s/A2rSO2Ndf8Y5yiouesnI/3Zkn9pmVGF2NxFxOUvx8=",
+    "lastModified": 1792953443
   },
   "tack": {
     "type": "github",

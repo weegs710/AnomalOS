@@ -48,5 +48,11 @@
       mode = "0400";
       owner = config.mySystem.user.name;
     };
+
+    age.secrets.concord-token = {
+      file = ../../../secrets/concord-token.age;
+      mode = "0400";
+      owner = config.mySystem.user.name;
+    };
   };
 }

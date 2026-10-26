@@ -328,6 +328,10 @@ default_workspace = 2
 match.title = "^rmpc$"
 default_workspace = 5
 
+[[window_rule]]
+match.title = "^concord$"
+default_workspace = 1
+
 # xdg-shell has no PiP role, and the two engines spell the title differently.
 [[window_rule]]
 match.title = "^Picture[- ]in[- ][Pp]icture$"

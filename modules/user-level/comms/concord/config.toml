@@ -1,0 +1,39 @@
+[display]
+image_protocol = "kitty"
+disable_image_preview = false
+show_avatars = true
+show_images = true
+media_playback = true
+image_preview_quality = "balanced"
+attachment_viewer_quality = "original"
+animate_previews = "always"
+show_custom_emoji = true
+circular_avatars = true
+hour_format_24 = false
+
+[composer]
+emojis_as_links = true
+ping_on_reply = true
+
+[safety]
+enabled = true
+
+[presence]
+share_rich_presence = false
+
+[credentials]
+store = "plain"
+
+[notifications]
+desktop_notifications = true
+
+[voice]
+self_mute = true
+self_deaf = false
+allow_microphone_transmit = true
+push_to_talk = false
+push_to_talk_shortcut = "F8"
+noise_suppression = true
+microphone_sensitivity = -30
+microphone_volume = 100
+voice_output_volume = 100

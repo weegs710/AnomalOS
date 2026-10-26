@@ -19,7 +19,6 @@ url = "gh:ryantm/agenix"
 # See: https://github.com/nix-community/preservation/pull/36
 [inputs.preservation]
 url = "gh:nix-community/preservation"
-patches = ["patches/preservation/preservation-drop-initrd-assertion"]
 
 [inputs.hjem]
 url = "gh:feel-co/hjem"
@@ -44,3 +43,6 @@ url = "cb:weegs710/nix-shop"
 [inputs.umbriel]
 url = "gh:noctalia-dev/umbriel"
 submodules = true
+
+[inputs.concord]
+url = "gh:chojs23/concord/v2.6.3"
