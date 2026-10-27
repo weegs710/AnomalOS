@@ -26,6 +26,13 @@ let
     ];
     nativeBuildInputs = [ pkgs.pkg-config ];
   };
+
+  materialTheme = pkgs.fetchFromGitHub {
+    owner = "kuska1";
+    repo = "Material-Theme";
+    rev = "32b6c127aab294c6f7c79ba7d3a12c717cc67227";
+    hash = "sha256-3IQAZNsKXMpBu1ecMdJzoU1EvIW19fS1yOR2MbNUlZw=";
+  };
 in
 only.gate { tags = [ "gaming" ]; }
 {
@@ -49,9 +56,17 @@ only.gate { tags = [ "gaming" ]; }
   ];
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
+    ".config/millennium"
     ".config/openra"
     ".local/share/Steam"
     ".local/share/umu"
+  ];
+
+  # C copies only when the target is missing, so a theme already on disk is never overwritten
+  systemd.user.tmpfiles.users.${config.mySystem.user.name}.rules = [
+    "d %h/.local/share/Steam/millennium 0755 - - -"
+    "d %h/.local/share/Steam/millennium/themes 0755 - - -"
+    "C %h/.local/share/Steam/millennium/themes/Material-Theme - - - - ${materialTheme}"
   ];
 
   systemd.services.dmemcg-booster-system = {

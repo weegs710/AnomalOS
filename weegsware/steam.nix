@@ -1,128 +1,55 @@
 { pkgs, ... }:
 let
-  # Built from source so nix owns the binary and plugins get a real python env; 3.2.8 is the floor, where frontend init stopped calling App.BFinishedInitStageOne unguarded (the 64-bit client dropped it)
-  # See: https://github.com/Jovian-Experiments/Jovian-NixOS/blob/master/pkgs/decky-loader/default.nix
-  decky-loader = pkgs.python3.pkgs.buildPythonPackage rec {
-    pname = "decky-loader";
-    version = "3.3.0";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "SteamDeckHomebrew";
-      repo = "decky-loader";
-      rev = "v${version}";
-      hash = "sha256-R+nccOepmodIFlGCede1UyZEzC7+zY7vjwjRDNl/mq8=";
-    };
-
-    # pnpm-workspace.yaml confuses the pnpm fetcher and build
-    postPatch = ''
-      rm frontend/pnpm-workspace.yaml
-    '';
-
-    pnpmDeps = pkgs.fetchPnpmDeps {
-      inherit pname version src;
-      # pnpm_9 is CVE-flagged in nixpkgs; 10.34.4 is clean and reads the v9 lockfile
-      pnpm = pkgs.pnpm_10;
-      fetcherVersion = 3;
-      sourceRoot = "${src.name}/frontend";
-      postPatch = ''
-        rm pnpm-workspace.yaml
-      '';
-      hash = "sha256-9dIrpMB8IrweGVaXCew/cufKBHZbuH2AUwIlkXrK5HI=";
-    };
-
-    pyproject = true;
-    pnpmRoot = "frontend";
-
-    nativeBuildInputs = [
-      pkgs.nodejs
-      pkgs.pnpm_10
-      pkgs.pnpmConfigHook
-    ];
-
-    preBuild = ''
-      cd frontend
-      pnpm build
-      cd ../backend
-    '';
-
-    build-system = with pkgs.python3.pkgs; [
-      poetry-core
-      poetry-dynamic-versioning
-    ];
-
-    dependencies = with pkgs.python3.pkgs; [
-      aiohttp
-      aiohttp-cors
-      aiohttp-jinja2
-      certifi
-      multidict
-      packaging
-      setproctitle
-      watchdog
-    ];
-
-    # plugins shell out to these at runtime
-    makeWrapperArgs = [
-      "--prefix"
-      "PATH"
-      ":"
-      (pkgs.lib.makeBinPath [
-        pkgs.coreutils
-        pkgs.psmisc
-      ])
-    ];
-
-    pythonRelaxDeps = [
-      "aiohttp-cors"
-      "packaging"
-      "watchdog"
-    ];
-
-    meta = with pkgs.lib; {
-      description = "Plugin loader for Steam Deck, built from source";
-      homepage = "https://github.com/SteamDeckHomebrew/decky-loader";
-      license = licenses.gpl2Only;
-      platforms = platforms.linux;
+  millennium = pkgs.callPackage ./_millennium.nix {
+    millennium-src = pkgs.fetchFromGitHub {
+      owner = "Shochraos";
+      repo = "Millennium";
+      rev = "d4cd249aad050e2f68dfb4525ebf7b7544df7c68";
+      hash = "sha256-2LrpdsL2nmsDVOkg34n4A6OqjpTdCOyhLc3yoHjII4o=";
     };
   };
-
-  wrappedSteam =
-    let
-      base = pkgs.steam.override {
-        extraPkgs = pkgs: [
-          # Decky loader and its dependencies
-          decky-loader
-          pkgs.python3
-          pkgs.curl
-          pkgs.git
-          pkgs.systemd
-          pkgs.coreutils
-
-          # Gaming tools (for portability)
-          pkgs.mangohud
-          pkgs.gamescope
-          pkgs.gamemode
-
-          # Gamescope dependencies
-          pkgs.libxcursor
-          pkgs.libxi
-          pkgs.libxinerama
-          pkgs.libxscrnsaver
-          pkgs.libpng
-          pkgs.libpulseaudio
-          pkgs.libvorbis
-          pkgs.stdenv.cc.cc.lib
-          pkgs.libkrb5
-          pkgs.keyutils
-        ];
-      };
-    in
-    base.overrideAttrs (old: {
-      passthru = (old.passthru or { }) // {
-        inherit decky-loader;
-      };
-    });
 in
 {
-  steam = wrappedSteam;
+  steam = pkgs.steam.override {
+    extraArgs = "-nobigpicture";
+
+    extraLibraries = pkgs: [
+      millennium
+      pkgs.pkgsi686Linux.openssl
+      pkgs.openssl
+    ];
+
+    # Millennium reads these to find its libs from inside the FHS env
+    extraEnv = {
+      MILLENNIUM_RUNTIME_PATH = "${millennium}/lib/libmillennium_x86.so";
+      MILLENNIUM_RUNTIME_PATH_X64 = "${millennium}/lib/libmillennium_x64.so";
+    };
+
+    # steam loads these as libXtst.so.6, which is how Millennium gets into the 32-bit, webhelper and 64-bit client processes
+    extraProfile = ''
+      ln -sf ${millennium}/lib/libmillennium_bootstrap_x86.so "$HOME/.local/share/Steam/ubuntu12_32/libXtst.so.6"
+      ln -sf ${millennium}/lib/libmillennium_bootstrap_hhx64.so "$HOME/.local/share/Steam/ubuntu12_64/libXtst.so.6"
+      mkdir -p "$HOME/.local/share/Steam/steamrt64"
+      ln -sf ${millennium}/lib/libmillennium_bootstrap_x64.so "$HOME/.local/share/Steam/steamrt64/libXtst.so.6"
+    '';
+
+    extraPkgs = pkgs: [
+      # Gaming tools (for portability)
+      pkgs.mangohud
+      pkgs.gamescope
+      pkgs.gamemode
+
+      # Gamescope dependencies
+      pkgs.libxcursor
+      pkgs.libxi
+      pkgs.libxinerama
+      pkgs.libxscrnsaver
+      pkgs.libpng
+      pkgs.libpulseaudio
+      pkgs.libvorbis
+      pkgs.stdenv.cc.cc.lib
+      pkgs.libkrb5
+      pkgs.keyutils
+    ];
+  };
 }

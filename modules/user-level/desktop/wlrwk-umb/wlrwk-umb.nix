@@ -93,10 +93,6 @@ let
       unit = "weegs-dev";
     }
     {
-      key = "d";
-      unit = "decky-loader";
-    }
-    {
       key = "k";
       unit = "nushell-book";
     }

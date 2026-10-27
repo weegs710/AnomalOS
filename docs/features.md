@@ -77,12 +77,10 @@ Open ports:
 | Port                             | For                      |
 | -------------------------------- | ------------------------ |
 | 2222/tcp                         | SSH                      |
-| 8080/tcp                         | Decky Loader web UI      |
 | 8096/tcp                         | Jellyfin (`server`)      |
 | 51413/tcp+udp                    | Transmission (`server`)  |
 | 23243-23262/tcp, 23243+23253/udp | Divinity: Original Sin 2 |
 | 4000/tcp                         | Median XL Sigma LAN host |
-| 1337/tcp                         |                          |
 
 Kernel hardening, in `modules/system-level/boot.nix`: full ASLR (`randomize_va_space=2`), kernel pointers hidden (`kptr_restrict=2`), `dmesg` restricted to root, ptrace limited to descendants (`yama.ptrace_scope=1`), core dumps piped to `/bin/false` with `suid_dumpable=0`, SYN cookies, RFC1337 TIME_WAIT protection, ICMP redirects rejected in both directions, reverse-path filtering, and forwarding off on both IP versions. BBR congestion control with the `fq` qdisc is a throughput choice rather than a hardening one.
 
@@ -103,7 +101,7 @@ Boot is `systemd-boot`, keeping 10 generations.
 
 - steam, the `weegsware` wrapped build, with Proton, gamescope, controller support and 32-bit compat.
 - heroic for Epic/GOG, globally wired through gamescope at 2560x1440 @ 144, wayland backend.
-- Decky Loader, Steam plugin system, web UI on `localhost:8080`. It is a passthru of the wrapped steam package rather than a separate input.
+- Millennium, the Steam skin framework, with the Material-Theme skin recolored by noctalia's `steam` template. It is built from an open upstream PR that adds 64-bit client support, vendored in `weegsware/_millennium.nix`. Steam always starts in desktop mode (`-nobigpicture`).
 - MangoHud, with five presets in `presets.conf` from off to a full GPU/CPU/VRAM/frametime readout.
 - gamemode, nix-ld, ntsync, protontricks, ProtonUp-Qt, OpenRA.
 - ES-DE with RetroArch carrying 36 libretro cores, plus MAME with a flattened `crt-geom` shader chain. Per-core `.opt` files are declarative, in `modules/user-level/gaming/es-de/opts/`.

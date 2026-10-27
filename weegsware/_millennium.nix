@@ -1,0 +1,250 @@
+# Vendored from the SteamRT3 PR; drop once #949 merges and nixpkgs or upstream ships the 64-bit client support
+# See: https://github.com/SteamClientHomebrew/Millennium/pull/949
+{
+  cmake,
+  ninja,
+  pkg-config,
+  bun,
+  nodejs,
+  cacert,
+  patchelf,
+  rustPlatform,
+  cargo,
+  rustc,
+
+  lib,
+  stdenv,
+  pkgsi686Linux,
+  libx11,
+  libXi,
+  libXtst,
+  re2,
+  runCommand,
+
+  openssl,
+  curl,
+  minizip-ng,
+  bzip2,
+  xz,
+  zstd,
+  nlohmann_json,
+  zlib,
+
+  millennium-src,
+  ...
+}:
+let
+  version = "3.6.3-beta.1";
+
+  tsPackages = [
+    "src/typescript/ttc"
+    "src/typescript/sdk"
+    "src/typescript/frontend"
+  ];
+
+  tsDirs = lib.concatStringsSep " " (
+    [ "src/typescript/node_modules" ] ++ map (p: "${p}/node_modules") tsPackages
+  );
+  tsBuildCmds = lib.concatMapStrings (p: "( cd ${p} && bun run build )\n") tsPackages;
+
+  commonBuild = {
+    inherit version;
+    src = millennium-src;
+
+    nativeBuildInputs = [ cmake ninja pkg-config ];
+
+    cmakeGenerator      = "Ninja";
+    cmakeBuildType      = "Release";
+    enableParallelBuilding = true;
+
+    cmakeFlags = [
+      "-DMILLENNIUM_BUILD_TESTS=OFF"
+    ];
+
+    buildPhase = ''
+      runHook preBuild
+      cmake --build .
+      runHook postBuild
+    '';
+  };
+
+  bunDeps = stdenv.mkDerivation {
+    name = "millennium-typescript-bun-deps";
+
+    src = millennium-src;
+    nativeBuildInputs = [ bun cacert ];
+    SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
+
+    buildPhase = ''
+      export HOME=$TMPDIR
+      (cd src/typescript && bun install --frozen-lockfile)
+      (cd src/typescript/ttc && bun node_modules/.bin/rollup -c)
+    '';
+
+    installPhase = ''
+      mkdir -p $out
+
+      for dir in ${tsDirs}; do
+        if [ -d "$dir" ]; then
+          mkdir -p "$out/$(dirname "$dir")"
+          cp -r "$dir" "$out/$dir"
+        fi
+      done
+
+      mkdir -p "$out/src/typescript/ttc"
+      cp -r src/typescript/ttc/dist "$out/src/typescript/ttc/dist"
+    '';
+
+    outputHashMode = "recursive";
+    outputHashAlgo = "sha256";
+    outputHash = "sha256-o0wv6vG1YZR9TcgytD9CDf8zBei4Ulhl59Mo9C6C+vs=";
+  };
+
+  cargoDeps = rustPlatform.importCargoLock {
+    lockFile = "${millennium-src}/src/instrumentation/loopback/Cargo.lock";
+  };
+
+  build32 = pkgsi686Linux.stdenv.mkDerivation (commonBuild // {
+    pname = "millennium-32";
+
+    nativeBuildInputs = commonBuild.nativeBuildInputs ++ [ bun nodejs patchelf ];
+
+    buildInputs = [
+      pkgsi686Linux.gtk3
+      pkgsi686Linux.openssl
+      pkgsi686Linux.libxtst
+      pkgsi686Linux.curl
+      pkgsi686Linux.minizip-ng
+      pkgsi686Linux.bzip2
+      pkgsi686Linux.xz
+      pkgsi686Linux.zstd
+      pkgsi686Linux.nlohmann_json
+      pkgsi686Linux.zlib
+    ];
+
+    cmakeFlags = commonBuild.cmakeFlags ++ [ "-DDISTRO_NIX=ON" ];
+
+    postPatch = ''
+      export HOME=$TMPDIR
+
+      for dir in ${tsDirs}; do
+        if [ -d ${bunDeps}/$dir ]; then
+          mkdir -p "$(dirname "$dir")"
+          cp -r ${bunDeps}/$dir "$dir"
+          chmod -R u+w "$dir"
+        fi
+      done
+
+      mkdir -p src/typescript/ttc
+      cp -r ${bunDeps}/src/typescript/ttc/dist src/typescript/ttc/dist
+      chmod -R u+w src/typescript/ttc/dist
+
+      patchShebangs src/typescript/node_modules
+      ${tsBuildCmds}
+    '';
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/lib/
+      install -Dm755 libmillennium_x86.so           $out/lib/libmillennium_x86.so
+      install -Dm755 libmillennium_luavm_x86        $out/lib/libmillennium_luavm_x86
+      install -Dm755 libmillennium_bootstrap_x86.so $out/lib/libmillennium_bootstrap_x86.so
+      runHook postInstall
+    '';
+
+    postFixup = ''
+      patchelf --force-rpath --set-rpath "$(patchelf --print-rpath $out/lib/libmillennium_x86.so)" $out/lib/libmillennium_x86.so
+      patchelf --force-rpath --set-rpath "$(patchelf --print-rpath $out/lib/libmillennium_bootstrap_x86.so)" $out/lib/libmillennium_bootstrap_x86.so
+    '';
+  });
+
+  build64 = stdenv.mkDerivation (commonBuild // {
+    pname = "millennium-64";
+
+    nativeBuildInputs = commonBuild.nativeBuildInputs ++ [
+      bun
+      nodejs
+      patchelf
+      cargo
+      rustc
+    ];
+
+    buildInputs = [
+      libx11
+      libXi
+      libXtst
+      re2
+      re2.dev
+      openssl
+      curl
+      minizip-ng
+      bzip2
+      xz
+      zstd
+      nlohmann_json
+      zlib
+    ];
+
+    postPatch = ''
+      export HOME=$TMPDIR
+
+      for dir in ${tsDirs}; do
+        if [ -d ${bunDeps}/$dir ]; then
+          mkdir -p "$(dirname "$dir")"
+          cp -r ${bunDeps}/$dir "$dir"
+          chmod -R u+w "$dir"
+        fi
+      done
+
+      mkdir -p src/typescript/ttc
+      cp -r ${bunDeps}/src/typescript/ttc/dist src/typescript/ttc/dist
+      chmod -R u+w src/typescript/ttc/dist
+
+      patchShebangs src/typescript/node_modules
+      ${tsBuildCmds}
+
+      mkdir -p src/instrumentation/loopback/.cargo
+      cat > src/instrumentation/loopback/.cargo/config.toml << 'EOF'
+      [source.crates-io]
+      replace-with = "vendored-sources"
+
+      [source.vendored-sources]
+      directory = "${cargoDeps}"
+      EOF
+    '';
+
+    cmakeFlags = commonBuild.cmakeFlags ++ [ "-DMILLENNIUM_LINUX_X64=ON" "-DDISTRO_NIX=ON" ];
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/lib/
+      install -Dm755 libmillennium_x64.so            $out/lib/libmillennium_x64.so
+      install -Dm755 libmillennium_luavm_x64         $out/lib/libmillennium_luavm_x64
+      install -Dm755 libmillennium_bootstrap_x64.so  $out/lib/libmillennium_bootstrap_x64.so
+      install -Dm755 libmillennium_hhx64.so          $out/lib/libmillennium_hhx64.so
+      install -Dm755 libmillennium_pvs64             $out/lib/libmillennium_pvs64
+      install -Dm755 libmillennium_bootstrap_hhx64.so $out/lib/libmillennium_bootstrap_hhx64.so
+      runHook postInstall
+    '';
+
+    postFixup = ''
+      patchelf --force-rpath --set-rpath "$(patchelf --print-rpath $out/lib/libmillennium_x64.so)" $out/lib/libmillennium_x64.so
+      patchelf --force-rpath --set-rpath "$(patchelf --print-rpath $out/lib/libmillennium_bootstrap_x64.so)" $out/lib/libmillennium_bootstrap_x64.so
+    '';
+  });
+in
+runCommand "millennium-${version}" {
+  meta = {
+    homepage = "https://steambrew.app/";
+    license = lib.licenses.mit;
+    description = "Modding framework to create, manage and use themes/plugins for Steam";
+    longDescription = "An open-source low-code modding framework to create, manage and use themes/plugins for the desktop Steam Client without any low-level internal interaction or overhead";
+
+    maintainers = [ lib.maintainers.trivaris ];
+    platforms   = [ "x86_64-linux" ];
+  };
+} ''
+  mkdir -p $out/lib
+  cp ${build32}/lib/* $out/lib/
+  cp ${build64}/lib/* $out/lib/
+''

@@ -196,7 +196,6 @@ Adding a tag is one line in `assemble.nix`.
 | `system-level/searx.nix`     | `server`                     |
 | `system-level/k8s.nix`       | `lab`                        |
 | `system-level/k8s-HA.nix`    | `lab`                        |
-| `user-level/decky.nix`       | `gaming`                     |
 | `user-level/gaming/`         | `gaming`, via `only.imports` |
 | `system-level/media-server/` | `server`, via `only.imports` |
 

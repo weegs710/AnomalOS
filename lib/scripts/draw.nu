@@ -790,12 +790,7 @@ def main [] {
         gc:         (if (nix-eval-bool $assemble "nixosConfigurations.HX99G.config.nix.gc.automatic") { (if ($gc_days | is-empty) { "daily" } else { $"daily (char -u '00b7') ($gc_days)" }) } else { "off" })
     }
 
-    let weegsware_base = (try { ^nix eval --impure --json -f $assemble packages.x86_64-linux --apply 'builtins.attrNames' | from json } catch { [] })
-    # decky is a passthru of the weegsware steam pkg, so it lives with weegsware, not gaming
-    let weegsware_pkgs = (
-        if ($"($dotfiles)/modules/user-level/decky.nix" | path exists) { $weegsware_base | append "decky" } else { $weegsware_base }
-        | sort
-    )
+    let weegsware_pkgs = (try { ^nix eval --impure --json -f $assemble packages.x86_64-linux --apply 'builtins.attrNames' | from json } catch { [] } | sort)
 
     # gaming modules are a mix of gaming/<name>/<name>.nix dirs + gaming/*.nix files -- catch both
     let gmods = (
