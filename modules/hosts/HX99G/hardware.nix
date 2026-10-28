@@ -36,6 +36,12 @@
 
   services.lact.enable = true;
 
+  # card numbers follow probe order, PCI ids do not
+  services.udev.extraRules = ''
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]*", ENV{DEVTYPE}=="drm_minor", ATTR{device/vendor}=="0x1002", ATTR{device/device}=="0x1681", SYMLINK+="dri/igpu"
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]*", ENV{DEVTYPE}=="drm_minor", ATTR{device/vendor}=="0x1002", ATTR{device/device}=="0x73ff", SYMLINK+="dri/dgpu"
+  '';
+
   # amd-pstate-epp pins EPP to performance under the performance governor, so this sets both.
   powerManagement.cpuFreqGovernor = "performance";
 
@@ -97,5 +103,7 @@
     PROTON_USE_NTSYNC = "1";
     RADV_PERFTEST = "gpl";
     DXVK_ASYNC = "1";
+    # the first entry is the GPU the compositor renders on
+    WLR_DRM_DEVICES = "/dev/dri/igpu:/dev/dri/dgpu";
   };
 }
