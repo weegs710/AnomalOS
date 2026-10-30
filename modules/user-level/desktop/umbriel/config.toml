@@ -169,27 +169,27 @@ follows_mouse = true
 
 [keybinds]
 # Direct terminal and launcher so the session is never dependent on wlr-which-key coming up.
-"Mod+Return" = "spawn:kitty --title=kitty"
-"Mod+D" = "spawn:noctalia msg panel-toggle launcher"
+"Mod+Return" = "spawn kitty --title=kitty"
+"Mod+D" = "spawn noctalia msg panel-toggle launcher"
 
 "Mod+Escape" = "window-close"
 "Mod+F" = "window-toggle-fullscreen"
 "Mod+G" = "window-toggle-floating"
 "Mod+O" = "window-consume-or-expel-right"
 "Mod+Backslash" = "window-toggle-pinned"
-"Mod+Space" = "spawn:kitty --title=tfm tfm"
+"Mod+Space" = "spawn kitty --title=tfm tfm"
 
-"Mod+1" = "workspace-switch:1"
-"Mod+2" = "workspace-switch:2"
-"Mod+3" = "workspace-switch:3"
-"Mod+4" = "workspace-switch:4"
-"Mod+5" = "workspace-switch:5"
+"Mod+1" = "workspace-switch 1"
+"Mod+2" = "workspace-switch 2"
+"Mod+3" = "workspace-switch 3"
+"Mod+4" = "workspace-switch 4"
+"Mod+5" = "workspace-switch 5"
 
-"Mod+Shift+1" = "window-move-to-workspace:1"
-"Mod+Shift+2" = "window-move-to-workspace:2"
-"Mod+Shift+3" = "window-move-to-workspace:3"
-"Mod+Shift+4" = "window-move-to-workspace:4"
-"Mod+Shift+5" = "window-move-to-workspace:5"
+"Mod+Shift+1" = "window-move-to-workspace 1"
+"Mod+Shift+2" = "window-move-to-workspace 2"
+"Mod+Shift+3" = "window-move-to-workspace 3"
+"Mod+Shift+4" = "window-move-to-workspace 4"
+"Mod+Shift+5" = "window-move-to-workspace 5"
 
 "Mod+Page_Down" = "workspace-next"
 "Mod+Page_Up" = "workspace-previous"
@@ -201,7 +201,7 @@ follows_mouse = true
 "Mod+Shift+Grave" = "window-toggle-scratchpad"
 
 # peepers is not packaged yet, so this runs the build in the working tree.
-"Mod+P" = { action = 'spawn:$HOME/.cache/cargo-target/peepers/release/peepers --toggle-pop', repeat = false }
+"Mod+P" = { action = 'spawn $HOME/.cache/cargo-target/peepers/release/peepers --toggle-pop', repeat = false }
 
 "Mod+Left" = "window-focus-left"
 "Mod+Right" = "window-focus-right"
@@ -218,31 +218,31 @@ follows_mouse = true
 "XF86Launch5" = "workspace-next"
 "XF86Launch6" = "scratchpad-toggle"
 "XF86Launch7" = "window-close"
-"XF86Launch8" = "spawn:noctalia msg panel-toggle control-center"
+"XF86Launch8" = "spawn noctalia msg panel-toggle control-center"
 
-"Mod" = "spawn:wlr-which-key"
-"Print" = { action = 'spawn:grim - | satty -f - --fullscreen --initial-tool crop --copy-command wl-copy -o "~/Pictures/shots/shot_%Y%m%d_%H%M%S.png" --actions-on-enter save-to-clipboard,save-to-file,exit', repeat = false }
-"Ctrl+Alt+Delete" = "spawn:wlr-which-key -k q"
-"Mod+Tab" = "spawn:noctalia msg panel-toggle control-center"
+"Mod" = "spawn wlr-which-key"
+"Print" = { action = 'spawn grim - | satty -f - --fullscreen --initial-tool crop --copy-command wl-copy -o "~/Pictures/shots/shot_%Y%m%d_%H%M%S.png" --actions-on-enter save-to-clipboard,save-to-file,exit', repeat = false }
+"Ctrl+Alt+Delete" = "spawn wlr-which-key -k q"
+"Mod+Tab" = "spawn noctalia msg panel-toggle control-center"
 "Alt+Tab" = { action = "overview-toggle", repeat = false }
 
 # allowed when inhibited so a game grabbing the keyboard can't swallow a save
-"Mod+F1" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 10 && notify-send "saving last 10s"', repeat = false, allow_when_inhibited = true }
-"Mod+F2" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 30 && notify-send "saving last 30s"', repeat = false, allow_when_inhibited = true }
-"Mod+F3" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 60 && notify-send "saving last 60s"', repeat = false, allow_when_inhibited = true }
-"Mod+F4" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 300 && notify-send "saving last 5m"', repeat = false, allow_when_inhibited = true }
-"Mod+F5" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 600 && notify-send "saving last 10m"', repeat = false, allow_when_inhibited = true }
-"Mod+F6" = { action = 'spawn:gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 1800 && notify-send "saving last 30m"', repeat = false, allow_when_inhibited = true }
+"Mod+F1" = { action = 'spawn gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 10 && notify-send "saving last 10s"', repeat = false, allow_when_inhibited = true }
+"Mod+F2" = { action = 'spawn gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 30 && notify-send "saving last 30s"', repeat = false, allow_when_inhibited = true }
+"Mod+F3" = { action = 'spawn gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 60 && notify-send "saving last 60s"', repeat = false, allow_when_inhibited = true }
+"Mod+F4" = { action = 'spawn gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 300 && notify-send "saving last 5m"', repeat = false, allow_when_inhibited = true }
+"Mod+F5" = { action = 'spawn gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 600 && notify-send "saving last 10m"', repeat = false, allow_when_inhibited = true }
+"Mod+F6" = { action = 'spawn gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" save-replay 1800 && notify-send "saving last 30m"', repeat = false, allow_when_inhibited = true }
 # gsr-cli has no state query, and stop fails exactly when nothing is recording
-"Mod+F12" = { action = 'spawn:if gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" stop-replay-recording; then notify-send "recording stopped"; else gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" start-replay-recording && notify-send "recording"; fi', repeat = false, allow_when_inhibited = true }
+"Mod+F12" = { action = 'spawn if gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" stop-replay-recording; then notify-send "recording stopped"; else gsr-cli -ipc "$XDG_RUNTIME_DIR/gsr.sock" start-replay-recording && notify-send "recording"; fi', repeat = false, allow_when_inhibited = true }
 
-"Mod+BackSpace" = { action = "submap:resize", repeat = false }
-"submap[resize],Right" = "window-modify-primary-extent:0.05"
-"submap[resize],Left" = "window-modify-primary-extent:-0.05"
-"submap[resize],Down" = "window-modify-secondary-extent:0.05"
-"submap[resize],Up" = "window-modify-secondary-extent:-0.05"
-"submap[resize],Escape" = "submap:reset"
-"submap[resize],Return" = "submap:reset"
+"Mod+BackSpace" = { action = "submap resize", repeat = false }
+"submap[resize],Right" = "window-modify-primary-extent 0.05"
+"submap[resize],Left" = "window-modify-primary-extent -0.05"
+"submap[resize],Down" = "window-modify-secondary-extent 0.05"
+"submap[resize],Up" = "window-modify-secondary-extent -0.05"
+"submap[resize],Escape" = "submap reset"
+"submap[resize],Return" = "submap reset"
 
 # A rule rather than [colors.border], which noctalia regenerates on every wallpaper change; the scratchpad keeps its own colour.
 [[window_rule]]

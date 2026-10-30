@@ -2,8 +2,8 @@ diff --git a/meson.build b/meson.build
 index 1f69acb..1388ba4 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -637,6 +637,7 @@ pure_sources = files(
-   'src/layout/master.cpp',
+@@ -719,6 +719,7 @@ pure_sources = files(
+   'src/layout/stacking.cpp',
    'src/output/direction.cpp',
    'src/output/identity.cpp',
 +  'src/output/dpms_hold.cpp',
@@ -202,7 +202,7 @@ index 0000000..2bcb12b
 +
 +power_of() { "$UMBRIEL" outputs | awk -v name="$1" '$1 == name { found = 1 } found && /Power:/ { print $2; exit }'; }
 +
-+"$UMBRIEL" msg dpms-off:headless-2 > /dev/null
++"$UMBRIEL" msg dpms-off headless-2 > /dev/null
 +[[ $(power_of HEADLESS-2) == off ]] || { echo "HEADLESS-2 did not power off"; exit 1; }
 +
 +mark=$(log_mark)
@@ -213,7 +213,7 @@ index 0000000..2bcb12b
 +[[ $(power_of HEADLESS-1) == on ]] || { echo "HEADLESS-1 lost power"; exit 1; }
 +
 +# The hold is consumed by the first return, so a second rebuild of a woken output stays awake.
-+"$UMBRIEL" msg dpms-on:headless-2 > /dev/null
++"$UMBRIEL" msg dpms-on headless-2 > /dev/null
 +mark=$(log_mark)
 +"$UMBRIEL" output-destroy HEADLESS-2 > /dev/null
 +"$UMBRIEL" output-create HEADLESS-2 > /dev/null
