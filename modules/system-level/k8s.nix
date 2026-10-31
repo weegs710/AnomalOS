@@ -438,7 +438,6 @@ in
       cloud-utils
       cri-tools
       etcd
-      guestfs-tools
       k9s
       kubectl
       kubectx
