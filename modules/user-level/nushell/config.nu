@@ -177,6 +177,11 @@ def vesk-s [] {
     open --raw ~/.config/vesktop/settings/settings.json | save --force ~/repo/public/anomalos/modules/user-level/comms/vesktop/vencord-settings.json
 }
 
+# pull gui-edited peepers settings back into the repo (reverse of the copy-type rebuild)
+def peep-s [] {
+    open --raw ~/.config/peepers/settings.toml | save --force ~/repo/public/anomalos/modules/user-level/peepers/settings.toml
+}
+
 # pull in-game eltale settings back into the repo (reverse of the copy-type rebuild)
 def elt-s [] {
     open --raw ~/.config/EltaleRecompiled/controls.json | save --force ~/repo/public/anomalos/modules/user-level/gaming/eltale-recomp/controls.json

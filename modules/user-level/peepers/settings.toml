@@ -1,0 +1,8 @@
+[appearance]
+theme = "Oxocarbon"
+
+[startup]
+page = "performance"
+
+[units]
+temperature = "fahrenheit"
