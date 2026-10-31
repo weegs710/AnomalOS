@@ -1,0 +1,3 @@
+[effects.preset.slide-down]
+kind = "animation"
+shader = "shader.glsl"

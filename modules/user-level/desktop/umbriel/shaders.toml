@@ -6,6 +6,7 @@ files = [
   "shaders/border/kzzzt-ring/effect.toml",
   "shaders/animation/kzzzt-open/effect.toml",
   "shaders/animation/kzzzt-close/effect.toml",
+  "shaders/animation/slide-down/effect.toml",
 ]
 
 [effects]

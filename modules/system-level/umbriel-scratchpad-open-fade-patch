@@ -1,0 +1,18 @@
+diff --git a/src/view/view_lifecycle.cpp b/src/view/view_lifecycle.cpp
+index 7308926..d10531e 100644
+--- a/src/view/view_lifecycle.cpp
++++ b/src/view/view_lifecycle.cpp
+@@ -478,6 +478,13 @@ namespace umbriel {
+     if (draggedToplevel) {
+       setFadeAlpha(1.0F);
+       m_fade.snap(1.0);
++    } else if (m_onActiveWorkspace && m_inScratchpad) {
++      // A scratchpad owns its show animation; windows_in would drive the scratchpad effect at its own duration.
++      const auto& scratchpad = config().animation.scratchpad;
++      if (config().animation.enabled && scratchpad.enabled) {
++        setFadeAlpha(0.0F);
++        animateFadeTo(1.0F, scratchpad.durationMs, scratchpad.curve);
++      }
+     } else if (m_onActiveWorkspace) {
+       const auto& animation = config().animation;
+       const auto& open = animation.windowsIn;

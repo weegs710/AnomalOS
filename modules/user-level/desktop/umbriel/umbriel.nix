@@ -31,6 +31,8 @@ in
     xdg.config.files."umbriel/shaders/animation/kzzzt-open/shader.glsl".source = ./shaders/animation/kzzzt-open/shader.glsl;
     xdg.config.files."umbriel/shaders/animation/kzzzt-close/effect.toml".source = ./shaders/animation/kzzzt-close/effect.toml;
     xdg.config.files."umbriel/shaders/animation/kzzzt-close/shader.glsl".source = ./shaders/animation/kzzzt-close/shader.glsl;
+    xdg.config.files."umbriel/shaders/animation/slide-down/effect.toml".source = ./shaders/animation/slide-down/effect.toml;
+    xdg.config.files."umbriel/shaders/animation/slide-down/shader.glsl".source = ./shaders/animation/slide-down/shader.glsl;
   };
 
   # umbriel resolves its [include] at startup, before noctalia can regenerate the palette on a wiped root

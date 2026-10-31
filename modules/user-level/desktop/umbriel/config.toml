@@ -77,13 +77,23 @@ curve = "easeout"
 
 [animation.scratchpad]
 enabled = true
-duration_ms = 300
+duration_ms = 150
 curve = "easeout"
-dim = 0.5
+effect = "slide-down"
+# Not 0.0: the dim rect is also what keeps hover off the windows under an open scratchpad, and it is disabled at 0.
+dim = 0.01
+
+# Naming any scratchpad removes the implicit "default", so the old one is declared as "main".
+[[scratchpad]]
+name = "main"
+
+[[scratchpad]]
+name = "quake"
+spawn_when_empty = "kitty --class=quake --title=quake"
 
 [appearance]
 prefer_no_csd = true
-border_width = 12
+border_width = 6
 outer_border_width = 0
 corner_radius = 6
 drag_opacity = 0.75
@@ -169,7 +179,7 @@ follows_mouse = true
 
 [keybinds]
 # Direct terminal and launcher so the session is never dependent on wlr-which-key coming up.
-"Mod+Return" = "spawn kitty --title=kitty"
+"Mod+Return" = { action = "scratchpad-toggle quake", repeat = false }
 "Mod+D" = "spawn noctalia msg panel-toggle launcher"
 
 "Mod+Escape" = "window-close"
@@ -196,9 +206,9 @@ follows_mouse = true
 "Mod+WheelDown" = "workspace-previous"
 "Mod+WheelUp" = "workspace-next"
 
-"Mod+Grave" = "scratchpad-toggle"
+"Mod+Grave" = "scratchpad-toggle main"
 # One chord both ways: adds the focused window, or pulls it back out when it is the scratchpad's focused entry.
-"Mod+Shift+Grave" = "window-toggle-scratchpad"
+"Mod+Shift+Grave" = "window-toggle-scratchpad main"
 
 # peepers is not packaged yet, so this runs the build in the working tree.
 "Mod+P" = { action = 'spawn $HOME/.cache/cargo-target/peepers/release/peepers --toggle-pop', repeat = false }
@@ -216,7 +226,7 @@ follows_mouse = true
 # keyd emits F13-F17 for the ball buttons, but the us keymap gives those keycodes XF86 keysyms, which is what binds match.
 "XF86Tools" = "workspace-previous"
 "XF86Launch5" = "workspace-next"
-"XF86Launch6" = "scratchpad-toggle"
+"XF86Launch6" = "scratchpad-toggle main"
 "XF86Launch7" = "window-close"
 "XF86Launch8" = "spawn noctalia msg panel-toggle control-center"
 
@@ -249,6 +259,11 @@ follows_mouse = true
 match.is_scratchpad = false
 border_color_unfocused = "#00000000"
 
+# The window shader runs on the focused window only, same as the border ring.
+[[window_rule]]
+match.is_focused = false
+window_effect = "off"
+
 [[window_rule]]
 match.is_alone = true
 default_scrolling_extent = 1.0
@@ -268,9 +283,16 @@ default_floating = true
 # The main window starts hidden in the scratchpad; the popout is what gets summoned.
 [[window_rule]]
 match.app_id = "^peepers$"
-default_scratchpad = "default"
+default_scratchpad = "main"
 default_focused = false
 focus_on_activate = false
+
+# The border is drawn outside the window rect, so the strip is inset by gap + border (11px) to line up with tiled windows.
+[[window_rule]]
+match.app_id = "^quake$"
+default_scratchpad = "quake"
+default_floating_size = { width = 0.991, height = 0.33 }
+default_position = { x = 0, y = 11, anchor = "top" }
 
 # Pinned so it does not inherit a visible parent's scratchpad.
 [[window_rule]]

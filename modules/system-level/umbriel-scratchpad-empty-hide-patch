@@ -1,0 +1,14 @@
+diff --git a/src/workspace/scratchpad.cpp b/src/workspace/scratchpad.cpp
+index ed60abb..f5c865c 100644
+--- a/src/workspace/scratchpad.cpp
++++ b/src/workspace/scratchpad.cpp
+@@ -1312,7 +1312,8 @@ namespace umbriel {
+     std::erase(m_hidingViews, view);
+     m_entries.erase(iterator);
+     // Without its shown window, a pad showing one window hides rather than revealing all the others.
+-    if (scratchpad != nullptr && wasSolo && scratchpad->visible) {
++    // An emptied pad hides too, or the next toggle hides it instead of spawning.
++    if (scratchpad != nullptr && (wasSolo || !hasEntries(name)) && scratchpad->visible) {
+       setVisible(name, false);
+     }
+   }
