@@ -138,6 +138,9 @@ in
           ".config/desmume"
           # actively used, no dedicated module
           ".config/Cryptomator"
+          # peepers: settings and benchmark history, no dedicated module
+          ".config/peepers"
+          ".local/state/peepers"
           # .local/share -- general (no specific module)
           ".local/share/applications"
           ".local/share/desktop-directories"
