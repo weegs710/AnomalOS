@@ -31,7 +31,7 @@ widget_spacing = 10
 enable_ddcutil = false
 
 [hooks]
-colors_changed = "/nix/store/29zfga3rp2scqn8h3fdjqg9gixd5lqjs-umbriel-0.1.0/bin/umbriel msg config-reload"
+colors_changed = "/nix/store/59aa3hxqsa95jn1y30wiflc4b5g6knhg-umbriel-0.1.0/bin/umbriel msg config-reload"
 
 [idle.behavior.lock]
 command = "noctalia:session lock"
@@ -76,7 +76,7 @@ widget_order = [ "lockscreen-login-box@FALLBACK", "lockscreen-login-box@HDMI-A-1
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@FALLBACK".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -103,7 +103,7 @@ widget_order = [ "lockscreen-login-box@FALLBACK", "lockscreen-login-box@HDMI-A-1
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -130,7 +130,7 @@ widget_order = [ "lockscreen-login-box@FALLBACK", "lockscreen-login-box@HDMI-A-1
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-2".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -219,11 +219,11 @@ custom_palette = "alliance-tournament-xxi-48-vib"
 mode = "dark"
 pure_black_dark = true
 source = "custom"
-wallpaper_scheme = "vibrant"
+wallpaper_scheme = "faithful"
 
     [theme.templates]
     builtin_ids = [ "btop", "gtk3", "gtk4", "kitty", "umbriel", "kcolorscheme", "qt" ]
-    community_ids = [ "claude-code", "gimp", "inkscape", "zed", "heroiclauncher", "steam", "zathura", "hyprtoolkit" ]
+    community_ids = [ "claude-code", "gimp", "inkscape", "zed", "heroiclauncher", "steam", "zathura", "hyprtoolkit", "yazi" ]
     enable_builtin_templates = true
     enable_community_templates = true
 
@@ -237,22 +237,22 @@ transition_duration = 500
 transition_on_startup = false
 
     [wallpaper.automation]
-    enabled = true
+    enabled = false
     interval_seconds = 300
     order = "random"
     recursive = true
 
     [wallpaper.default]
-    path = "/home/weegs/.local/share/wallpapers/eve/SH1-6P-18.webp"
+    path = "/home/weegs/.local/share/wallpapers/the-neon-lit-streets-of-a-cyberpunk-anime-night-city-with-this-captivating-4k-wallpaper-generated-ai-free-photo.jpg"
 
     [wallpaper.last]
-    path = "/home/weegs/.local/share/wallpapers/eve/SH1-6P-18.webp"
+    path = "/home/weegs/.local/share/wallpapers/the-neon-lit-streets-of-a-cyberpunk-anime-night-city-with-this-captivating-4k-wallpaper-generated-ai-free-photo.jpg"
 
     [wallpaper.monitors.FALLBACK]
     path = "/home/weegs/.local/share/wallpapers/cannabis-grow-room.webp"
 
     [wallpaper.monitors.HDMI-A-1]
-    path = "/home/weegs/.local/share/wallpapers/eve/SH1-6P-18.webp"
+    path = "/home/weegs/.local/share/wallpapers/the-neon-lit-streets-of-a-cyberpunk-anime-night-city-with-this-captivating-4k-wallpaper-generated-ai-free-photo.jpg"
 
     [wallpaper.monitors.HDMI-A-2]
     path = "/home/weegs/.local/share/wallpapers/Sampo.webp"
