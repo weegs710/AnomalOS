@@ -53,6 +53,11 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-label/NIXBOOT";
     fsType = "vfat";
+    # vfat has no modes of its own; the default 0022 masks make the ESP and its random seed world-readable.
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
   fileSystems."/nix" = {
     device = "zroot/nix";
