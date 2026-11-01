@@ -1,0 +1,22 @@
+{
+  "3aa1e8": "{{ colors.primary.default.hex }}",
+  "4565d6": "{{ colors.tertiary.default.hex | lighten 12 }}",
+  "354763": "{{ colors.tertiary.default.hex | darken 6 }}",
+  "24bc91": "{{ colors.secondary.default.hex }}",
+  "59b557": "{{ colors.secondary.default.hex | lighten 4 }}",
+  "ee6b41": "{{ colors.tertiary.default.hex | lighten 12 }}",
+  "e3881b": "{{ colors.secondary.default.hex | darken 20 }}",
+  "f2c57e": "{{ colors.secondary.default.hex | darken 4 }}",
+  "b46138": "{{ colors.tertiary.default.hex }}",
+  "372118": "{{ colors.tertiary.default.hex | darken 14 }}",
+  "e4c1ac": "{{ colors.on_surface_variant.default.hex }}",
+  "d1435d": "{{ colors.tertiary.default.hex }}",
+  "ae3b3b": "{{ colors.tertiary.default.hex | lighten 8 }}",
+  "762f35": "{{ colors.tertiary.default.hex | darken 4 }}",
+  "8e4dff": "{{ colors.secondary.default.hex | darken 26 }}",
+  "e8488d": "{{ colors.primary.default.hex }}",
+  "e990db": "{{ colors.secondary.default.hex }}",
+  "6a6a7d": "{{ colors.on_surface_variant.default.hex | darken 32 }}",
+  "9595ac": "{{ colors.on_surface_variant.default.hex | darken 20 }}",
+  "7e7e92": "{{ colors.on_surface_variant.default.hex | darken 36 }}"
+}

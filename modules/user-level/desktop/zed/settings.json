@@ -44,7 +44,7 @@
     "delay_ms": 0,
     "enabled": true,
   },
-  "icon_theme": "Light Charmed Icons",
+  "icon_theme": "Triglavian Icons",
   "buffer_font_size": 16.0,
   "ui_font_size": 18.0,
   "ui_font_family": "Terminess Nerd Font",
@@ -60,6 +60,8 @@
     "blinking": "on",
     "cursor_shape": "bar",
     "font_family": "Terminess Nerd Font Mono",
+    // Terminess lacks the nom status symbols, so they fell through to the proportional emoji font
+    "font_fallbacks": ["Iosevka Nerd Font Mono"],
     "font_size": 14.0,
   },
   "collaboration_panel": {
@@ -107,6 +109,34 @@
     "show_user_picture": false,
   },
   "theme_overrides": {
+    // noctalia maps strings, numbers and constants to tertiary, which is too dark to read on the editor background
+    "Noctalia Dark": {
+      "syntax": {
+        "keyword": { "color": "#ff1a1a", "font_weight": 700 },
+        "function": { "color": "#ff3b30" },
+        "type": { "color": "#d6dbe3" },
+        "constructor": { "color": "#d6dbe3" },
+        "string": { "color": "#a9b4c9" },
+        "string.escape": { "color": "#ff1a1a" },
+        "string.regex": { "color": "#ff1a1a" },
+        "string.special": { "color": "#ff3b30" },
+        "string.special.symbol": { "color": "#ff1a1a" },
+        "text.literal": { "color": "#a9b4c9" },
+        "number": { "color": "#ff1a1a" },
+        "constant": { "color": "#ff1a1a" },
+        "boolean": { "color": "#ff1a1a" },
+        "variable": { "color": "#e8ecf1" },
+        "variable.special": { "color": "#ff3b30" },
+        "property": { "color": "#c6ccd5" },
+        "operator": { "color": "#8e96a6" },
+        "punctuation": { "color": "#5f6572" },
+        "punctuation.bracket": { "color": "#8e96a6" },
+        "punctuation.delimiter": { "color": "#5f6572" },
+        "tag": { "color": "#ff1a1a" },
+        "comment": { "color": "#7d8290", "font_style": "italic" },
+        "comment.doc": { "color": "#7d8290", "font_style": "italic" },
+      },
+    },
     "Noctalia Dark Transparent": {
       "syntax": {
         "constant.comment.todo": { "color": "#fb923c" },

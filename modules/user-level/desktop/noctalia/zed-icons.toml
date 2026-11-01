@@ -1,0 +1,5 @@
+# noctalia renders the recolor map on every palette change, then the hook rebuilds zed's triglavian-icons extension from it
+[theme.templates.user.zed_icons]
+input_path  = "$XDG_CONFIG_HOME/noctalia/templates/zed-icon-colors.json"
+output_path = "$XDG_STATE_HOME/noctalia/zed-icon-colors.json"
+post_hook   = "@ZED_ICONS@ $HOME/.local/state/noctalia/zed-icon-colors.json"

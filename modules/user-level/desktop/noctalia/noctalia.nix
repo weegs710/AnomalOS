@@ -8,6 +8,7 @@
 let
   username = config.mySystem.user.name;
   umbrielBin = "${config.programs.umbriel.package}/bin/umbriel";
+  zedIcons = pkgs.writers.writeNuBin "zed-icons" (builtins.readFile ./zed-icons.nu);
 in
 {
   hjem.extraModules = [ inputs.noctalia.hjemModules.default ];
@@ -43,6 +44,12 @@ in
       builtins.readFile ./hooks.toml
     );
 
+    # user templates load from any *.toml here, same as hooks; the hook needs the script's store path
+    xdg.config.files."noctalia/zed-icons.toml".text = lib.replaceStrings [ "@ZED_ICONS@" ] [
+      "${zedIcons}/bin/zed-icons"
+    ] (builtins.readFile ./zed-icons.toml);
+    xdg.config.files."noctalia/templates/zed-icon-colors.json".source = ./templates/zed-icon-colors.json;
+
     # qt6ct ships no config; without an icon theme Qt resolves named icons to the missing-icon checker
     xdg.config.files."qt6ct/qt6ct.conf".source = ./qt6ct.conf;
 
@@ -52,5 +59,6 @@ in
     xdg.config.files."noctalia/palettes/Cold-Wind.json".source = ./palettes/Cold-Wind.json;
     xdg.config.files."noctalia/palettes/Cymagentan.json".source = ./palettes/Cymagentan.json;
     xdg.config.files."noctalia/palettes/alliance-tournament-xxi-48-vib.json".source = ./palettes/alliance-tournament-xxi-48-vib.json;
+    xdg.config.files."noctalia/palettes/Triglavian.json".source = ./palettes/Triglavian.json;
   };
 }
