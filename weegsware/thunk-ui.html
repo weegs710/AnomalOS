@@ -1,0 +1,2020 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>thunk</title>
+<style>
+:root {
+  --paper: #e3e6e2;
+  --sheet: #f3f4f1;
+  --ink: #19272b;
+  --soft: #4b5b5e;
+  --rule: #b4bdba;
+  --tray: #162225;
+  --safe: #c8321e;
+  --ui: "TeX Gyre Adventor", "Century Gothic", "Avenir Next", Futura, "Trebuchet MS", sans-serif;
+  --text: "TeX Gyre Schola", "Century Schoolbook", "New Century Schoolbook", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.5 var(--ui);
+}
+
+button, input, textarea { font: inherit; color: inherit; }
+
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 1.5rem 3rem;
+  align-items: start;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 4rem;
+}
+
+.top {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+.mark { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+.model { margin: 0; font-size: 0.875rem; color: var(--soft); }
+
+.notice {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: var(--sheet);
+  border-left: 4px solid var(--safe);
+  font-size: 0.9375rem;
+}
+
+.notice[hidden] { display: none; }
+
+.desk { display: grid; gap: 1.25rem; }
+
+.main { min-width: 0; }
+
+@media (min-width: 900px) {
+  .desk { position: sticky; top: 1.5rem; max-height: calc(100vh - 3rem); overflow-y: auto; padding-right: 0.5rem; }
+}
+
+.free { display: grid; gap: 1.25rem; }
+.free[hidden], .lockbox[hidden] { display: none; }
+
+.prompt {
+  display: block;
+  width: 100%;
+  min-height: 9.5rem;
+  padding: 1rem;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-family: var(--text);
+  font-size: 1.25rem;
+  line-height: 1.35;
+  resize: vertical;
+}
+
+.prompt::placeholder { color: var(--soft); opacity: 0.8; }
+
+:where(button, input, textarea, summary):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+legend { padding: 0; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--soft); }
+
+.opts { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0.5rem; }
+.opt { position: relative; display: grid; gap: 0.375rem; justify-items: start; cursor: pointer; }
+.opt input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+
+.swatch {
+  display: block;
+  width: var(--w, 2.25rem);
+  height: var(--h, 2.25rem);
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  background: transparent;
+}
+
+.opt input:checked ~ .swatch { background: var(--ink); }
+.opt input:focus-visible ~ .swatch { outline: 2px solid var(--ink); outline-offset: 3px; }
+.opt-name { font-size: 0.875rem; }
+.shapes { align-items: end; }
+.shapes .opt { align-content: end; }
+.nums .opt { justify-items: stretch; }
+
+.num {
+  display: grid;
+  place-items: center;
+  height: 2.5rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+.opt input:checked ~ .num { background: var(--ink); color: var(--sheet); }
+.opt input:focus-visible ~ .num { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.field {
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--ink);
+}
+
+.dims { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; }
+.dims label, .more-body label { display: grid; gap: 0.25rem; font-size: 0.875rem; color: var(--soft); }
+
+.more summary { cursor: pointer; font-size: 0.875rem; color: var(--soft); }
+.more-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; }
+.hint { grid-column: 1 / -1; margin: 0; font-size: 0.8125rem; color: var(--soft); }
+
+.drop {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 4.5rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1.5px dashed var(--soft);
+  border-radius: 3px;
+  font-size: 0.9375rem;
+  color: var(--soft);
+  text-align: center;
+  cursor: pointer;
+}
+
+.drop[hidden] { display: none; }
+.drop:hover, .drop[data-over="true"] { border-color: var(--ink); color: var(--ink); background: var(--sheet); }
+.drop:focus-within { outline: 2px solid var(--ink); outline-offset: 2px; }
+.drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.init-set { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 0.75rem; align-items: center; }
+.init-set[hidden], .strength[hidden] { display: none; }
+.init-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 2px; background: var(--sheet); }
+.init-name { margin: 0; font-size: 0.9375rem; overflow-wrap: anywhere; }
+.init-size { margin: 0; font-size: 0.8125rem; color: var(--soft); }
+
+.strength { display: grid; gap: 0.375rem; margin-top: 0.75rem; }
+.strength label { display: flex; justify-content: space-between; font-size: 0.875rem; }
+.strength input { width: 100%; accent-color: var(--ink); }
+
+.lockbox { display: grid; gap: 0.75rem; padding: 1rem; background: var(--sheet); border-left: 4px solid var(--ink); }
+.lock-title { margin: 0; font-size: 0.875rem; color: var(--soft); }
+.lock-said {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: var(--text);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.lock-meta { margin: 0; font-size: 0.8125rem; color: var(--soft); }
+.lockbox label { display: grid; gap: 0.25rem; font-size: 0.875rem; color: var(--soft); }
+
+.go {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  background: var(--ink);
+  border: 0;
+  border-radius: 3px;
+  color: var(--sheet);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  cursor: pointer;
+}
+
+.go:hover { background: #0e181b; }
+.go[data-mode="stop"] { background: var(--safe); }
+.go[data-mode="stop"]:hover { background: #a82817; }
+.go:disabled { opacity: 0.65; cursor: default; }
+.go:disabled:hover { background: var(--safe); }
+.keys { margin: -0.5rem 0 0; font-size: 0.8125rem; color: var(--soft); }
+
+.tabs { display: flex; gap: 0.25rem; }
+
+.tab {
+  padding: 0.375rem 0.875rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] { border-bottom-color: var(--ink); font-weight: 700; }
+
+.bench { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; min-width: 0; }
+.bench[hidden] { display: none; }
+
+.tray {
+  position: relative;
+  padding: 1rem;
+  background: var(--tray);
+  border-radius: 4px;
+  color: #cfd8d5;
+}
+
+.tray::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: inset 0 0 0 2px var(--safe), inset 0 0 90px rgba(200, 50, 30, 0.38);
+}
+
+.tray[data-state="developing"]::after { opacity: 1; animation: safelight 2.8s ease-in-out infinite; }
+
+@keyframes safelight { 50% { opacity: 0.55; } }
+
+.stage { position: relative; display: grid; place-items: center; height: min(58vh, 560px); }
+
+.stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.stage img[hidden] { display: none; }
+.proof { filter: saturate(0.85) contrast(1.05) blur(0.5px); }
+.shot.fresh { animation: develop 0.9s ease-out; }
+
+@keyframes develop {
+  from { opacity: 0; filter: blur(10px) saturate(0.6); }
+  to { opacity: 1; filter: none; }
+}
+
+.empty { max-width: 34rem; padding: 1rem; text-align: left; }
+.empty[hidden] { display: none; }
+.empty h2 { margin: 0 0 0.25rem; font-size: 1.25rem; color: #eef2f0; }
+.empty p { margin: 0 0 1rem; color: #aebab6; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
+
+.chip {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid #55696a;
+  border-radius: 2px;
+  color: #dbe3e0;
+  font-family: var(--text);
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chip:hover { border-color: #dbe3e0; }
+.tray :where(button):focus-visible { outline-color: #eef2f0; }
+
+.gauge { display: grid; gap: 0.5rem; margin-top: 0.75rem; }
+.gauge[hidden] { display: none; }
+.segs { display: flex; gap: 3px; }
+.seg { flex: 1; height: 5px; background: rgba(255, 255, 255, 0.16); }
+.seg.on { background: var(--safe); }
+.gauge-text { margin: 0; font-size: 0.875rem; color: #cfd8d5; }
+
+.caption { display: grid; gap: 0.75rem; }
+.caption[hidden] { display: none; }
+
+.said { max-width: 62ch; margin: 0; font-family: var(--text); font-size: 1.1875rem; line-height: 1.45; }
+.meta { margin: 0; font-size: 0.875rem; color: var(--soft); }
+
+.from { display: flex; align-items: center; gap: 0.625rem; margin: 0; font-size: 0.875rem; color: var(--soft); }
+.from[hidden] { display: none; }
+.from-thumb { width: 40px; height: 40px; padding: 0; border: 0; border-radius: 2px; overflow: hidden; background: var(--sheet); cursor: pointer; }
+.from-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.acts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.act {
+  padding: 0.5rem 0.875rem;
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.act:hover { background: var(--ink); color: var(--sheet); }
+.act:disabled { opacity: 0.45; cursor: default; }
+.act:disabled:hover { background: transparent; color: var(--ink); }
+.act[data-armed="true"] { background: var(--safe); border-color: var(--safe); color: var(--sheet); }
+
+.sheet-head { display: flex; align-items: baseline; gap: 0.75rem; margin: 0.5rem 0 0.75rem; }
+.sheet-head h2 { margin: 0; font-size: 1rem; }
+.sheet-head span { font-size: 0.875rem; color: var(--soft); }
+
+.lineup, .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--cell, 112px), 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.lineup { --cell: 140px; }
+
+.tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  background: var(--tray);
+  border: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.tile img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.tile[aria-current="true"] { outline: 3px solid var(--ink); outline-offset: 2px; }
+.tile:disabled { cursor: default; opacity: 0.6; }
+
+.badge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 1.5rem;
+  padding: 0 0.375rem;
+  background: var(--ink);
+  color: var(--sheet);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+  text-align: center;
+}
+
+.sheet-empty { margin: 0; font-size: 0.9375rem; color: var(--soft); }
+
+.round { margin-top: 1rem; }
+.round-said { margin: 0 0 0.125rem; font-family: var(--text); font-size: 0.9375rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.round-meta { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.5rem; font-size: 0.8125rem; color: var(--soft); }
+.round-meta .from-thumb { width: 24px; height: 24px; }
+
+.brand { display: grid; gap: 1.25rem; max-width: 64rem; }
+.brand-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
+.brand h2 { margin: 0; font-size: 1.25rem; }
+.brand-lead { margin: 0; max-width: 62ch; font-family: var(--text); line-height: 1.5; }
+.rstate { margin: 0; padding: 0.625rem 0.875rem; background: var(--sheet); border-left: 4px solid var(--soft); font-size: 0.9375rem; }
+.rstate[data-state="down"] { border-left-color: var(--safe); }
+.rstate[hidden] { display: none; }
+
+.rounds { display: grid; gap: 1.25rem; padding: 0; margin: 0; list-style: none; }
+.rc { display: grid; gap: 0.875rem; min-width: 0; padding: 1.125rem 1.25rem; background: var(--sheet); border-left: 4px solid var(--ink); }
+.rc[data-past="true"] { gap: 0.5rem; padding-block: 0.625rem; background: transparent; border-left-color: var(--rule); }
+.rc h3 { margin: 0; font-size: 1.0625rem; }
+.rc-past-prompt { margin: 0; font-family: var(--text); font-size: 0.9375rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rc-thumbs { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.rc-thumbs a { display: block; width: 56px; height: 56px; overflow: hidden; background: var(--tray); border-radius: 2px; }
+.rc-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.lab { display: grid; gap: 0.25rem; font-size: 0.875rem; color: var(--soft); }
+.rc-text { width: 100%; padding: 0.75rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; color: var(--ink); font-family: var(--text); font-size: 1.0625rem; line-height: 1.4; resize: vertical; }
+.rc-row { display: flex; flex-wrap: wrap; align-items: end; gap: 0.75rem 1rem; }
+.rc-select { padding: 0.5rem 0.625rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; color: var(--ink); }
+.rc-check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9375rem; }
+.rc-go { padding: 0.8rem 1.25rem; background: var(--ink); border: 0; border-radius: 3px; color: var(--sheet); font-weight: 700; font-size: 1rem; cursor: pointer; }
+.rc-go:hover { background: #0e181b; }
+.rc-go:disabled { opacity: 0.55; cursor: default; }
+.rc-go[data-mode="stop"] { background: var(--safe); }
+.rc-prog { display: grid; grid-template-columns: minmax(0, 12rem) 1fr; gap: 1rem; align-items: center; }
+.rc-prog img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; background: var(--tray); border-radius: 2px; }
+.rc-prog p { margin: 0; font-size: 0.9375rem; }
+.rc-block { display: grid; gap: 0.375rem; padding: 0.75rem 0.875rem; background: var(--paper); border-radius: 3px; font-size: 0.9375rem; }
+.rc-block h4 { margin: 0; font-size: 0.875rem; font-weight: 400; color: var(--soft); }
+.rc-block ul { display: grid; gap: 0.25rem; margin: 0; padding-left: 1.125rem; font-family: var(--text); }
+.rc-block del { color: var(--soft); }
+.rc-block ins { font-weight: 700; text-decoration: none; }
+.rc-warn { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin: 0; padding: 0.5rem 0.75rem; background: var(--paper); border-left: 4px solid var(--safe); font-size: 0.9375rem; }
+.bprints { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.75rem; padding: 0; margin: 0; list-style: none; }
+.bp { display: grid; align-content: start; gap: 0.5rem; min-width: 0; }
+.bp-img { position: relative; display: block; overflow: hidden; background: var(--tray); border-radius: 2px; }
+.bp-img img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
+.bp-chips { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.mk { padding: 0.25rem 0.5rem; background: transparent; border: 1px solid var(--ink); border-radius: 2px; font-size: 0.8125rem; cursor: pointer; }
+.mk[aria-pressed="true"] { background: var(--ink); color: var(--sheet); }
+.mk[data-kind="wrong"] { border-color: var(--safe); color: var(--safe); }
+.mk[data-kind="wrong"][aria-pressed="true"] { background: var(--safe); color: var(--sheet); }
+.fin { display: grid; gap: 0.875rem; }
+.fin img { display: block; width: 100%; max-height: 70vh; object-fit: contain; background: var(--tray); border-radius: 4px; }
+.wrap[data-view="brand"] { grid-template-columns: minmax(0, 1fr); }
+.wrap[data-view="brand"] .desk { display: none; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (max-width: 899px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); }
+  .stage { height: min(calc(100vw - 4rem), 60vh); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tray[data-state="developing"]::after { animation: none; }
+  .shot.fresh { animation: none; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <h1 class="mark">thunk</h1>
+    <div role="tablist" class="tabs" aria-label="View">
+      <button class="tab" id="tab-prints" role="tab" type="button" aria-selected="true" aria-controls="view-prints">Prints</button>
+      <button class="tab" id="tab-brand" role="tab" type="button" aria-selected="false" aria-controls="view-brand">Branding</button>
+    </div>
+    <p class="model" id="model"></p>
+  </header>
+
+  <p class="notice" id="notice" role="alert" hidden></p>
+
+  <form class="desk" id="desk" autocomplete="off">
+    <section class="lockbox" id="lockbox" hidden>
+      <p class="lock-title">Locked: same prompt, same seed</p>
+      <p class="lock-said" id="lock-said"></p>
+      <p class="lock-meta" id="lock-meta"></p>
+      <label>Cue to add<input class="field" id="cue" type="text" placeholder="a glowing question mark floating beside the head"></label>
+      <div class="acts"><button class="act" id="unlock" type="button">Unlock</button></div>
+    </section>
+
+    <div class="free" id="free">
+      <div>
+        <label class="sr" for="prompt">Prompt</label>
+        <textarea class="prompt" id="prompt" rows="5" placeholder="Describe the picture"></textarea>
+      </div>
+
+      <fieldset>
+        <legend>Starting image</legend>
+        <label class="drop" id="drop">
+          <input type="file" id="file" accept="image/*">
+          <span>Drop an image here, or choose one</span>
+        </label>
+        <div class="init-set" id="init-set" hidden>
+          <img class="init-thumb" id="init-thumb" alt="">
+          <div>
+            <p class="init-name" id="init-name"></p>
+            <p class="init-size" id="init-size"></p>
+          </div>
+          <button class="act" id="init-clear" type="button">Remove</button>
+        </div>
+        <div class="strength" id="strength-box" hidden>
+          <label for="strength"><span>How much to change</span><output id="strength-out" for="strength">0.75</output></label>
+          <input type="range" id="strength" min="0.1" max="1" step="0.05" value="0.75">
+          <p class="hint">Low keeps the picture as it is. High repaints it.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Size</legend>
+        <div class="opts shapes">
+          <label class="opt"><input type="radio" name="shape" value="square" checked><span class="swatch" style="--w:2.25rem;--h:2.25rem"></span><span class="opt-name">Square</span></label>
+          <label class="opt"><input type="radio" name="shape" value="portrait"><span class="swatch" style="--w:1.875rem;--h:2.5rem"></span><span class="opt-name">Portrait</span></label>
+          <label class="opt"><input type="radio" name="shape" value="landscape"><span class="swatch" style="--w:2.5rem;--h:1.875rem"></span><span class="opt-name">Landscape</span></label>
+          <label class="opt"><input type="radio" name="shape" value="wide"><span class="swatch" style="--w:2.75rem;--h:1.5rem"></span><span class="opt-name">Wide</span></label>
+        </div>
+        <div class="dims">
+          <label>Width<input class="field" id="width" type="number" min="256" max="1536" step="32" value="768" inputmode="numeric"></label>
+          <label>Height<input class="field" id="height" type="number" min="256" max="1536" step="32" value="768" inputmode="numeric"></label>
+          <p class="hint">Steps of 32. Anything past 1024 on a side has not been tried on this GPU.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Images in this round</legend>
+        <div class="opts nums">
+          <label class="opt"><input type="radio" name="count" value="1" checked><span class="num">1</span></label>
+          <label class="opt"><input type="radio" name="count" value="2"><span class="num">2</span></label>
+          <label class="opt"><input type="radio" name="count" value="3"><span class="num">3</span></label>
+          <label class="opt"><input type="radio" name="count" value="4"><span class="num">4</span></label>
+          <label class="opt"><input type="radio" name="count" value="5"><span class="num">5</span></label>
+          <label class="opt"><input type="radio" name="count" value="6"><span class="num">6</span></label>
+        </div>
+      </fieldset>
+
+      <details class="more">
+        <summary>More settings</summary>
+        <div class="more-body">
+          <label>Steps<input class="field" id="steps" type="number" min="1" max="30" value="8" inputmode="numeric"></label>
+          <label>First seed<input class="field" id="seed" type="number" min="0" max="2147483647" placeholder="Random" inputmode="numeric"></label>
+          <p class="hint">Eight steps is what this model is built for. Each image in a round takes the next seed. Reuse a seed to get the same picture back.</p>
+        </div>
+      </details>
+    </div>
+
+    <button class="go" id="go" type="submit" data-mode="go">Generate</button>
+    <p class="keys">Ctrl+Enter also generates. 1 to 9 pick a print from the round.</p>
+  </form>
+
+  <div class="main">
+    <section class="bench" id="view-prints" role="tabpanel" aria-labelledby="tab-prints">
+      <div class="tray" id="tray" data-state="empty">
+        <div class="stage" id="stage">
+          <img class="proof" id="proof" alt="" hidden>
+          <img class="shot" id="shot" alt="" hidden>
+          <div class="empty" id="empty">
+            <h2>No prints yet</h2>
+            <p>Write what you want to see, then press Generate. Prints are kept in this browser.</p>
+            <ul class="chips" id="chips"></ul>
+          </div>
+        </div>
+        <div class="gauge" id="gauge" hidden>
+          <div class="segs" id="segs"></div>
+          <p class="gauge-text" id="gauge-text"></p>
+        </div>
+      </div>
+
+      <div class="caption" id="caption" hidden>
+        <p class="said" id="said"></p>
+        <p class="meta" id="meta"></p>
+        <p class="from" id="from" hidden></p>
+        <div class="acts">
+          <button class="act" id="refine" type="button">Refine this</button>
+          <button class="act" id="lock" type="button">Lock</button>
+          <a class="act" id="dl" href="#" download>Download</a>
+          <button class="act" id="reuse" type="button">Reuse prompt</button>
+          <button class="act" id="same" type="button">Same seed</button>
+          <button class="act" id="del" type="button">Delete</button>
+        </div>
+      </div>
+
+      <div id="round-wrap" hidden>
+        <div class="sheet-head"><h2>This round</h2><span id="round-meta"></span></div>
+        <ol class="lineup" id="lineup"></ol>
+      </div>
+
+      <div>
+        <div class="sheet-head"><h2>History</h2><span id="count"></span></div>
+        <div id="history"></div>
+        <p class="sheet-empty" id="sheet-empty">Finished prints show up here, one row per round.</p>
+      </div>
+    </section>
+
+    <section class="bench brand" id="view-brand" role="tabpanel" aria-labelledby="tab-brand" hidden>
+      <div class="brand-head">
+        <h2>Branding</h2>
+        <button class="act" id="brand-new" type="button" hidden>New project</button>
+      </div>
+      <p class="brand-lead">Describe what you want. It writes the prompt and makes a round of images. Mark what works in each one, say what to change, and it writes the next prompt. Repeat until one is right.</p>
+      <p class="rstate" id="rstate" hidden></p>
+      <ol class="rounds" id="rounds"></ol>
+    </section>
+  </div>
+
+  <div class="sr" id="live" aria-live="polite"></div>
+</main>
+
+<noscript><p class="notice">This page needs JavaScript to talk to the image server.</p></noscript>
+
+<script>
+// the deterministic half of the prompt rewriter: what to look for in the new prompt, how to edit it, what changed
+const Rewrite = (() => {
+  const FILLER = new Set(("too much many more less few fewer not the and with that this from have been very thing things whole " +
+    "all any some just only still really make look into than then also what when where which would could should " +
+    "need needs want wants like logically placed place").split(" "));
+  const NEGATION = /\b(no|not|without|avoid|never|none of)\s+(\w+\s+){0,2}$/i;
+  const esc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const word = (t) => new RegExp("\\b" + esc(t) + "\\b", "gi");
+
+  // the model is told to output only the prompt, this strips the ways it still wraps it
+  function clean(text) {
+    let t = String(text).trim();
+    t = t.replace(/^```[a-z]*\n|\n```$/g, "").trim();
+    t = t.replace(/^(here is|here's|sure|prompt:|new prompt:|next prompt:)[^\n]*\n+/i, "").trim();
+    if (t.length > 1 && t[0] === t[t.length - 1] && "\"'".includes(t[0])) t = t.slice(1, -1).trim();
+    return t.replace(/\s+/g, " ");
+  }
+
+  // keep only words that really occur in the previous prompt, after dropping the user's qualifiers
+  function normalize(terms, prev) {
+    const out = [];
+    for (const term of terms) {
+      if (word(term).test(prev) && !term.split(" ").every((w) => FILLER.has(w))) { out.push(term); continue; }
+      for (const w of term.match(/[a-z][a-z-]{2,}/g) || []) {
+        if (!FILLER.has(w) && word(w).test(prev)) out.push(w);
+      }
+    }
+    return [...new Set(out)];
+  }
+
+  const count = (prompt, term) => (prompt.match(word(term)) || []).length;
+
+  // each surviving term with the clause it sits in, ignoring uses like "no magenta"
+  function hits(prompt, terms) {
+    const found = [];
+    for (const term of terms) {
+      for (const m of prompt.matchAll(word(term))) {
+        if (NEGATION.test(prompt.slice(Math.max(0, m.index - 30), m.index))) continue;
+        const a = prompt.lastIndexOf(",", m.index - 1) + 1;
+        const b = prompt.indexOf(",", m.index + m[0].length);
+        found.push({ term, snippet: prompt.slice(a, b === -1 ? prompt.length : b).trim() });
+      }
+    }
+    return found;
+  }
+
+  const dedupe = (p) => p.replace(/\b(\w+)( and \1\b)+/gi, "$1");
+
+  // delete one item from a coordinated list ("magenta and cyan", "a and magenta"), which stays grammatical
+  function ruleRepair(prompt, term) {
+    const t = esc(term);
+    let p = prompt.replace(new RegExp("\\b" + t + "\\s+and\\s+(?=\\w)", "gi"), "");
+    p = p.replace(new RegExp("\\s+and\\s+" + t + "\\b", "gi"), "");
+    return dedupe(p);
+  }
+
+  // word-level diff: the hunks that changed and the fraction of words touched
+  function wordDiff(a, b) {
+    const A = a.split(/\s+/).filter(Boolean);
+    const B = b.split(/\s+/).filter(Boolean);
+    const n = A.length;
+    const m = B.length;
+    const L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+    for (let i = n - 1; i >= 0; i--) {
+      for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    }
+    const hunks = [];
+    let cur = null;
+    const flush = () => { if (cur) { hunks.push({ removed: cur.removed.join(" "), added: cur.added.join(" ") }); cur = null; } };
+    let i = 0;
+    let j = 0;
+    while (i < n || j < m) {
+      if (i < n && j < m && A[i] === B[j]) { flush(); i++; j++; continue; }
+      cur = cur || { removed: [], added: [] };
+      if (j >= m || (i < n && L[i + 1][j] >= L[i][j + 1])) cur.removed.push(A[i++]);
+      else cur.added.push(B[j++]);
+    }
+    flush();
+    return { hunks, fraction: n + m === 0 ? 0 : 1 - (2 * L[0][0]) / (n + m) };
+  }
+
+  return { clean, normalize, count, hits, dedupe, ruleRepair, wordDiff };
+})();
+
+</script>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const SHAPES = { square: [768, 768], portrait: [672, 896], landscape: [896, 672], wide: [1024, 576] };
+  const SNAP = 32;
+  const MIN_SIDE = 256;
+  const MAX_SIDE = 1536;
+  const FIT_SIDE = 1024;
+  const EXAMPLES = [
+    "a lighthouse at dusk, ink illustration",
+    "a fox in a yellow raincoat, flat vector sticker, thick outline",
+    "a dew-covered spider web at sunrise, macro photograph"
+  ];
+  const API = "/sdcpp/v1";
+  const SAVED = "thunk.form";
+
+  const el = {};
+  for (const id of ["notice", "model", "desk", "prompt", "steps", "seed", "go", "tray", "proof", "shot", "empty", "chips",
+    "gauge", "segs", "gauge-text", "caption", "said", "meta", "from", "dl", "reuse", "same", "del", "refine", "lock", "history",
+    "count", "sheet-empty", "live", "width", "height", "file", "drop", "init-set", "init-thumb", "init-name", "init-size",
+    "init-clear", "strength", "strength-box", "strength-out", "lockbox", "lock-said", "lock-meta", "cue", "unlock", "free",
+    "round-wrap", "lineup", "round-meta", "tab-prints", "tab-brand", "view-prints", "view-brand"]) {
+    el[id.replace(/-(\w)/g, (_, c) => c.toUpperCase())] = $(id);
+  }
+
+  const state = {
+    prints: [], selected: null, running: false, stop: false, jobId: null, dev: null, db: null,
+    init: null, lock: null, onTick: null
+  };
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const radio = (name) => {
+    const r = document.querySelector(`input[name="${name}"]:checked`);
+    return r ? r.value : null;
+  };
+  const setRadio = (name, value) => {
+    for (const r of document.querySelectorAll(`input[name="${name}"]`)) r.checked = r.value === String(value);
+  };
+  const randomSeed = () => crypto.getRandomValues(new Uint32Array(1))[0] % 2147483648;
+  const snap = (n) => Math.min(MAX_SIDE, Math.max(MIN_SIDE, Math.round(n / SNAP) * SNAP));
+
+  function notice(text) {
+    el.notice.textContent = text || "";
+    el.notice.hidden = !text;
+  }
+
+  // storage: prints live in IndexedDB so a refresh keeps them
+  function openDb() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open("thunk", 1);
+      req.onupgradeneeded = () => req.result.createObjectStore("prints", { keyPath: "id" });
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function dbDo(mode, fn) {
+    return new Promise((resolve, reject) => {
+      if (!state.db) return resolve(undefined);
+      const t = state.db.transaction("prints", mode);
+      const req = fn(t.objectStore("prints"));
+      t.oncomplete = () => resolve(req && req.result);
+      t.onerror = () => reject(t.error);
+    });
+  }
+
+  // form: remember the last settings
+  function saveForm() {
+    const form = {
+      prompt: el.prompt.value, width: el.width.value, height: el.height.value, count: radio("count"),
+      steps: el.steps.value, strength: el.strength.value, lock: state.lock, cue: el.cue.value
+    };
+    try { localStorage.setItem(SAVED, JSON.stringify(form)); } catch (e) { /* storage off */ }
+  }
+
+  function loadForm() {
+    try {
+      const f = JSON.parse(localStorage.getItem(SAVED) || "null");
+      if (!f) return;
+      el.prompt.value = f.prompt || "";
+      if (f.width) el.width.value = f.width;
+      if (f.height) el.height.value = f.height;
+      if (f.count) setRadio("count", f.count);
+      if (f.steps) el.steps.value = f.steps;
+      if (f.strength) el.strength.value = f.strength;
+      el.cue.value = f.cue || "";
+      state.lock = f.lock || null;
+    } catch (e) { /* ignore a bad saved form */ }
+  }
+
+  function syncShape() {
+    const w = Number(el.width.value);
+    const h = Number(el.height.value);
+    const hit = Object.keys(SHAPES).find((k) => SHAPES[k][0] === w && SHAPES[k][1] === h);
+    setRadio("shape", hit || "");
+  }
+
+  function setSize(w, h) {
+    el.width.value = snap(w);
+    el.height.value = snap(h);
+    syncShape();
+    renderDesk();
+  }
+
+  function fitSize(w, h) {
+    const k = Math.min(1, FIT_SIDE / Math.max(w, h));
+    setSize(w * k, h * k);
+  }
+
+  // prints and rounds
+  function printById(id) {
+    return state.prints.find((p) => p.id === id) || null;
+  }
+
+  function selectedPrint() {
+    return printById(state.selected);
+  }
+
+  function roundOf(p) {
+    return p.round || p.id;
+  }
+
+  function roundPrints(p) {
+    if (!p) return [];
+    const r = roundOf(p);
+    return state.prints.filter((q) => roundOf(q) === r).sort((a, b) => a.created - b.created);
+  }
+
+  function fileName(p) {
+    return `${p.prompt.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "print"}-${p.seed}.png`;
+  }
+
+  // view
+  function renderSegs(total, done) {
+    if (el.segs.children.length !== total) {
+      el.segs.replaceChildren(...Array.from({ length: total }, () => Object.assign(document.createElement("span"), { className: "seg" })));
+    }
+    [...el.segs.children].forEach((s, i) => s.classList.toggle("on", i < done));
+  }
+
+  function renderFrom(p) {
+    el.from.replaceChildren();
+    if (p.parent || p.initName) {
+      const parent = p.parent ? printById(p.parent) : null;
+      if (parent) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "from-thumb";
+        b.setAttribute("aria-label", "Open the print this was refined from");
+        const img = document.createElement("img");
+        img.src = parent.url;
+        img.alt = "";
+        b.append(img);
+        b.addEventListener("click", () => { state.selected = parent.id; renderAll(); });
+        el.from.append(b, document.createTextNode("Refined from this print"));
+      } else if (p.parent) {
+        el.from.append(document.createTextNode("Refined from a print that was deleted"));
+      } else {
+        el.from.append(document.createTextNode(`Started from ${p.initName}`));
+      }
+      el.from.hidden = false;
+    } else {
+      el.from.hidden = true;
+    }
+  }
+
+  function renderTray() {
+    const p = selectedPrint();
+    const dev = state.dev;
+
+    if (state.running && dev) {
+      el.tray.dataset.state = "developing";
+      el.empty.hidden = true;
+      el.shot.hidden = true;
+      el.proof.hidden = !dev.preview;
+      if (dev.preview) el.proof.src = dev.preview;
+      el.gauge.hidden = false;
+      renderSegs(dev.total, dev.step);
+      const which = dev.count > 1 ? `Image ${dev.index} of ${dev.count}. ` : "";
+      const where = dev.step ? `Step ${dev.step} of ${dev.total}.` : "Preparing.";
+      el.gaugeText.textContent = `${which}${where} ${dev.elapsed}s`;
+      el.caption.hidden = true;
+      return;
+    }
+
+    el.gauge.hidden = true;
+    el.proof.hidden = true;
+
+    if (!p) {
+      el.tray.dataset.state = "empty";
+      el.shot.hidden = true;
+      el.empty.hidden = false;
+      el.caption.hidden = true;
+      return;
+    }
+
+    el.tray.dataset.state = "viewing";
+    el.empty.hidden = true;
+    el.shot.hidden = false;
+    if (el.shot.dataset.id !== p.id) {
+      el.shot.dataset.id = p.id;
+      el.shot.src = p.url;
+      el.shot.alt = p.prompt;
+    }
+    el.caption.hidden = false;
+    el.said.textContent = p.prompt;
+    const bits = [`Seed ${p.seed}`, `${p.width} by ${p.height}`, `${p.steps} steps`, `${p.secs} seconds`];
+    if (p.strength != null) bits.push(`strength ${Number(p.strength).toFixed(2)}`);
+    el.meta.textContent = bits.join(", ");
+    renderFrom(p);
+    el.dl.href = p.url;
+    el.dl.download = fileName(p);
+    el.refine.disabled = state.running;
+    el.lock.disabled = state.running;
+    el.del.textContent = "Delete";
+    el.del.dataset.armed = "false";
+  }
+
+  function tileFor(p, opts = {}) {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "tile";
+    b.disabled = state.running;
+    b.setAttribute("aria-label", opts.number ? `Print ${opts.number}: ${p.prompt}` : `Open print: ${p.prompt}`);
+    if (p.id === state.selected) b.setAttribute("aria-current", "true");
+    const img = document.createElement("img");
+    img.src = p.url;
+    img.alt = "";
+    img.loading = "lazy";
+    b.append(img);
+    if (opts.number) {
+      const n = document.createElement("span");
+      n.className = "badge";
+      n.textContent = String(opts.number);
+      b.append(n);
+    }
+    b.addEventListener("click", () => { state.selected = p.id; renderAll(); });
+    li.append(b);
+    return li;
+  }
+
+  function renderRound() {
+    const mates = roundPrints(selectedPrint());
+    el.roundWrap.hidden = mates.length < 2;
+    if (mates.length < 2) return;
+    el.roundMeta.textContent = `${mates.length} prints, press 1 to ${Math.min(9, mates.length)} to switch`;
+    el.lineup.replaceChildren(...mates.map((p, i) => tileFor(p, { number: i + 1 })));
+  }
+
+  function renderHistory() {
+    el.count.textContent = state.prints.length ? String(state.prints.length) : "";
+    el.sheetEmpty.hidden = state.prints.length > 0;
+
+    const rounds = [];
+    const seen = new Map();
+    for (const p of state.prints) {
+      const key = roundOf(p);
+      if (!seen.has(key)) { seen.set(key, []); rounds.push(seen.get(key)); }
+      seen.get(key).push(p);
+    }
+
+    el.history.replaceChildren(...rounds.map((list) => {
+      list.sort((a, b) => a.created - b.created);
+      const first = list[0];
+      const sec = document.createElement("section");
+      sec.className = "round";
+
+      const said = document.createElement("p");
+      said.className = "round-said";
+      said.textContent = first.prompt;
+      said.title = first.prompt;
+
+      const meta = document.createElement("p");
+      meta.className = "round-meta";
+      meta.append(document.createTextNode(`${list.length} ${list.length === 1 ? "print" : "prints"}`));
+      const parent = first.parent ? printById(first.parent) : null;
+      if (parent) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "from-thumb";
+        b.setAttribute("aria-label", "Open the print this round started from");
+        const img = document.createElement("img");
+        img.src = parent.url;
+        img.alt = "";
+        b.append(img);
+        b.addEventListener("click", () => { state.selected = parent.id; renderAll(); });
+        meta.append(document.createTextNode(", refined from"), b);
+      } else if (first.initName) {
+        meta.append(document.createTextNode(`, started from ${first.initName}`));
+      }
+
+      const ul = document.createElement("ul");
+      ul.className = "grid";
+      ul.append(...list.map((p) => tileFor(p)));
+      sec.append(said, meta, ul);
+      return sec;
+    }));
+  }
+
+  // the server cannot interrupt an image that is already generating, so Stop only skips the ones still waiting
+  function waiting() {
+    return state.dev ? state.dev.count - state.dev.index : 0;
+  }
+
+  function renderGo() {
+    if (!state.running) {
+      el.go.dataset.mode = "go";
+      el.go.textContent = state.lock ? "Generate with the cue" : "Generate";
+      el.go.disabled = false;
+      return;
+    }
+    el.go.dataset.mode = "stop";
+    if (state.stop) {
+      el.go.textContent = "Stopping after this image";
+      el.go.disabled = true;
+    } else if (waiting() > 0) {
+      el.go.textContent = "Stop after this image";
+      el.go.disabled = false;
+    } else {
+      el.go.textContent = "Generating";
+      el.go.disabled = true;
+    }
+  }
+
+  function renderDesk() {
+    const l = state.lock;
+    el.lockbox.hidden = !l;
+    el.free.hidden = !!l;
+    if (l) {
+      el.lockSaid.textContent = l.base;
+      el.lockMeta.textContent = `Seed ${l.seed}, ${l.width} by ${l.height}, ${l.steps} steps`;
+    }
+
+    const init = state.init;
+    el.initSet.hidden = !init;
+    el.strengthBox.hidden = !init;
+    el.drop.hidden = !!init;
+    if (init) {
+      el.initThumb.src = init.url;
+      el.initName.textContent = init.printId ? "A print from this page" : init.name;
+      const differs = init.width !== Number(el.width.value) || init.height !== Number(el.height.value);
+      el.initSize.textContent = `${init.width} by ${init.height}${differs ? ", cropped and scaled to the size below" : ""}`;
+    }
+    el.strengthOut.textContent = Number(el.strength.value).toFixed(2);
+  }
+
+  function renderAll() {
+    renderTray();
+    renderRound();
+    renderHistory();
+    renderGo();
+    renderDesk();
+  }
+
+  // generation
+  async function readError(res) {
+    try {
+      const j = await res.json();
+      return (j.error && j.error.message) || (typeof j.error === "string" && j.error) || j.message || `Server answered ${res.status}`;
+    } catch (e) {
+      return `Server answered ${res.status}`;
+    }
+  }
+
+  async function runJob(args) {
+    const body = {
+      prompt: args.prompt,
+      width: args.width,
+      height: args.height,
+      seed: args.seed,
+      batch_count: 1,
+      sample_params: { sample_steps: args.steps, guidance: { txt_cfg: 1.0 } },
+      preview: "proj",
+      preview_interval: 1,
+      output_format: "png"
+    };
+    if (args.init) {
+      body.init_image = args.init.dataUrl;
+      body.strength = args.strength;
+    }
+    const res = await fetch(`${API}/img_gen`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (res.status === 429) throw new Error("The server queue is full. Wait for the current image to finish.");
+    if (!res.ok) throw new Error(await readError(res));
+    const { id } = await res.json();
+    state.jobId = id;
+
+    for (;;) {
+      await sleep(500);
+      const poll = await fetch(`${API}/jobs/${id}`);
+      if (!poll.ok) throw new Error(await readError(poll));
+      const job = await poll.json();
+      const dev = state.dev;
+      dev.elapsed = Math.round((performance.now() - dev.t0) / 1000);
+      if (job.preview && job.preview.b64_json) {
+        if (job.preview.step !== dev.step) el.live.textContent = `Step ${job.preview.step} of ${job.preview.total_steps}`;
+        dev.step = job.preview.step;
+        dev.total = job.preview.total_steps;
+        dev.preview = `data:image/png;base64,${job.preview.b64_json}`;
+      }
+      renderTray();
+      if (state.onTick) state.onTick(dev);
+
+      if (job.status === "failed") throw new Error((job.error && job.error.message) || (typeof job.error === "string" && job.error) || "The server could not make this image.");
+      if (job.status === "cancelled") throw new Error("The server cancelled this image.");
+      if (job.status === "completed") {
+        const b64 = job.result.images[0].b64_json;
+        const blob = await (await fetch(`data:image/png;base64,${b64}`)).blob();
+        return { blob, secs: Math.round((job.completed - job.started) / 1000) };
+      }
+    }
+  }
+
+  // crop and scale to the target size here so the server only ever receives a PNG that needs no resizing
+  async function initDataUrl(init, w, h) {
+    const bmp = await createImageBitmap(init.blob);
+    const k = Math.max(w / bmp.width, h / bmp.height);
+    const sw = w / k;
+    const sh = h / k;
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(bmp, (bmp.width - sw) / 2, (bmp.height - sh) / 2, sw, sh, 0, 0, w, h);
+    bmp.close();
+    return canvas.toDataURL("image/png");
+  }
+
+  // what a Generate press will run, or null with a notice when it cannot run
+  function plan() {
+    const l = state.lock;
+    const cue = el.cue.value.trim();
+    const prompt = l ? (cue ? `${l.base}, ${cue}` : l.base) : el.prompt.value.trim();
+    if (!prompt) {
+      notice("Write a prompt first, then press Generate.");
+      el.prompt.focus();
+      return null;
+    }
+    if (/\[[^\]]*\s[^\]]*\]/.test(prompt)) {
+      notice("Replace the [bracketed] parts with your own words first.");
+      (l ? el.cue : el.prompt).focus();
+      return null;
+    }
+    if (l) {
+      return { prompt, base: l.base, cue, width: l.width, height: l.height, steps: l.steps, count: 1, first: l.seed, init: null, strength: null };
+    }
+    const typed = el.seed.value.trim();
+    return {
+      prompt, base: prompt, cue: "", width: snap(Number(el.width.value) || 768), height: snap(Number(el.height.value) || 768),
+      steps: Math.min(30, Math.max(1, parseInt(el.steps.value, 10) || 8)), count: Number(radio("count") || 1),
+      first: typed === "" ? randomSeed() : parseInt(typed, 10),
+      init: state.init, strength: state.init ? Number(el.strength.value) : null
+    };
+  }
+
+  // one round of images, shared by the Generate button and the Branding loop
+  async function runRound(job, hooks = {}) {
+    const round = job.round || `r${Date.now()}`;
+    const made = [];
+    state.running = true;
+    state.stop = false;
+    state.onTick = hooks.onTick || null;
+    renderGo();
+
+    try {
+      const start = job.init ? { dataUrl: await initDataUrl(job.init, job.width, job.height) } : null;
+      for (let i = 0; i < job.count && !state.stop; i++) {
+        const seed = (job.first + i) % 2147483648;
+        state.dev = { index: i + 1, count: job.count, step: 0, total: job.steps, preview: null, elapsed: 0, t0: performance.now() };
+        renderAll();
+        const out = await runJob({ prompt: job.prompt, width: job.width, height: job.height, seed, steps: job.steps, init: start, strength: job.strength });
+        const print = {
+          id: `${Date.now()}-${seed}`, round, prompt: job.prompt, base: job.base, cue: job.cue, seed, width: job.width, height: job.height,
+          steps: job.steps, strength: job.strength, parent: job.init ? job.init.printId : null,
+          initName: job.init && !job.init.printId ? job.init.name : null, secs: out.secs, created: Date.now(), blob: out.blob
+        };
+        await dbDo("readwrite", (s) => s.put(print)).catch(() => notice("This print could not be saved to the browser, so it will be gone after a refresh."));
+        print.url = URL.createObjectURL(out.blob);
+        state.prints.unshift(print);
+        state.selected = print.id;
+        made.push(print);
+        el.shot.dataset.id = "";
+        el.shot.classList.add("fresh");
+        el.live.textContent = "Print finished";
+        if (hooks.onPrint) hooks.onPrint(print);
+      }
+    } catch (e) {
+      const offline = e instanceof TypeError;
+      notice(offline ? "Lost the connection to the image server. Check that thunk ui is still running, then try again." : e.message);
+    } finally {
+      state.running = false;
+      state.dev = null;
+      state.jobId = null;
+      state.onTick = null;
+      renderAll();
+    }
+    return made;
+  }
+
+  async function generate() {
+    if (state.running) return;
+    const job = plan();
+    if (!job) return;
+    notice("");
+    saveForm();
+    await runRound(job);
+  }
+
+  // starting image
+  async function setInitFromBlob(blob, name, printId) {
+    let bmp;
+    try {
+      bmp = await createImageBitmap(blob);
+    } catch (e) {
+      notice("The browser could not read that file as an image.");
+      return;
+    }
+    const prev = state.init;
+    if (prev && prev.url) URL.revokeObjectURL(prev.url);
+    state.init = { blob, name, printId: printId || null, url: URL.createObjectURL(blob), width: bmp.width, height: bmp.height };
+    bmp.close();
+    notice("");
+    renderDesk();
+  }
+
+  function clearInit() {
+    if (state.init && state.init.url) URL.revokeObjectURL(state.init.url);
+    state.init = null;
+    renderDesk();
+  }
+
+  async function takeFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      notice("That file is not an image.");
+      return;
+    }
+    await setInitFromBlob(file, file.name, null);
+    if (state.init) fitSize(state.init.width, state.init.height);
+    saveForm();
+  }
+
+  // loop actions
+  function unlock() {
+    state.lock = null;
+    saveForm();
+    renderAll();
+  }
+
+  async function refine(p, strength) {
+    if (!p) return;
+    unlock();
+    await setInitFromBlob(p.blob, "", p.id);
+    if (!state.init) return;
+    el.prompt.value = p.base || p.prompt;
+    setSize(p.width, p.height);
+    if (strength != null) el.strength.value = strength;
+    el.seed.value = "";
+    saveForm();
+    renderDesk();
+    el.prompt.focus();
+  }
+
+  function lockPrint(p) {
+    if (!p) return;
+    state.lock = { base: p.base || p.prompt, seed: p.seed, width: p.width, height: p.height, steps: p.steps, source: p.id };
+    el.cue.value = "";
+    saveForm();
+    renderAll();
+    el.cue.focus();
+  }
+
+  // ---- branding: write a prompt, make a round, mark what works, write the next prompt, repeat
+  const LLM = `${location.protocol}//${location.hostname}:${Number(location.port || 80) + 1}`;
+  const PROJECT_KEY = "thunk.project";
+  const START_KEY = "thunk.brandstart";
+  const MARKS = ["face", "body", "background", "style", "colours", "layout"];
+  const SHAPE_NAMES = { square: "Square", portrait: "Portrait", landscape: "Landscape", wide: "Wide" };
+  // style words that came out of the rounds that worked, appended verbatim when picked
+  const STARTERS = {
+    none: ["No starter", ""],
+    character: ["Character portrait", "gritty brushwork, bold black ink outlines, cross hatching, gritty digital painting, highly detailed, no text, no frame"],
+    scene: ["Dark scene", "very dark and high contrast, black dominant, bold black ink outlines, cross hatching, highly detailed, no frame"],
+    logo: ["Flat logo", "flat vector logo emblem, bold thick clean outlines, solid flat colors only, no gradients, no shading, no texture, no text, esports mascot logo, sticker design"]
+  };
+
+  const SYSTEM_DRAFT = [
+    "You write prompts for a text-to-image model (Z-Image Turbo) from a plain description.",
+    "",
+    "Rules:",
+    "1. Keep every subject, count, action, name, colour and piece of text the user gave. Do not drop or change them.",
+    "2. Add concrete detail for composition, light, materials, colour scheme and depth. Be objective and concrete, with no metaphors, no emotional rhetoric and no meta tags such as 8K or masterpiece.",
+    "3. Only put text in double quotes if it is meant to appear as written text in the image.",
+    "4. If style words are given, end the prompt with them, verbatim.",
+    "",
+    "Output only the prompt and nothing else."
+  ].join("\n");
+
+  const SYSTEM_REVISE = [
+    "You write the next prompt for a text-to-image model (Z-Image Turbo). You are given the previous prompt, the user's feedback on the batch it produced, and sometimes the prints the user marked.",
+    "",
+    "Rules:",
+    "1. Keep everything the feedback does not change: subject, count, action, state, names, colours and any text. Do not drop details of the character or the setting unless the feedback asks for it.",
+    "2. Apply the feedback exactly. If the user wants something removed, remove it.",
+    "3. Colour feedback is global. If a colour is too strong or should go, remove every mention of it everywhere in the prompt (lights, text on screens, splashes, backgrounds) and say what replaces it. If the image should be mostly one colour, write that as the dominant colour of the scene and say which light sources supply the other colours.",
+    "4. Do not add objects or details that are not in the previous prompt, the feedback or the marked prints.",
+    "5. Be objective and concrete. No metaphors, no emotional rhetoric, no meta tags such as 8K or masterpiece.",
+    "6. Only put text in double quotes if it is meant to appear as written text in the image.",
+    "7. When the user marks a feature of an attached print, look at the image and describe that feature in words in the prompt. Take only the marked features from that print and keep the previous prompt for everything else."
+  ].join("\n");
+
+  const EXTRACT_SYSTEM = "From the user's feedback on an image, list the words or short phrases they want gone from the image prompt: colours, objects, styles. Put a word in \"remove\" when they want it gone, say it is too much, or say it does not belong (for example: too purple, get rid of the green, no more clutter, does not make sense). Put a word in \"reduce\" only when they ask for less or fewer of it but still want some (for example: much less cyan, fewer monitors). Return only the bare word or short phrase as it would appear in a prompt (purple, not too purple), never the user's own wording. Do not list things the user likes or wants to keep.";
+  const strings = { type: "array", items: { type: "string" } };
+  const EXTRACT_SCHEMA = { type: "object", properties: { remove: strings, reduce: strings }, required: ["remove", "reduce"], additionalProperties: false };
+  const REVISE_SCHEMA = {
+    type: "object",
+    properties: {
+      seen: { type: "array", items: { type: "object", properties: { print: { type: "integer" }, features: { type: "string" } }, required: ["print", "features"], additionalProperties: false } },
+      prompt: { type: "string" }
+    },
+    required: ["seen", "prompt"],
+    additionalProperties: false
+  };
+
+  let project = null;
+  let startDraft = { request: "", starter: "none", shape: "square", count: 5 };
+  let rewriter = "unknown";
+  let rewriterTimer = null;
+  let working = null;
+  let workTimer = null;
+
+  const h = (tag, props = {}, ...kids) => {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(props)) {
+      if (k === "class") e.className = v;
+      else if (k === "on") for (const [ev, fn] of Object.entries(v)) e.addEventListener(ev, fn);
+      else if (k in e) e[k] = v;
+      else e.setAttribute(k, v);
+    }
+    e.append(...kids.flat().filter((x) => x != null && x !== false));
+    return e;
+  };
+  const labeled = (text, control) => h("label", { class: "lab" }, text, control);
+  const select = (opts, value, onChange) => h("select", { class: "rc-select", on: { change: (ev) => onChange(ev.target.value) } },
+    ...opts.map(([v, label]) => h("option", { value: v, selected: v === value }, label)));
+  const shapeOptions = () => Object.keys(SHAPES).map((k) => [k, `${SHAPE_NAMES[k]} ${SHAPES[k][0]} by ${SHAPES[k][1]}`]);
+  const countOptions = () => [1, 2, 3, 4, 5, 6].map((n) => [String(n), String(n)]);
+
+  function saveProject() {
+    try { localStorage.setItem(PROJECT_KEY, JSON.stringify(project)); } catch (e) { /* storage off */ }
+  }
+
+  function saveStart() {
+    try { localStorage.setItem(START_KEY, JSON.stringify(startDraft)); } catch (e) { /* storage off */ }
+  }
+
+  function printsOfRound(r) {
+    return state.prints.filter((p) => roundOf(p) === r.id).sort((a, b) => a.created - b.created);
+  }
+
+  function newRound(n, prompt, from) {
+    return {
+      id: `r${Date.now()}`, n, prompt, status: "draft", shape: from.shape, count: from.count, base: from.base || null,
+      strength: from.strength || 0.75, notes: "", marks: {}, wrong: {}, useImages: true, written: null
+    };
+  }
+
+  // the rewriter, a CPU llama.cpp server one port above the page
+  async function checkRewriter() {
+    let s = "down";
+    try {
+      const r = await fetch(`${LLM}/health`);
+      s = r.ok ? "ready" : r.status === 503 ? "loading" : "down";
+    } catch (e) { s = "down"; }
+    rewriter = s;
+    clearTimeout(rewriterTimer);
+    if (s === "loading") rewriterTimer = setTimeout(checkRewriter, 3000);
+    renderBrand();
+    return s;
+  }
+
+  // the model takes about a minute to load, so wait for it instead of quietly skipping the rewriter
+  async function waitForRewriter() {
+    await checkRewriter();
+    while (rewriter === "loading" && working && !working.abort.signal.aborted) {
+      setWork("The rewriter is still loading its model");
+      await new Promise((r) => setTimeout(r, 2000));
+      await checkRewriter();
+    }
+    return rewriter;
+  }
+
+  async function llm(messages, { schema = null, maxTokens = 700 } = {}) {
+    const body = { messages, temperature: 0, max_tokens: maxTokens, chat_template_kwargs: { enable_thinking: false } };
+    if (schema) body.response_format = { type: "json_schema", json_schema: { name: "out", schema, strict: true } };
+    const res = await fetch(`${LLM}/v1/chat/completions`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+      signal: working && working.abort ? working.abort.signal : undefined
+    });
+    if (!res.ok) throw new Error(`The rewriter answered ${res.status}.`);
+    return (await res.json()).choices[0].message.content;
+  }
+
+  async function smallJpeg(blob, max) {
+    const bmp = await createImageBitmap(blob);
+    const k = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bmp.width * k);
+    canvas.height = Math.round(bmp.height * k);
+    canvas.getContext("2d").drawImage(bmp, 0, 0, canvas.width, canvas.height);
+    bmp.close();
+    return canvas.toDataURL("image/jpeg", 0.85);
+  }
+
+  function renderWork() {
+    const n = document.getElementById("rc-work");
+    if (n && working) n.textContent = `${working.text}. ${Math.round((Date.now() - working.t0) / 1000)} s`;
+  }
+
+  function startWork(text) {
+    working = { t0: Date.now(), text, abort: new AbortController() };
+    clearInterval(workTimer);
+    workTimer = setInterval(renderWork, 1000);
+    renderBrand();
+  }
+
+  function setWork(text) {
+    if (working) { working.text = text; renderWork(); }
+  }
+
+  function stopWork() {
+    clearInterval(workTimer);
+    working = null;
+  }
+
+  async function writeDraft(request, starter) {
+    const words = STARTERS[starter][1];
+    const user = `Description:\n${request}` + (words ? `\n\nStyle words to end the prompt with, verbatim:\n${words}` : "");
+    return Rewrite.clean(await llm([{ role: "system", content: SYSTEM_DRAFT }, { role: "user", content: user }]));
+  }
+
+  async function repairWords(prompt, found) {
+    const terms = [...new Set(found.map((f) => f.term))];
+    const where = found.map((f) => `- "${f.term}" in: ${f.snippet}`).join("\n");
+    const user = `This image prompt must not contain these words: ${terms.join(", ")}.\nThey still appear here:\n${where}\n\n` +
+      "Rewrite ONLY those parts. Delete the word. If it is one item in a list, delete just that item. If the whole phrase is only about it, delete the phrase. " +
+      "Do not substitute another colour or object, and never repeat a word next to itself. Change nothing else.\n\n" +
+      `Prompt:\n${prompt}\n\nOutput only the corrected prompt.`;
+    return Rewrite.dedupe(Rewrite.clean(await llm([{ role: "system", content: "You make small exact edits to image prompts. Output only the prompt." }, { role: "user", content: user }])));
+  }
+
+  // rule edits first, the model only for what the rules cannot fix, and never when it would rewrite too much
+  async function checkAndRepair(prev, text, remove, reduce) {
+    let next = text;
+    for (const term of remove) if (Rewrite.hits(next, [term]).length) next = Rewrite.ruleRepair(next, term);
+    for (let i = 0; i < 2; i++) {
+      const found = Rewrite.hits(next, remove);
+      if (!found.length) break;
+      setWork("Taking out words you wanted gone");
+      const fixed = await repairWords(next, found);
+      if (Rewrite.wordDiff(next, fixed).fraction > 0.35) break;
+      next = fixed;
+    }
+    const diff = Rewrite.wordDiff(prev, next);
+    return {
+      prompt: next, changes: diff.hunks, fraction: diff.fraction, remove, reduce,
+      leftovers: [...new Set(Rewrite.hits(next, remove).map((x) => x.term))],
+      notReduced: reduce.filter((t) => Rewrite.count(next, t) >= Rewrite.count(prev, t) && Rewrite.count(prev, t) > 0)
+    };
+  }
+
+  async function writeNext(r) {
+    const prev = r.prompt.trim();
+    const prints = printsOfRound(r);
+    const liked = [];
+    prints.forEach((p, i) => { const tags = r.marks[p.id] || []; if (tags.length) liked.push({ n: i + 1, p, tags }); });
+    const wrong = prints.map((p, i) => ({ n: i + 1, p })).filter((x) => r.wrong[x.p.id]);
+    const withImages = r.useImages ? liked : [];
+    const notes = r.notes.trim();
+
+    let remove = [];
+    let reduce = [];
+    if (notes) {
+      setWork("Working out what to remove");
+      const out = JSON.parse(await llm([{ role: "system", content: EXTRACT_SYSTEM }, { role: "user", content: notes }], { schema: EXTRACT_SCHEMA, maxTokens: 200 }));
+      const pick = (list) => list.map((t) => t.trim().toLowerCase()).filter(Boolean);
+      reduce = Rewrite.normalize(pick(out.reduce), prev);
+      remove = Rewrite.normalize(pick(out.remove), prev).filter((t) => !reduce.includes(t));
+    }
+
+    setWork(withImages.length ? `Reading print ${withImages.map((m) => m.n).join(" and ")} and writing the prompt` : "Writing the prompt");
+    const lines = [];
+    withImages.forEach((m, k) => lines.push(`Attached image ${k + 1} is print ${m.n}: the user likes its ${m.tags.join(", ")}.`));
+    liked.filter((m) => !withImages.includes(m)).forEach((m) => lines.push(`Print ${m.n}: the user likes its ${m.tags.join(", ")} (not attached).`));
+    wrong.forEach((m) => lines.push(`Print ${m.n} is marked as wrong. Avoid what it shows.`));
+    const text = [
+      `Previous prompt:\n${prev}`,
+      `The batch had ${prints.length} prints.${lines.length ? "\n" + lines.join("\n") : ""}`,
+      `Notes from the user:\n${notes || "(none)"}`,
+      'Return JSON with "seen" (one entry for each attached print: what you can see of the features the user marked) and "prompt" (the next prompt).'
+    ].join("\n\n");
+    const parts = [{ type: "text", text }];
+    for (const m of withImages) parts.push({ type: "image_url", image_url: { url: await smallJpeg(m.p.blob, 640) } });
+    const raw = await llm([{ role: "system", content: SYSTEM_REVISE }, { role: "user", content: parts }], { schema: REVISE_SCHEMA, maxTokens: 900 });
+    let parsed;
+    try { parsed = JSON.parse(raw); } catch (e) { parsed = { seen: [], prompt: raw }; }
+
+    const result = await checkAndRepair(prev, Rewrite.clean(parsed.prompt), remove, reduce);
+    result.seen = parsed.seen.filter((s) => s.features.trim());
+    return result;
+  }
+
+  function advance(r, result) {
+    r.status = "review";
+    const next = newRound(r.n + 1, result ? result.prompt : r.prompt, r);
+    if (result) next.written = { seen: result.seen, changes: result.changes, leftovers: result.leftovers, notReduced: result.notReduced, remove: result.remove, from: r.prompt };
+    project.rounds.push(next);
+    saveProject();
+    renderBrand();
+    const cards = $("rounds").children;
+    if (cards.length) cards[cards.length - 1].scrollIntoView({ block: "start", behavior: "smooth" });
+  }
+
+  async function reviseBrandRound(r) {
+    if (state.running || working || !printsOfRound(r).length) return;
+    notice("");
+    r.status = "revising";
+    saveProject();
+    startWork("Checking the rewriter");
+    await waitForRewriter();
+    if (rewriter !== "ready") {
+      stopWork();
+      notice(`The rewriter is ${rewriter === "loading" ? "still loading" : "not running"}, so the prompt carries over unchanged. Edit it below.`);
+      advance(r, null);
+      return;
+    }
+    try {
+      const result = await writeNext(r);
+      stopWork();
+      advance(r, result);
+    } catch (e) {
+      stopWork();
+      r.status = "review";
+      saveProject();
+      notice(e.name === "AbortError" ? "Stopped. Your marks and notes are kept." : `The rewriter failed: ${e.message}`);
+      renderBrand();
+    }
+  }
+
+  async function fixLeftovers(r) {
+    const w = r.written;
+    if (!w || working) return;
+    startWork("Taking out words you wanted gone");
+    try {
+      const found = Rewrite.hits(r.prompt, w.remove);
+      if (found.length) {
+        const fixed = await repairWords(r.prompt, found);
+        if (Rewrite.wordDiff(r.prompt, fixed).fraction <= 0.35) r.prompt = fixed;
+      }
+      const diff = Rewrite.wordDiff(w.from, r.prompt);
+      w.changes = diff.hunks;
+      w.leftovers = [...new Set(Rewrite.hits(r.prompt, w.remove).map((x) => x.term))];
+    } catch (e) {
+      notice(e.name === "AbortError" ? "Stopped." : `The rewriter failed: ${e.message}`);
+    }
+    stopWork();
+    saveProject();
+    renderBrand();
+  }
+
+  async function startProject() {
+    const d = startDraft;
+    const request = d.request.trim();
+    if (!request) { notice("Describe what you want first."); return; }
+    notice("");
+    project = { id: `p${Date.now()}`, created: Date.now(), request, final: null, rounds: [] };
+    const r = newRound(1, "", d);
+    const words = STARTERS[d.starter][1];
+    r.prompt = request + (words ? `, ${words}` : "");
+    project.rounds.push(r);
+    r.status = "writing";
+    saveProject();
+    startWork("Writing the prompt");
+    await waitForRewriter();
+    if (rewriter === "ready") {
+      try {
+        r.prompt = await writeDraft(request, d.starter);
+      } catch (e) {
+        notice(e.name === "AbortError" ? "Stopped. The prompt is your description." : `The rewriter failed: ${e.message}`);
+      }
+    }
+    stopWork();
+    r.status = "draft";
+    saveProject();
+    renderBrand();
+  }
+
+  function brandTick(dev) {
+    const t = document.getElementById("rc-prog-text");
+    const img = document.getElementById("rc-prog-img");
+    if (t) t.textContent = `Image ${dev.index} of ${dev.count}. ${dev.step ? `Step ${dev.step} of ${dev.total}.` : "Preparing."} ${dev.elapsed} s`;
+    if (img && dev.preview) img.src = dev.preview;
+  }
+
+  async function generateBrandRound(r) {
+    if (state.running) return;
+    const prompt = r.prompt.trim();
+    if (!prompt) { notice("Write a prompt first."); return; }
+    notice("");
+    const [width, height] = SHAPES[r.shape];
+    const base = r.base ? printById(r.base) : null;
+    r.status = "generating";
+    saveProject();
+    renderBrand();
+    await runRound({
+      prompt, base: prompt, cue: "", width, height, steps: 8, count: r.count, first: randomSeed(), round: r.id,
+      init: base ? { blob: base.blob, name: "", printId: base.id } : null, strength: base ? r.strength : null
+    }, { onTick: brandTick, onPrint: () => renderBrand() });
+    r.status = printsOfRound(r).length ? "review" : "draft";
+    saveProject();
+    renderBrand();
+  }
+
+  function toggleMark(r, p, m) {
+    const tags = r.marks[p.id] || [];
+    r.marks[p.id] = tags.includes(m) ? tags.filter((t) => t !== m) : [...tags, m];
+    if (r.marks[p.id].length) delete r.wrong[p.id];
+    saveProject();
+    renderBrand();
+  }
+
+  function toggleWrong(r, p) {
+    if (r.wrong[p.id]) delete r.wrong[p.id];
+    else { r.wrong[p.id] = true; r.marks[p.id] = []; }
+    saveProject();
+    renderBrand();
+  }
+
+  function toggleBase(r, p) {
+    r.base = r.base === p.id ? null : p.id;
+    saveProject();
+    renderBrand();
+  }
+
+  function finalize(p) {
+    project.final = p.id;
+    saveProject();
+    renderBrand();
+    $("rounds").lastElementChild.scrollIntoView({ block: "start", behavior: "smooth" });
+  }
+
+  function printCell(r, p, i, interactive) {
+    const tags = r.marks[p.id] || [];
+    const kids = [h("a", { class: "bp-img", href: p.url, target: "_blank", rel: "noopener", title: "Open full size" },
+      h("img", { src: p.url, alt: `Print ${i + 1}: ${p.prompt}` }), h("span", { class: "badge" }, String(i + 1)))];
+    if (interactive) {
+      kids.push(h("div", { class: "bp-chips", role: "group", "aria-label": `Print ${i + 1}: what you like` },
+        ...MARKS.map((m) => h("button", { type: "button", class: "mk", "aria-pressed": String(tags.includes(m)), on: { click: () => toggleMark(r, p, m) } }, m)),
+        h("button", { type: "button", class: "mk", "data-kind": "wrong", "aria-pressed": String(!!r.wrong[p.id]), on: { click: () => toggleWrong(r, p) } }, "wrong")));
+      kids.push(h("div", { class: "bp-chips" },
+        h("button", { type: "button", class: "mk", "aria-pressed": String(r.base === p.id), on: { click: () => toggleBase(r, p) } }, "use as starting image")));
+      kids.push(h("button", { type: "button", class: "act", on: { click: () => finalize(p) } }, "This is the one"));
+    }
+    return h("li", { class: "bp" }, ...kids);
+  }
+
+  function strengthRow(r) {
+    const out = h("output", {}, r.strength.toFixed(2));
+    return labeled("How much to change the starting image", h("div", { class: "rc-row" },
+      h("input", { type: "range", min: "0.1", max: "1", step: "0.05", value: String(r.strength), on: { input: (ev) => { r.strength = Number(ev.target.value); out.textContent = r.strength.toFixed(2); saveProject(); } } }), out,
+      h("span", { class: "hint" }, "If a colour or object change does not show, raise this. Near the top it repaints the pose too.")));
+  }
+
+  function writtenBlocks(r) {
+    const w = r.written;
+    if (!w) return [];
+    const blocks = [];
+    if (w.seen && w.seen.length) {
+      blocks.push(h("div", { class: "rc-block" }, h("h4", {}, "What it saw in the prints you marked"),
+        h("ul", {}, ...w.seen.map((s) => h("li", {}, `Print ${s.print}: ${s.features}`)))));
+    }
+    if (w.changes) {
+      blocks.push(h("div", { class: "rc-block" }, h("h4", {}, w.changes.length ? "Changed from the last prompt" : "The prompt did not change"),
+        w.changes.length ? h("ul", {}, ...w.changes.slice(0, 14).map((c) => h("li", {}, h("del", {}, c.removed || "(nothing)"), " becomes ", h("ins", {}, c.added || "(removed)")))) : null,
+        w.changes.length > 14 ? h("span", {}, `and ${w.changes.length - 14} more`) : null));
+    }
+    if (w.leftovers && w.leftovers.length) {
+      blocks.push(h("p", { class: "rc-warn" }, `Still contains: ${w.leftovers.join(", ")}.`,
+        h("button", { type: "button", class: "act", on: { click: () => fixLeftovers(r) } }, "Try to take it out"),
+        h("button", { type: "button", class: "act", on: { click: () => { w.leftovers = []; saveProject(); renderBrand(); } } }, "Keep it")));
+    }
+    if (w.notReduced && w.notReduced.length) {
+      blocks.push(h("p", { class: "rc-warn" }, `You asked for less of ${w.notReduced.join(", ")}, and the prompt did not reduce it. Edit it below if you want it lower.`));
+    }
+    return blocks;
+  }
+
+  function workCard(r) {
+    return h("li", { class: "rc" }, h("h3", {}, `Round ${r.n}`),
+      h("p", { id: "rc-work" }, working ? `${working.text}. ${Math.round((Date.now() - working.t0) / 1000)} s` : "Working"),
+      h("div", { class: "rc-row" }, h("button", { type: "button", class: "act", on: { click: () => working && working.abort.abort() } }, "Stop")));
+  }
+
+  const goLabel = (r) => `Generate ${r.count} ${r.count === 1 ? "image" : "images"}`;
+
+  function draftCard(r) {
+    const go = h("button", { type: "button", class: "rc-go", disabled: state.running, on: { click: () => generateBrandRound(r) } }, goLabel(r));
+    const prevRound = project.rounds[project.rounds.indexOf(r) - 1];
+    const base = r.base ? printById(r.base) : null;
+    const baseIndex = base && prevRound ? printsOfRound(prevRound).indexOf(base) + 1 : 0;
+    return h("li", { class: "rc" }, h("h3", {}, `Round ${r.n}`),
+      ...writtenBlocks(r),
+      labeled("Prompt (edit anything)", h("textarea", { class: "rc-text", rows: 6, value: r.prompt, on: { input: (ev) => { r.prompt = ev.target.value; saveProject(); } } })),
+      base
+        ? h("div", { class: "rc-row" }, h("span", {}, `Starting image: print ${baseIndex || "from an earlier round"}.`), strengthRow(r),
+          h("button", { type: "button", class: "act", on: { click: () => { r.base = null; saveProject(); renderBrand(); } } }, "Make it text only"))
+        : h("p", { class: "hint" }, r.n > 1 ? "No starting image: this round is made from the prompt alone." : "Text only."),
+      h("div", { class: "rc-row" },
+        labeled("Size", select(shapeOptions(), r.shape, (v) => { r.shape = v; saveProject(); })),
+        labeled("Images in this round", select(countOptions(), String(r.count), (v) => { r.count = Number(v); go.textContent = goLabel(r); saveProject(); })),
+        go));
+  }
+
+  function generatingCard(r) {
+    const ps = printsOfRound(r);
+    return h("li", { class: "rc" }, h("h3", {}, `Round ${r.n}`),
+      h("div", { class: "rc-prog" }, h("img", { id: "rc-prog-img", alt: "The print as it develops" }), h("p", { id: "rc-prog-text" }, "Preparing.")),
+      ps.length ? h("ol", { class: "bprints" }, ...ps.map((p, i) => printCell(r, p, i, false))) : null,
+      h("div", { class: "rc-row" }, h("button", { type: "button", class: "rc-go", "data-mode": "stop", on: { click: () => { state.stop = true; renderBrand(); } } }, state.stop ? "Stopping after this image" : "Stop after this image")));
+  }
+
+  function reviewCard(r) {
+    const ps = printsOfRound(r);
+    const anyMarked = Object.values(r.marks).some((t) => t.length) || Object.keys(r.wrong).length || r.notes.trim();
+    const liked = Object.values(r.marks).some((t) => t.length);
+    return h("li", { class: "rc" }, h("h3", {}, `Round ${r.n}`),
+      h("p", { class: "rc-past-prompt", title: r.prompt }, r.prompt),
+      h("ol", { class: "bprints" }, ...ps.map((p, i) => printCell(r, p, i, true))),
+      r.base ? strengthRow(r) : null,
+      labeled("What should change? Say it in your words", h("textarea", { class: "rc-text", rows: 3, value: r.notes, placeholder: "The face from print 3, the background from print 5. Less purple. Only one monitor.", on: { input: (ev) => { r.notes = ev.target.value; saveProject(); } } })),
+      liked ? h("label", { class: "rc-check" }, h("input", { type: "checkbox", checked: r.useImages, on: { change: (ev) => { r.useImages = ev.target.checked; saveProject(); } } }), "Let it look at the prints you marked. This adds about a minute.") : null,
+      h("div", { class: "rc-row" },
+        rewriter !== "down"
+          ? h("button", { type: "button", class: "rc-go", disabled: !anyMarked, on: { click: () => reviseBrandRound(r) } }, "Write the next prompt")
+          : h("button", { type: "button", class: "rc-go", on: { click: () => advance(r, null) } }, "Next round, I will edit the prompt"),
+        !anyMarked && rewriter !== "down" ? h("span", { class: "hint" }, "Mark a print or write a note first.") : null));
+  }
+
+  function pastCard(r) {
+    const ps = printsOfRound(r);
+    return h("li", { class: "rc", "data-past": "true" }, h("h3", {}, `Round ${r.n}`),
+      h("p", { class: "rc-past-prompt", title: r.prompt }, r.prompt),
+      h("div", { class: "rc-thumbs" }, ...ps.map((p, i) => h("a", { href: p.url, target: "_blank", rel: "noopener", title: `Print ${i + 1}` }, h("img", { src: p.url, alt: `Print ${i + 1}` })))));
+  }
+
+  function roundCard(r, last) {
+    if (!last) return pastCard(r);
+    if (r.status === "writing" || r.status === "revising") return workCard(r);
+    if (r.status === "generating") return generatingCard(r);
+    if (r.status === "review") return reviewCard(r);
+    return draftCard(r);
+  }
+
+  function startCard() {
+    const d = startDraft;
+    return h("li", { class: "rc" }, h("h3", {}, "What do you want to make?"),
+      h("textarea", { class: "rc-text", rows: 4, value: d.request, placeholder: "A hooded figure with cat ears at a desk in a dark room, green terminal glow", on: { input: (ev) => { d.request = ev.target.value; saveStart(); } } }),
+      h("div", { class: "rc-row" },
+        labeled("Style starter", select(Object.entries(STARTERS).map(([k, v]) => [k, v[0]]), d.starter, (v) => { d.starter = v; saveStart(); })),
+        labeled("Size", select(shapeOptions(), d.shape, (v) => { d.shape = v; saveStart(); })),
+        labeled("Images per round", select(countOptions(), String(d.count), (v) => { d.count = Number(v); saveStart(); })),
+        h("button", { type: "button", class: "rc-go", on: { click: startProject } }, "Write the prompt")));
+  }
+
+  function finalCard() {
+    const p = printById(project.final);
+    if (!p) return h("li", { class: "rc" }, h("p", {}, "The print you picked was deleted."));
+    return h("li", { class: "rc" }, h("div", { class: "fin" }, h("h3", {}, "This is the one"),
+      h("img", { src: p.url, alt: p.prompt }),
+      h("p", { class: "rc-past-prompt", title: p.prompt }, p.prompt),
+      h("p", { class: "meta" }, `Seed ${p.seed}, ${p.width} by ${p.height}, ${p.steps} steps`),
+      h("div", { class: "acts" },
+        h("a", { class: "act", href: p.url, download: fileName(p) }, "Download"),
+        h("button", { type: "button", class: "act", on: { click: () => { showView("prints"); lockPrint(p); } } }, "Make variations: lock it and change one cue"),
+        h("button", { type: "button", class: "act", on: { click: () => { project.final = null; saveProject(); renderBrand(); } } }, "Keep refining"))));
+  }
+
+  function renderBrand() {
+    const list = document.getElementById("rounds");
+    if (!list) return;
+    $("brand-new").hidden = !project;
+    const rs = $("rstate");
+    const msg = {
+      loading: "The rewriter is still loading its model, about a minute. You can generate in the meantime.",
+      down: location.hostname === "127.0.0.1"
+        ? "The rewriter is not running, so you write each prompt yourself. To turn it on, run thunk models fetch rewriter, then restart thunk ui."
+        : `The browser only lets this page reach the rewriter from http://127.0.0.1:${location.port}. Open the page at that address.`
+    }[rewriter];
+    rs.hidden = !msg;
+    rs.textContent = msg || "";
+    rs.dataset.state = rewriter;
+    const items = [];
+    if (!project) items.push(startCard());
+    else {
+      project.rounds.forEach((r, i) => items.push(roundCard(r, i === project.rounds.length - 1 && !project.final)));
+      if (project.final) items.push(finalCard());
+    }
+    list.replaceChildren(...items);
+  }
+
+  function initBrand() {
+    try { project = JSON.parse(localStorage.getItem(PROJECT_KEY) || "null"); } catch (e) { project = null; }
+    try { Object.assign(startDraft, JSON.parse(localStorage.getItem(START_KEY) || "{}")); } catch (e) { /* keep the defaults */ }
+    if (project) {
+      for (const r of project.rounds) {
+        if (r.status === "generating") r.status = printsOfRound(r).length ? "review" : "draft";
+        if (r.status === "revising") r.status = "review";
+        if (r.status === "writing") r.status = "draft";
+      }
+    }
+    let armed = null;
+    $("brand-new").addEventListener("click", () => {
+      const b = $("brand-new");
+      if (!armed) {
+        b.textContent = "Start over? Click again";
+        armed = setTimeout(() => { armed = null; b.textContent = "New project"; }, 3500);
+        return;
+      }
+      clearTimeout(armed);
+      armed = null;
+      b.textContent = "New project";
+      project = null;
+      try { localStorage.removeItem(PROJECT_KEY); } catch (e) { /* storage off */ }
+      renderBrand();
+    });
+    renderBrand();
+  }
+
+  function showView(name) {
+    const brand = name === "brand";
+    el.viewPrints.hidden = brand;
+    el.viewBrand.hidden = !brand;
+    document.querySelector(".wrap").dataset.view = brand ? "brand" : "prints";
+    el.tabPrints.setAttribute("aria-selected", String(!brand));
+    el.tabBrand.setAttribute("aria-selected", String(brand));
+    if (brand) { renderBrand(); checkRewriter(); }
+  }
+
+  // actions
+  function wire() {
+    el.desk.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      if (state.running) {
+        if (waiting() > 0) { state.stop = true; renderGo(); }
+        return;
+      }
+      generate();
+    });
+
+    el.prompt.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter" && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); el.desk.requestSubmit(); }
+    });
+    el.cue.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") { ev.preventDefault(); el.desk.requestSubmit(); }
+    });
+
+    document.addEventListener("keydown", (ev) => {
+      if (ev.ctrlKey || ev.metaKey || ev.altKey || !/^[1-9]$/.test(ev.key)) return;
+      const t = ev.target;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (state.running || el.viewPrints.hidden) return;
+      const mates = roundPrints(selectedPrint());
+      const pick = mates[Number(ev.key) - 1];
+      if (pick) { state.selected = pick.id; renderAll(); }
+    });
+
+    el.desk.addEventListener("change", saveForm);
+    el.prompt.addEventListener("input", saveForm);
+    el.cue.addEventListener("input", saveForm);
+    el.shot.addEventListener("animationend", () => el.shot.classList.remove("fresh"));
+
+    for (const r of document.querySelectorAll('input[name="shape"]')) {
+      r.addEventListener("change", () => {
+        const [w, h] = SHAPES[r.value];
+        el.width.value = w;
+        el.height.value = h;
+      });
+    }
+    for (const f of [el.width, el.height]) {
+      f.addEventListener("change", () => { f.value = snap(Number(f.value) || 768); syncShape(); saveForm(); renderDesk(); });
+    }
+    for (const r of document.querySelectorAll('input[name="shape"]')) r.addEventListener("change", renderDesk);
+
+    el.strength.addEventListener("input", () => { el.strengthOut.textContent = Number(el.strength.value).toFixed(2); saveForm(); });
+    el.file.addEventListener("change", () => { takeFile(el.file.files[0]); el.file.value = ""; });
+    el.initClear.addEventListener("click", () => { clearInit(); saveForm(); });
+    for (const t of ["dragenter", "dragover"]) {
+      el.drop.addEventListener(t, (ev) => { ev.preventDefault(); el.drop.dataset.over = "true"; });
+    }
+    for (const t of ["dragleave", "drop"]) {
+      el.drop.addEventListener(t, () => { el.drop.dataset.over = "false"; });
+    }
+    el.drop.addEventListener("drop", (ev) => {
+      ev.preventDefault();
+      takeFile(ev.dataTransfer.files[0]);
+    });
+
+    el.unlock.addEventListener("click", unlock);
+    el.refine.addEventListener("click", () => refine(selectedPrint()));
+    el.lock.addEventListener("click", () => lockPrint(selectedPrint()));
+
+    el.tabPrints.addEventListener("click", () => showView("prints"));
+    el.tabBrand.addEventListener("click", () => showView("brand"));
+
+    el.reuse.addEventListener("click", () => {
+      const p = selectedPrint();
+      if (!p) return;
+      unlock();
+      el.prompt.value = p.base || p.prompt;
+      saveForm();
+      el.prompt.focus();
+    });
+
+    el.same.addEventListener("click", () => {
+      const p = selectedPrint();
+      if (!p) return;
+      unlock();
+      el.seed.value = p.seed;
+      el.steps.value = p.steps;
+      setSize(p.width, p.height);
+      el.prompt.value = p.base || p.prompt;
+      document.querySelector(".more").open = true;
+      saveForm();
+      renderAll();
+      el.go.focus();
+    });
+
+    el.del.addEventListener("click", async () => {
+      const p = selectedPrint();
+      if (!p) return;
+      if (el.del.dataset.armed !== "true") {
+        el.del.dataset.armed = "true";
+        el.del.textContent = "Delete for good";
+        setTimeout(() => { el.del.dataset.armed = "false"; el.del.textContent = "Delete"; }, 3500);
+        return;
+      }
+      await dbDo("readwrite", (s) => s.delete(p.id)).catch(() => {});
+      URL.revokeObjectURL(p.url);
+      const i = state.prints.indexOf(p);
+      state.prints.splice(i, 1);
+      state.selected = state.prints.length ? state.prints[Math.min(i, state.prints.length - 1)].id : null;
+      el.shot.dataset.id = "";
+      renderAll();
+    });
+  }
+
+  function buildChips() {
+    el.chips.replaceChildren(...EXAMPLES.map((text) => {
+      const li = document.createElement("li");
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = text;
+      b.addEventListener("click", () => { el.prompt.value = text; saveForm(); el.prompt.focus(); });
+      li.append(b);
+      return li;
+    }));
+  }
+
+  async function checkServer() {
+    try {
+      const res = await fetch(`${API}/capabilities`);
+      if (!res.ok) throw new Error();
+      const caps = await res.json();
+      el.model.textContent = caps.model && caps.model.stem ? caps.model.stem : "";
+      if (!(caps.supported_modes || []).includes("img_gen")) notice("The loaded model cannot make images.");
+    } catch (e) {
+      notice("Can't reach the image server. Start it with thunk ui, then reload this page.");
+    }
+  }
+
+  // the page was called vyraj first, so a first load copies its saved settings across and leaves the old ones in place
+  function copyOldSettings() {
+    for (const k of ["form", "project", "brandstart"]) {
+      try {
+        const old = localStorage.getItem(`vyraj.${k}`);
+        if (old != null && localStorage.getItem(`thunk.${k}`) == null) localStorage.setItem(`thunk.${k}`, old);
+      } catch (e) { /* storage off */ }
+    }
+  }
+
+  // the same for the prints, only while the new store is still empty so a later load never copies twice
+  async function copyOldPrints() {
+    if (!indexedDB.databases) return;
+    const has = (await indexedDB.databases()).some((d) => d.name === "vyraj");
+    if (!has || ((await dbDo("readonly", (s) => s.count())) || 0) > 0) return;
+    const old = await new Promise((resolve, reject) => {
+      const req = indexedDB.open("vyraj");
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    try {
+      if (!old.objectStoreNames.contains("prints")) return;
+      const rows = await new Promise((resolve, reject) => {
+        const g = old.transaction("prints").objectStore("prints").getAll();
+        g.onsuccess = () => resolve(g.result);
+        g.onerror = () => reject(g.error);
+      });
+      for (const row of rows) await dbDo("readwrite", (s) => s.put(row));
+    } finally {
+      old.close();
+    }
+  }
+
+  async function boot() {
+    copyOldSettings();
+    loadForm();
+    syncShape();
+    buildChips();
+    wire();
+    renderAll();
+    checkServer();
+    try {
+      state.db = await openDb();
+      await copyOldPrints().catch(() => {});
+      const all = (await dbDo("readonly", (s) => s.getAll())) || [];
+      all.sort((a, b) => b.created - a.created);
+      state.prints = all.map((p) => Object.assign(p, { url: URL.createObjectURL(p.blob) }));
+      state.selected = state.prints.length ? state.prints[0].id : null;
+      renderAll();
+    } catch (e) {
+      notice("This browser will not keep prints between visits. You can still generate and download them.");
+    }
+    initBrand();
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>
