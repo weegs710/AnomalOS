@@ -113,12 +113,12 @@ let
     map (u: run u.key (u.desc or u.unit) (svcStatus u.unit)) systemUnits
     ++ map (u: run u.key (u.desc or u.unit) (svcUserStatus u.unit)) userUnits;
 
-  # hardcoded to match noctalia's Eldritch palette -- update these hex if the colorscheme changes
+  # hardcoded to match noctalia's Triglavian palette -- update these hex if the colorscheme changes
   commonSettings = {
     font = "JetBrainsMono Nerd Font 12";
-    background = "#212337e6";
-    color = "#ebfafa";
-    border = "#37f499";
+    background = "#000000e6";
+    color = "#e8ecf1";
+    border = "#ff2a22";
     separator = " ➜ ";
     border_width = 2;
     corner_r = 8;

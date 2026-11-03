@@ -49,6 +49,10 @@ in
       "${zedIcons}/bin/zed-icons"
     ] (builtins.readFile ./zed-icons.toml);
     xdg.config.files."noctalia/templates/zed-icon-colors.json".source = ./templates/zed-icon-colors.json;
+    xdg.config.files."noctalia/claude-code.toml".source = ./claude-code.toml;
+    xdg.config.files."noctalia/templates/claude-code.json".source = ./templates/claude-code.json;
+    xdg.config.files."noctalia/discord.toml".source = ./discord.toml;
+    xdg.config.files."noctalia/templates/discord-material.css".source = ./templates/discord-material.css;
 
     # qt6ct ships no config; without an icon theme Qt resolves named icons to the missing-icon checker
     xdg.config.files."qt6ct/qt6ct.conf".source = ./qt6ct.conf;

@@ -3,7 +3,7 @@
 #![enable(unwrap_variant_newtypes)]
 (
     address: "/home/@USER@/.config/mpd/socket",
-    theme: "eldritch",
+    theme: "triglavian",
     volume_step: 5,
     max_fps: 30,
     scrolloff: 5,

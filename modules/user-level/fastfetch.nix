@@ -20,18 +20,38 @@ let
         }
       },
       "display": {
+        "color": {
+          "keys": "38;2;255;42;34",
+          "title": "38;2;198;204;213",
+          "output": "38;2;232;236;241",
+          "separator": "38;2;198;204;213"
+        },
+        "percent": {
+          "color": {
+            "green": "38;2;198;204;213",
+            "yellow": "38;2;255;132;128",
+            "red": "38;2;255;42;34"
+          }
+        },
         "separator": " 󰔰 "
       },
       "modules": [
         {
-          "type": "title"
+          "type": "title",
+          "color": {
+            "user": "38;2;255;42;34",
+            "at": "38;2;153;102;102",
+            "host": "38;2;198;204;213"
+          }
         },
         {
-          "type": "separator"
+          "type": "separator",
+          "outputColor": "38;2;153;61;63"
         },
         {
           "type": "custom",
-          "format": "SYSTEM"
+          "format": "SYSTEM",
+          "outputColor": "38;2;238;241;244"
         },
         {
           "type": "os",
@@ -58,7 +78,8 @@ let
         },
         {
           "type": "custom",
-          "format": "HARDWARE"
+          "format": "HARDWARE",
+          "outputColor": "38;2;238;241;244"
         },
         {
           "type": "cpu",
@@ -75,7 +96,8 @@ let
         },
         {
           "type": "custom",
-          "format": "DESKTOP"
+          "format": "DESKTOP",
+          "outputColor": "38;2;238;241;244"
         },
         {
           "type": "wm",
@@ -95,7 +117,8 @@ let
         },
         {
           "type": "custom",
-          "format": "MEDIA"
+          "format": "MEDIA",
+          "outputColor": "38;2;238;241;244"
         },
         {
           "type": "display",

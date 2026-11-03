@@ -5,7 +5,7 @@
     "themeLinks": [],
     "eagerPatches": false,
     "enabledThemes": [
-        "noctalia.theme.css"
+        "noctalia-material.theme.css"
     ],
     "enableReactDevtools": false,
     "frameless": false,

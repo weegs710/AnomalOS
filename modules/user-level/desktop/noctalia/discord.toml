@@ -1,0 +1,4 @@
+# the community discord template is not enabled: it also renders for six other discord clients and flatpak paths that are not installed
+[theme.templates.user.discord_material]
+input_path  = "$XDG_CONFIG_HOME/noctalia/templates/discord-material.css"
+output_path = "$XDG_CONFIG_HOME/vesktop/themes/noctalia-material.theme.css"

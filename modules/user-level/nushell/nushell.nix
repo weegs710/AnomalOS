@@ -34,17 +34,20 @@ let
   '';
 
   colors = {
-    base00 = "000000";
-    base02 = "2d5b58";
-    base04 = "80638e";
-    base05 = "e8f6f5";
-    base07 = "21d6c9";
-    base08 = "ff6b9d";
-    base0C = "80638e";
-    base0D = "5ec4bc";
+    base00 = "060404";
+    base02 = "3d414b";
+    base04 = "996666";
+    base05 = "e8ecf1";
+    base07 = "ff2a22";
+    base08 = "a01018";
+    base0C = "7b8494";
+    base0D = "e8ecf1";
+    base0F = "c6ccd5";
+    # time_format runs through Go's time layout: the digits 1-5 and 06 in a hex color are replaced by the clock, so base04 and base0E avoid them
+    base0E = "c6ccd6";
   };
 
-  # kept as a nix attrset, not an extracted json: the eldritch palette interpolates from the shared `colors` set above instead of being hardcoded hex
+  # kept as a nix attrset, not an extracted json: the triglavian palette interpolates from the shared `colors` set above instead of being hardcoded hex
   ompConfig = builtins.toJSON {
     "$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json";
     "version" = 2;
@@ -97,13 +100,13 @@ let
             "type" = "git";
             "style" = "powerline";
             "powerline_symbol" = "";
-            "background" = "#6cc644";
+            "background" = "#${colors.base0F}";
             "foreground" = "#${colors.base00}";
             "background_templates" = [
-              "{{ if or (.Working.Changed) (.Staging.Changed) }}#FFEB3B{{ end }}"
-              "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#FFCC80{{ end }}"
-              "{{ if gt .Ahead 0 }}#B388FF{{ end }}"
-              "{{ if gt .Behind 0 }}#B388FB{{ end }}"
+              "{{ if or (.Working.Changed) (.Staging.Changed) }}#${colors.base07}{{ end }}"
+              "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#ff8480{{ end }}"
+              "{{ if gt .Ahead 0 }}#e8ecf1{{ end }}"
+              "{{ if gt .Behind 0 }}#a9b4c9{{ end }}"
             ];
             "properties" = {
               "branch_icon" = " ";
@@ -113,16 +116,16 @@ let
               "disable_with_jj" = true;
             };
             "template" =
-              " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#${colors.base05}>  {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} ";
+              " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}<#${colors.base00}>  {{ .Staging.String }}</>{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }} ";
           }
           {
             "type" = "jujutsu";
             "style" = "powerline";
             "powerline_symbol" = "";
-            "background" = "#6cc644";
+            "background" = "#${colors.base0F}";
             "foreground" = "#${colors.base00}";
             "background_templates" = [
-              "{{ if .Working.Changed }}#FFEB3B{{ end }}"
+              "{{ if .Working.Changed }}#${colors.base07}{{ end }}"
             ];
             "properties" = {
               "fetch_status" = true;
@@ -142,10 +145,10 @@ let
             "type" = "status";
             "style" = "diamond";
             "leading_diamond" = "";
-            "background" = "#6cc644";
+            "background" = "#${colors.base0F}";
             "foreground" = "#${colors.base00}";
             "background_templates" = [
-              "{{ if gt .Code 0 }}#f85149{{ end }}"
+              "{{ if gt .Code 0 }}#c5141e{{ end }}"
             ];
             "foreground_templates" = [
               "{{ if gt .Code 0 }}#${colors.base05}{{ end }}"
@@ -179,7 +182,7 @@ let
           {
             "type" = "text";
             "style" = "plain";
-            "foreground" = "#${colors.base05}";
+            "foreground" = "#${colors.base07}";
             "template" = "╭─";
           }
 
@@ -189,7 +192,7 @@ let
             "foreground" = "#${colors.base04}";
             "properties" = {
               "time_format" =
-                "<#${colors.base0C}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base0C}> 2 Jan, Monday</> <#${colors.base04}>|</>";
+                "<#${colors.base0E}> 15:04:05</> <#${colors.base04}>|</> <#${colors.base0E}> 2 Jan, Monday</> <#${colors.base04}>|</>";
             };
             "template" = "{{ .CurrentDate | date .Format }}";
           }
@@ -219,14 +222,14 @@ let
           {
             "type" = "text";
             "style" = "plain";
-            "foreground" = "#${colors.base05}";
+            "foreground" = "#${colors.base07}";
             "template" = "╰─";
           }
 
           {
             "type" = "status";
             "style" = "plain";
-            "foreground" = "#${colors.base05}";
+            "foreground" = "#${colors.base07}";
             "properties" = {
               "always_enabled" = true;
             };
@@ -238,12 +241,12 @@ let
     "osc99" = true;
     "transient_prompt" = {
       "background" = "transparent";
-      "foreground" = "#${colors.base05}";
+      "foreground" = "#${colors.base07}";
       "template" = " ";
     };
     "secondary_prompt" = {
       "background" = "transparent";
-      "foreground" = "#${colors.base05}";
+      "foreground" = "#${colors.base07}";
       "template" = "╰─❯ ";
     };
   };

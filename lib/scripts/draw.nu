@@ -39,43 +39,43 @@ def gpu-clean [line: string] {
 
 def ov-header [nixos_ver: string linux_ver: string] {
     [
-        $"<text x=\"50\" y=\"90\" font-size=\"42\" fill=\"#e6f2ec\" font-weight=\"700\">anomalOS</text>"
-        "<rect x=\"290\" y=\"70\" rx=\"6\" width=\"72\" height=\"22\" fill=\"#3dffb0\" opacity=\"0.15\" stroke=\"#3dffb0\" stroke-width=\"0.5\"/>"
-        "<text x=\"326\" y=\"85\" font-size=\"10\" fill=\"#3dffb0\" font-weight=\"600\" text-anchor=\"middle\">OVERVIEW</text>"
-        $"<text x=\"50\" y=\"120\" font-size=\"15\" fill=\"#93b3ab\">NixOS ($nixos_ver)  ·  Linux ($linux_ver)</text>"
+        $"<text x=\"50\" y=\"90\" font-size=\"42\" fill=\"#e8ecf1\" font-weight=\"700\">anomalOS</text>"
+        "<rect x=\"290\" y=\"70\" rx=\"6\" width=\"72\" height=\"22\" fill=\"#ff2a22\" opacity=\"0.15\" stroke=\"#ff2a22\" stroke-width=\"0.5\"/>"
+        "<text x=\"326\" y=\"85\" font-size=\"10\" fill=\"#ff2a22\" font-weight=\"600\" text-anchor=\"middle\">OVERVIEW</text>"
+        $"<text x=\"50\" y=\"120\" font-size=\"15\" fill=\"#aeb3bd\">NixOS ($nixos_ver)  ·  Linux ($linux_ver)</text>"
     ]
 }
 
 def ov-top-card [x: int color: string label: string name: string ver: string] {
     [
-        $"<rect x=\"($x)\" y=\"185\" rx=\"8\" width=\"196\" height=\"62\" fill=\"#151c24\" stroke=\"#517269\" stroke-width=\"1\"/>"
+        $"<rect x=\"($x)\" y=\"185\" rx=\"8\" width=\"196\" height=\"62\" fill=\"#160b0d\" stroke=\"#7a1f26\" stroke-width=\"1\"/>"
         $"<rect x=\"($x + 8)\" y=\"193\" rx=\"2\" width=\"4\" height=\"46\" fill=\"($color)\"/>"
-        $"<text x=\"($x + 16)\" y=\"203\" font-size=\"10\" fill=\"#517269\" font-weight=\"600\" letter-spacing=\"1\">($label)</text>"
-        $"<text x=\"($x + 16)\" y=\"221\" font-size=\"15\" fill=\"#e6f2ec\" font-weight=\"600\">($name)</text>"
-        $"<text x=\"($x + 16)\" y=\"237\" font-size=\"10\" fill=\"($color)\" opacity=\"0.6\">($ver)</text>"
+        $"<text x=\"($x + 16)\" y=\"203\" font-size=\"10\" fill=\"#aeb3bd\" font-weight=\"600\" letter-spacing=\"1\">($label)</text>"
+        $"<text x=\"($x + 16)\" y=\"221\" font-size=\"15\" fill=\"#e8ecf1\" font-weight=\"600\">($name)</text>"
+        $"<text x=\"($x + 16)\" y=\"237\" font-size=\"10\" fill=\"($color)\" opacity=\"1\">($ver)</text>"
     ]
 }
 
 def ov-section-box [x: int y: int w: int h: int color: string label: string] {
     [
-        $"<rect x=\"($x)\" y=\"($y)\" rx=\"12\" width=\"($w)\" height=\"($h)\" fill=\"#151c24\" stroke=\"#517269\" stroke-width=\"1\"/>"
+        $"<rect x=\"($x)\" y=\"($y)\" rx=\"12\" width=\"($w)\" height=\"($h)\" fill=\"#160b0d\" stroke=\"#7a1f26\" stroke-width=\"1\"/>"
         $"<rect x=\"($x + 8)\" y=\"($y + 14)\" rx=\"2\" width=\"4\" height=\"($h - 28)\" fill=\"($color)\"/>"
         $"<text x=\"($x + 18)\" y=\"($y + 28)\" font-size=\"13\" fill=\"($color)\" font-weight=\"700\" letter-spacing=\"1\">($label)</text>"
-        $"<line x1=\"($x + 14)\" y1=\"($y + 38)\" x2=\"($x + $w - 14)\" y2=\"($y + 38)\" stroke=\"#517269\" stroke-width=\"1\"/>"
+        $"<line x1=\"($x + 14)\" y1=\"($y + 38)\" x2=\"($x + $w - 14)\" y2=\"($y + 38)\" stroke=\"#7a1f26\" stroke-width=\"1\"/>"
     ]
 }
 
 def ov-kv [x: int y: int lx: int label: string value: string] {
     [
-        $"<text x=\"($x)\" y=\"($y)\" font-size=\"12\" fill=\"#93b3ab\">($label)</text>"
-        $"<text x=\"($lx)\" y=\"($y)\" font-size=\"12\" fill=\"#e6f2ec\">($value)</text>"
+        $"<text x=\"($x)\" y=\"($y)\" font-size=\"12\" fill=\"#aeb3bd\">($label)</text>"
+        $"<text x=\"($lx)\" y=\"($y)\" font-size=\"12\" fill=\"#e8ecf1\">($value)</text>"
     ]
 }
 
 def ov-hardware [x: int y: int hw: record] {
     let lx = $x + 150
     [
-        ...(ov-section-box $x $y 340 240 "#ff7ea3" "HARDWARE"),
+        ...(ov-section-box $x $y 340 240 "#a9b4c9" "HARDWARE"),
         ...(ov-kv ($x + 20) ($y + 57)  $lx "CPU"     (svg-escape $hw.cpu)),
         ...(ov-kv ($x + 20) ($y + 77)  $lx "Memory"  (svg-escape $hw.mem)),
         ...(ov-kv ($x + 20) ($y + 97)  $lx "GPU"     (svg-escape $hw.gpu)),
@@ -88,22 +88,22 @@ def ov-fs [x: int y: int] {
     let pool_x    = $x + 20
     let dataset_x = $x + 36
     [
-        ...(ov-section-box $x $y 340 240 "#c8f5b8" "FS"),
-        $"<text x=\"($pool_x)\" y=\"($y + 57)\"  font-size=\"12\" fill=\"#e6f2ec\" font-weight=\"600\">zroot</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 75)\"  font-size=\"11\" fill=\"#93b3ab\">persist</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 91)\"  font-size=\"11\" fill=\"#93b3ab\">nix</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 107)\" font-size=\"11\" fill=\"#93b3ab\">tmp</text>"
-        $"<text x=\"($pool_x)\" y=\"($y + 127)\" font-size=\"12\" fill=\"#e6f2ec\" font-weight=\"600\">zgames</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 145)\" font-size=\"11\" fill=\"#93b3ab\">games/roms</text>"
-        $"<text x=\"($pool_x)\" y=\"($y + 165)\" font-size=\"12\" fill=\"#e6f2ec\" font-weight=\"600\">tmpfs</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 181)\" font-size=\"11\" fill=\"#93b3ab\">/  ·  256M</text>"
+        ...(ov-section-box $x $y 340 240 "#eef1f4" "FS"),
+        $"<text x=\"($pool_x)\" y=\"($y + 57)\"  font-size=\"12\" fill=\"#e8ecf1\" font-weight=\"600\">zroot</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 75)\"  font-size=\"11\" fill=\"#aeb3bd\">persist</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 91)\"  font-size=\"11\" fill=\"#aeb3bd\">nix</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 107)\" font-size=\"11\" fill=\"#aeb3bd\">tmp</text>"
+        $"<text x=\"($pool_x)\" y=\"($y + 127)\" font-size=\"12\" fill=\"#e8ecf1\" font-weight=\"600\">zgames</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 145)\" font-size=\"11\" fill=\"#aeb3bd\">games/roms</text>"
+        $"<text x=\"($pool_x)\" y=\"($y + 165)\" font-size=\"12\" fill=\"#e8ecf1\" font-weight=\"600\">tmpfs</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 181)\" font-size=\"11\" fill=\"#aeb3bd\">/  ·  256M</text>"
     ]
 }
 
 def ov-system [x: int y: int sys: record] {
     let lx = $x + 150
     [
-        ...(ov-section-box $x $y 340 240 "#cb96ff" "SYSTEM"),
+        ...(ov-section-box $x $y 340 240 "#ff6b5c" "SYSTEM"),
         ...(ov-kv ($x + 20) ($y + 57)  $lx "Display Mgr"  (svg-escape $sys.dm)),
         ...(ov-kv ($x + 20) ($y + 77)  $lx "Bootloader"   (svg-escape $sys.bootloader)),
         ...(ov-kv ($x + 20) ($y + 97)  $lx "User"         (svg-escape $sys.user)),
@@ -115,7 +115,7 @@ def ov-system [x: int y: int sys: record] {
 def ov-packages [x: int y: int sys_count: int user_count: int total: int paths: int size: string] {
     let lx = $x + 150
     [
-        ...(ov-section-box $x $y 340 240 "#7cffd6" "PACKAGES"),
+        ...(ov-section-box $x $y 340 240 "#7b8494" "PACKAGES"),
         ...(ov-kv ($x + 20) ($y + 57)  $lx "System"         ($sys_count | into string)),
         ...(ov-kv ($x + 20) ($y + 77)  $lx "User"           ($user_count | into string)),
         ...(ov-kv ($x + 20) ($y + 97)  $lx "Total declared" ($total | into string)),
@@ -135,7 +135,7 @@ def ov-list-card [x: int y: int color: string label: string items: list<string>]
     let cells = ($items | enumerate | each {|it|
         let cx = $x + 20 + (((($it.index / $rows) | into int)) * $col_w)
         let cy = $y + 52 + (($it.index mod $rows) * 18)
-        $"<text x=\"($cx)\" y=\"($cy)\" font-size=\"12\" fill=\"#e6f2ec\">($arrow) ($it.item)</text>"
+        $"<text x=\"($cx)\" y=\"($cy)\" font-size=\"12\" fill=\"#e8ecf1\">($arrow) ($it.item)</text>"
     })
     [
         ...(ov-section-box $x $y 340 240 $color $label),
@@ -144,11 +144,11 @@ def ov-list-card [x: int y: int color: string label: string items: list<string>]
 }
 
 def ov-wrapped-pkgs [x: int y: int pkgs: list<string>] {
-    ov-list-card $x $y "#34e0ff" "WEEGSWARE" $pkgs
+    ov-list-card $x $y "#c6ccd5" "WEEGSWARE" $pkgs
 }
 
 def ov-gaming [x: int y: int items: list<string>] {
-    ov-list-card $x $y "#ff5d8a" "GAMING" $items
+    ov-list-card $x $y "#e5424d" "GAMING" $items
 }
 
 def generate-overview [d: record] {
@@ -162,17 +162,17 @@ def generate-overview [d: record] {
         "@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;display=swap');"
         "text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace; }"
         "</style></defs>"
-        $"<rect width=\"($w)\" height=\"($h)\" rx=\"16\" fill=\"#04060a\"/>"
+        $"<rect width=\"($w)\" height=\"($h)\" rx=\"16\" fill=\"#000000\"/>"
         "<defs><pattern id=\"grid\" width=\"30\" height=\"30\" patternUnits=\"userSpaceOnUse\">"
-        "<circle cx=\"15\" cy=\"15\" r=\"0.5\" fill=\"#517269\" opacity=\"0.2\"/>"
+        "<circle cx=\"15\" cy=\"15\" r=\"0.5\" fill=\"#7a1f26\" opacity=\"0.2\"/>"
         "</pattern></defs>"
         $"<rect width=\"($w)\" height=\"($h)\" rx=\"16\" fill=\"url\(#grid\)\"/>"
         ...(ov-header (svg-escape $d.nixos_version) (svg-escape $d.linux_version)),
-        ...(ov-top-card 70  "#3dffb0" "WM"       "Umbriel"        (svg-escape $d.umbriel_ver)),
-        ...(ov-top-card 286 "#34e0ff" "SHELL"    "nu"             (svg-escape $d.nushell_ver)),
-        ...(ov-top-card 502 "#b673ff" "TERMINAL" "kitty"          (svg-escape $d.kitty_ver)),
-        ...(ov-top-card 718 "#ff5d8a" "EDITOR"   "zed"            (svg-escape $d.zed_ver)),
-        ...(ov-top-card 934 "#6ae9ff" "UI"       "Noctalia Shell"  (svg-escape $d.noctalia_ver)),
+        ...(ov-top-card 70  "#ff2a22" "WM"       "Umbriel"        (svg-escape $d.umbriel_ver)),
+        ...(ov-top-card 286 "#c6ccd5" "SHELL"    "nu"             (svg-escape $d.nushell_ver)),
+        ...(ov-top-card 502 "#8e96a6" "TERMINAL" "kitty"          (svg-escape $d.kitty_ver)),
+        ...(ov-top-card 718 "#e5424d" "EDITOR"   "zed"            (svg-escape $d.zed_ver)),
+        ...(ov-top-card 934 "#ff9d98" "UI"       "Noctalia Shell"  (svg-escape $d.noctalia_ver)),
         ...(ov-hardware 70  255 $d.hardware),
         ...(ov-fs       430 255),
         ...(ov-system   790 255 $d.system),
@@ -195,13 +195,13 @@ def diag-defs [] {
         "@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&amp;display=swap');"
         "text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace; }"
         "</style>"
-        "<filter id=\"glow-cyan\"   x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#3dffb0\" flood-opacity=\"0.15\"/></filter>"
-        "<filter id=\"glow-purple\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#b673ff\" flood-opacity=\"0.15\"/></filter>"
-        "<filter id=\"glow-green\"  x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#34e0ff\" flood-opacity=\"0.15\"/></filter>"
-        "<filter id=\"glow-yellow\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#ff5d8a\" flood-opacity=\"0.15\"/></filter>"
-        "<filter id=\"glow-pink\"   x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#ff5d8a\" flood-opacity=\"0.15\"/></filter>"
+        "<filter id=\"glow-cyan\"   x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#ff2a22\" flood-opacity=\"0.15\"/></filter>"
+        "<filter id=\"glow-purple\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#8e96a6\" flood-opacity=\"0.15\"/></filter>"
+        "<filter id=\"glow-green\"  x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#c6ccd5\" flood-opacity=\"0.15\"/></filter>"
+        "<filter id=\"glow-yellow\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#e5424d\" flood-opacity=\"0.15\"/></filter>"
+        "<filter id=\"glow-pink\"   x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"5\" flood-color=\"#e5424d\" flood-opacity=\"0.15\"/></filter>"
         "<pattern id=\"grid\" width=\"30\" height=\"30\" patternUnits=\"userSpaceOnUse\">"
-        "<circle cx=\"15\" cy=\"15\" r=\"0.5\" fill=\"#517269\" opacity=\"0.15\"/>"
+        "<circle cx=\"15\" cy=\"15\" r=\"0.5\" fill=\"#7a1f26\" opacity=\"0.15\"/>"
         "</pattern>"
         "</defs>"
     ]
@@ -209,10 +209,10 @@ def diag-defs [] {
 
 def diag-header [nixos_ver: string total_files: int input_count: int] {
     [
-        "<text x=\"50\" y=\"85\" font-size=\"36\" fill=\"#e6f2ec\" font-weight=\"700\">anomalOS</text>"
-        "<rect x=\"270\" y=\"68\" rx=\"6\" width=\"106\" height=\"22\" fill=\"#3dffb0\" opacity=\"0.15\" stroke=\"#3dffb0\" stroke-width=\"0.5\"/>"
-        "<text x=\"323\" y=\"83\" font-size=\"10\" fill=\"#3dffb0\" font-weight=\"600\" text-anchor=\"middle\">ASSEMBLY</text>"
-        $"<text x=\"50\" y=\"112\" font-size=\"14\" fill=\"#93b3ab\">NixOS ($nixos_ver)  ·  /home/weegs/repo/public/anomalos  ·  ($total_files) files  ·  ($input_count) tack pins</text>"
+        "<text x=\"50\" y=\"85\" font-size=\"36\" fill=\"#e8ecf1\" font-weight=\"700\">anomalOS</text>"
+        "<rect x=\"270\" y=\"68\" rx=\"6\" width=\"106\" height=\"22\" fill=\"#ff2a22\" opacity=\"0.15\" stroke=\"#ff2a22\" stroke-width=\"0.5\"/>"
+        "<text x=\"323\" y=\"83\" font-size=\"10\" fill=\"#ff2a22\" font-weight=\"600\" text-anchor=\"middle\">ASSEMBLY</text>"
+        $"<text x=\"50\" y=\"112\" font-size=\"14\" fill=\"#aeb3bd\">NixOS ($nixos_ver)  ·  /home/weegs/repo/public/anomalos  ·  ($total_files) files  ·  ($input_count) tack pins</text>"
     ]
 }
 
@@ -270,14 +270,14 @@ def diag-pin-card [x: int y: int w: int h: int pin: record] {
     let badge = $pin.status_label
     let bw    = (pill-w $badge)
     [
-        $"<rect x=\"($x)\" y=\"($y)\" rx=\"9\" width=\"($w)\" height=\"($h)\" fill=\"#151c24\" stroke=\"#517269\" stroke-width=\"1.5\"/>"
+        $"<rect x=\"($x)\" y=\"($y)\" rx=\"9\" width=\"($w)\" height=\"($h)\" fill=\"#160b0d\" stroke=\"#7a1f26\" stroke-width=\"1.5\"/>"
         $"<rect x=\"($x + 4)\" y=\"($y + 9)\" rx=\"3\" width=\"4\" height=\"($h - 18)\" fill=\"($color)\"/>"
         $"<circle cx=\"($x + 22)\" cy=\"($y + 21)\" r=\"5\" fill=\"($color)\" opacity=\"0.25\"/>"
         $"<circle cx=\"($x + 22)\" cy=\"($y + 21)\" r=\"3\" fill=\"($color)\"/>"
-        $"<text x=\"($x + 36)\" y=\"($y + 25)\" font-size=\"13\" fill=\"#e6f2ec\" font-weight=\"700\">($pin.name)</text>"
-        $"<text x=\"($x + 36)\" y=\"($y + 43)\" font-size=\"9\" fill=\"#93b3ab\" opacity=\"0.6\">($pin.repo)</text>"
-        $"<rect x=\"($x + $w - $bw - 10)\" y=\"($y + 9)\" rx=\"5\" width=\"($bw)\" height=\"15\" fill=\"#517269\" opacity=\"0.22\"/>"
-        $"<text x=\"($x + $w - ($bw / 2 | into int) - 10)\" y=\"($y + 19)\" font-size=\"8\" fill=\"#a6c3ba\" font-weight=\"600\" text-anchor=\"middle\">($badge)</text>"
+        $"<text x=\"($x + 36)\" y=\"($y + 25)\" font-size=\"13\" fill=\"#e8ecf1\" font-weight=\"700\">($pin.name)</text>"
+        $"<text x=\"($x + 36)\" y=\"($y + 43)\" font-size=\"9\" fill=\"#aeb3bd\" opacity=\"0.85\">($pin.repo)</text>"
+        $"<rect x=\"($x + $w - $bw - 10)\" y=\"($y + 9)\" rx=\"5\" width=\"($bw)\" height=\"15\" fill=\"#7a1f26\" opacity=\"0.22\"/>"
+        $"<text x=\"($x + $w - ($bw / 2 | into int) - 10)\" y=\"($y + 19)\" font-size=\"8\" fill=\"#c6ccd5\" font-weight=\"600\" text-anchor=\"middle\">($badge)</text>"
     ]
 }
 
@@ -293,10 +293,10 @@ def diag-pin-block [x: int y: int w: int pins: list<record>] {
     let h       = $pad_top + ($rows * $card_h) + (($rows - 1) * $gap_y) + 18
 
     let panel = [
-        $"<rect x=\"($x)\" y=\"($y)\" rx=\"14\" width=\"($w)\" height=\"($h)\" fill=\"#0b141c\" stroke=\"#517269\" stroke-width=\"1.5\"/>"
-        $"<text x=\"($x + 24)\" y=\"($y + 30)\" font-size=\"14\" fill=\"#e6f2ec\" font-weight=\"700\" letter-spacing=\"2\">TACK PINS</text>"
-        $"<text x=\"($x + $w - 24)\" y=\"($y + 30)\" font-size=\"11\" fill=\"#93b3ab\" opacity=\"0.6\" text-anchor=\"end\">.tack/pins.toml</text>"
-        $"<line x1=\"($x + 22)\" y1=\"($y + 40)\" x2=\"($x + $w - 22)\" y2=\"($y + 40)\" stroke=\"#243f4c\" stroke-width=\"1\"/>"
+        $"<rect x=\"($x)\" y=\"($y)\" rx=\"14\" width=\"($w)\" height=\"($h)\" fill=\"#0b0506\" stroke=\"#7a1f26\" stroke-width=\"1.5\"/>"
+        $"<text x=\"($x + 24)\" y=\"($y + 30)\" font-size=\"14\" fill=\"#e8ecf1\" font-weight=\"700\" letter-spacing=\"2\">TACK PINS</text>"
+        $"<text x=\"($x + $w - 24)\" y=\"($y + 30)\" font-size=\"11\" fill=\"#aeb3bd\" opacity=\"0.85\" text-anchor=\"end\">.tack/pins.toml</text>"
+        $"<line x1=\"($x + 22)\" y1=\"($y + 40)\" x2=\"($x + $w - 22)\" y2=\"($y + 40)\" stroke=\"#3d414b\" stroke-width=\"1\"/>"
     ]
 
     let cards = ($pins | enumerate | each {|it|
@@ -331,11 +331,11 @@ def diag-dir-card [x: int y: int w: int title: string path: string files: list<r
     let h      = $head_h + ($n * 22) + 14
 
     let card = ([
-        $"<rect x=\"($x)\" y=\"($y)\" rx=\"10\" width=\"($w)\" height=\"($h)\" fill=\"#151c24\" stroke=\"#517269\" stroke-width=\"1.5\"/>"
+        $"<rect x=\"($x)\" y=\"($y)\" rx=\"10\" width=\"($w)\" height=\"($h)\" fill=\"#160b0d\" stroke=\"#7a1f26\" stroke-width=\"1.5\"/>"
         $"<rect x=\"($x + 4)\" y=\"($y + 8)\" rx=\"3\" width=\"4\" height=\"($h - 16)\" fill=\"($accent)\"/>"
-        $"<text x=\"($x + 18)\" y=\"($y + 21)\" font-size=\"14\" fill=\"#e6f2ec\" font-weight=\"700\">($title)</text>"
+        $"<text x=\"($x + 18)\" y=\"($y + 21)\" font-size=\"14\" fill=\"#e8ecf1\" font-weight=\"700\">($title)</text>"
         ($sub_lines | enumerate | each {|it|
-            $"<text x=\"($x + 18)\" y=\"($y + 37 + ($it.index * 14))\" font-size=\"10\" fill=\"($accent)\" opacity=\"0.85\">($it.item)</text>"
+            $"<text x=\"($x + 18)\" y=\"($y + 37 + ($it.index * 14))\" font-size=\"10\" fill=\"($accent)\" opacity=\"1\">($it.item)</text>"
         })
     ] | flatten)
 
@@ -344,7 +344,7 @@ def diag-dir-card [x: int y: int w: int title: string path: string files: list<r
         let iy       = $y + $head_h + 16 + ($it.index * 22)
         let file_key = $"($path)/($f.key)"
         let consumed = ($file_inputs | get -o $file_key | default [])
-        let dot        = $"<text x=\"($x + 18)\" y=\"($iy)\" font-size=\"9\" fill=\"($accent)\" opacity=\"0.6\">●</text><text x=\"($x + 32)\" y=\"($iy)\" font-size=\"13\" fill=\"#c3d0cb\">($f.label)</text>"
+        let dot        = $"<text x=\"($x + 18)\" y=\"($iy)\" font-size=\"9\" fill=\"($accent)\" opacity=\"0.9\">●</text><text x=\"($x + 32)\" y=\"($iy)\" font-size=\"13\" fill=\"#c6ccd5\">($f.label)</text>"
         if ($consumed | is-empty) {
             [$dot]
         } else {
@@ -353,11 +353,11 @@ def diag-dir-card [x: int y: int w: int title: string path: string files: list<r
             for inp in ($consumed | reverse) {
                 let tw    = ((($inp | str length) * 5.6 + 16) | math round)
                 $tx       = $tx - $tw - 4
-                let hue   = ($pin_hues | get -o $inp | default "#93b3ab")
+                let hue   = ($pin_hues | get -o $inp | default "#aeb3bd")
                 let tcx   = $tx + (($tw / 2) | into int)
                 $tags = ($tags | append [
                     $"<rect x=\"($tx)\" y=\"($iy - 12)\" rx=\"4\" width=\"($tw)\" height=\"17\" fill=\"($hue)\" opacity=\"0.92\"/>"
-                    $"<text x=\"($tcx)\" y=\"($iy)\" font-size=\"9\" fill=\"#04060a\" font-weight=\"700\" text-anchor=\"middle\">($inp)</text>"
+                    $"<text x=\"($tcx)\" y=\"($iy)\" font-size=\"9\" fill=\"#000000\" font-weight=\"700\" text-anchor=\"middle\">($inp)</text>"
                 ])
             }
             [[$dot], ($tags | flatten)] | flatten
@@ -377,7 +377,7 @@ def diag-bundle-column [colx: int top_y: int w: int ncols: int label: string pat
     let grouped   = (group-dirs $files)
     let hdr_cx    = $colx + (($w / 2) | into int)
     # distinct accent per subdir so sibling cards are distinguishable
-    let dir_accents = ["#3dffb0" "#34e0ff" "#b673ff" "#ff5d8a" "#c8f5b8" "#6ae9ff" "#cb96ff" "#ff7ea3" "#7cffd6"]
+    let dir_accents = ["#ff2a22" "#c6ccd5" "#8e96a6" "#e5424d" "#eef1f4" "#ff9d98" "#ff6b5c" "#a9b4c9" "#7b8494"]
 
     # subdir names alone are ambiguous across bundles
     let cards = ([
@@ -402,9 +402,9 @@ def diag-bundle-column [colx: int top_y: int w: int ncols: int label: string pat
     let container_h = (($col_ys | math max) - $top_y)
 
     let container = [
-        $"<rect x=\"($colx)\" y=\"($top_y)\" rx=\"14\" width=\"($w)\" height=\"($container_h)\" fill=\"#0d131a\" stroke=\"#517269\" stroke-width=\"2\"/>"
-        $"<text x=\"($colx + 20)\" y=\"($top_y + 30)\" font-size=\"16\" fill=\"#e6f2ec\" font-weight=\"700\">($label)</text>"
-        $"<text x=\"($colx + 20)\" y=\"($top_y + 47)\" font-size=\"10\" fill=\"#93b3ab\">($path)  ·  ($n) ($unit)($plural)</text>"
+        $"<rect x=\"($colx)\" y=\"($top_y)\" rx=\"14\" width=\"($w)\" height=\"($container_h)\" fill=\"#0b0506\" stroke=\"#7a1f26\" stroke-width=\"2\"/>"
+        $"<text x=\"($colx + 20)\" y=\"($top_y + 30)\" font-size=\"16\" fill=\"#e8ecf1\" font-weight=\"700\">($label)</text>"
+        $"<text x=\"($colx + 20)\" y=\"($top_y + 47)\" font-size=\"10\" fill=\"#aeb3bd\">($path)  ·  ($n) ($unit)($plural)</text>"
     ]
 
     { elems: ([$container, $dir_elems] | flatten), bottom: ($top_y + $container_h), center: $hdr_cx }
@@ -425,27 +425,27 @@ def diag-legend [y: int cx: int pins: list<record> total_files: int input_count:
         let p  = $it.item
         [
             $"<rect x=\"($ix)\" y=\"($ry - 13)\" rx=\"3\" width=\"17\" height=\"17\" fill=\"($p.hue)\"/>"
-            $"<text x=\"($ix + 26)\" y=\"($ry)\" font-size=\"15\" fill=\"#e6f2ec\">($p.name)</text>"
+            $"<text x=\"($ix + 26)\" y=\"($ry)\" font-size=\"15\" fill=\"#e8ecf1\">($p.name)</text>"
         ]
     } | flatten)
 
     let rows = (((($pins | length) + $per_row - 1) / $per_row) | into int)
     [
-        $"<text x=\"($cx)\" y=\"($y)\" font-size=\"17\" fill=\"#e6f2ec\" font-weight=\"700\" letter-spacing=\"2\" text-anchor=\"middle\">COLOR KEY</text>"
-        $"<text x=\"($cx)\" y=\"($y + 24)\" font-size=\"13\" fill=\"#93b3ab\" text-anchor=\"middle\">a tag on a file wears the color of the pin it pulls in  ·  untagged files ride on plain nixpkgs</text>"
+        $"<text x=\"($cx)\" y=\"($y)\" font-size=\"17\" fill=\"#e8ecf1\" font-weight=\"700\" letter-spacing=\"2\" text-anchor=\"middle\">COLOR KEY</text>"
+        $"<text x=\"($cx)\" y=\"($y + 24)\" font-size=\"13\" fill=\"#aeb3bd\" text-anchor=\"middle\">a tag on a file wears the color of the pin it pulls in  ·  untagged files ride on plain nixpkgs</text>"
         ...$swatches,
-        $"<text x=\"($cx)\" y=\"($y + 54 + ($rows * $row_h) + 10)\" font-size=\"13\" fill=\"#93b3ab\" opacity=\"0.7\" text-anchor=\"middle\">($total_files) files  ·  ($input_count) tack pins</text>"
+        $"<text x=\"($cx)\" y=\"($y + 54 + ($rows * $row_h) + 10)\" font-size=\"13\" fill=\"#aeb3bd\" opacity=\"0.7\" text-anchor=\"middle\">($total_files) files  ·  ($input_count) tack pins</text>"
     ]
 }
 
 def diag-node [x: int y: int w: int color: string title: string sub: string] {
     [
-        $"<rect x=\"($x)\" y=\"($y)\" rx=\"12\" width=\"($w)\" height=\"54\" fill=\"#151c24\" stroke=\"#517269\" stroke-width=\"1.5\"/>"
+        $"<rect x=\"($x)\" y=\"($y)\" rx=\"12\" width=\"($w)\" height=\"54\" fill=\"#160b0d\" stroke=\"#7a1f26\" stroke-width=\"1.5\"/>"
         $"<rect x=\"($x + 4)\" y=\"($y + 9)\" rx=\"3\" width=\"4\" height=\"36\" fill=\"($color)\"/>"
         $"<circle cx=\"($x + 24)\" cy=\"($y + 22)\" r=\"5\" fill=\"($color)\" opacity=\"0.25\"/>"
         $"<circle cx=\"($x + 24)\" cy=\"($y + 22)\" r=\"3\" fill=\"($color)\"/>"
-        $"<text x=\"($x + 38)\" y=\"($y + 26)\" font-size=\"14\" fill=\"#e6f2ec\" font-weight=\"700\">($title)</text>"
-        $"<text x=\"($x + 38)\" y=\"($y + 43)\" font-size=\"10\" fill=\"($color)\" opacity=\"0.7\">($sub)</text>"
+        $"<text x=\"($x + 38)\" y=\"($y + 26)\" font-size=\"14\" fill=\"#e8ecf1\" font-weight=\"700\">($title)</text>"
+        $"<text x=\"($x + 38)\" y=\"($y + 43)\" font-size=\"10\" fill=\"($color)\" opacity=\"1\">($sub)</text>"
     ]
 }
 
@@ -467,13 +467,13 @@ def generate-diagram [d: record] {
     let assemble_y = $tack_y + 100
 
     let spine = [
-        ...(diag-node $node_x $tack_y $node_w "#3dffb0" ".tack" "pins → resolver"),
-        ...(diag-node $node_x $assemble_y $node_w "#3dffb0" "assemble.nix" "nixosSystem + packages"),
+        ...(diag-node $node_x $tack_y $node_w "#ff2a22" ".tack" "pins → resolver"),
+        ...(diag-node $node_x $assemble_y $node_w "#ff2a22" "assemble.nix" "nixosSystem + packages"),
     ]
 
     let spine_cables = [
-        (cable [{x: $node_cx, y: $pin_bottom} {x: $node_cx, y: $tack_y}] "#3dffb0" 3)
-        (cable [{x: $node_cx, y: ($tack_y + 54)} {x: $node_cx, y: $assemble_y}] "#3dffb0" 3)
+        (cable [{x: $node_cx, y: $pin_bottom} {x: $node_cx, y: $tack_y}] "#ff2a22" 3)
+        (cable [{x: $node_cx, y: ($tack_y + 54)} {x: $node_cx, y: $assemble_y}] "#ff2a22" 3)
     ]
 
     let ep_w   = 236
@@ -493,7 +493,7 @@ def generate-diagram [d: record] {
     let ep_ys    = ($ep_defs | enumerate | each {|it| $ep_top + ($it.index * ($ep_h + $ep_gap)) })
 
     let ep_nodes = ($ep_defs | enumerate | each {|it|
-        diag-node $ep_x ($ep_ys | get $it.index) $ep_w "#34e0ff" $it.item.t $it.item.s
+        diag-node $ep_x ($ep_ys | get $it.index) $ep_w "#c6ccd5" $it.item.t $it.item.s
     } | flatten)
 
     let asm_rx     = $node_x + $node_w
@@ -502,13 +502,13 @@ def generate-diagram [d: record] {
     # outer cables take the near lane to avoid crossings
     let ep_lane_xs = [($asm_rx + 34) ($asm_rx + 70) ($asm_rx + 70) ($asm_rx + 34)]
     let ep_cables = [
-        $"<text x=\"($ep_x)\" y=\"($ep_top - 14)\" font-size=\"11\" fill=\"#34e0ff\" font-weight=\"700\" letter-spacing=\"1\">ENTRYPOINTS</text>"
-        $"<text x=\"($ep_x + 108)\" y=\"($ep_top - 14)\" font-size=\"10\" fill=\"#93b3ab\">consume assemble.nix</text>"
+        $"<text x=\"($ep_x)\" y=\"($ep_top - 14)\" font-size=\"11\" fill=\"#c6ccd5\" font-weight=\"700\" letter-spacing=\"1\">ENTRYPOINTS</text>"
+        $"<text x=\"($ep_x + 108)\" y=\"($ep_top - 14)\" font-size=\"10\" fill=\"#aeb3bd\">consume assemble.nix</text>"
         ...(0..3 | each {|i|
             let sy = ($ep_exit_ys | get $i)
             let lx = ($ep_lane_xs | get $i)
             let ey = (($ep_ys | get $i) + 27)
-            (cable [{x: $asm_rx, y: $sy} {x: $lx, y: $sy} {x: $lx, y: $ey} {x: $ep_x, y: $ey}] "#34e0ff" 3)
+            (cable [{x: $asm_rx, y: $sy} {x: $lx, y: $sy} {x: $lx, y: $ey} {x: $ep_x, y: $ey}] "#c6ccd5" 3)
         })
     ]
 
@@ -541,25 +541,25 @@ def generate-diagram [d: record] {
     # shared so the exit solders cannot drift from the cables they cap
     let fan_xs = [726 742 758 774]
     let fan_cables = [
-        (cable [{x: ($fan_xs | get 0), y: $asm_by} {x: ($fan_xs | get 0), y: $lane_h}  {x: $lcx, y: $lane_h}  {x: $lcx, y: $mod_top}]   "#ff5d8a" 3)
-        (cable [{x: ($fan_xs | get 1), y: $asm_by} {x: ($fan_xs | get 1), y: $lane_ul} {x: $lcx, y: $lane_ul} {x: $lcx, y: $user_top}]  "#ff5d8a" 3)
-        (cable [{x: ($fan_xs | get 2), y: $asm_by} {x: ($fan_xs | get 2), y: $lane_sl} {x: $rcx, y: $lane_sl} {x: $rcx, y: $system_top}] "#ff5d8a" 3)
-        (cable [{x: ($fan_xs | get 3), y: $asm_by} {x: ($fan_xs | get 3), y: $lane_h}  {x: $rcx, y: $lane_h}  {x: $rcx, y: $mod_top}]   "#ff5d8a" 3)
+        (cable [{x: ($fan_xs | get 0), y: $asm_by} {x: ($fan_xs | get 0), y: $lane_h}  {x: $lcx, y: $lane_h}  {x: $lcx, y: $mod_top}]   "#e5424d" 3)
+        (cable [{x: ($fan_xs | get 1), y: $asm_by} {x: ($fan_xs | get 1), y: $lane_ul} {x: $lcx, y: $lane_ul} {x: $lcx, y: $user_top}]  "#e5424d" 3)
+        (cable [{x: ($fan_xs | get 2), y: $asm_by} {x: ($fan_xs | get 2), y: $lane_sl} {x: $rcx, y: $lane_sl} {x: $rcx, y: $system_top}] "#e5424d" 3)
+        (cable [{x: ($fan_xs | get 3), y: $asm_by} {x: ($fan_xs | get 3), y: $lane_h}  {x: $rcx, y: $lane_h}  {x: $rcx, y: $mod_top}]   "#e5424d" 3)
     ]
 
     # solder must draw after its node to land on top
     let all_solders = [
-        (solder $node_cx $pin_bottom "#3dffb0")
-        (solder $node_cx $tack_y "#3dffb0")
-        (solder $node_cx ($tack_y + 54) "#3dffb0")
-        (solder $node_cx $assemble_y "#3dffb0")
-        ...(0..3 | each {|i| (solder $asm_rx ($ep_exit_ys | get $i) "#34e0ff") })
-        ...(0..3 | each {|i| (solder $ep_x (($ep_ys | get $i) + 27) "#34e0ff") })
-        ...($fan_xs | each {|fx| (solder $fx $asm_by "#ff5d8a") })
-        (solder $lcx $mod_top "#ff5d8a")
-        (solder $lcx $user_top "#ff5d8a")
-        (solder $rcx $mod_top "#ff5d8a")
-        (solder $rcx $system_top "#ff5d8a")
+        (solder $node_cx $pin_bottom "#ff2a22")
+        (solder $node_cx $tack_y "#ff2a22")
+        (solder $node_cx ($tack_y + 54) "#ff2a22")
+        (solder $node_cx $assemble_y "#ff2a22")
+        ...(0..3 | each {|i| (solder $asm_rx ($ep_exit_ys | get $i) "#c6ccd5") })
+        ...(0..3 | each {|i| (solder $ep_x (($ep_ys | get $i) + 27) "#c6ccd5") })
+        ...($fan_xs | each {|fx| (solder $fx $asm_by "#e5424d") })
+        (solder $lcx $mod_top "#e5424d")
+        (solder $lcx $user_top "#e5424d")
+        (solder $rcx $mod_top "#e5424d")
+        (solder $rcx $system_top "#e5424d")
     ]
 
     let legend_y = $max_bottom + 60
@@ -569,7 +569,7 @@ def generate-diagram [d: record] {
     [
         $"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"($canvas_w)\" height=\"($canvas_h)\" viewBox=\"0 0 ($canvas_w) ($canvas_h)\">"
         ...(diag-defs),
-        $"<rect width=\"($canvas_w)\" height=\"($canvas_h)\" rx=\"16\" fill=\"#04060a\"/>"
+        $"<rect width=\"($canvas_w)\" height=\"($canvas_h)\" rx=\"16\" fill=\"#000000\"/>"
         $"<rect width=\"($canvas_w)\" height=\"($canvas_h)\" rx=\"16\" fill=\"url\(#grid\)\"/>"
         ...(diag-header (svg-escape $d.nixos_version) $d.total_files $d.input_count),
         ...$pb.elems,
@@ -590,7 +590,7 @@ def classify-inputs [pins: record] {
     let names          = ($inputs | columns)
     let follow_targets = ($pins.all_follow? | default {} | columns)
     # ordered so adjacent pins stay distinct
-    let hue_pool = ["#3dffb0" "#ff5d8a" "#34e0ff" "#b673ff" "#c8f5b8" "#6ae9ff" "#ff7ea3" "#cb96ff" "#7cffd6"]
+    let hue_pool = ["#ff2a22" "#e5424d" "#c6ccd5" "#8e96a6" "#eef1f4" "#ff9d98" "#a9b4c9" "#ff6b5c" "#7b8494"]
 
     $names | each {|name|
         let pin  = ($inputs | get $name)

@@ -41,7 +41,7 @@ in
       lib.replaceStrings [ "@USER@" "@LYRICS_BIN@" ] [ username "${lyricsScript}/bin/rmpc-lyrics" ]
         (builtins.readFile ./config.ron);
 
-    xdg.config.files."rmpc/themes/eldritch.ron".source = ./eldritch.ron;
+    xdg.config.files."rmpc/themes/triglavian.ron".source = ./triglavian.ron;
   };
 
   systemd.user.tmpfiles.users.${username}.rules = [
