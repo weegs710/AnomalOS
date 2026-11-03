@@ -1,4 +1,4 @@
 # replaces the community claude-code template: its diff word boxes are the bright secondary/error roles, which wash out Claude Code's syntax colors
 [theme.templates.user.claude_code]
 input_path  = "$XDG_CONFIG_HOME/noctalia/templates/claude-code.json"
-output_path = "$HOME/.claude/themes/noctalia.json"
+output_path = "~/.claude/themes/noctalia.json"
