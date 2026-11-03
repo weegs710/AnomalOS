@@ -15,6 +15,11 @@
       manualPrep = true;
       manualPkgs = true;
     };
+
+    win11Vm = {
+      isoPath = "/var/lib/libvirt/images/Win11.iso";
+      kiosk.enable = true;
+    };
   };
 
   # Pure-tack: nh reads NH_FILE instead of NH_FLAKE; NH_ATTRP is derived from the host directory name

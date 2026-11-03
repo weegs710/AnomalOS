@@ -177,4 +177,14 @@ in
       mode = "0755";
     }
   ];
+
+  # the weekly sync leaves a 66M trash-guides clone that does not belong on the 256M root tmpfs
+  preservation.preserveAt."/cache".directories = [
+    {
+      directory = "/var/lib/recyclarr";
+      user = "recyclarr";
+      group = "recyclarr";
+      mode = "0755";
+    }
+  ];
 }

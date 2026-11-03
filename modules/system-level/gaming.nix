@@ -59,6 +59,7 @@ only.gate { tags = [ "gaming" ]; }
     ".config/millennium"
     ".config/openra"
     ".local/share/Steam"
+    ".local/share/millennium"
     ".local/share/umu"
   ];
 

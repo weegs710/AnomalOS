@@ -255,6 +255,16 @@ in
   config = {
     programs.fish.enable = true;
 
+    # fish forces the runtime man cache, which copies every man page into /var/cache/man on the 256M root tmpfs
+    preservation.preserveAt."/cache".directories = [
+      {
+        directory = "/var/cache/man";
+        user = "mandb";
+        group = "mandb";
+        mode = "0755";
+      }
+    ];
+
     users.users.${config.mySystem.user.name}.packages = [
       pkgs.atuin
       pkgs.fish
