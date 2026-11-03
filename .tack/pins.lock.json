@@ -57,9 +57,9 @@
     "type": "git",
     "url": "https://codeberg.org/weegs710/nix-shop",
     "ref": "HEAD",
-    "rev": "75f61629e28966536c63ca34813c6a27c31d6cf1",
-    "narHash": "sha256-1nBlZTkj7vnUj85rb3YDonHhUv19y6Ab81qRU6Dx+F8=",
-    "lastModified": 1793568881
+    "rev": "19298824f4f97fd40491126828f41ae683f4d42f",
+    "narHash": "sha256-73u4lnkXnyxQ36yaStZzD2sAbEjJpm8GX2QQGymunAg=",
+    "lastModified": 1793690738
   },
   "nixpkgs": {
     "type": "tarball",
