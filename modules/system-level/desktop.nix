@@ -18,7 +18,7 @@ let
     url = "https://raw.githubusercontent.com/google/fonts/5174b3333331c966c38f4355d50b03ca1c1df2f9/ofl/spacegrotesk/SpaceGrotesk%5Bwght%5D.ttf";
     hash = "sha256-rK1t4fyTQ29cDx9BN3Ue8E8a6jBj5wNlNZcP/PvXn3I=";
   };
-  # nerd-font-patcher segfaults in FontForge on the variable outlines, so static weights are cut first
+  # nerd-font-patcher segfaults on the variable file, so static weights are cut first
   spaceGroteskNerd =
     pkgs.runCommand "space-grotesk-nerd-font"
       {
