@@ -63,6 +63,8 @@
     // Space Mono lacks the nom status symbols, so they fell through to the proportional emoji font
     "font_fallbacks": ["Iosevka Nerd Font Mono"],
     "font_size": 14.0,
+    // Space Mono's powerline glyphs span 1.5em, taller than the 1.3 default row, so pill caps overshoot the body
+    "line_height": { "custom": 1.5 },
   },
   "collaboration_panel": {
     "button": false,
