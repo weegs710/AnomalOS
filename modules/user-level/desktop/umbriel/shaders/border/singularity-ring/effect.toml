@@ -1,0 +1,13 @@
+[effects.preset.singularity-ring]
+kind = "border"
+shader = "shader.glsl"
+palette = true
+animated = true
+speed = 1.0
+# the shader's REACH (24) is the audio flare limit, measured from the client edge, so it has to fit in the 6px border plus this
+padding = 18
+
+[effects.preset.singularity-ring.light]
+spread = 10
+intensity = 0.4
+threshold = 0.5

@@ -4,14 +4,15 @@ files = [
   # same layout as the community shaders collection, so an effect copies across unchanged
   "shaders/window/kzzzt/effect.toml",
   "shaders/border/kzzzt-ring/effect.toml",
+  "shaders/border/singularity-ring/effect.toml",
   "shaders/animation/kzzzt-open/effect.toml",
   "shaders/animation/kzzzt-close/effect.toml",
   "shaders/animation/slide-down/effect.toml",
 ]
 
 [effects]
-window = "kzzzt"
-border = "kzzzt-ring"
+# no default window effect: the ring is paired with the kzzzt open and close animations only
+border = "singularity-ring"
 # otherwise screencopy clients are handed a second frame rendered without the effects
 in_capture = true
 # unset follows the output refresh, so the animated ring and its light redrew at 144Hz forever; 36 divides 144

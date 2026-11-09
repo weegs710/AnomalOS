@@ -27,6 +27,8 @@ in
     xdg.config.files."umbriel/shaders/window/kzzzt/shader.glsl".source = ./shaders/window/kzzzt/shader.glsl;
     xdg.config.files."umbriel/shaders/border/kzzzt-ring/effect.toml".source = ./shaders/border/kzzzt-ring/effect.toml;
     xdg.config.files."umbriel/shaders/border/kzzzt-ring/shader.glsl".source = ./shaders/border/kzzzt-ring/shader.glsl;
+    xdg.config.files."umbriel/shaders/border/singularity-ring/effect.toml".source = ./shaders/border/singularity-ring/effect.toml;
+    xdg.config.files."umbriel/shaders/border/singularity-ring/shader.glsl".source = ./shaders/border/singularity-ring/shader.glsl;
     xdg.config.files."umbriel/shaders/animation/kzzzt-open/effect.toml".source = ./shaders/animation/kzzzt-open/effect.toml;
     xdg.config.files."umbriel/shaders/animation/kzzzt-open/shader.glsl".source = ./shaders/animation/kzzzt-open/shader.glsl;
     xdg.config.files."umbriel/shaders/animation/kzzzt-close/effect.toml".source = ./shaders/animation/kzzzt-close/effect.toml;
