@@ -12,6 +12,30 @@ let
     systemctl --user stop udiskie
     sudo sh -c "export GDK_BACKEND=wayland WAYLAND_DISPLAY='$WAYLAND_DISPLAY' XDG_RUNTIME_DIR='$XDG_RUNTIME_DIR' GTK_THEME=adw-gtk3-dark XDG_CONFIG_HOME='$HOME/.config' XDG_DATA_DIRS='$XDG_DATA_DIRS'; exec ${gpartedWithTools}/bin/gparted"
   '';
+  # pinned to the google/fonts rev nixpkgs' google-fonts uses, which ships only the variable file
+  spaceGroteskVariable = pkgs.fetchurl {
+    name = "SpaceGrotesk-wght.ttf";
+    url = "https://raw.githubusercontent.com/google/fonts/5174b3333331c966c38f4355d50b03ca1c1df2f9/ofl/spacegrotesk/SpaceGrotesk%5Bwght%5D.ttf";
+    hash = "sha256-rK1t4fyTQ29cDx9BN3Ue8E8a6jBj5wNlNZcP/PvXn3I=";
+  };
+  # nerd-font-patcher segfaults in FontForge on the variable outlines, so static weights are cut first
+  spaceGroteskNerd =
+    pkgs.runCommand "space-grotesk-nerd-font"
+      {
+        nativeBuildInputs = [
+          pkgs.nerd-font-patcher
+          pkgs.python3Packages.fonttools
+        ];
+      }
+      ''
+        mkdir static
+        dest=$out/share/fonts/truetype/NerdFonts/SpaceGrotesk
+        mkdir -p $dest
+        for w in 300 400 500 700; do
+          fonttools varLib.instancer ${spaceGroteskVariable} wght=$w --update-name-table -o static/SpaceGrotesk-$w.ttf
+          nerd-font-patcher --complete --variable-width-glyphs --quiet --outputdir $dest static/SpaceGrotesk-$w.ttf
+        done
+      '';
 in
 # gated so a headless host skips the whole desktop bundle rather than pulling GUI packages it never starts
 only.gate { tags = [ "desktop" ]; }
@@ -69,7 +93,10 @@ only.gate { tags = [ "desktop" ]; }
       hack
       iosevka
     ]
-    ++ [ pkgs.noto-fonts-color-emoji ];
+    ++ [
+      pkgs.noto-fonts-color-emoji
+      spaceGroteskNerd
+    ];
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
     ".config/tutanota-desktop"

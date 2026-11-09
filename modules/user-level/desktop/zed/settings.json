@@ -47,9 +47,9 @@
   "icon_theme": "Triglavian Icons",
   "buffer_font_size": 16.0,
   "ui_font_size": 18.0,
-  "ui_font_family": "Terminess Nerd Font",
+  "ui_font_family": "SpaceGrotesk Nerd Font Propo",
   "buffer_line_height": "standard",
-  "buffer_font_family": "Terminess Nerd Font Mono",
+  "buffer_font_family": "SpaceMono Nerd Font Mono",
   "telemetry": {
     "diagnostics": false,
     "metrics": false,
@@ -59,8 +59,8 @@
     "copy_on_select": false,
     "blinking": "on",
     "cursor_shape": "bar",
-    "font_family": "Terminess Nerd Font Mono",
-    // Terminess lacks the nom status symbols, so they fell through to the proportional emoji font
+    "font_family": "SpaceMono Nerd Font Mono",
+    // Space Mono lacks the nom status symbols, so they fell through to the proportional emoji font
     "font_fallbacks": ["Iosevka Nerd Font Mono"],
     "font_size": 14.0,
   },

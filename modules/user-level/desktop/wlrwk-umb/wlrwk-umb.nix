@@ -115,7 +115,7 @@ let
 
   # hardcoded to match noctalia's Triglavian palette -- update these hex if the colorscheme changes
   commonSettings = {
-    font = "JetBrainsMono Nerd Font 12";
+    font = "SpaceGrotesk Nerd Font Propo 12";
     background = "#000000e6";
     color = "#e8ecf1";
     border = "#ff2a22";
