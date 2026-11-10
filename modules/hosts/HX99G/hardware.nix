@@ -21,8 +21,8 @@
     ];
     extraModulePackages = [ ];
     zfs.devNodes = "/dev/disk/by-partuuid";
-    # zfs_2_4 is marked broken on linux_7_3, so pinned to the newest kernel it supports.
-    kernelPackages = pkgs.linuxKernel.packages.linux_7_2;
+    # linux_7_2 is EOL and zfs_2_4 only builds on 7_3 with .tack/patches/nixpkgs; drop both once nixpkgs ships zfs 2.4.5.
+    kernelPackages = pkgs.linuxKernel.packages.linux_7_3;
     kernelParams = [ "hid_apple.fnmode=2" ];
     supportedFilesystems.zfs = true;
   };

@@ -1,0 +1,469 @@
+diff -ruN a/pkgs/os-specific/linux/zfs/2_4.nix b/pkgs/os-specific/linux/zfs/2_4.nix
+--- a/pkgs/os-specific/linux/zfs/2_4.nix
++++ b/pkgs/os-specific/linux/zfs/2_4.nix
+@@ -12,13 +12,20 @@
+   kernelModuleAttribute = "zfs_2_4";
+ 
+   kernelMinSupportedMajorMinor = "4.18";
+-  kernelMaxSupportedMajorMinor = "7.2";
++  kernelMaxSupportedMajorMinor = "7.3";
+ 
+   # this package should point to the latest release.
+   version = "2.4.4";
+ 
+   # if adding a patch here, check if it also needs to be applied to zfs_unstable
+-  extraPatches = [ ];
++  # Linux 7.3 support from Ubuntu zfs-linux 2.4.4-1ubuntu4; drop once nixpkgs ships zfs 2.4.5
++  extraPatches = [
++    ./zfs-linux-7.3-iops-create-no-flag.patch
++    ./zfs-linux-7.3-bvec-iter-bi-offset.patch
++    ./zfs-linux-cpu-feature-enabled.patch
++    ./zfs-linux-7.3-kthread-init-fs.patch
++    ./zfs-bump-Linux-Maximum-7.3.patch
++  ];
+ 
+   tests = {
+     inherit (nixosTests.zfs) series_2_4;
+diff -ruN a/pkgs/os-specific/linux/zfs/zfs-bump-Linux-Maximum-7.3.patch b/pkgs/os-specific/linux/zfs/zfs-bump-Linux-Maximum-7.3.patch
+--- a/pkgs/os-specific/linux/zfs/zfs-bump-Linux-Maximum-7.3.patch
++++ b/pkgs/os-specific/linux/zfs/zfs-bump-Linux-Maximum-7.3.patch
+@@ -0,0 +1,18 @@
++Description: bump Linux-Maximum to declare Linux 7.3 support
++ The Linux 7.3 compatibility fixes (see linux-7.3-compat.patch) are
++ present in this tree, but META still declares Linux-Maximum: 7.2, so
++ the autoconf kernel-version check refuses to build against Linux 7.3.
++ Bump the field to 7.3 to permit it.
++Forwarded: not-needed
++Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
++Index: zfs-linux-2.4.4/META
++===================================================================
++--- zfs-linux-2.4.4.orig/META
+++++ zfs-linux-2.4.4/META
++@@ -6,5 +6,5 @@ Release:       1
++ Release-Tags:  relext
++ License:       CDDL
++ Author:        OpenZFS
++-Linux-Maximum: 7.2
+++Linux-Maximum: 7.3
++ Linux-Minimum: 4.18
+diff -ruN a/pkgs/os-specific/linux/zfs/zfs-linux-7.3-bvec-iter-bi-offset.patch b/pkgs/os-specific/linux/zfs/zfs-linux-7.3-bvec-iter-bi-offset.patch
+--- a/pkgs/os-specific/linux/zfs/zfs-linux-7.3-bvec-iter-bi-offset.patch
++++ b/pkgs/os-specific/linux/zfs/zfs-linux-7.3-bvec-iter-bi-offset.patch
+@@ -0,0 +1,75 @@
++Description: Linux 7.3: bvec_iter.bi_bvec_done is now bi_offset
++ Linux 7.3 renamed bvec_iter.bi_bvec_done to bi_offset (kernel commit
++ b539aeacf8cc "block: rename bi_bvec_done"). Add a configure probe and use
++ the right field name in the block device compat layer.
++ .
++ Rebased onto 2.4.4; no functional change from the upstream commit.
++Author: Rob Norris <robn@despairlabs.com>
++Origin: upstream, https://github.com/robn/zfs/commit/dfbff5a991761c15843352616c866dabcdbf7ffd
++Forwarded: not-needed
++Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
++Index: zfs-linux-2.4.4/config/kernel-bio.m4
++===================================================================
++--- zfs-linux-2.4.4.orig/config/kernel-bio.m4
+++++ zfs-linux-2.4.4/config/kernel-bio.m4
++@@ -234,6 +234,30 @@ AC_DEFUN([ZFS_AC_KERNEL_BIO_ALLOC_4ARG],
++ 	])
++ ])
++ 
+++dnl #
+++dnl # Linux 7.3 API
+++dnl #
+++dnl # bi_iter.bi_bvec_done renamed to bi_iter.bi_offset
+++dnl #
+++AC_DEFUN([ZFS_AC_KERNEL_SRC_BVEC_ITER_OFFSET], [
+++	ZFS_LINUX_TEST_SRC([bvec_iter_offset], [
+++		#include <linux/bio.h>
+++	],[
+++		struct bvec_iter *bi = NULL;
+++		unsigned int __attribute__((unused)) offset = bi->bi_offset;
+++	])
+++])
+++
+++AC_DEFUN([ZFS_AC_KERNEL_BVEC_ITER_OFFSET], [
+++	AC_MSG_CHECKING([if bvec_iter has bi_offset])
+++	ZFS_LINUX_TEST_RESULT([bvec_iter_offset],[
+++		AC_MSG_RESULT(yes)
+++		AC_DEFINE([HAVE_BVEC_ITER_OFFSET], 1, [bvec_iter has bi_offset])
+++	],[
+++		AC_MSG_RESULT(no)
+++	])
+++])
+++
++ AC_DEFUN([ZFS_AC_KERNEL_SRC_BIO], [
++ 	ZFS_AC_KERNEL_SRC_BIO_OPS
++ 	ZFS_AC_KERNEL_SRC_BIO_SET_DEV
++@@ -243,6 +267,7 @@ AC_DEFUN([ZFS_AC_KERNEL_SRC_BIO], [
++ 	ZFS_AC_KERNEL_SRC_BDEV_SUBMIT_BIO_RETURNS_VOID
++ 	ZFS_AC_KERNEL_SRC_BIO_SET_DEV_MACRO
++ 	ZFS_AC_KERNEL_SRC_BIO_ALLOC_4ARG
+++	ZFS_AC_KERNEL_SRC_BVEC_ITER_OFFSET
++ ])
++ 
++ AC_DEFUN([ZFS_AC_KERNEL_BIO], [
++@@ -253,4 +278,5 @@ AC_DEFUN([ZFS_AC_KERNEL_BIO], [
++ 	ZFS_AC_KERNEL_BIO_BDEV_DISK
++ 	ZFS_AC_KERNEL_BDEV_SUBMIT_BIO_RETURNS_VOID
++ 	ZFS_AC_KERNEL_BIO_ALLOC_4ARG
+++	ZFS_AC_KERNEL_BVEC_ITER_OFFSET
++ ])
++Index: zfs-linux-2.4.4/include/os/linux/kernel/linux/blkdev_compat.h
++===================================================================
++--- zfs-linux-2.4.4.orig/include/os/linux/kernel/linux/blkdev_compat.h
+++++ zfs-linux-2.4.4/include/os/linux/kernel/linux/blkdev_compat.h
++@@ -104,7 +104,11 @@ blk_queue_set_read_ahead(struct request_
++ #define	BIO_BI_SECTOR(bio)	(bio)->bi_iter.bi_sector
++ #define	BIO_BI_SIZE(bio)	(bio)->bi_iter.bi_size
++ #define	BIO_BI_IDX(bio)		(bio)->bi_iter.bi_idx
+++#ifdef HAVE_BVEC_ITER_OFFSET
+++#define	BIO_BI_SKIP(bio)	(bio)->bi_iter.bi_offset
+++#else
++ #define	BIO_BI_SKIP(bio)	(bio)->bi_iter.bi_bvec_done
+++#endif
++ #define	bio_for_each_segment4(bv, bvp, b, i)	\
++ 	bio_for_each_segment((bv), (b), (i))
++ typedef struct bvec_iter bvec_iterator_t;
+diff -ruN a/pkgs/os-specific/linux/zfs/zfs-linux-7.3-iops-create-no-flag.patch b/pkgs/os-specific/linux/zfs/zfs-linux-7.3-iops-create-no-flag.patch
+--- a/pkgs/os-specific/linux/zfs/zfs-linux-7.3-iops-create-no-flag.patch
++++ b/pkgs/os-specific/linux/zfs/zfs-linux-7.3-iops-create-no-flag.patch
+@@ -0,0 +1,128 @@
++Description: Linux 7.3: inode_operations->create dropped its flag argument
++ Linux 7.3 removed the "excl" flag argument from ->create (kernel commit
++ b2f1e6301efa "Remove excl arg to ->create inode_operation"), so zpl_create()
++ no longer matches the prototype.
++ .
++ Rebased onto 2.4.4, which still carries the dedicated iops->create detection
++ in config/kernel-inode-create.m4 that upstream has since consolidated into the
++ generic idmap checks. The upstream patch adds its new probe as
++ kernel-inode-create.m4 and would collide with that file, so here the probe
++ lands in config/kernel-inode-create-no-flag.m4, and the existing
++ ZFS_AC_KERNEL_CREATE is taught to accept the no-flag variant (still defining
++ HAVE_IOPS_CREATE_IDMAP) instead of hard-erroring on 7.3.
++Author: Rob Norris <robn@despairlabs.com>
++Origin: upstream, https://github.com/robn/zfs/commit/1d2cc855e77c721fc82631e32099f235a150f0b2
++Forwarded: not-needed
++Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
++Index: zfs-linux-2.4.4/config/kernel-inode-create-no-flag.m4
++===================================================================
++--- /dev/null
+++++ zfs-linux-2.4.4/config/kernel-inode-create-no-flag.m4
++@@ -0,0 +1,33 @@
+++dnl # SPDX-License-Identifier: CDDL-1.0
+++dnl #
+++dnl # 7.3 API change.
+++dnl #
+++dnl # inode_operations->create drops flag arg. We test for the mnt_idmap
+++dnl # version without the flag arg, to avoid have to test for all the
+++dnl # idmap/userns variants back to before 5.12 (see kernel-inode-create.m4).
+++dnl #
+++AC_DEFUN([ZFS_AC_KERNEL_SRC_IOPS_CREATE_NO_FLAG], [
+++	ZFS_LINUX_TEST_SRC([iops_create_no_flag], [
+++		#include <linux/fs.h>
+++
+++		static int test_iops_create(struct mnt_idmap *idmap,
+++		    struct inode *inode, struct dentry *dentry,
+++		    umode_t mode) { return 0; }
+++
+++		static const struct inode_operations test_iops
+++		    __attribute__ ((unused)) = {
+++			.create = test_iops_create
+++		};
+++	],[])
+++])
+++
+++AC_DEFUN([ZFS_AC_KERNEL_IOPS_CREATE_NO_FLAG], [
+++	AC_MSG_CHECKING([whether iops->create() takes a flag arg])
+++	ZFS_LINUX_TEST_RESULT([iops_create_no_flag], [
+++		AC_MSG_RESULT(no)
+++		AC_DEFINE(HAVE_IOPS_CREATE_NO_FLAG_ARG, 1,
+++		    [iops->create() does not take a flag arg])
+++	],[
+++		AC_MSG_RESULT(yes)
+++	])
+++])
++Index: zfs-linux-2.4.4/config/kernel-inode-create.m4
++===================================================================
++--- zfs-linux-2.4.4.orig/config/kernel-inode-create.m4
+++++ zfs-linux-2.4.4/config/kernel-inode-create.m4
++@@ -54,6 +54,17 @@ AC_DEFUN([ZFS_AC_KERNEL_SRC_CREATE], [
++ ])
++ 
++ AC_DEFUN([ZFS_AC_KERNEL_CREATE], [
+++	dnl #
+++	dnl # 7.3 dropped the flag arg entirely, so the mnt_idmap test below
+++	dnl # (which still expects it) no longer matches. If the no-flag
+++	dnl # variant is what's present (see kernel-inode-create-no-flag.m4),
+++	dnl # struct mnt_idmap* is still the arg type in use - just without
+++	dnl # a trailing flag - so HAVE_IOPS_CREATE_IDMAP is still correct.
+++	dnl #
+++	ZFS_LINUX_TEST_RESULT([iops_create_no_flag], [
+++		AC_DEFINE(HAVE_IOPS_CREATE_IDMAP, 1,
+++		   [iops->create() takes struct mnt_idmap*])
+++	],[
++ 	AC_MSG_CHECKING([whether iops->create() takes struct mnt_idmap*])
++ 	ZFS_LINUX_TEST_RESULT([create_mnt_idmap], [
++ 		AC_MSG_RESULT(yes)
++@@ -78,4 +89,5 @@ AC_DEFUN([ZFS_AC_KERNEL_CREATE], [
++ 			])
++ 		])
++ 	])
+++	])
++ ])
++Index: zfs-linux-2.4.4/config/kernel.m4
++===================================================================
++--- zfs-linux-2.4.4.orig/config/kernel.m4
+++++ zfs-linux-2.4.4/config/kernel.m4
++@@ -63,6 +63,7 @@ AC_DEFUN([ZFS_AC_KERNEL_TEST_SRC], [
++ 	ZFS_AC_KERNEL_SRC_INODE_STATE_READ_ONCE
++ 	ZFS_AC_KERNEL_SRC_SHOW_OPTIONS
++ 	ZFS_AC_KERNEL_SRC_SHRINKER
+++	ZFS_AC_KERNEL_SRC_IOPS_CREATE_NO_FLAG
++ 	ZFS_AC_KERNEL_SRC_MKDIR
++ 	ZFS_AC_KERNEL_SRC_LOOKUP_FLAGS
++ 	ZFS_AC_KERNEL_SRC_IDMAP
++@@ -188,6 +189,7 @@ AC_DEFUN([ZFS_AC_KERNEL_TEST_RESULT], [
++ 	ZFS_AC_KERNEL_INODE_STATE_READ_ONCE
++ 	ZFS_AC_KERNEL_SHOW_OPTIONS
++ 	ZFS_AC_KERNEL_SHRINKER
+++	ZFS_AC_KERNEL_IOPS_CREATE_NO_FLAG
++ 	ZFS_AC_KERNEL_MKDIR
++ 	ZFS_AC_KERNEL_LOOKUP_FLAGS
++ 	ZFS_AC_KERNEL_IDMAP
++Index: zfs-linux-2.4.4/module/os/linux/zfs/zpl_inode.c
++===================================================================
++--- zfs-linux-2.4.4.orig/module/os/linux/zfs/zpl_inode.c
+++++ zfs-linux-2.4.4/module/os/linux/zfs/zpl_inode.c
++@@ -165,7 +165,10 @@ is_nametoolong(struct dentry *dentry)
++ }
++ 
++ static int
++-#ifdef HAVE_IOPS_CREATE_USERNS
+++#if defined(HAVE_IOPS_CREATE_NO_FLAG_ARG)
+++zpl_create(struct mnt_idmap *user_ns, struct inode *dir,
+++    struct dentry *dentry, umode_t mode)
+++#elif defined(HAVE_IOPS_CREATE_USERNS)
++ zpl_create(struct user_namespace *user_ns, struct inode *dir,
++     struct dentry *dentry, umode_t mode, bool flag)
++ #elif defined(HAVE_IOPS_CREATE_IDMAP)
++@@ -180,7 +183,8 @@ zpl_create(struct inode *dir, struct den
++ 	vattr_t *vap;
++ 	int error;
++ 	fstrans_cookie_t cookie;
++-#if !(defined(HAVE_IOPS_CREATE_USERNS) || defined(HAVE_IOPS_CREATE_IDMAP))
+++#if !(defined(HAVE_IOPS_CREATE_USERNS) || defined(HAVE_IOPS_CREATE_IDMAP) || \
+++	defined(HAVE_IOPS_CREATE_NO_FLAG_ARG))
++ 	zidmap_t *user_ns = kcred->user_ns;
++ #endif
++ 
+diff -ruN a/pkgs/os-specific/linux/zfs/zfs-linux-7.3-kthread-init-fs.patch b/pkgs/os-specific/linux/zfs/zfs-linux-7.3-kthread-init-fs.patch
+--- a/pkgs/os-specific/linux/zfs/zfs-linux-7.3-kthread-init-fs.patch
++++ b/pkgs/os-specific/linux/zfs/zfs-linux-7.3-kthread-init-fs.patch
+@@ -0,0 +1,113 @@
++Description: Linux 7.3: make host filesystem available to kernel threads
++ Linux 7.3 starts all kthreads in an unrooted nullfs, so path lookups made
++ from ZFS taskq workers and SPL threads (vdev_disk_open(), vdev_file_open(),
++ zvol_os_is_zvol(), ...) fail with ENOENT and pool creation/import breaks.
++ .
++ Backport of the upstream fix: wrap every SPL taskq task and every thread
++ started through thread_create() in scoped_with_init_fs(). spl.ko is
++ MODULE_LICENSE("GPL"), so it may use the GPL-only userspace_init_fs, and
++ that fs_struct follows init through switch_root, so lookups resolve against
++ the real root even when the module was loaded from the initramfs of a ZFS
++ root system.
++ .
++ This replaces linux-7.3-kthread-nullfs.patch, whose root captured at module
++ load time was the initramfs root on ZFS-root installs, breaking the creation
++ and import of any further pool (LP: #2168581).
++Author: Rob Norris <rob.norris@truenas.com>
++Origin: upstream, https://github.com/openzfs/zfs/commit/cd3699d308e1b37dcdd0d5a9a8c3624deb5fc3e9
++Bug: https://github.com/openzfs/zfs/issues/19082
++Bug-Ubuntu: https://bugs.launchpad.net/bugs/2168581
++Applied-Upstream: master, commit cd3699d308e1b37dcdd0d5a9a8c3624deb5fc3e9
++Last-Update: 2026-09-28
++---
++--- a/include/os/linux/Makefile.am
+++++ b/include/os/linux/Makefile.am
++@@ -6,6 +6,7 @@
++ 	%D%/kernel/linux/compiler_compat.h \
++ 	%D%/kernel/linux/dcache_compat.h \
++ 	%D%/kernel/linux/kmap_compat.h \
+++	%D%/kernel/linux/kthread_compat.h \
++ 	%D%/kernel/linux/mm_compat.h \
++ 	%D%/kernel/linux/mod_compat.h \
++ 	%D%/kernel/linux/page_compat.h \
++--- /dev/null
+++++ b/include/os/linux/kernel/linux/kthread_compat.h
++@@ -0,0 +1,35 @@
+++// SPDX-License-Identifier: CDDL-1.0
+++/*
+++ * This file and its contents are supplied under the terms of the
+++ * Common Development and Distribution License ("CDDL"), version 1.0.
+++ * You may only use this file in accordance with the terms of version
+++ * 1.0 of the CDDL.
+++ *
+++ * A full copy of the text of the CDDL should have accompanied this
+++ * source.  A copy of the CDDL is also available via the Internet at
+++ * https://opensource.org/license/CDDL-1.0.
+++ */
+++
+++/*
+++ * Copyright (c) 2026, TrueNAS.
+++ */
+++
+++#ifndef _ZFS_KTHREAD_COMPAT_H
+++#define	_ZFS_KTHREAD_COMPAT_H
+++
+++#include <linux/fs_struct.h>
+++
+++/*
+++ * Linux 7.3 change. Kernel-internal threads no longer have access to the
+++ * filesystem by default. Callers that need it should wrap the necessary code
+++ * in `scoped_with_init_fs()`, which will make the filesystem availble until
+++ * end of scope.
+++ *
+++ * For older kernels that do not provide this macro, we define it to be a
+++ * no-op.
+++ */
+++#ifndef scoped_with_init_fs
+++#define	scoped_with_init_fs()	if (1)
+++#endif
+++
+++#endif
++--- a/module/os/linux/spl/spl-taskq.c
+++++ b/module/os/linux/spl/spl-taskq.c
++@@ -38,6 +38,7 @@
++ #include <sys/kstat.h>
++ #include <linux/cpuhotplug.h>
++ #include <linux/mod_compat.h>
+++#include <linux/kthread_compat.h>
++ 
++ /* Linux 6.2 renamed timer_delete_sync(); point it at its old name for those. */
++ #ifndef HAVE_TIMER_DELETE_SYNC
++@@ -1107,7 +1108,8 @@
++ 			DTRACE_PROBE1(taskq_ent__start, taskq_ent_t *, t);
++ 
++ 			/* Perform the requested task */
++-			t->tqent_func(t->tqent_arg);
+++			scoped_with_init_fs()
+++			    t->tqent_func(t->tqent_arg);
++ 
++ 			DTRACE_PROBE1(taskq_ent__finish, taskq_ent_t *, t);
++ 
++--- a/module/os/linux/spl/spl-thread.c
+++++ b/module/os/linux/spl/spl-thread.c
++@@ -29,6 +29,7 @@
++ #include <sys/tsd.h>
++ #include <sys/string.h>
++ #include <sys/misc.h>
+++#include <linux/kthread_compat.h>
++ 
++ /*
++  * Thread interfaces
++@@ -59,8 +60,10 @@
++ 	kmem_free(tp->tp_name, tp->tp_name_size);
++ 	kmem_free(tp, sizeof (thread_priv_t));
++ 
++-	if (func)
++-		func(args);
+++	if (func) {
+++		scoped_with_init_fs()
+++		    func(args);
+++	}
++ 
++ 	return (0);
++ }
+diff -ruN a/pkgs/os-specific/linux/zfs/zfs-linux-cpu-feature-enabled.patch b/pkgs/os-specific/linux/zfs/zfs-linux-cpu-feature-enabled.patch
+--- a/pkgs/os-specific/linux/zfs/zfs-linux-cpu-feature-enabled.patch
++++ b/pkgs/os-specific/linux/zfs/zfs-linux-cpu-feature-enabled.patch
+@@ -0,0 +1,89 @@
++Description: Linux: use cpu_feature_enabled() instead of static_cpu_has()
++ static_cpu_has() was hidden and renamed to _static_cpu_has() in Linux 7.3
++ (kernel commit 3eaa50e1e255 "x86/cpu: Hide and rename static_cpu_has()").
++ Since 3.18 cpu_feature_enabled() has been the right way to do the same
++ thing unconditionally, so switch everything over.
++ .
++ Rebased onto 2.4.4, where simd_stat.c still tests the HAVE_* macros
++ directly rather than through the HAVE_SIMD() helper introduced upstream.
++Author: Rob Norris <robn@despairlabs.com>
++Origin: upstream, https://github.com/robn/zfs/commit/cc99b331dae08e59fa16909ceea8526aa82f4a5e
++Forwarded: not-needed
++Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
++Index: zfs-linux-2.4.4/include/os/linux/kernel/linux/simd_x86.h
++===================================================================
++--- zfs-linux-2.4.4.orig/include/os/linux/kernel/linux/simd_x86.h
+++++ zfs-linux-2.4.4/include/os/linux/kernel/linux/simd_x86.h
++@@ -315,24 +315,24 @@ kfpu_begin(void)
++ 	 */
++ 	uint8_t *state = zfs_kfpu_fpregs[smp_processor_id()];
++ #if defined(HAVE_XSAVES)
++-	if (static_cpu_has(X86_FEATURE_XSAVES)) {
+++	if (cpu_feature_enabled(X86_FEATURE_XSAVES)) {
++ 		kfpu_do_xsave("xsaves", state, ~XFEATURE_MASK_XTILE);
++ 		return;
++ 	}
++ #endif
++ #if defined(HAVE_XSAVEOPT)
++-	if (static_cpu_has(X86_FEATURE_XSAVEOPT)) {
+++	if (cpu_feature_enabled(X86_FEATURE_XSAVEOPT)) {
++ 		kfpu_do_xsave("xsaveopt", state, ~XFEATURE_MASK_XTILE);
++ 		return;
++ 	}
++ #endif
++ #if defined(HAVE_XSAVE)
++-	if (static_cpu_has(X86_FEATURE_XSAVE)) {
+++	if (cpu_feature_enabled(X86_FEATURE_XSAVE)) {
++ 		kfpu_do_xsave("xsave", state, ~XFEATURE_MASK_XTILE);
++ 		return;
++ 	}
++ #endif
++-	if (static_cpu_has(X86_FEATURE_FXSR)) {
+++	if (cpu_feature_enabled(X86_FEATURE_FXSR)) {
++ 		kfpu_save_fxsr(state);
++ 	} else {
++ 		kfpu_save_fsave(state);
++@@ -380,18 +380,18 @@ kfpu_end(void)
++ {
++ 	uint8_t  *state = zfs_kfpu_fpregs[smp_processor_id()];
++ #if defined(HAVE_XSAVES)
++-	if (static_cpu_has(X86_FEATURE_XSAVES)) {
+++	if (cpu_feature_enabled(X86_FEATURE_XSAVES)) {
++ 		kfpu_do_xrstor("xrstors", state, ~XFEATURE_MASK_XTILE);
++ 		goto out;
++ 	}
++ #endif
++ #if defined(HAVE_XSAVE)
++-	if (static_cpu_has(X86_FEATURE_XSAVE)) {
+++	if (cpu_feature_enabled(X86_FEATURE_XSAVE)) {
++ 		kfpu_do_xrstor("xrstor", state, ~XFEATURE_MASK_XTILE);
++ 		goto out;
++ 	}
++ #endif
++-	if (static_cpu_has(X86_FEATURE_FXSR)) {
+++	if (cpu_feature_enabled(X86_FEATURE_FXSR)) {
++ 		kfpu_restore_fxsr(state);
++ 	} else {
++ 		kfpu_restore_fsave(state);
++Index: zfs-linux-2.4.4/module/zcommon/simd_stat.c
++===================================================================
++--- zfs-linux-2.4.4.orig/module/zcommon/simd_stat.c
+++++ zfs-linux-2.4.4/module/zcommon/simd_stat.c
++@@ -126,13 +126,13 @@ simd_stat_kstat_data(char *buf, size_t s
++ 		off += SIMD_STAT_PRINT(simd_stat_kstat_payload,
++ 		    "osxsave", boot_cpu_has(X86_FEATURE_OSXSAVE));
++ 		off += SIMD_STAT_PRINT(simd_stat_kstat_payload,
++-		    "xsaves", static_cpu_has(X86_FEATURE_XSAVES));
+++		    "xsaves", cpu_feature_enabled(X86_FEATURE_XSAVES));
++ 		off += SIMD_STAT_PRINT(simd_stat_kstat_payload,
++-		    "xsaveopt", static_cpu_has(X86_FEATURE_XSAVEOPT));
+++		    "xsaveopt", cpu_feature_enabled(X86_FEATURE_XSAVEOPT));
++ 		off += SIMD_STAT_PRINT(simd_stat_kstat_payload,
++-		    "xsave", static_cpu_has(X86_FEATURE_XSAVE));
+++		    "xsave", cpu_feature_enabled(X86_FEATURE_XSAVE));
++ 		off += SIMD_STAT_PRINT(simd_stat_kstat_payload,
++-		    "fxsr", static_cpu_has(X86_FEATURE_FXSR));
+++		    "fxsr", cpu_feature_enabled(X86_FEATURE_FXSR));
++ #endif /* __x86__ */
++ #if defined(__arm__) || defined(__aarch64__)
++ 		off += SIMD_STAT_PRINT(simd_stat_kstat_payload,

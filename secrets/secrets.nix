@@ -32,8 +32,4 @@ in
     weegs
     HX99G
   ];
-  "concord-token.age".publicKeys = [
-    weegs
-    HX99G
-  ];
 }

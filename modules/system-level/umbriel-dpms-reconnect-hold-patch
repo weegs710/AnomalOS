@@ -132,10 +132,10 @@ index 9bec47b..4d456e2 100644
  #include "output/enable_overrides.h"
  #include "scene/border_rect.h"
  #include "scene/effect_registry.h"
-@@ -634,6 +635,7 @@ namespace umbriel {
+@@ -677,6 +678,7 @@ namespace umbriel {
      bool applyOutputManagerConfig(wlr_output_configuration_v1* config, bool testOnly);
-     bool commitOutputEnabled(Output& output, bool enabled);
-     [[nodiscard]] bool initialOutputEnabled(const Output& output);
+     bool commitOutputEnabled(Output& target, bool enabled);
+     bool initialOutputEnabled(const Output& output);
 +    [[nodiscard]] bool takeDpmsHold(const Output& output);
      void rememberOutputEnableOverride(const Output& output, bool enabled);
      void restoreDisplacedViews();

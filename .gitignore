@@ -126,4 +126,6 @@ test-result
 test-output/
 *.patch
 *.diff
+# tack rebuilds a patched pin from diffs/<name>.diff, so a clone needs it
+!/.tack/diffs/*.diff
 *.orig

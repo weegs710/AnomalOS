@@ -26,7 +26,6 @@ let
   terminalCmd = "kitty --title=kitty";
   discordCmd = "/etc/profiles/per-user/${username}/bin/vesktop";
   gajimCmd = "/etc/profiles/per-user/${username}/bin/gajim";
-  concordCmd = "kitty --title=concord nu ${../../comms/concord/concord-launch.nu}";
   btopCmd = "kitty --title=btop btop";
   rmpcCmd = "kitty --title=rmpc rmpc";
   fileManagerCmd = "kitty --title=tfm tfm";
@@ -143,7 +142,6 @@ let
         (sub "c" "comms" [
           (run "g" "gajim" gajimCmd)
           (run "d" "discord" discordCmd)
-          (run "c" "concord" concordCmd)
         ])
         (sub "g" "games" [
           (run "s" "steam" "steam")

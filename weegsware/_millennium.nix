@@ -97,7 +97,7 @@ let
 
     outputHashMode = "recursive";
     outputHashAlgo = "sha256";
-    outputHash = "sha256-o0wv6vG1YZR9TcgytD9CDf8zBei4Ulhl59Mo9C6C+vs=";
+    outputHash = "sha256-YchqgyZELTUwWLJE1SMINfoKTQLQjgHhdJ1kP7hDzGI=";
   };
 
   cargoDeps = rustPlatform.importCargoLock {

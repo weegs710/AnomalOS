@@ -10,7 +10,10 @@ let
 
   nushellPlugins = with pkgs.nushellPlugins; [
     formats
-    gstat
+    # nixpkgs f4a03c0 sets LIBGIT2_NO_VENDOR but omits libgit2 from gstat's buildInputs, fixed on master
+    (gstat.overrideAttrs (old: {
+      buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.libgit2 ];
+    }))
     query
     # semver # compiled for nushell 0.111.0, incompatible with 0.112.1
     # skim # compiled for nushell 0.111.0, incompatible with 0.112.1
