@@ -1,4 +1,4 @@
-{ config, pkgs, only, ... }:
+{ config, lib, pkgs, only, ... }:
 let
   orderedTabs = pkgs.writeText "searx-categories-as-tabs.yml" ''
     categories_as_tabs:
@@ -32,7 +32,6 @@ only.gate { tags = [ "server" ]; }
       server = {
         secret_key = "$SEARX_SECRET_KEY";
         port = 8888;
-        base_url = "https://hx99g.tailc3ec2d.ts.net/";
         # single-user instance
         limiter = false;
         public_instance = false;
@@ -102,7 +101,27 @@ only.gate { tags = [ "server" ]; }
     };
   };
 
+  age.secrets.searx-secret-key = {
+    file = ../../secrets/searx-secret-key.age;
+    mode = "0400";
+    owner = "searx";
+  };
+
   # nix alphabetizes attrset keys -- tab order can't come from the settings map
   systemd.services.searx-init.serviceConfig.ExecStartPost =
     "${pkgs.bash}/bin/bash -c 'cat ${orderedTabs} >> /run/searx/settings.yml'";
+
+  systemd.services.searx-tailscale-serve = {
+    description = "Tailscale Serve HTTPS in front of searxng :8888";
+    after = [ "tailscaled.service" ];
+    wants = [ "tailscaled.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      # After= only waits for the unit; serve needs the backend Running or it exits on NoState.
+      ExecStartPre = "${lib.getExe config.services.tailscale.package} wait";
+      ExecStart = "${lib.getExe config.services.tailscale.package} serve --bg 8888";
+    };
+  };
 }

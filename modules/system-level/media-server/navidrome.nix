@@ -21,5 +21,9 @@ in
     };
   };
 
+  # ids pinned so allocation order can never reassign the owner of persisted state
+  users.users.navidrome.uid = 995;
+  users.groups.navidrome.gid = 995;
+
   preservation.preserveAt."/persist".directories = [ "/var/lib/navidrome" ];
 }

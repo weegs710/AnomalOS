@@ -6,6 +6,7 @@
 let
   username = config.mySystem.user.name;
   homeDir = config.users.users.${username}.home;
+  inherit (config.mySystem) display;
 in
 {
   users.users.${username}.packages = [ pkgs.heroic ];
@@ -28,10 +29,10 @@ in
         checkForUpdatesOnStartup = false;
         autoUpdateGames = true;
         customWinePaths = [ ];
-        defaultInstallPath = "/mnt/games/heroic";
+        defaultInstallPath = "${config.mySystem.paths.games}/heroic";
         libraryTopSection = "disabled";
         defaultSteamPath = "${homeDir}/.steam/steam";
-        defaultWinePrefix = "/mnt/games/heroic/Prefixes/default";
+        defaultWinePrefix = "${config.mySystem.paths.games}/heroic/Prefixes/default";
         hideChangelogsOnStartup = true;
         language = "en";
         maxWorkers = 0;
@@ -42,7 +43,7 @@ in
         showFps = false;
         useGameMode = false;
         wineCrossoverBottle = "Heroic";
-        winePrefix = "/mnt/games/heroic/Prefixes/default";
+        winePrefix = "${config.mySystem.paths.games}/heroic/Prefixes/default";
         wineVersion = {
           bin = "${homeDir}/.local/share/Steam/compatibilitytools.d/GE-Proton10-34/proton";
           name = "GE-Proton10-34";
@@ -78,10 +79,10 @@ in
           upscaleHeight = "";
           upscaleWidth = "";
           upscaleMethod = "fsr";
-          fpsLimiter = "144";
+          fpsLimiter = toString display.refresh;
           fpsLimiterNoFocus = "";
           # -W/-H needed when upscaling disabled
-          additionalOptions = "-W 2560 -H 1440 --backend wayland";
+          additionalOptions = "-W ${toString display.width} -H ${toString display.height} --backend wayland";
         };
       };
     };

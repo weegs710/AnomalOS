@@ -1,9 +1,10 @@
 {
   config,
   pkgs,
+  only,
   ...
 }:
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${config.mySystem.user.name}.packages = [ pkgs.kitty ];
 
   hjem.users.${config.mySystem.user.name}.xdg.config.files."kitty/kitty.conf" = {

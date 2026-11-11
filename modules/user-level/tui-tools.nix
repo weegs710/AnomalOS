@@ -4,13 +4,13 @@
   ...
 }:
 {
-  users.users.${config.mySystem.user.name}.packages = with pkgs; [
-    btop-rocm
-    pulsemixer
-    timg
-    libqalculate
-    qalculate-gtk
-  ];
+  users.users.${config.mySystem.user.name}.packages =
+    [ config.mySystem.btopPackage ]
+    ++ (with pkgs; [
+      pulsemixer
+      timg
+      libqalculate
+    ]);
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
     ".config/btop"

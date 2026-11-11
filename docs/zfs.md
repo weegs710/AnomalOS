@@ -15,14 +15,14 @@ ZFS is here for the snapshot safety net. Between ZFS, Jujutsu and NixOS generati
 | `/mnt/games/1g1r`         | `zgames/games/roms`          | zfs                               |
 | `/mnt/games/SteamLibrary` | `zgames/games/steam`         | zfs                               |
 | `/mnt/games/heroic`       | `zgames/games/heroic`        | zfs                               |
-| `/mnt/media`              | `zgames/media`               | zfs, `server` tag only            |
+| `/mnt/media`              | `zgames/media`               | zfs                               |
 | `/mnt/media/music`        | `/persist/home/<user>/Music` | read-only bind, `server` tag only |
 
 Pools are created with `ashift=12`, `autotrim=on`, `compression=zstd`, `acltype=posixacl`, `atime=off`, `xattr=sa` and `normalization=formD`. Every dataset is `mountpoint=legacy`; NixOS does the mounting.
 
 Swap is a 16GiB partition labelled `SWAP` on the boot disk. `boot.zswap` compresses pages into RAM in front of it, up to 25% of total memory.
 
-The declarations live in `modules/hosts/HX99G/hardware.nix`, except `/` which `modules/system-level/persist.nix` overrides with `lib.mkForce`, and the media mounts which come from the `server`-gated `modules/system-level/media-server/`.
+The declarations live in `modules/hosts/HX99G/hardware.nix`, including `/mnt/media`, except `/` which `modules/system-level/persist.nix` overrides with `lib.mkForce`, and the `/mnt/media/music` bind which comes from the `server`-gated `modules/system-level/media-server/`.
 
 ## The Tmpfs Root
 

@@ -1,4 +1,5 @@
 { inputs, ... }:
+{ only, ... }:
 let
   inherit (inputs.nixpkgs.lib.fileset) toList fileFilter difference;
   inherit (inputs.nixpkgs.lib) hasPrefix;
@@ -7,6 +8,6 @@ let
   );
 in
 {
-  imports = [ inputs.hjem.nixosModules.default ] ++ modules;
+  imports = [ inputs.hjem.nixosModules.default ] ++ only.files modules;
   hjem.clobberByDefault = true;
 }

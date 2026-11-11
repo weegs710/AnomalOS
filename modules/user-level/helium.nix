@@ -1,12 +1,13 @@
 {
   config,
   weegsware,
+  only,
   ...
 }:
 let
   username = config.mySystem.user.name;
 in
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${username}.packages = [ weegsware.helium ];
 
   # basename is hard-patched to the reverse-DNS id in chrome_paths_linux.cc, not "helium"; whole dir persisted so future subdirs are auto-covered

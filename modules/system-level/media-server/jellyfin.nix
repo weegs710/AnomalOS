@@ -17,6 +17,9 @@
     "video"
   ];
 
+  # id pinned so allocation order can never reassign the owner of persisted state
+  users.users.jellyfin.uid = 997;
+
   # the 700 home dir blocks jellyfin from reaching ~/Music directly
   fileSystems."/mnt/media/music" = {
     device = "/persist/home/${config.mySystem.user.name}/Music";

@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   ...
 }:
@@ -31,4 +32,7 @@
     pam_u2f
   ];
 
+  preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
+    ".config/Yubico"
+  ];
 }

@@ -133,13 +133,14 @@ in
     "ES-DE/controllers"
     ".mame"
     ".config/azahar-emu"
+    ".config/Ryujinx"
     # azahar keys save paths on program id, not install state, so rom-booted titles save here too
     ".local/share/azahar-emu"
   ];
 
   # ES-DE's default rom dir is ~/ROMs; symlink it to the collection so es_settings stays ES-DE-owned
   systemd.user.tmpfiles.users.${username}.rules = [
-    "L+ %h/ROMs - - - - /mnt/games/1g1r/ROMs"
+    "L+ %h/ROMs - - - - ${config.mySystem.paths.games}/1g1r/ROMs"
     # --set-shader paths resolve relative to the shader dir, so the slang pack lives here
     "L+ %h/.config/retroarch/shaders/shaders_slang - - - - ${pkgs.libretro-shaders-slang}/share/libretro/shaders/shaders_slang"
   ];

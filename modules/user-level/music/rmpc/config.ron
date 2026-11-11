@@ -36,7 +36,7 @@
         sensitivity: 100,
         input: (
             method: Pipewire,
-            source: "alsa_output.usb-Jieli_Technology_Tylubio_ST200-00.analog-stereo.monitor",
+            @SOURCE@
         ),
     ),
     search: (

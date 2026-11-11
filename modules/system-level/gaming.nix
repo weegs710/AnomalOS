@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   weegsware,
   only,
@@ -41,6 +42,17 @@ only.gate { tags = [ "gaming" ]; }
   hardware.graphics.enable32Bit = true;
   hardware.steam-hardware.enable = true;
 
+  networking.firewall = {
+    allowedTCPPorts = [
+      4000 # Median XL Sigma LAN host (TCP/IP games)
+    ]
+    ++ (lib.range 23243 23262);
+    allowedUDPPorts = [
+      23253
+      23243
+    ];
+  };
+
   programs = {
     gamescope.enable = true;
     gamemode.enable = true;
@@ -55,16 +67,26 @@ only.gate { tags = [ "gaming" ]; }
     wrappedSteam
   ];
 
-  preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
-    ".config/millennium"
-    ".config/openra"
-    ".local/share/Steam"
-    ".local/share/millennium"
-    ".local/share/umu"
-  ];
+  preservation.preserveAt."/persist".users.${config.mySystem.user.name} = {
+    directories = [
+      ".config/millennium"
+      ".config/openra"
+      ".local/share/Steam"
+      ".local/share/millennium"
+      ".local/share/umu"
+    ];
+    files = [
+      ".steam/registry.vdf"
+      ".steam/exportedsettings.json"
+    ];
+  };
 
-  # C copies only when the target is missing, so a theme already on disk is never overwritten
   systemd.user.tmpfiles.users.${config.mySystem.user.name}.rules = [
+    # an L rule cannot replace a directory, so these links must exist before anything creates .steam/steam
+    "d %h/.steam 0755 - - -"
+    "L %h/.steam/steam - - - - %h/.local/share/Steam"
+    "L %h/.steam/root - - - - %h/.local/share/Steam"
+    # C copies only when the target is missing, so a theme already on disk is never overwritten
     "d %h/.local/share/Steam/millennium 0755 - - -"
     "d %h/.local/share/Steam/millennium/themes 0755 - - -"
     "C %h/.local/share/Steam/millennium/themes/Material-Theme - - - - ${materialTheme}"

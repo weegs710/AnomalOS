@@ -6,7 +6,6 @@ email = "weegs@tutamail.com"
 
 [ui]
 pager = ":builtin"
-editor = "zeditor --wait"
 
 [remotes.codeberg]
 auto-track-bookmarks = "*"

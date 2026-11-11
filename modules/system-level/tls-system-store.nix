@@ -12,6 +12,4 @@ in
     PIP_CERT = systemStore;
     PIP_USE_DEPRECATED = "legacy-certs";
   };
-
-  systemd.services.bazarr.environment.REQUESTS_CA_BUNDLE = systemStore;
 }

@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  only,
   ...
 }:
 let
@@ -26,7 +27,7 @@ let
   };
 
 in
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${username}.packages = [
     pkgs.rmpc
     pkgs.cava
@@ -38,7 +39,15 @@ in
     xdg.data.files."applications/rmpc-open.desktop".source = ./rmpc-open.desktop;
 
     xdg.config.files."rmpc/config.ron".text =
-      lib.replaceStrings [ "@USER@" "@LYRICS_BIN@" ] [ username "${lyricsScript}/bin/rmpc-lyrics" ]
+      lib.replaceStrings
+        [ "@USER@" "@LYRICS_BIN@" "@SOURCE@" ]
+        [
+          username
+          "${lyricsScript}/bin/rmpc-lyrics"
+          (lib.optionalString (
+            config.mySystem.audio.monitorSource != null
+          ) ''source: "${config.mySystem.audio.monitorSource}",'')
+        ]
         (builtins.readFile ./config.ron);
 
     xdg.config.files."rmpc/themes/triglavian.ron".source = ./triglavian.ron;

@@ -62,6 +62,7 @@ only.gate { tags = [ "desktop" ]; }
     libxxf86vm
     lm_sensors
     mesa
+    qalculate-gtk
     qview
     tremc
     ueberzugpp
@@ -102,7 +103,6 @@ only.gate { tags = [ "desktop" ]; }
     ".config/tutanota-desktop"
     ".config/qView"
     ".config/zathura"
-    ".config/Yubico"
     ".config/cachix"
     ".local/share/zathura"
     ".local/share/bluetui"
@@ -144,13 +144,18 @@ only.gate { tags = [ "desktop" ]; }
     };
   };
 
-  # sync.toml + wallpaper copies, so the greeter boots wearing the last synced look
+  # ids pinned for users owning persisted state so allocation order can never reassign them
+  users.users.greeter.uid = 984;
+  users.groups.greeter.gid = 979;
+
   preservation.preserveAt."/persist".directories = [
+    # sync.toml + wallpaper copies, so the greeter boots wearing the last synced look
     {
       directory = "/var/lib/noctalia-greeter";
       user = "greeter";
       group = "greeter";
       mode = "0750";
     }
+    "/var/lib/bluetooth"
   ];
 }

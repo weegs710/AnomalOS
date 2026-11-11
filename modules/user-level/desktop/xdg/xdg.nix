@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  only,
   ...
 }:
 let
@@ -29,7 +30,7 @@ let
     };
   };
 in
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${username}.packages = [
     pkgs.phinger-cursors
     pkgs.adw-gtk3
@@ -60,6 +61,12 @@ in
         };
       };
     }
+  ];
+
+  preservation.preserveAt."/persist".users.${username}.directories = [
+    ".config/dconf"
+    ".config/gtk-3.0"
+    ".config/gtk-4.0"
   ];
 
   hjem.users.${username} = {

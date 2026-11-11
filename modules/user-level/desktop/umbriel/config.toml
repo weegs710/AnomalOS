@@ -1,6 +1,7 @@
 # Colors come from noctalia's umbriel template; keys set here would override the include and freeze the palette.
 [include.optional]
-files = ["noctalia.toml"]
+# host.toml carries this machine's outputs and devices, deployed from its modules/hosts dir
+files = ["noctalia.toml", "host.toml"]
 
 [include]
 files = ["shaders.toml"]
@@ -121,19 +122,6 @@ default_extent_fraction = 0.9
 center_underfull_strip = true
 center_focused = "always"
 
-[output."HDMI-A-1"]
-mode = "2560x1440@144"
-position = [0, 0]
-scale = 1.0
-vrr = "fullscreen"
-workspaces = [
-  "COMMS",
-  "DEV",
-  "WEB",
-  "GAMES",
-  "MEDIA",
-]
-
 [[workspace]]
 name = "DEV"
 layout.mode = "scrolling"
@@ -162,12 +150,6 @@ repeat_delay = 600
 accel_profile = "flat"
 sensitivity = 0.0
 scroll_wheel_step = 60
-
-# keyd grabs the ball and re-emits its motion through this virtual device, so the real name no longer matches.
-[[input.device]]
-name = "keyd virtual pointer"
-accel_profile = "adaptive"
-sensitivity = 0.0
 
 [input.cursor]
 theme = "phinger-cursors-dark"

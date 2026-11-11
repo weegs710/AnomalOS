@@ -602,6 +602,8 @@ def classify-inputs [pins: record] {
             $url
             | str replace 'gh:' '' | str replace 'cb:' ''
             | str replace 'github:' '' | str replace 'git+https://' ''
+            # a full 40-char rev overflows the pin card, the short form still identifies it
+            | str replace -r '/([0-9a-f]{7})[0-9a-f]{33}$' '/$1'
         )
 
         let is_root     = ($name in $follow_targets)
@@ -792,6 +794,7 @@ def main [] {
     let gmods = (
         glob $"($dotfiles)/modules/user-level/gaming/*"
         | each {|p| if ($p | path type) == "dir" { $p | path basename } else { $p | path parse | get stem } }
+        | where $it != "bundle"
         | uniq | sort
     )
     mut gaming = $gmods

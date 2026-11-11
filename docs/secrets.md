@@ -8,10 +8,10 @@ Secret management is [agenix](https://github.com/ryantm/agenix). Secrets are enc
 | -------------------------------------------- | ---------------------------------------------------------------------------------- |
 | `secrets/*.age`                              | the encrypted files, safe to commit                                                |
 | `secrets/secrets.nix`                        | maps each `.age` filename to its recipient public keys, which is what agenix reads |
-| `modules/system-level/security/secrets.nix` | wires them into the system via `age.secrets.*`                                     |
+| `modules/system-level/security/secrets.nix` | sets the identity and declares the fleet-wide secrets via `age.secrets.*`          |
 | `/run/agenix/<name>`                         | where each one decrypts to                                                         |
 
-Most are declared in the security module -- `age.secrets` is a normal option and any module may set it.
+The security module declares the three every host needs (Tailscale's auth key, the XMPP password and the GitHub token). A secret one service uses is declared in that service's module, like `searx-secret-key` in `searx.nix` and the arr API keys in the media-server modules -- `age.secrets` is a normal option and any module may set it.
 
 ## The Identity Is the SSH Host Key
 

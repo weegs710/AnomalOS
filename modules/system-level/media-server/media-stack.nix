@@ -7,13 +7,9 @@ let
   username = config.mySystem.user.name;
 in
 {
-  users.groups.media = { };
+  # ids pinned for users owning persisted state so allocation order can never reassign them
+  users.groups.media.gid = 996;
   users.users.${username}.extraGroups = [ "media" ];
-
-  fileSystems."/mnt/media" = {
-    device = "zgames/media";
-    fsType = "zfs";
-  };
 
   # setgid bits ensure new files inherit media group across services
   systemd.tmpfiles.rules = [
@@ -48,10 +44,11 @@ in
   # DynamicUser conflicts with preservation bind-mounts -- chowns fail on already-mounted dirs
   users.users.prowlarr = {
     isSystemUser = true;
+    uid = 991;
     group = "prowlarr";
     home = "/var/lib/prowlarr";
   };
-  users.groups.prowlarr = { };
+  users.groups.prowlarr.gid = 990;
 
   systemd.services.prowlarr.serviceConfig = {
     DynamicUser = lib.mkForce false;
@@ -66,6 +63,10 @@ in
     group = "media";
     openFirewall = false;
   };
+  users.users.bazarr.uid = 999;
+
+  # points at the system store so the eMudhra distrust applies, same as tls-system-store.nix does for the other clients
+  systemd.services.bazarr.environment.REQUESTS_CA_BUNDLE = "/etc/ssl/certs/ca-certificates.crt";
 
   services.flaresolverr = {
     enable = true;
@@ -157,6 +158,18 @@ in
         };
       };
     };
+  };
+
+  age.secrets.radarr-api-key = {
+    file = ../../../secrets/radarr-api-key.age;
+    mode = "0400";
+    owner = "recyclarr";
+  };
+
+  age.secrets.sonarr-api-key = {
+    file = ../../../secrets/sonarr-api-key.age;
+    mode = "0400";
+    owner = "recyclarr";
   };
 
   preservation.preserveAt."/persist".directories = [

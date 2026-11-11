@@ -2,9 +2,10 @@
   config,
   lib,
   pkgs,
+  only,
   ...
 }:
-{
+only.gate { tags = [ "desktop" ]; } {
   # saves are triggered by the Mod+F binds in umbriel's config.toml
   hjem.users.${config.mySystem.user.name}.systemd.services.gsr-replay = {
     description = "gpu-screen-recorder replay buffer";

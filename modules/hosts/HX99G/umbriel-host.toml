@@ -1,0 +1,18 @@
+[output."HDMI-A-1"]
+mode = "2560x1440@144"
+position = [0, 0]
+scale = 1.0
+vrr = "fullscreen"
+workspaces = [
+  "COMMS",
+  "DEV",
+  "WEB",
+  "GAMES",
+  "MEDIA",
+]
+
+# keyd grabs the ball and re-emits its motion through this virtual device, so the real name no longer matches.
+[[input.device]]
+name = "keyd virtual pointer"
+accel_profile = "adaptive"
+sensitivity = 0.0

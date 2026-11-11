@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  only,
   ...
 }:
 let
@@ -40,7 +41,7 @@ let
     }
   '';
 in
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${username}.packages = [
     gajim
   ];

@@ -6,7 +6,7 @@
 }:
 let
   username = config.mySystem.user.name;
-  gameDir = "/mnt/games/1g1r/AM2R-1.5.5";
+  gameDir = "${config.mySystem.paths.games}/1g1r/AM2R-1.5.5";
 
   am2r = pkgs.buildFHSEnv {
     name = "am2r";

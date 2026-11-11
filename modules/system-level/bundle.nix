@@ -1,4 +1,5 @@
 { inputs, ... }:
+{ only, ... }:
 let
   inherit (inputs.nixpkgs.lib.fileset) toList fileFilter difference;
   inherit (inputs.nixpkgs.lib) hasPrefix;
@@ -7,5 +8,5 @@ let
   );
 in
 {
-  imports = modules;
+  imports = only.files modules;
 }

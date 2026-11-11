@@ -6,6 +6,8 @@ let
 in
 {
   imports = only.imports { tags = [ "server" ]; } (
-    toList (fileFilter (f: f.hasExt "nix" && f.name != "bundle.nix" && !(hasPrefix "_" f.name)) ./.)
+    only.files (
+      toList (fileFilter (f: f.hasExt "nix" && f.name != "bundle.nix" && !(hasPrefix "_" f.name)) ./.)
+    )
   );
 }

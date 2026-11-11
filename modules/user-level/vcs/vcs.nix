@@ -13,6 +13,8 @@ in
       pkgs.jujutsu
     ];
 
+    preservation.preserveAt."/persist".users.${username}.directories = [ ".config/jj" ];
+
     hjem.users.${username} = {
       xdg.config.files."git/config".source = ./git-config;
       xdg.config.files."jj/config.toml".source = ./jj-config.toml;

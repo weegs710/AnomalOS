@@ -75,10 +75,10 @@ imports = only.imports { tags = [ "server" ]; } [ ./jellyfin.nix ./transmission.
 That is also why `only` keys on a static descriptor -- `{ name, tags, system }`, no `config` -- and why the tag vocabulary is closed. `validTags` lives in `assemble.nix`, so a typo in a host's `tags` or in an `only` spec will throw with the valid list rather than silently matching nothing:
 
 ```
-only: unknown tag(s) gamin; valid tags are desktop, dev, gaming, lab, server
+only: unknown tags gamin in the spec; valid tags are desktop, dev, gaming, lab, server
 ```
 
-HX99G carries all five tags and evaluated to 363 packages. A second host directory carrying only `desktop` evaluated to 278, with gamescope, steam-hardware, Jellyfin, Navidrome, Radarr, Transmission, SearXNG, all being off -- with no conditionals written inside the modules that provide them.
+HX99G carries all five tags and evaluated to 355 packages. A second host directory carrying only `desktop` evaluated to 259, with gamescope, steam-hardware, Jellyfin, Navidrome, Radarr, Transmission, SearXNG, all being off -- with no conditionals written inside the modules that provide them.
 
 ## The Trade-off of doing it this way
 

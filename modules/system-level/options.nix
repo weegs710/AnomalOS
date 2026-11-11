@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   options.mySystem = {
     user = {
@@ -41,6 +41,41 @@
       type = lib.types.str;
       default = "America/New_York";
       description = "System timezone";
+    };
+
+    display = {
+      width = lib.mkOption {
+        type = lib.types.int;
+        description = "Primary monitor width in pixels";
+      };
+
+      height = lib.mkOption {
+        type = lib.types.int;
+        description = "Primary monitor height in pixels";
+      };
+
+      refresh = lib.mkOption {
+        type = lib.types.int;
+        description = "Primary monitor refresh rate in Hz";
+      };
+    };
+
+    paths.games = lib.mkOption {
+      type = lib.types.str;
+      description = "Root of the games library mount";
+    };
+
+    audio.monitorSource = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "PipeWire monitor source visualizers listen to; null uses the default";
+    };
+
+    btopPackage = lib.mkOption {
+      type = lib.types.package;
+      default = pkgs.btop;
+      defaultText = lib.literalExpression "pkgs.btop";
+      description = "btop build; a GPU host can pick a variant";
     };
   };
 }

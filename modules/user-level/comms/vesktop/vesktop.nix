@@ -1,12 +1,13 @@
 {
   config,
   pkgs,
+  only,
   ...
 }:
 let
   username = config.mySystem.user.name;
 in
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${username}.packages = [
     pkgs.vesktop
   ];

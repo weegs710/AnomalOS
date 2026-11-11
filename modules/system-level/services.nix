@@ -56,8 +56,20 @@
             "hmac-sha2-256-etm@openssh.com"
           ];
         };
-        openFirewall = false;
+        openFirewall = true;
       };
     };
+
+    preservation.preserveAt."/persist".files = [
+      # ssh-keygen does not use O_NOFOLLOW so symlinks are safe for host keys
+      {
+        file = "/etc/ssh/ssh_host_ed25519_key";
+        how = "symlink";
+      }
+      {
+        file = "/etc/ssh/ssh_host_ed25519_key.pub";
+        how = "symlink";
+      }
+    ];
   };
 }

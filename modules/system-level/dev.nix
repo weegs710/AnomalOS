@@ -94,10 +94,7 @@ only.gate { tags = [ "dev" ]; }
     uv
     biome
     dprintmd
-    nixfmt
     typescript
-    typescript-language-server
-    vscode-langservers-extracted
     claude-code
     claudeLauncher
   ];
@@ -110,4 +107,15 @@ only.gate { tags = [ "dev" ]; }
   environment.shellAliases = {
     ccl = "claude-launcher";
   };
+
+  preservation.preserveAt."/persist".users.${config.mySystem.user.name} = {
+    directories = [
+      ".claude"
+      ".config/gh"
+      ".local/share/direnv"
+    ];
+    files = [ ".claude.json" ];
+  };
+
+  preservation.preserveAt."/cache".users.${config.mySystem.user.name}.directories = [ ".cargo" ];
 }

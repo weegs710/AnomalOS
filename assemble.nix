@@ -46,7 +46,7 @@ sprinkles.new {
 
       hostsRoot = ./modules/hosts;
 
-      mkOnly = import ./lib/only.nix lib validTags;
+      mkOnly = import ./lib/only.nix lib validTags hostNames;
 
       readHost =
         name:
@@ -69,6 +69,17 @@ sprinkles.new {
               ) (builtins.readDir dir)
             )
           );
+          variants = meta.variants or { };
+          variantNames = lib.attrNames variants;
+          badVariant = lib.findFirst (
+            v:
+            let
+              x = variants.${v};
+            in
+            !(builtins.isAttrs x) || builtins.attrNames x != [ "tags" ] || !(builtins.isList x.tags)
+          ) null variantNames;
+          badVariantTags = lib.subtractLists validTags (lib.concatMap (v: variants.${v}.tags) variantNames);
+          variantClashes = lib.intersectLists (map (v: "${name}-${v}") variantNames) hostNames;
         in
         if !(meta ? system) then
           throw "host ${name}: metadata.nix must set `system` (e.g. \"x86_64-linux\")"
@@ -82,28 +93,54 @@ sprinkles.new {
           throw "host ${name}: metadata.nix must set `hostId` to 8 lowercase hex characters, unique per machine -- generate one with: head -c4 /dev/urandom | od -A none -t x4"
         else if modules == [ ] then
           throw "host ${name}: no modules beside metadata.nix -- a host needs at least its hardware config"
+        else if !(builtins.isAttrs variants) then
+          throw "host ${name}: `variants` must be an attrset like { vm = { tags = [ ... ]; }; }"
+        else if badVariant != null then
+          throw "host ${name}: variant ${badVariant} must be exactly { tags = [ ... ]; }"
+        else if badVariantTags != [ ] then
+          throw "host ${name}: unknown tag(s) ${builtins.concatStringsSep ", " badVariantTags} in variants; valid tags are ${builtins.concatStringsSep ", " validTags}"
+        else if variantClashes != [ ] then
+          throw "host ${name}: variant ${builtins.concatStringsSep ", " variantClashes} has the same name as a host directory"
         else
           {
             inherit (meta) system tags hostId;
-            inherit modules;
+            inherit modules variants;
           };
 
-      hosts = lib.genAttrs (
-        lib.attrNames (
-          lib.filterAttrs (n: t: t == "directory" && !(lib.hasPrefix "_" n)) (builtins.readDir hostsRoot)
-        )
-      ) readHost;
+      hostNames = lib.attrNames (
+        lib.filterAttrs (n: t: t == "directory" && !(lib.hasPrefix "_" n)) (builtins.readDir hostsRoot)
+      );
+
+      hosts = lib.genAttrs hostNames readHost;
 
       # derived so a host on a new architecture is checked without anyone remembering to widen `systems`
       hostSystems = lib.unique (lib.mapAttrsToList (_: h: h.system) hosts);
 
+      # a variant is its parent plus extra tags under its own attr; it keeps the parent's name so hostName, hostId and `hosts` specs still match
+      builds = lib.concatMapAttrs (
+        name: h:
+        { ${name} = h // { inherit name; }; }
+        // lib.mapAttrs' (
+          v: extra:
+          lib.nameValuePair "${name}-${v}" (
+            h
+            // {
+              inherit name;
+              tags = lib.unique (h.tags ++ extra.tags);
+            }
+          )
+        ) h.variants
+      ) hosts;
+
       mkHost =
-        name:
+        attr:
         {
+          name,
           system,
           hostId,
           tags ? [ ],
           modules ? [ ],
+          ...
         }:
         let
           host = { inherit name tags system; };
@@ -111,7 +148,7 @@ sprinkles.new {
           identity = {
             mySystem.hostName = name;
             networking.hostId = hostId;
-            environment.variables.NH_ATTRP = "nixosConfigurations.${name}";
+            environment.variables.NH_ATTRP = "nixosConfigurations.${attr}";
           };
         in
         inputs.nixpkgs.lib.nixosSystem {
@@ -131,7 +168,7 @@ sprinkles.new {
             ];
         };
 
-      nixosConfigurations = lib.mapAttrs mkHost hosts;
+      nixosConfigurations = lib.mapAttrs mkHost builds;
 
       mkApp =
         name: pkg:
@@ -169,7 +206,7 @@ sprinkles.new {
           throw "duplicate hostId(s): ${report} -- every machine needs its own, ZFS uses it to refuse importing a pool owned by another host"
         else
           lib.mapAttrs (_: cfg: cfg.config.system.build.toplevel) (
-            lib.filterAttrs (n: _: hosts.${n}.system == system) nixosConfigurations
+            lib.filterAttrs (n: _: builds.${n}.system == system) nixosConfigurations
           )
       );
 

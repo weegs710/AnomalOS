@@ -1,11 +1,13 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  only,
+  ...
+}:
 let
-  # libvirt's dnsmasq holds 192.168.122.1:53 and 192.168.126.1:53, so a wildcard bind collides
-  tsIPv4 = "100.81.141.83";
-  tsIPv6 = "fd7a:115c:a1e0::8f39:8d53";
   dnscrypt = "127.0.0.1:5300";
 in
-{
+only.gate { tags = [ "server" ]; } {
   services.adguardhome = {
     enable = true;
     mutableSettings = true;
@@ -18,8 +20,6 @@ in
         bind_hosts = [
           "127.0.0.1"
           "::1"
-          tsIPv4
-          tsIPv6
         ];
         port = 53;
         upstream_dns = [ dnscrypt ];

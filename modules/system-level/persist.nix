@@ -47,23 +47,6 @@ in
     ];
   };
 
-  # ids pinned for users owning persisted state so allocation order can never reassign them
-  users.users = {
-    jellyfin.uid = 997;
-    prowlarr.uid = 991;
-    bazarr.uid = 999;
-    navidrome.uid = 995;
-    suricata.uid = 986;
-    greeter.uid = 984;
-  };
-  users.groups = {
-    media.gid = 996;
-    prowlarr.gid = 990;
-    navidrome.gid = 995;
-    suricata.gid = 984;
-    greeter.gid = 979;
-  };
-
   preservation.enable = true;
 
   preservation.preserveAt = {
@@ -77,9 +60,6 @@ in
           inInitrd = true;
         }
         "/var/db/sudo"
-        "/var/lib/tailscale"
-        "/etc/NetworkManager/system-connections"
-        "/var/lib/bluetooth"
       ];
       files = [
         # symlink + "uninitialized" seed bypasses O_NOFOLLOW failure introduced in systemd v258
@@ -89,23 +69,11 @@ in
           how = "symlink";
           inInitrd = true;
         }
-        # ssh-keygen does not use O_NOFOLLOW so symlinks are safe for host keys
-        {
-          file = "/etc/ssh/ssh_host_ed25519_key";
-          how = "symlink";
-        }
-        {
-          file = "/etc/ssh/ssh_host_ed25519_key.pub";
-          how = "symlink";
-        }
       ];
       users.${username} = {
         directories = [
           # top-level home dirs
           ".ssh"
-          ".android"
-          ".crawl"
-          ".claude"
           "cloud"
           "Documents"
           "Downloads"
@@ -117,67 +85,34 @@ in
           "homebrew"
           "claude-projects"
           # XDG / desktop cross-cutting (no single owning module)
-          ".config/dconf"
-          ".config/gtk-3.0"
-          ".config/gtk-4.0"
           ".config/glib-2.0"
           ".config/Electron"
           ".config/environment.d"
           ".config/systemd"
-          ".config/pulse"
-          ".config/qt6ct"
           ".config/QtProject"
           ".config/age"
-          ".config/gh"
-          ".config/jj"
-          # emulators (saves preserved, no dedicated module)
-          ".config/Ryujinx"
-          # peepers: settings and benchmark history, no dedicated module
-          ".config/peepers"
-          ".local/state/peepers"
           # .local/share -- general (no specific module)
           ".local/share/applications"
           ".local/share/desktop-directories"
           ".local/share/icons"
           ".local/share/mime"
-          ".local/share/wallpapers"
           ".local/share/pki"
           ".local/share/vulkan"
           ".local/share/systemd"
           ".local/share/nix"
           ".local/share/Trash"
-          ".local/share/direnv"
           ".local/share/Larian Studios"
           ".local/share/Paradox Interactive"
           # .local/state -- general
           ".local/state/nix"
-          ".local/state/nix-output-monitor"
           ".local/state/Larian Studios"
-        ];
-        files = [
-          ".claude.json"
-          ".steam/registry.vdf"
-          ".steam/exportedsettings.json"
         ];
       };
     };
 
     "/cache" = {
       commonMountOptions = [ "x-gvfs-hide" ];
-      directories = [
-        "/var/lib/private/dnscrypt-proxy"
-        {
-          directory = "/var/lib/suricata";
-          user = "suricata";
-          group = "suricata";
-          mode = "0755";
-        }
-        "/var/lib/libvirt"
-      ];
-      users.${username}.directories = [
-        ".cache"
-        ".cargo"
-      ];
+      users.${username}.directories = [ ".cache" ];
     };
   };
 
@@ -192,11 +127,4 @@ in
   systemd.services.systemd-machine-id-commit.unitConfig.ConditionFirstBoot = true;
 
   users.users.${username}.packages = [ showTmpfs ];
-
-  # an L rule cannot replace a directory, so these links must exist before anything creates .steam/steam
-  systemd.user.tmpfiles.users.${username}.rules = [
-    "d %h/.steam 0755 - - -"
-    "L %h/.steam/steam - - - - %h/.local/share/Steam"
-    "L %h/.steam/root - - - - %h/.local/share/Steam"
-  ];
 }

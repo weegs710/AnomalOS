@@ -2,10 +2,16 @@
   config,
   lib,
   pkgs,
+  only,
   ...
 }:
+let
+  trustedIfaces = lib.concatMapStringsSep ", " (
+    i: ''"${i}"''
+  ) config.networking.firewall.trustedInterfaces;
+in
 {
-  config = {
+  config = only.gate { tags = [ "server" ]; } {
     services.suricata = {
       enable = true;
       disabledRules = [
@@ -70,16 +76,6 @@
         logging = {
           default-log-level = "notice";
         };
-
-        # required by nixos module assertion; actual packet processing uses nfq mode below, not af-packet
-        af-packet = [
-          {
-            interface = "enp5s0";
-            cluster-id = 99;
-            cluster-type = "cluster_flow";
-            defrag = true;
-          }
-        ];
 
         nfq = {
           mode = "accept";
@@ -161,13 +157,13 @@
         chain input {
           type filter hook input priority -5;
           iif lo accept
-          iifname { "tailscale0", "virbr0", "virbr-k8s" } accept
+          iifname { ${trustedIfaces} } accept
           queue num 0 bypass
         }
         chain output {
           type filter hook output priority -5;
           oif lo accept
-          oifname { "tailscale0", "virbr0", "virbr-k8s" } accept
+          oifname { ${trustedIfaces} } accept
           queue num 0 bypass
         }
       '';
@@ -177,6 +173,19 @@
     networking.nftables.preCheckRuleset = ''
       sed -i 's/queue num 0 bypass/accept/g' ruleset.conf
     '';
+
+    # ids pinned for users owning persisted state so allocation order can never reassign them
+    users.users.suricata.uid = 986;
+    users.groups.suricata.gid = 984;
+
+    preservation.preserveAt."/cache".directories = [
+      {
+        directory = "/var/lib/suricata";
+        user = "suricata";
+        group = "suricata";
+        mode = "0755";
+      }
+    ];
 
     # the upstream d rule only chowns the dir, so a uid shift strands the files inside it
     systemd.tmpfiles.rules = [

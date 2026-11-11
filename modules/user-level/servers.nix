@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  only,
   ...
 }:
 let
@@ -8,7 +9,7 @@ let
   port = 8585;
   serveDir = "/home/${username}/Documents/nushell-book/.vuepress/dist";
 in
-{
+only.gate { tags = [ "dev" ]; } {
   users.users.${username}.packages = [ pkgs.miniserve ];
 
   # per-user units: a global systemd.user.services also runs in the greeter's manager, where /home/${username} is unreadable

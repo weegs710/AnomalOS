@@ -1,11 +1,12 @@
 {
+  only,
   ...
 }:
 let
   dnsDir = "/var/lib/dnscrypt-proxy";
 in
 {
-  config = {
+  config = only.gate { tags = [ "server" ]; } {
     networking.nameservers = [
       "127.0.0.1"
       "::1"
@@ -51,5 +52,7 @@ in
         };
       };
     };
+
+    preservation.preserveAt."/cache".directories = [ "/var/lib/private/dnscrypt-proxy" ];
   };
 }

@@ -88,7 +88,7 @@ systemctl --user restart pipewire pipewire-pulse wireplumber
 show-tmpfs      # usage, then the largest files sitting on the root
 ```
 
-Add the offending path to `modules/system-level/persist.nix` and rebuild. See [ZFS and snapshots](./zfs.md#the-tmpfs-root).
+Add the offending path to `preservation.preserveAt` in the module that owns it and rebuild. `modules/system-level/persist.nix` is for state no module owns. See [ZFS and snapshots](./zfs.md#the-tmpfs-root).
 
 ## General
 

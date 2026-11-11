@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  only,
   ...
 }:
 let
@@ -413,7 +414,7 @@ let
             "--replace-in-metadata" "artist" " - Topic$" ""
             "--ignore-errors"
             "--no-warnings"
-            "--js-runtimes" "node"
+            "--js-runtimes" "node:${pkgs.nodejs}/bin/node"
             "--remote-components" "ejs:github"
             "-o" $output_template
             "--postprocessor-args" $ppargs
@@ -431,7 +432,7 @@ let
         }
 
         # -o is parsed as [TYPES:]TEMPLATE anchored at the start, so the type prefix must lead or the whole path falls through to the default template
-        ^yt-dlp --skip-download --write-thumbnail --convert-thumbnails jpg --no-warnings --playlist-items 1 --js-runtimes node --remote-components ejs:github -o $"thumbnail:($album_dir)/cover" $url | ignore
+        ^yt-dlp --skip-download --write-thumbnail --convert-thumbnails jpg --no-warnings --playlist-items 1 --js-runtimes node:${pkgs.nodejs}/bin/node --remote-components ejs:github -o $"thumbnail:($album_dir)/cover" $url | ignore
 
         print $"\n  (ansi green)Success!(ansi reset)"
         print $"  Album saved to: ($album_dir)"
@@ -591,7 +592,7 @@ let
         let thumb_originals = hide-thumbnails $music_dir
 
         print "Syncing to device (skipping existing files)..."
-        ^adb push --sync $"($music_dir)/." /sdcard/Music/
+        ^${pkgs.android-tools}/bin/adb push --sync $"($music_dir)/." /sdcard/Music/
         let push_exit = $env.LAST_EXIT_CODE
 
         print "Restoring thumbnails..."
@@ -608,7 +609,7 @@ let
     }
   '';
 in
-{
+only.gate { tags = [ "desktop" ]; } {
   environment.systemPackages = with pkgs; [
     yt-dlp
   ];

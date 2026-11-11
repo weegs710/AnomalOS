@@ -3,6 +3,7 @@
   lib,
   pkgs,
   weegsware,
+  only,
   ...
 }:
 let
@@ -31,7 +32,7 @@ let
         (builtins.readFile ./tfm-wrapper.nu);
   };
 in
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${username}.packages = [ tfm ];
 
   hjem.users.${username} = {

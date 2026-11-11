@@ -89,6 +89,10 @@
     device = "zgames/games/heroic";
     fsType = "zfs";
   };
+  fileSystems."/mnt/media" = {
+    device = "zgames/media";
+    fsType = "zfs";
+  };
 
   swapDevices = [ { device = "/dev/disk/by-label/SWAP"; } ];
 

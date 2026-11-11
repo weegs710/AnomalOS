@@ -1,18 +1,22 @@
 {
   config,
   pkgs,
+  only,
   ...
 }:
 let
   username = config.mySystem.user.name;
 in
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${username}.packages = [
     pkgs.zed-editor
-    # zed resolves servers/formatters from PATH (which() lookup); css/html/ts servers come from dev.nix, nu LSP is nushell itself, marksman self-downloads via its extension
+    # zed resolves servers/formatters from PATH (which() lookup); nu LSP is nushell itself, marksman self-downloads via its extension
     pkgs.nixd
+    pkgs.nixfmt
     pkgs.nufmt
     pkgs.prettier
+    pkgs.typescript-language-server
+    pkgs.vscode-langservers-extracted
   ];
 
   # copy-type so zed can rewrite it at runtime; gui edits get pulled back with `zed-s`

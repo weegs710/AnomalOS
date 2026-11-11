@@ -1,12 +1,14 @@
 {
   config,
   lib,
+  only,
   ...
 }:
 let
   username = config.mySystem.user.name;
   effects = "${config.programs.umbriel.package}/share/umbriel/effects";
 in
+only.gate { tags = [ "desktop" ]; }
 {
   hjem.users.${username} = {
     # Copied rather than symlinked because noctalia's umbriel template rewrites this file in place to add its [include].

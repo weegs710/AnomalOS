@@ -3,6 +3,7 @@
   inputs,
   lib,
   pkgs,
+  only,
   ...
 }:
 let
@@ -24,6 +25,7 @@ let
   ];
   hex = lib.removePrefix "#";
 in
+only.gate { tags = [ "desktop" ]; }
 {
   hjem.extraModules = [ inputs.noctalia.hjemModules.default ];
 
@@ -40,6 +42,8 @@ in
 
   # noctalia writes runtime state + git-cloned plugin/palette caches here; persist it so the tmpfs root reboot doesn't re-clone every boot
   preservation.preserveAt."/persist".users.${username}.directories = [
+    ".config/qt6ct"
+    ".local/share/wallpapers"
     ".local/state/noctalia"
   ];
 
