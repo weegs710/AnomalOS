@@ -36,6 +36,27 @@ let
           nerd-font-patcher --complete --variable-width-glyphs --quiet --outputdir $dest static/SpaceGrotesk-$w.ttf
         done
       '';
+  # Space Mono ships no programming ligatures, so the arrow, comparison, pipe and bind set is drawn from its own glyphs
+  spaceMonoLigatures =
+    pkgs.runCommand "space-mono-nerd-font-ligatures"
+      {
+        nativeBuildInputs = [
+          (pkgs.python3.withPackages (p: [
+            p.fonttools
+            p.skia-pathops
+          ]))
+        ];
+      }
+      ''
+        src=${pkgs.nerd-fonts.space-mono}/share/fonts/truetype/NerdFonts/SpaceMono
+        dest=$out/share/fonts/truetype/NerdFonts/SpaceMono
+        mkdir -p $dest
+        cp $src/*.ttf $dest/
+        chmod u+w $dest/*.ttf
+        for w in Regular Italic Bold BoldItalic; do
+          python3 ${./space-mono-ligatures.py} $src/SpaceMonoNerdFontMono-$w.ttf $dest/SpaceMonoNerdFontMono-$w.ttf
+        done
+      '';
 in
 # gated so a headless host skips the whole desktop bundle rather than pulling GUI packages it never starts
 only.gate { tags = [ "desktop" ]; }
@@ -90,13 +111,13 @@ only.gate { tags = [ "desktop" ]; }
       jetbrains-mono
       fira-code
       terminess-ttf
-      space-mono
       hack
       iosevka
     ]
     ++ [
       pkgs.noto-fonts-color-emoji
       spaceGroteskNerd
+      spaceMonoLigatures
     ];
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
