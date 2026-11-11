@@ -14,6 +14,7 @@ local.nix
 *.backup
 *.bak
 *.old
+*.replaced
 
 # secrets -- .age (agenix-encrypted) and secrets.nix (public keys only) are safe to commit, never ignore them
 *.key

@@ -9,21 +9,20 @@ let
   shipHome = ".local/share/2ship2harkinian";
 
   zip = pkgs.fetchurl {
-    name = "2Ship-Battler-Alfa-Linux.zip";
-    url = "https://github.com/HarbourMasters/2ship2harkinian/releases/download/5.0.0/2Ship-Battler-Alfa-Linux.zip";
-    hash = "sha256-JxizLWCz9PxTmxsWKK9lVPM+LA8cIyNVSFh/a17P700=";
+    name = "2Ship-Battler-Bravo-Linux.zip";
+    url = "https://github.com/HarbourMasters/2ship2harkinian/releases/download/5.0.1/2Ship-Battler-Bravo-Linux.zip";
+    hash = "sha256-bN1P4G8/mwlemchv73C5JlzJIftvqnuh4Y6U6Q7Qs0U=";
   };
 
   # the linux release is a zip'd appimage, but wrapType2 wants the bare appimage file
-  appimage = pkgs.runCommand "2ship-5.0.0.appimage" { nativeBuildInputs = [ pkgs.unzip ]; } ''
+  appimage = pkgs.runCommand "2ship-5.0.1.appimage" { nativeBuildInputs = [ pkgs.unzip ]; } ''
     unzip -p ${zip} 2ship.appimage > $out
   '';
 
   fhs = pkgs.appimageTools.wrapType2 {
     pname = "2ship-fhs";
-    version = "5.0.0";
+    version = "5.0.1";
     src = appimage;
-    extraPkgs = _pkgs: [ ];
   };
 
   # SHIP_HOME is the only lever that pins libultraship's writable dir on linux; unset, the portable build writes beside the read-only store binary

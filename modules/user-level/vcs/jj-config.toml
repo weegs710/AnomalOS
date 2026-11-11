@@ -8,9 +8,6 @@ email = "weegs@tutamail.com"
 pager = ":builtin"
 editor = "zeditor --wait"
 
-[git]
-auto-local-branch = true
-
 [remotes.codeberg]
 auto-track-bookmarks = "*"
 

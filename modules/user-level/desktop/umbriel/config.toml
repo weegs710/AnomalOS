@@ -431,13 +431,6 @@ default_workspace = 4
 opacity = 1.0
 window_effect = "off"
 
-# the wrapper basename is the app_id, leading dot included
-[[window_rule]]
-match.app_id = "^\\.EltaleRecompiled-wrapped$"
-default_workspace = 4
-opacity = 1.0
-window_effect = "off"
-
 # all three openra games report app_id dotnet, so only the title separates them
 [[window_rule]]
 match.app_id = "^dotnet$"

@@ -20,11 +20,6 @@ let
       melondsFixed
       genesis-plus-gx
       picodrive
-      beetle-saturn
-      flycast
-      beetle-psx-hw
-      pcsx2
-      ppsspp
       stella
       beetle-pce-fast
       beetle-supergrafx
@@ -59,7 +54,6 @@ let
       url = "https://gitlab.com/es-de/emulationstation-de/-/package_files/288156961/download";
       sha256 = "109mfa3aag6x4gf08326cbgs09dl403ygvaqm8yicmcdfd6s8q9w";
     };
-    extraPkgs = _pkgs: [ ];
   };
 
   # flat display makes crt-geom's default barrel curvature read as distortion, not CRT
@@ -120,21 +114,6 @@ in
 
       # Genesis Plus GX (Genesis/CD/32X) - docs: https://docs.libretro.com/library/genesis_plus_gx/
       "retroarch/config/Genesis Plus GX/Genesis Plus GX.opt".source = ./opts/genesis-plus-gx.opt;
-
-      # Beetle Saturn - docs: https://docs.libretro.com/library/beetle_saturn/
-      "retroarch/config/Beetle Saturn/Beetle Saturn.opt".source = ./opts/beetle-saturn.opt;
-
-      # Flycast (Dreamcast) - docs: https://docs.libretro.com/library/flycast/
-      "retroarch/config/Flycast/Flycast.opt".source = ./opts/flycast.opt;
-
-      # Beetle PSX HW (PlayStation) - docs: https://docs.libretro.com/library/beetle_psx_hw/
-      "retroarch/config/Beetle PSX HW/Beetle PSX HW.opt".source = ./opts/beetle-psx-hw.opt;
-
-      # PCSX2 (PlayStation 2) - docs: https://docs.libretro.com/library/pcsx2/
-      "retroarch/config/PCSX2/PCSX2.opt".source = ./opts/pcsx2.opt;
-
-      # PPSSPP (PlayStation Portable) - docs: https://docs.libretro.com/library/ppsspp/
-      "retroarch/config/PPSSPP/PPSSPP.opt".source = ./opts/ppsspp.opt;
 
       # Stella (Atari 2600) - docs: https://docs.libretro.com/library/stella/
       "retroarch/config/Stella/Stella.opt".source = ./opts/stella.opt;

@@ -90,13 +90,15 @@ def ov-fs [x: int y: int] {
     [
         ...(ov-section-box $x $y 340 240 "#eef1f4" "FS"),
         $"<text x=\"($pool_x)\" y=\"($y + 57)\"  font-size=\"12\" fill=\"#e8ecf1\" font-weight=\"600\">zroot</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 75)\"  font-size=\"11\" fill=\"#aeb3bd\">persist</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 91)\"  font-size=\"11\" fill=\"#aeb3bd\">nix</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 107)\" font-size=\"11\" fill=\"#aeb3bd\">tmp</text>"
-        $"<text x=\"($pool_x)\" y=\"($y + 127)\" font-size=\"12\" fill=\"#e8ecf1\" font-weight=\"600\">zgames</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 145)\" font-size=\"11\" fill=\"#aeb3bd\">games/roms</text>"
-        $"<text x=\"($pool_x)\" y=\"($y + 165)\" font-size=\"12\" fill=\"#e8ecf1\" font-weight=\"600\">tmpfs</text>"
-        $"<text x=\"($dataset_x)\" y=\"($y + 181)\" font-size=\"11\" fill=\"#aeb3bd\">/  ·  256M</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 75)\"  font-size=\"11\" fill=\"#aeb3bd\">root</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 91)\"  font-size=\"11\" fill=\"#aeb3bd\">persist</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 107)\" font-size=\"11\" fill=\"#aeb3bd\">nix</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 123)\" font-size=\"11\" fill=\"#aeb3bd\">cache</text>"
+        $"<text x=\"($pool_x)\" y=\"($y + 143)\" font-size=\"12\" fill=\"#e8ecf1\" font-weight=\"600\">zgames</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 161)\" font-size=\"11\" fill=\"#aeb3bd\">games/{heroic, roms, steam}</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 177)\" font-size=\"11\" fill=\"#aeb3bd\">media</text>"
+        $"<text x=\"($pool_x)\" y=\"($y + 197)\" font-size=\"12\" fill=\"#e8ecf1\" font-weight=\"600\">tmpfs</text>"
+        $"<text x=\"($dataset_x)\" y=\"($y + 213)\" font-size=\"11\" fill=\"#aeb3bd\">/  ·  256M</text>"
     ]
 }
 
@@ -675,16 +677,10 @@ def main [] {
             $acc | insert $name (if ($tags | is-empty) { $sys } else { $"($sys)  ·  ($tags)" })
         }
     )
-    let modules_root_files = (
-        glob $"($dotfiles)/modules/*.nix"
-        | each { $in | path basename }
-        | sort
-    )
     let user_count         = ($user_files | length)
     let system_count       = ($system_files | length)
     let hosts_count        = ($hosts_files | length)
-    let modules_root_count = ($modules_root_files | length)
-    let total_files        = $user_count + $system_count + $hosts_count + $modules_root_count
+    let total_files        = $user_count + $system_count + $hosts_count
 
     print "→ Classifying tack pins..."
     let pins        = (open $"($dotfiles)/.tack/pins.toml")
@@ -827,7 +823,6 @@ def main [] {
         system_files:       $system_files
         hosts_files:        $hosts_files
         host_meta:          $host_meta
-        modules_root_files: $modules_root_files
     }
 
     let out_dir = $"($dotfiles)/assets"

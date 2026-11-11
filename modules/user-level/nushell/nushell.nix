@@ -15,8 +15,7 @@ let
       buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.libgit2 ];
     }))
     query
-    # semver # compiled for nushell 0.111.0, incompatible with 0.112.1
-    # skim # compiled for nushell 0.111.0, incompatible with 0.112.1
+    skim
   ];
 
   # Pre-generate plugin registry so plugins are available without manual `plugin add`
@@ -270,7 +269,6 @@ in
 
     users.users.${config.mySystem.user.name}.packages = [
       pkgs.atuin
-      pkgs.fish
       pkgs.fzf
       pkgs.oh-my-posh
       pkgs.tldr

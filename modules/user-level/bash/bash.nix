@@ -2,7 +2,7 @@
 {
   # Install ~/.bashrc for auto-exec into nushell
   # Provides escape hatch via BASH_NO_NU env var
-  # Prevents recursion via NUSHELL env var and parent process check
+  # Prevents recursion via NUSHELL env var
   hjem.users.${config.mySystem.user.name}.files = {
     ".bashrc".source = ./bashrc.bash;
     ".bash_profile".source = ./bash_profile.bash;

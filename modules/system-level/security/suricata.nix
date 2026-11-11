@@ -69,9 +69,6 @@
       settings = {
         logging = {
           default-log-level = "notice";
-          outputs.console = {
-            enabled = lib.mkForce "true";
-          };
         };
 
         # required by nixos module assertion; actual packet processing uses nfq mode below, not af-packet
@@ -118,8 +115,6 @@
             };
           }
         ];
-        default-rule-path = "/var/lib/suricata/rules";
-        rule-files = [ "suricata.rules" ];
         app-layer.protocols.modbus.enabled = "no";
         app-layer.protocols.dnp3.enabled = "no";
       };
@@ -156,7 +151,6 @@
       wantedBy = [ "timers.target" ];
       timerConfig = {
         OnBootSec = "5min";
-        OnUnitActiveSec = "24h";
       };
     };
 

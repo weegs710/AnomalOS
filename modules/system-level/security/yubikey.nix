@@ -1,26 +1,14 @@
 {
-  config,
   pkgs,
   ...
 }:
-let
-  username = config.mySystem.user.name;
-  u2fKeys = "/home/${username}/.config/Yubico/u2f_keys";
-in
 {
   security.pam.u2f = {
     enable = true;
     control = "sufficient";
     settings = {
       cue = true;
-      authFile = u2fKeys;
     };
-  };
-
-  security.pam.services = {
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
-    polkit-1.u2fAuth = true;
   };
 
   services = {
@@ -32,8 +20,7 @@ in
       ];
       # uaccess grants the seat user a device ACL, so no group membership is involved
       extraRules = ''
-        KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0113|0114|0115|0116|0120|0200|0402|0403|0406|0407|0410", TAG+="uaccess", MODE="0664"
-        SUBSYSTEM=="usb", ATTRS{idVendor}=="1050", MODE="0664"
+        KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0113|0114|0115|0116|0120|0200|0402|0403|0406|0407|0410", TAG+="uaccess"
       '';
     };
     pcscd.enable = true;

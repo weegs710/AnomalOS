@@ -1,6 +1,6 @@
 # Third-party material in anomalOS
 
-anomalOS itself is MIT (see [`../LICENSE`](../LICENSE)). Three things in this repo came from
+anomalOS itself is MIT (see [`../LICENSE`](../LICENSE)). Two things in this repo came from
 elsewhere and are **not** covered by that MIT grant. Each is listed below with its own terms, and
 where I modified it.
 

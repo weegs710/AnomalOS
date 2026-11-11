@@ -14,27 +14,21 @@
       "usb_storage"
       "sd_mod"
     ];
-    initrd.kernelModules = [ ];
     kernelModules = [
       "kvm-amd"
       "ntsync"
     ];
-    extraModulePackages = [ ];
     zfs.devNodes = "/dev/disk/by-partuuid";
     # linux_7_2 is EOL and zfs_2_4 only builds on 7_3 with .tack/patches/nixpkgs; drop both once nixpkgs ships zfs 2.4.5.
     kernelPackages = pkgs.linuxKernel.packages.linux_7_3;
     kernelParams = [ "hid_apple.fnmode=2" ];
-    supportedFilesystems.zfs = true;
   };
 
-  networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.enableRedistributableFirmware = lib.mkDefault true;
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   hardware.amdgpu.opencl.enable = true;
   hardware.amdgpu.overdrive.enable = true;
-
-  services.lact.enable = true;
 
   # card numbers follow probe order, PCI ids do not
   services.udev.extraRules = ''

@@ -153,7 +153,6 @@ let
           (run "m" "2Ship2Harkinian" "2s2h")
           (run "l" "zelda3" "zelda3")
           (run "d" "Dinosaur Planet" "dino-recomp")
-          (run "q" "Quest 64" "EltaleRecompiled")
           (run "x" "renegade x" "steam steam://rungameid/14947236508015263744")
           (sub "o" "openra" [
             (run "d" "Dune 2000" "openra-d2k")
@@ -169,7 +168,6 @@ let
         (sub "t" "tools" [
           (run "b" "btop" btopCmd)
           (run "f" "tfm" fileManagerCmd)
-          (run "l" "lact" "lact gui")
           (run "m" "peepers" peepersCmd)
           (run "p" "gparted" "gparted")
           (run "t" "protontricks" "protontricks --no-term --gui")
@@ -225,7 +223,6 @@ in
 {
   users.users.${username}.packages = [
     pkgs.wlr-which-key
-    pkgs.libwebp
   ];
 
   hjem.users.${username}.xdg.config.files = lib.mapAttrs' (

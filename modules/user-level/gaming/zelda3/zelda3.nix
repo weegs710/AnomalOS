@@ -26,7 +26,6 @@ let
   glslShaders = pkgs.runCommand "zelda3-glsl-shaders" { } ''
     cp -rs ${glslShadersSrc} $out
     chmod -R u+w $out
-    cp ${./scalefx-raa-level2aa.glslp} $out/presets/scalefx-raa-level2aa.glslp
 
     # zelda3 never binds PassPrev[pass]; Orig is the same texture
     rm $out/scalefx/shaders/scalefx-pass4.glsl

@@ -105,7 +105,6 @@ in
           ".ssh"
           ".android"
           ".crawl"
-          ".var"
           ".claude"
           "cloud"
           "Documents"
@@ -126,7 +125,6 @@ in
           ".config/environment.d"
           ".config/systemd"
           ".config/pulse"
-          ".config/qt5ct"
           ".config/qt6ct"
           ".config/QtProject"
           ".config/age"
@@ -134,10 +132,6 @@ in
           ".config/jj"
           # emulators (saves preserved, no dedicated module)
           ".config/Ryujinx"
-          ".config/ppsspp"
-          ".config/desmume"
-          # actively used, no dedicated module
-          ".config/Cryptomator"
           # peepers: settings and benchmark history, no dedicated module
           ".config/peepers"
           ".local/state/peepers"
@@ -149,18 +143,15 @@ in
           ".local/share/wallpapers"
           ".local/share/pki"
           ".local/share/vulkan"
-          ".local/share/sddm"
           ".local/share/systemd"
           ".local/share/nix"
           ".local/share/Trash"
           ".local/share/direnv"
-          ".local/share/Cryptomator"
           ".local/share/Larian Studios"
           ".local/share/Paradox Interactive"
           # .local/state -- general
           ".local/state/nix"
           ".local/state/nix-output-monitor"
-          ".local/state/comma"
           ".local/state/Larian Studios"
         ];
         files = [
@@ -202,20 +193,7 @@ in
 
   users.users.${username}.packages = [ showTmpfs ];
 
-  # Create persistent installation date marker if it doesn't exist
-  system.activationScripts.persistInstallDate = lib.stringAfter [ "var" ] ''
-    if [ ! -f /persist/.system-install-date ]; then
-      if [ -e /nix/var/nix/profiles/system-1-link ]; then
-        install_date=$(stat -c '%Y' /nix/var/nix/profiles/system-1-link)
-      else
-        install_date=$(date +%s)
-      fi
-      echo "$install_date" > /persist/.system-install-date
-      chmod 644 /persist/.system-install-date
-    fi
-  '';
-
-  # Steam symlinks must exist before Decky Loader starts, otherwise Decky creates .steam/steam as a directory which ln can't replace.
+  # an L rule cannot replace a directory, so these links must exist before anything creates .steam/steam
   systemd.user.tmpfiles.users.${username}.rules = [
     "d %h/.steam 0755 - - -"
     "L %h/.steam/steam - - - - %h/.local/share/Steam"

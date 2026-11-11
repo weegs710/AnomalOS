@@ -82,7 +82,7 @@ let
     wine
   ];
 
-  d2launcher = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+  d2launcher = pkgs.stdenvNoCC.mkDerivation {
     pname = "d2launcher";
     version = sources.d2launcher.version;
 
@@ -130,7 +130,7 @@ let
       mainProgram = "d2launcher";
       platforms = lib.platforms.linux;
     };
-  });
+  };
 in
 {
   users.users.${username}.packages = [ d2launcher ];

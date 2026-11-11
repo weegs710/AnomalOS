@@ -20,14 +20,11 @@ let
   wrappedNushell = pkgs.symlinkJoin {
     name = "nushell-wrapped";
     paths = [ pkgs.nushell ];
-    buildInputs = nushellTools;
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/nu \
         --suffix PATH : ${pkgs.lib.makeBinPath nushellTools}
     '';
-
-    passthru.shellPath = "/bin/nu";
 
     meta = {
       mainProgram = "nu";

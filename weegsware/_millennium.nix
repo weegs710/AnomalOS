@@ -240,7 +240,6 @@ runCommand "millennium-${version}" {
     description = "Modding framework to create, manage and use themes/plugins for Steam";
     longDescription = "An open-source low-code modding framework to create, manage and use themes/plugins for the desktop Steam Client without any low-level internal interaction or overhead";
 
-    maintainers = [ lib.maintainers.trivaris ];
     platforms   = [ "x86_64-linux" ];
   };
 } ''

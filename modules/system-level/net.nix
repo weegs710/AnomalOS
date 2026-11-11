@@ -51,7 +51,6 @@
   systemd.services.tailscaled = {
     after = lib.mkForce [
       "NetworkManager.service"
-      "systemd-resolved.service"
       "network.target"
       "network-pre.target"
     ];

@@ -9,9 +9,30 @@ let
   username = config.mySystem.user.name;
   umbrielBin = "${config.programs.umbriel.package}/bin/umbriel";
   zedIcons = pkgs.writers.writeNuBin "zed-icons" (builtins.readFile ./zed-icons.nu);
+
+  theme = (builtins.fromTOML (builtins.readFile ./config.toml)).theme;
+  terminal = (lib.importJSON ./palettes/${theme.custom_palette}.json).dark.terminal;
+  ansi = [
+    "black"
+    "red"
+    "green"
+    "yellow"
+    "blue"
+    "magenta"
+    "cyan"
+    "white"
+  ];
+  hex = lib.removePrefix "#";
 in
 {
   hjem.extraModules = [ inputs.noctalia.hjemModules.default ];
+
+  # the VT background is slot 0, so it takes kitty's background (pure black under pure_black_dark) to match the terminal
+  console.colors = [
+    (if theme.pure_black_dark then "000000" else hex terminal.background)
+  ]
+  ++ map (c: hex terminal.normal.${c}) (lib.tail ansi)
+  ++ map (c: hex terminal.bright.${c}) ansi;
 
   environment.sessionVariables = {
     QT_QPA_PLATFORMTHEME = "qt6ct";

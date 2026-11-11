@@ -46,3 +46,7 @@ url = "cb:weegs710/nix-shop"
 [inputs.umbriel]
 url = "gh:noctalia-dev/umbriel"
 submodules = true
+
+[inputs.bootvine]
+url = "cb:wvhulle/bootvine"
+tag = "v{version}"

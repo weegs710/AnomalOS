@@ -62,6 +62,7 @@ The driver creates fresh qcow2 images on every run, so a scenario cannot inherit
 | `hardware-branches` | every branch of `handle_hardware_config`, re-wiping the disks between cases                                        |
 | `broken-hardware`   | an existing `hardware.nix` with no `/boot`, kept rather than regenerated, so the bootability check has to catch it |
 | `persist-restore`   | a canary file and a fake host key survive a full wipe and reinstall, while `/nix` comes back fresh                 |
+| `new-host`          | a host the repo has never seen: `install.sh` creates it, then plans and partitions it with `--no-install`          |
 | `end-to-end`        | a real install, left bootable, so `--reboot` can prove the machine comes up                                        |
 
 `end-to-end` wants 70G on `vda`, which holds the boot partition, swap and the whole system closure at the time of writing.

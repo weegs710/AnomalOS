@@ -26,13 +26,11 @@ in
     openPeerPorts = true;
     settings = {
       download-dir = "/mnt/media/torrents";
-      rpc-bind-address = "127.0.0.1";
       rpc-whitelist = "127.0.0.1";
       rpc-whitelist-enabled = true;
       rpc-host-whitelist-enabled = true;
       rpc-host-whitelist = "localhost,127.0.0.1";
       encryption = 1;
-      utp-enabled = true;
       ratio-limit = 0;
       ratio-limit-enabled = true;
       umask = 2;

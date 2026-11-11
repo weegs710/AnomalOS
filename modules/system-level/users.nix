@@ -31,8 +31,6 @@ in
           hashedPasswordFile = "/persist/etc/shadow/${config.mySystem.user.name}";
           description = config.mySystem.user.description;
           extraGroups = config.mySystem.user.extraGroups;
-          packages = [
-          ];
         };
       };
     };

@@ -34,6 +34,7 @@ in
     source = ./config.ini;
     type = "copy";
     clobber = false;
+    permissions = "0644";
   };
 
   preservation.preserveAt."/persist".users.${username}.directories = [ ".config/AM2R" ];

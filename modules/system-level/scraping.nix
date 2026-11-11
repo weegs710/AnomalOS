@@ -159,7 +159,7 @@ let
             | append ["-y" $dest]
         )
 
-        let r = (^nix run nixpkgs#ffmpeg -- ...$args | complete)
+        let r = (^${pkgs.ffmpeg}/bin/ffmpeg ...$args | complete)
         if $r.exit_code != 0 {
             let tail = ($r.stderr | lines | last 8 | str join "\n")
             $"ENCODE FAILED ($src):\n($tail)" | write-log $log_file
@@ -624,4 +624,10 @@ in
     "yoink/yoink.nu".text = yoinkScript;
     "sync-music/sync-music.nu".text = syncMusicScript;
   };
+
+  # --set-dir writes config.json here and every run logs here
+  preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
+    ".config/yoink"
+    ".config/snag"
+  ];
 }

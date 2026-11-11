@@ -75,7 +75,7 @@ export default {
                 const secret = await api.ui.prompt({ title: "Archive password", okLabel: "Extract" });
                 if (!secret) return;
                 for (const f of pw)
-                  stagedExtract(api, "7zz", (s) => ["x", "-y", `-p${secret}`, `-o${s}`, f], "password extract");
+                  stagedExtract(api, "7z", (s) => ["x", "-y", `-p${secret}`, `-o${s}`, f], "password extract");
               })();
             },
           });

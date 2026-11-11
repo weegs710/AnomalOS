@@ -83,7 +83,7 @@ chk "/boot kept its NIXBOOT label"      "grep -q 'by-label/NIXBOOT' $H/TESTBOX/h
 chk "/boot is not a raw uuid"           "! grep -q 'by-uuid' $H/TESTBOX/hardware.nix"
 chk "said it kept the label"            "grep -q 'rather than the generated device identifier' /root/step2.out"
 chk "swap left out of hardware.nix"     "grep -q 'swapDevices = \[ \];' $H/TESTBOX/hardware.nix"
-chk "said it left swap out"             "grep -q 'installer.s swap partition is temporary' /root/step2.out"
+chk "said it left swap out"             "grep -q 'Left swap out of the hardware configuration' /root/step2.out"
 chk "no prompt loop on closed stdin"    "! grep -q 'Please answer y or n' /root/step2.out"
 chk "real repo untouched (read-only)"   "! touch /mnt/repo/CANARY"
 

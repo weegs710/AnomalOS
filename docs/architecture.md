@@ -158,10 +158,10 @@ only.gate { tags = [ "server" ]; }              { ... }
 only.gate { systems = [ "aarch64-linux" ]; }    { ... }
 ```
 
-`when` is an extra predicate over the descriptor, AND'd on top. `except` subtracts and wins over the includes -- a bare list is shorthand for host-name-or-tag, an attrset `{ hosts; tags; systems; }` is precise.
+`when` is an extra predicate over the descriptor, AND'd on top. `except` subtracts and wins over the includes -- a bare list is shorthand for tags only (a name that is not a valid tag throws, so host names are rejected), an attrset `{ hosts; tags; systems; }` is precise.
 
 ```nix
-only.gate { tags = [ "desktop" ]; except = [ "RPI" ]; } { ... }
+only.gate { tags = [ "desktop" ]; except = { hosts = [ "RPI" ]; }; } { ... }
 ```
 
 Or hand it a predicate instead of an attrset:
@@ -213,7 +213,7 @@ mySystem.hostName           default "anomalos", overridden by the derived identi
 mySystem.timeZone           default "America/New_York"
 ```
 
-The only other `mySystem` tree is `mySystem.k8sLab` in `modules/system-level/k8s.nix`.
+The only other `mySystem` trees are `mySystem.k8sLab` in `modules/system-level/k8s.nix` and `mySystem.win11Vm` in `modules/system-level/win11-vm.nix`.
 
 ## weegsware
 

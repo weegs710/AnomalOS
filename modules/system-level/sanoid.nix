@@ -13,14 +13,5 @@
       autoprune = true;
       autosnap = true;
     };
-
-    # templates.<name> = {
-    #   hourly = <hourlies to keep>;
-    #   daily = <dailies to keep>;
-    #   weekly = <weeklies to keep>;
-    #   monthly = <monthlies to keep>;
-    #   autoprune = true; # delete snapshots beyond the counts above
-    #   autosnap = true; # take snapshots on the sanoid interval
-    # };
   };
 }

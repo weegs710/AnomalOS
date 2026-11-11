@@ -30,9 +30,6 @@ widget_spacing = 10
 [brightness]
 enable_ddcutil = false
 
-[hooks]
-colors_changed = "/nix/store/msaib70gmzwlaq5mic54fhnv74xzs6sq-umbriel-0.1.0/bin/umbriel msg config-reload"
-
 [idle.behavior.lock]
 command = "noctalia:session lock"
 enabled = false
@@ -223,7 +220,7 @@ wallpaper_scheme = "vibrant"
 
     [theme.templates]
     builtin_ids = [ "btop", "gtk3", "gtk4", "kitty", "umbriel", "kcolorscheme", "qt" ]
-    community_ids = [ "gimp", "inkscape", "zed", "heroiclauncher", "steam", "zathura", "hyprtoolkit", "yazi" ]
+    community_ids = [ "gimp", "inkscape", "zed", "heroiclauncher", "steam", "zathura" ]
     enable_builtin_templates = true
     enable_community_templates = true
 

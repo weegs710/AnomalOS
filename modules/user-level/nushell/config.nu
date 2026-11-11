@@ -76,7 +76,7 @@ def --wrapped draw [...args: string] {
 }
 
 def evaltime [] {
-    hyperfine $'nix eval ($env.NH_FLAKE)#nixosConfigurations.HX99G.config.system.build.toplevel --substituters " " --option eval-cache false --raw --read-only'
+    hyperfine $"nix eval --impure --raw --substituters ' ' --option eval-cache false --read-only --expr '\(import ($env.NH_FILE) {}\).nixosConfigurations.HX99G.config.system.build.toplevel.drvPath'"
 }
 
 def recycle [] {
@@ -182,14 +182,6 @@ def peep-s [] {
     open --raw ~/.config/peepers/settings.toml | save --force ~/repo/public/anomalos/modules/user-level/peepers/settings.toml
 }
 
-# pull in-game eltale settings back into the repo (reverse of the copy-type rebuild)
-def elt-s [] {
-    open --raw ~/.config/EltaleRecompiled/controls.json | save --force ~/repo/public/anomalos/modules/user-level/gaming/eltale-recomp/controls.json
-    open --raw ~/.config/EltaleRecompiled/graphics.json | save --force ~/repo/public/anomalos/modules/user-level/gaming/eltale-recomp/graphics.json
-    open --raw ~/.config/EltaleRecompiled/general.json | save --force ~/repo/public/anomalos/modules/user-level/gaming/eltale-recomp/general.json
-    open --raw ~/.config/EltaleRecompiled/sound.json | save --force ~/repo/public/anomalos/modules/user-level/gaming/eltale-recomp/sound.json
-}
-
 # pull ui-edited adguard blocklists back into the repo (reverse of the declarative rebuild)
 def block-s [] {
     let pw = (input -s "adguard password: ")
@@ -212,7 +204,6 @@ alias ccl = claude-launcher
 alias hex = claude-launcher hex
 alias l = ls -alh
 alias ll = ls -l
-alias closure = nix path-info -Sh /run/current-system
 alias gparted = gparted-safe
 alias jj-fetch = jj git fetch --all-remotes
 alias p6a = ssh -p 8022 u0_a267@100.121.71.20

@@ -118,7 +118,12 @@ only.gate { tags = [ "desktop" ]; }
   services.upower.enable = true;
   services.udisks2.enable = true;
   services.gvfs.enable = true;
-  services.locate.enable = true;
+  services.locate = {
+    enable = true;
+    # the db is ~60M; plocate reads a compiled-in /var/cache/locatedb, so that path links to disk
+    output = "/cache/var/cache/locatedb";
+  };
+  systemd.tmpfiles.rules = [ "L+ /var/cache/locatedb - - - - /cache/var/cache/locatedb" ];
   services.speechd.enable = false; # pulled in as a gnome dependency, not needed
 
   services.displayManager = {

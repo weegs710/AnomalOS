@@ -10,7 +10,7 @@ Nothing is written until every check has passed and you have confirmed once.
 
 **Hardware.** x86_64 with AVX2, BMI2 and XSAVE (`x86_64-v3`, so most CPUs from 2013 onward but not all). The hardware config is AMD-only. On Intel, change `boot.zfs.devNodes` from `"/dev/disk/by-partuuid"` to `"/dev/disk/by-id"` in `modules/hosts/<HOST>/hardware.nix` and drop the AMD microcode and `amdgpu` lines. You want an internet connection and at least 100GB free.
 
-**A host directory.** The installer only offers hosts that exist. Create `modules/hosts/<NAME>/` with a `metadata.nix` in it first, see [Architecture](./architecture.md#hosts-are-directories). Set `mySystem.user.name` in that host's `host.nix` too -- it is the account you will be logging into.
+**A host directory.** The installer lists the hosts in `modules/hosts/` and offers "a machine not listed above", which asks for a name, tags, system type and username, then writes `modules/hosts/<NAME>/` for you. To write it by hand instead, create the directory with a `metadata.nix` in it first, see [Architecture](./architecture.md#hosts-are-directories), and set `mySystem.user.name` in that host's `host.nix` -- it is the account you will be logging into.
 
 **A hostId.** `metadata.nix` needs 8 lowercase hex characters, different on every machine, because ZFS reads it from `/etc/hostid` to refuse importing a pool that belongs to another host:
 
@@ -159,4 +159,4 @@ sudo reboot
 
 ## Testing It Without a Machine
 
-Every path above is exercised in a throwaway VM by `lib/vmtest/`, including a real install followed by a reboot from disk. See [Testing](./testing.md).
+The installer's paths are exercised in throwaway VMs by `lib/vmtest/`, including a real install followed by a reboot from disk. The new-host scenario runs with `--no-install`, so it covers creating a host, planning and partitioning but not the install itself. See [Testing](./testing.md).
