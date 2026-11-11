@@ -30,10 +30,8 @@ url = "gh:nix-community/nix-index-database"
 [inputs.tack]
 url = "gh:manic-systems/tack"
 
-# Own nixpkgs and a rev noctalia.cachix.org has built, so it substitutes instead of compiling. Move the rev only to one that cache has.
 [inputs.noctalia]
 url = "gh:noctalia-dev/noctalia/0a0d63805eb6e17e699de391171618a5d696726d"
-exclude_follow = ["nixpkgs"]
 
 [inputs.dusklight]
 url = "gh:TwilitRealm/dusklight/v1.4.1"

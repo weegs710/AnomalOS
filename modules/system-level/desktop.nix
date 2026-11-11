@@ -6,6 +6,22 @@
 }:
 let
   gpartedWithTools = pkgs.gparted.override { withAllTools = true; };
+  # IFF (libiff, unmaintained) and FITS (cfitsio) loaders carry unfixed CVEs and go unused here
+  gimpWithPlugins = pkgs.gimp-with-plugins.override {
+    gimpPlugins = pkgs.gimpPlugins.override {
+      gimp = pkgs.gimp.overrideAttrs (old: {
+        mesonFlags = old.mesonFlags ++ [
+          "-Dilbm=disabled"
+          "-Dfits=disabled"
+        ];
+      });
+    };
+  };
+  ueberzugppNoFits = pkgs.ueberzugpp.override {
+    vips = pkgs.vips.overrideAttrs (old: {
+      mesonFlags = old.mesonFlags ++ [ "-Dcfitsio=disabled" ];
+    });
+  };
   # env set inside the sudo shell -- PAM clobbers XDG_DATA_DIRS back to root's profile otherwise, hiding the user's theme
   gpartedSafe = pkgs.writeShellScriptBin "gparted-safe" ''
     trap 'systemctl --user start udiskie' EXIT
@@ -86,10 +102,10 @@ only.gate { tags = [ "desktop" ]; }
     qalculate-gtk
     qview
     tremc
-    ueberzugpp
+    ueberzugppNoFits
     unzipNLS
     xdg-dbus-proxy
-    gimp3-with-plugins
+    gimpWithPlugins
     gpu-screen-recorder
     ffmpeg
     inkscape

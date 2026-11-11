@@ -10,7 +10,25 @@ let
   melondsFixed = pkgs.libretro.melonds.overrideAttrs (old: {
     NIX_LDFLAGS = (old.NIX_LDFLAGS or "") + " -z noexecstack";
   });
-  wrappedRetroArch = pkgs.wrapRetroArch {
+  # ffmpeg here only backs retroarch's own recorder and media-player core, and ffmpeg_7 carries unfixed CVEs
+  retroarchBare = pkgs.retroarch-bare.overrideAttrs (old: {
+    configureFlags = old.configureFlags ++ [ "--disable-ffmpeg" ];
+    buildInputs = lib.filter (d: (d.pname or "") != "ffmpeg") old.buildInputs;
+  });
+  # stock cores ship a retroarch-<core> launcher pinned to stock retroarch-bare, so only their .so is kept
+  coreOnly =
+    core:
+    pkgs.runCommand "${core.name}-core" { passthru = { inherit (core) core libretroCore; }; } ''
+      mkdir -p $out${core.libretroCore}
+      cp ${core}${core.libretroCore}/* $out${core.libretroCore}/
+    '';
+  # the wrapper closes over its own retroarch-bare argument, so it is taken from an override that swaps it
+  wrapRetroArch =
+    args:
+    (pkgs.retroarch-bare.override { retroarch-bare = retroarchBare; }).wrapper (
+      args // { cores = map coreOnly args.cores; }
+    );
+  wrappedRetroArch = wrapRetroArch {
     cores = with pkgs.libretro; [
       fceumm
       snes9x
