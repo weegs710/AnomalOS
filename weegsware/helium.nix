@@ -113,6 +113,8 @@ let
     name = "helium";
     targetPkgs = _pkgs: [
       heliumPkg
+      # helium dlopens libgtk-3.so.0 by name; without it there is no linux UI, so the portal's dark preference never applies
+      pkgs.gtk3
       pkgs.mesa
       pkgs.libGL
       pkgs.libdrm
