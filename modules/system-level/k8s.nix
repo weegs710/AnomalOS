@@ -11,7 +11,6 @@
     }:
     let
       cfg = config.mySystem.k8sLab;
-      user = config.mySystem.user.name;
 
       nodeOpts = {
         options = {
@@ -429,7 +428,14 @@
 
         preservation.preserveAt."/cache".directories = [ "/var/lib/libvirt" ];
 
-        networking.firewall.trustedInterfaces = [ cfg.bridge ];
+        # guests get DHCP and the bridge's dnsmasq only, never the host's own listeners
+        networking.firewall.interfaces.${cfg.bridge} = {
+          allowedUDPPorts = [
+            53
+            67
+          ];
+          allowedTCPPorts = [ 53 ];
+        };
 
         programs.virt-manager.enable = true;
 
@@ -441,8 +447,6 @@
             "${name}.${cfg.domain}"
           ]
         ) cfg.nodes;
-
-        users.users.${user}.extraGroups = [ "libvirtd" ];
 
         environment.systemPackages = with pkgs; [
           cloud-utils

@@ -301,6 +301,6 @@ modules/hosts/        one directory per machine
 modules/system-level/ system modules
 modules/user-level/   user modules
 weegsware/            wrapped packages, exposed as outputs
-secrets/              agenix .age files and secrets.nix
+secrets/              agenix .age files, agenix-rules.nix, recipients/*.pub
 assets/               the SVGs in the README
 ```

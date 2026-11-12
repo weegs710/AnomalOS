@@ -12,6 +12,9 @@
     };
   };
 
+  # a stolen key alone must not be root; login and polkit stay touch-only
+  security.pam.services.sudo.rules.auth.u2f.settings.pinverification = 1;
+
   services = {
     udev = {
       packages = [

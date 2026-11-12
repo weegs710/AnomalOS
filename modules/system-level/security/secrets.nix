@@ -9,10 +9,13 @@
   config = {
     users.users.${config.mySystem.user.name}.packages = [
       inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
+      # age finds plugins on PATH; this one holds the yubikey-bound identity for editing secrets
+      pkgs.age-plugin-fido2-hmac
+      pkgs.age
     ];
 
     # Bind mount is removed during activation on tmpfs root; read key from persist directly.
-    age.identityPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+    age.identityPaths = [ "/persist/etc/age/host.key" ];
 
     age.secrets.tailscale-authkey = {
       file = ../../../secrets/tailscale-authkey.age;

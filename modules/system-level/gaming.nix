@@ -11,13 +11,13 @@ let
 
   dmemcg-booster = pkgs.rustPlatform.buildRustPackage {
     pname = "dmemcg-booster";
-    version = "0.1.2";
+    version = "0.1.3";
     src = pkgs.fetchFromGitLab {
       domain = "gitlab.steamos.cloud";
       owner = "holo";
       repo = "dmemcg-booster";
-      rev = "79de901c077fedf2b3be53b460e4be8c16eaf020";
-      hash = "sha256-qETBTccMJmB5IJPBK1sLTUdtpPfLFMKFwewLqpB/PgM=";
+      rev = "4305d7438ca81a5854fc1f62ead89eedd9fc0f0f";
+      hash = "sha256-JDT+JKxgaETinIHiP0Pqb7fPNrvcI6AQu90nmoA/YuI=";
     };
     cargoLock.lockFile = ./dmemcg-booster-Cargo.lock;
     buildInputs = with pkgs; [
@@ -95,7 +95,33 @@ only.gate { tags = [ "gaming" ]; }
   systemd.services.dmemcg-booster-system = {
     description = "dmemcg-booster system service";
     wantedBy = [ "multi-user.target" ];
-    serviceConfig.ExecStart = "${dmemcg-booster}/bin/dmemcg-booster --use-system-bus";
+    # it only talks to the system bus and writes root-owned dmem files under /sys/fs/cgroup
+    serviceConfig = {
+      ExecStart = "${dmemcg-booster}/bin/dmemcg-booster --use-system-bus";
+      CapabilityBoundingSet = "";
+      NoNewPrivileges = true;
+      ProtectSystem = "strict";
+      ReadWritePaths = [ "/sys/fs/cgroup" ];
+      ProtectHome = true;
+      PrivateTmp = true;
+      PrivateDevices = true;
+      PrivateNetwork = true;
+      ProtectKernelTunables = true;
+      ProtectKernelModules = true;
+      ProtectKernelLogs = true;
+      ProtectClock = true;
+      ProtectHostname = true;
+      ProtectProc = "invisible";
+      ProcSubset = "pid";
+      RestrictAddressFamilies = [ "AF_UNIX" ];
+      RestrictNamespaces = true;
+      RestrictRealtime = true;
+      RestrictSUIDSGID = true;
+      LockPersonality = true;
+      MemoryDenyWriteExecute = true;
+      SystemCallArchitectures = "native";
+      SystemCallFilter = [ "@system-service" ];
+    };
   };
 
   hjem.users.${config.mySystem.user.name}.systemd.services.dmemcg-booster-user = {

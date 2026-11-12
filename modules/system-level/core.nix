@@ -18,11 +18,9 @@
 
       substituters = [
         "https://anomalos.cachix.org"
-        "https://noctalia.cachix.org"
       ];
       trusted-public-keys = [
         "anomalos.cachix.org-1:Rw01Lh1cj/LULRaPi6S145g1qrRzMr0hxvMTvQE0+Ms="
-        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       ];
 
       min-free = 5368709120; # 5GB (bytes) -- trigger GC before builds fail

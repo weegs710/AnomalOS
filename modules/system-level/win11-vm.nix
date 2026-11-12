@@ -216,10 +216,32 @@
           qemu.swtpm.enable = true;
         };
 
-        # the default libvirt network the guest NIC attaches to
-        networking.firewall.trustedInterfaces = [ "virbr0" ];
+        # guests on the default libvirt network get DHCP and its dnsmasq only, never the host's own listeners
+        networking.firewall.interfaces.virbr0 = {
+          allowedUDPPorts = [
+            53
+            67
+          ];
+          allowedTCPPorts = [ 53 ];
+        };
 
-        users.users.${user}.extraGroups = [ "libvirtd" ];
+        # the kiosk has no polkit agent, so only its own logind session skips the libvirt auth prompt
+        security.polkit.extraConfig = lib.mkIf cfg.kiosk.enable ''
+          polkit.addRule(function(action, subject) {
+            if (action.id != "org.libvirt.unix.manage" || subject.user != "${user}" || !subject.session) {
+              return polkit.Result.NOT_HANDLED;
+            }
+            try {
+              var service = polkit.spawn([
+                "${config.systemd.package}/bin/loginctl", "show-session", subject.session, "-p", "Service", "--value"
+              ]).trim();
+              if (service == "win11-kiosk") {
+                return polkit.Result.YES;
+              }
+            } catch (error) {}
+            return polkit.Result.NOT_HANDLED;
+          });
+        '';
 
         environment.systemPackages = [
           pkgs.virt-viewer

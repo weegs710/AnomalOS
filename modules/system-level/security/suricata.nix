@@ -6,9 +6,10 @@
   ...
 }:
 let
-  trustedIfaces = lib.concatMapStringsSep ", " (
-    i: ''"${i}"''
-  ) config.networking.firewall.trustedInterfaces;
+  # the VM bridges are no longer firewall-trusted but must stay outside the inline IPS
+  trustedIfaces = lib.concatMapStringsSep ", " (i: ''"${i}"'') (
+    config.networking.firewall.trustedInterfaces ++ lib.attrNames config.networking.firewall.interfaces
+  );
 in
 {
   config = only.gate { tags = [ "server" ]; } {
@@ -126,6 +127,16 @@ in
       # multi-user.target infers After= from .wants/ symlinks; removing entry is the only way to unblock
       wantedBy = lib.mkForce [ ];
       serviceConfig = {
+        ProtectHome = true;
+        ProtectClock = true;
+        # netlink carries the nfqueue, unix the suricatasc socket
+        RestrictAddressFamilies = [
+          "AF_UNIX"
+          "AF_NETLINK"
+          "AF_INET"
+          "AF_INET6"
+          "AF_PACKET"
+        ];
         ProtectProc = lib.mkForce "invisible";
         # nixos module hardcodes -i <iface>; no native NFQ option exists so override is required
         ExecStart = lib.mkForce "!${config.services.suricata.package}/bin/suricata -c ${config.services.suricata.configFile} -q 0";

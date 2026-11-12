@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   systemd.services.NetworkManager-wait-online.enable = false;
 
@@ -21,7 +26,10 @@
   services.tailscale = {
     enable = true;
     openFirewall = true;
-    authKeyFile = config.age.secrets.tailscale-authkey.path;
+    # the module cats this file into argv, so it holds tailscale's file: reference instead of the key itself
+    authKeyFile = pkgs.writeText "tailscale-authkey-ref" "file:${config.age.secrets.tailscale-authkey.path}";
+    # an OAuth client secret only mints a key for tagged nodes; ephemeral=false rides inside the secret
+    extraUpFlags = [ "--advertise-tags=tag:anomalos" ];
     # "server" is the half that turns on IP forwarding; an exit node cannot route without it
     useRoutingFeatures = "server";
     extraSetFlags = [ "--advertise-exit-node" ];

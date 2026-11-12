@@ -118,7 +118,8 @@ let
         --replace-fail '/usr/bin/zenity' '${zenity}/bin/zenity' \
         --replace-fail '/bin/notify-send' 'notify-send' \
         --replace-fail 'SCRIPT_RES_DIR="$WORKING_DIR/res"' 'SCRIPT_RES_DIR="'$out'/share/d2launcher/res"' \
-        --replace-fail 'wine_default="$WINE_NATIVE_BIN"' 'wine_default="${wine}/bin/wine"'
+        --replace-fail 'wine_default="$WINE_NATIVE_BIN"' 'wine_default="${wine}/bin/wine"' \
+        --replace-fail 'curl -Lk' 'curl -L'
 
       runHook postInstall
     '';

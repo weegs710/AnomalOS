@@ -93,10 +93,6 @@ let
       unit = "weegs-dev";
     }
     {
-      key = "k";
-      unit = "nushell-book";
-    }
-    {
       key = "x";
       unit = "xdg-desktop-portal xdg-desktop-portal-gtk";
       desc = "xdg portals";

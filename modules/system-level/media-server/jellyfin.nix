@@ -74,7 +74,7 @@ in
     "/mnt/media/music"
   ];
 
-  # only Jellyfin hits the LAN; management UIs stay localhost-only
+  # only Jellyfin hits the LAN; the management UIs bind wide but only tailscale0 is trusted
   networking.firewall.allowedTCPPorts = [ 8096 ];
 
   preservation.preserveAt."/persist".directories = [

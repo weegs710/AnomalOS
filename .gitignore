@@ -16,7 +16,7 @@ local.nix
 *.old
 *.replaced
 
-# secrets -- .age (agenix-encrypted) and secrets.nix (public keys only) are safe to commit, never ignore them
+# secrets -- .age (agenix-encrypted), agenix-rules.nix and recipients/*.pub (public keys only) are safe to commit
 *.key
 *.pem
 *-password

@@ -19,11 +19,15 @@
       openssh = {
         enable = true;
         ports = [ 2222 ];
-        # only the ed25519 key is persisted, the others would regenerate every boot
+        # only persisted keys are listed, anything else would regenerate every boot; mldsa44 is the post-quantum hybrid
         hostKeys = [
           {
             path = "/etc/ssh/ssh_host_ed25519_key";
             type = "ed25519";
+          }
+          {
+            path = "/etc/ssh/ssh_host_mldsa44_ed25519_key";
+            type = "mldsa44-ed25519";
           }
         ];
         settings = {
@@ -68,6 +72,14 @@
       }
       {
         file = "/etc/ssh/ssh_host_ed25519_key.pub";
+        how = "symlink";
+      }
+      {
+        file = "/etc/ssh/ssh_host_mldsa44_ed25519_key";
+        how = "symlink";
+      }
+      {
+        file = "/etc/ssh/ssh_host_mldsa44_ed25519_key.pub";
         how = "symlink";
       }
     ];

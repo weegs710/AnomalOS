@@ -24,16 +24,19 @@ in
     "d /var/lib/radarr/.config   0755 radarr media - -"
   ];
 
+  # the env key replaces the one in config.xml, so agenix is the only source of the live key
   services.radarr = {
     enable = true;
     group = "media";
     openFirewall = false;
+    environmentFiles = [ config.age.secrets.radarr-env.path ];
   };
 
   services.sonarr = {
     enable = true;
     group = "media";
     openFirewall = false;
+    environmentFiles = [ config.age.secrets.sonarr-env.path ];
   };
 
   services.prowlarr = {
@@ -70,7 +73,7 @@ in
 
   services.flaresolverr = {
     enable = true;
-    # port 8191 default, localhost only -- no openFirewall needed
+    # port 8191 binds wide; no openFirewall, so only trusted tailscale0 and lo reach it
   };
 
   # recyclarr v8 schema: no include/template -- uses quality_definition.type,
@@ -170,6 +173,16 @@ in
     file = ../../../secrets/sonarr-api-key.age;
     mode = "0400";
     owner = "recyclarr";
+  };
+
+  age.secrets.radarr-env = {
+    file = ../../../secrets/radarr-env.age;
+    mode = "0400";
+  };
+
+  age.secrets.sonarr-env = {
+    file = ../../../secrets/sonarr-env.age;
+    mode = "0400";
   };
 
   preservation.preserveAt."/persist".directories = [

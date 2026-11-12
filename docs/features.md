@@ -128,7 +128,6 @@ Media creation, `desktop`: GIMP 3 with plugins, Inkscape, `gpu-screen-recorder` 
 - The arr suite: Radarr, Sonarr, Prowlarr, Bazarr, FlareSolverr, Recyclarr on a weekly schedule. All `openFirewall = false`; they are reachable over Tailscale, not the LAN.
 - Transmission as a system service with the tremc TUI, RPC bound to localhost only.
 - Navidrome, listening on all interfaces so it is reachable over Tailscale.
-- media-churn, which deletes watched content 14 days after its last play, unmonitors it in Radarr/Sonarr, exempts anything tagged `keep`, and resets the clock when something gets rewatched.
 
 SearXNG is also `server`-gated, on 8888, fronted by `tailscale serve` over HTTPS.
 
@@ -147,5 +146,5 @@ Untagged, because they are true of every machine:
 - sanoid snapshots
 - nushell as the shell, with the whole def library, launched from bash
 - git and jj config, fastfetch, and the TUI tools (btop, pulsemixer, timg, libqalculate)
-- the Nix substituters -- `anomalos.cachix.org`, `noctalia.cachix.org` and `cache.nixos.org` -- declared fleet-wide in `core.nix` so a new host gets them without being told
+- the Nix substituters -- `anomalos.cachix.org` and `cache.nixos.org` -- declared fleet-wide in `core.nix` so a new host gets them without being told
 - automatic GC daily at 90 days, store optimisation nightly, and a 5GB/15GB `min-free`/`max-free` band
