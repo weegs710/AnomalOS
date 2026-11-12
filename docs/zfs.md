@@ -120,4 +120,4 @@ Snapshots are local to the drive. They protect against deleting the wrong thing 
 
 The config is in git on Codeberg, and that is the system backup. Anything personal needs a real external backup on top of this.
 
-`/persist` also carries the SSH host key that agenix secrets are encrypted to, which is what makes a reinstall survivable. See [Installing](./install.md#restoring-persist) and [Secrets](./secrets.md).
+`/persist` also carries the host's age key that agenix secrets are encrypted to, which is what makes a reinstall survivable. See [Installing](./install.md#restoring-persist) and [Secrets](./secrets.md).

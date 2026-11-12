@@ -18,7 +18,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="50" y="85" font-size="36" fill="#e8ecf1" font-weight="700">anomalOS</text>
 <rect x="270" y="68" rx="6" width="106" height="22" fill="#ff2a22" opacity="0.15" stroke="#ff2a22" stroke-width="0.5"/>
 <text x="323" y="83" font-size="10" fill="#ff2a22" font-weight="600" text-anchor="middle">ASSEMBLY</text>
-<text x="50" y="112" font-size="14" fill="#aeb3bd">NixOS 26.11 (Zokor)  ·  /home/weegs/repo/public/anomalos  ·  80 files  ·  11 tack pins</text>
+<text x="50" y="112" font-size="14" fill="#aeb3bd">NixOS 26.11 (Zokor)  ·  /home/weegs/repo/public/anomalos  ·  79 files  ·  11 tack pins</text>
 <rect x="250" y="140" rx="14" width="1000" height="336" fill="#0b0506" stroke="#7a1f26" stroke-width="1.5"/>
 <text x="274" y="170" font-size="14" fill="#e8ecf1" font-weight="700" letter-spacing="2">TACK PINS</text>
 <text x="1226" y="170" font-size="11" fill="#aeb3bd" opacity="0.85" text-anchor="end">.tack/pins.toml</text>
@@ -83,34 +83,34 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="604" y="339" rx="3" width="4" height="38" fill="#ff6b5c"/>
 <circle cx="622" cy="351" r="5" fill="#ff6b5c" opacity="0.25"/>
 <circle cx="622" cy="351" r="3" fill="#ff6b5c"/>
-<text x="636" y="355" font-size="13" fill="#e8ecf1" font-weight="700">preservation</text>
-<text x="636" y="373" font-size="9" fill="#aeb3bd" opacity="0.85">nix-community/preservation</text>
+<text x="636" y="355" font-size="13" fill="#e8ecf1" font-weight="700">noctalia</text>
+<text x="636" y="373" font-size="9" fill="#aeb3bd" opacity="0.85">noctalia-dev/noctalia/0a0d638</text>
 <rect x="851" y="339" rx="5" width="39" height="15" fill="#7a1f26" opacity="0.22"/>
 <text x="871" y="349" font-size="8" fill="#c6ccd5" font-weight="600" text-anchor="middle">follows</text>
 <rect x="930" y="330" rx="9" width="300" height="56" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
 <rect x="934" y="339" rx="3" width="4" height="38" fill="#7b8494"/>
 <circle cx="952" cy="351" r="5" fill="#7b8494" opacity="0.25"/>
 <circle cx="952" cy="351" r="3" fill="#7b8494"/>
-<text x="966" y="355" font-size="13" fill="#e8ecf1" font-weight="700">tack</text>
-<text x="966" y="373" font-size="9" fill="#aeb3bd" opacity="0.85">manic-systems/tack</text>
+<text x="966" y="355" font-size="13" fill="#e8ecf1" font-weight="700">preservation</text>
+<text x="966" y="373" font-size="9" fill="#aeb3bd" opacity="0.85">nix-community/preservation</text>
 <rect x="1181" y="339" rx="5" width="39" height="15" fill="#7a1f26" opacity="0.22"/>
 <text x="1201" y="349" font-size="8" fill="#c6ccd5" font-weight="600" text-anchor="middle">follows</text>
 <rect x="270" y="402" rx="9" width="300" height="56" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
 <rect x="274" y="411" rx="3" width="4" height="38" fill="#ff2a22"/>
 <circle cx="292" cy="423" r="5" fill="#ff2a22" opacity="0.25"/>
 <circle cx="292" cy="423" r="3" fill="#ff2a22"/>
-<text x="306" y="427" font-size="13" fill="#e8ecf1" font-weight="700">umbriel</text>
-<text x="306" y="445" font-size="9" fill="#aeb3bd" opacity="0.85">noctalia-dev/umbriel</text>
+<text x="306" y="427" font-size="13" fill="#e8ecf1" font-weight="700">tack</text>
+<text x="306" y="445" font-size="9" fill="#aeb3bd" opacity="0.85">manic-systems/tack</text>
 <rect x="521" y="411" rx="5" width="39" height="15" fill="#7a1f26" opacity="0.22"/>
 <text x="541" y="421" font-size="8" fill="#c6ccd5" font-weight="600" text-anchor="middle">follows</text>
 <rect x="600" y="402" rx="9" width="300" height="56" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
 <rect x="604" y="411" rx="3" width="4" height="38" fill="#e5424d"/>
 <circle cx="622" cy="423" r="5" fill="#e5424d" opacity="0.25"/>
 <circle cx="622" cy="423" r="3" fill="#e5424d"/>
-<text x="636" y="427" font-size="13" fill="#e8ecf1" font-weight="700">noctalia</text>
-<text x="636" y="445" font-size="9" fill="#aeb3bd" opacity="0.85">noctalia-dev/noctalia/0a0d638</text>
-<rect x="838" y="411" rx="5" width="52" height="15" fill="#7a1f26" opacity="0.22"/>
-<text x="864" y="421" font-size="8" fill="#c6ccd5" font-weight="600" text-anchor="middle">standalone</text>
+<text x="636" y="427" font-size="13" fill="#e8ecf1" font-weight="700">umbriel</text>
+<text x="636" y="445" font-size="9" fill="#aeb3bd" opacity="0.85">noctalia-dev/umbriel</text>
+<rect x="851" y="411" rx="5" width="39" height="15" fill="#7a1f26" opacity="0.22"/>
+<text x="871" y="421" font-size="8" fill="#c6ccd5" font-weight="600" text-anchor="middle">follows</text>
 <path d="M 750 476 L 750 524" fill="none" stroke="#ff2a22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
 <path d="M 750 578 L 750 624" fill="none" stroke="#ff2a22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
 <text x="1030" y="511" font-size="11" fill="#c6ccd5" font-weight="700" letter-spacing="1">ENTRYPOINTS</text>
@@ -208,7 +208,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="401" y="1499" font-size="9" fill="#e5424d" opacity="0.9">●</text><text x="415" y="1499" font-size="13" fill="#c6ccd5">clips/clips.nix</text>
 <text x="401" y="1521" font-size="9" fill="#e5424d" opacity="0.9">●</text><text x="415" y="1521" font-size="13" fill="#c6ccd5">kitty/kitty.nix</text>
 <text x="401" y="1543" font-size="9" fill="#e5424d" opacity="0.9">●</text><text x="415" y="1543" font-size="13" fill="#c6ccd5">noctalia/noctalia.nix</text>
-<rect x="619" y="1531" rx="4" width="61" height="17" fill="#e5424d" opacity="0.92"/>
+<rect x="619" y="1531" rx="4" width="61" height="17" fill="#ff6b5c" opacity="0.92"/>
 <text x="649" y="1543" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">noctalia</text>
 <text x="401" y="1565" font-size="9" fill="#e5424d" opacity="0.9">●</text><text x="415" y="1565" font-size="13" fill="#c6ccd5">umbriel/umbriel.nix</text>
 <text x="401" y="1587" font-size="9" fill="#e5424d" opacity="0.9">●</text><text x="415" y="1587" font-size="13" fill="#c6ccd5">wlrwk-umb/wlrwk-umb.nix</text>
@@ -273,7 +273,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="822" y="1039" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1039" font-size="13" fill="#c6ccd5">thunk</text>
 <rect x="788" y="1113" rx="14" width="672" height="600" fill="#0b0506" stroke="#7a1f26" stroke-width="2"/>
 <text x="808" y="1143" font-size="16" fill="#e8ecf1" font-weight="700">system-level</text>
-<text x="808" y="1160" font-size="10" fill="#aeb3bd">modules/system-level  ·  33 files</text>
+<text x="808" y="1160" font-size="10" fill="#aeb3bd">modules/system-level  ·  32 files</text>
 <rect x="804" y="1169" rx="10" width="313" height="530" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
 <rect x="808" y="1177" rx="3" width="4" height="514" fill="#ff2a22"/>
 <text x="822" y="1190" font-size="14" fill="#e8ecf1" font-weight="700">system-level/</text>
@@ -286,7 +286,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="1046" y="1271" rx="4" width="55" height="17" fill="#ff2a22" opacity="0.92"/>
 <text x="1073" y="1283" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">nixpkgs</text>
 <text x="822" y="1305" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1305" font-size="13" fill="#c6ccd5">core.nix</text>
-<rect x="1063" y="1293" rx="4" width="38" height="17" fill="#7b8494" opacity="0.92"/>
+<rect x="1063" y="1293" rx="4" width="38" height="17" fill="#ff2a22" opacity="0.92"/>
 <text x="1082" y="1305" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">tack</text>
 <rect x="942" y="1293" rx="4" width="117" height="17" fill="#ff9d98" opacity="0.92"/>
 <text x="1000" y="1305" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">nix-index-database</text>
@@ -298,7 +298,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="822" y="1437" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1437" font-size="13" fill="#c6ccd5">net.nix</text>
 <text x="822" y="1459" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1459" font-size="13" fill="#c6ccd5">options.nix</text>
 <text x="822" y="1481" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1481" font-size="13" fill="#c6ccd5">persist.nix</text>
-<rect x="1018" y="1469" rx="4" width="83" height="17" fill="#ff6b5c" opacity="0.92"/>
+<rect x="1018" y="1469" rx="4" width="83" height="17" fill="#7b8494" opacity="0.92"/>
 <text x="1059" y="1481" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">preservation</text>
 <text x="822" y="1503" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1503" font-size="13" fill="#c6ccd5">sanoid.nix</text>
 <text x="822" y="1525" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1525" font-size="13" fill="#c6ccd5">scraping.nix</text>
@@ -309,31 +309,30 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="1070" y="1591" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">nix-shop</text>
 <text x="822" y="1613" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1613" font-size="13" fill="#c6ccd5">tls-system-store.nix</text>
 <text x="822" y="1635" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1635" font-size="13" fill="#c6ccd5">umbriel-system.nix</text>
-<rect x="1046" y="1623" rx="4" width="55" height="17" fill="#ff2a22" opacity="0.92"/>
+<rect x="1046" y="1623" rx="4" width="55" height="17" fill="#e5424d" opacity="0.92"/>
 <text x="1073" y="1635" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">umbriel</text>
 <text x="822" y="1657" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1657" font-size="13" fill="#c6ccd5">users.nix</text>
 <text x="822" y="1679" font-size="9" fill="#ff2a22" opacity="0.9">●</text><text x="836" y="1679" font-size="13" fill="#c6ccd5">win11-vm.nix</text>
-<rect x="1131" y="1169" rx="10" width="313" height="178" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
-<rect x="1135" y="1177" rx="3" width="4" height="162" fill="#c6ccd5"/>
+<rect x="1131" y="1169" rx="10" width="313" height="156" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
+<rect x="1135" y="1177" rx="3" width="4" height="140" fill="#c6ccd5"/>
 <text x="1149" y="1190" font-size="14" fill="#e8ecf1" font-weight="700">system-level/media-server/</text>
 <text x="1149" y="1217" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1217" font-size="13" fill="#c6ccd5">bundle.nix</text>
 <rect x="1373" y="1205" rx="4" width="55" height="17" fill="#ff2a22" opacity="0.92"/>
 <text x="1400" y="1217" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">nixpkgs</text>
 <text x="1149" y="1239" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1239" font-size="13" fill="#c6ccd5">jellyfin.nix</text>
-<text x="1149" y="1261" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1261" font-size="13" fill="#c6ccd5">media-churn.nix</text>
-<text x="1149" y="1283" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1283" font-size="13" fill="#c6ccd5">media-stack.nix</text>
-<text x="1149" y="1305" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1305" font-size="13" fill="#c6ccd5">navidrome.nix</text>
-<text x="1149" y="1327" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1327" font-size="13" fill="#c6ccd5">transmission.nix</text>
-<rect x="1131" y="1361" rx="10" width="313" height="156" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
-<rect x="1135" y="1369" rx="3" width="4" height="140" fill="#8e96a6"/>
-<text x="1149" y="1382" font-size="14" fill="#e8ecf1" font-weight="700">system-level/security/</text>
-<text x="1149" y="1409" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1409" font-size="13" fill="#c6ccd5">adguard/adguard.nix</text>
-<text x="1149" y="1431" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1431" font-size="13" fill="#c6ccd5">dnscrypt.nix</text>
-<text x="1149" y="1453" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1453" font-size="13" fill="#c6ccd5">secrets.nix</text>
-<rect x="1378" y="1441" rx="4" width="50" height="17" fill="#e5424d" opacity="0.92"/>
-<text x="1403" y="1453" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">agenix</text>
-<text x="1149" y="1475" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1475" font-size="13" fill="#c6ccd5">suricata.nix</text>
-<text x="1149" y="1497" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1497" font-size="13" fill="#c6ccd5">yubikey.nix</text>
+<text x="1149" y="1261" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1261" font-size="13" fill="#c6ccd5">media-stack.nix</text>
+<text x="1149" y="1283" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1283" font-size="13" fill="#c6ccd5">navidrome.nix</text>
+<text x="1149" y="1305" font-size="9" fill="#c6ccd5" opacity="0.9">●</text><text x="1163" y="1305" font-size="13" fill="#c6ccd5">transmission.nix</text>
+<rect x="1131" y="1339" rx="10" width="313" height="156" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
+<rect x="1135" y="1347" rx="3" width="4" height="140" fill="#8e96a6"/>
+<text x="1149" y="1360" font-size="14" fill="#e8ecf1" font-weight="700">system-level/security/</text>
+<text x="1149" y="1387" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1387" font-size="13" fill="#c6ccd5">adguard/adguard.nix</text>
+<text x="1149" y="1409" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1409" font-size="13" fill="#c6ccd5">dnscrypt.nix</text>
+<text x="1149" y="1431" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1431" font-size="13" fill="#c6ccd5">secrets.nix</text>
+<rect x="1378" y="1419" rx="4" width="50" height="17" fill="#e5424d" opacity="0.92"/>
+<text x="1403" y="1431" font-size="9" fill="#000000" font-weight="700" text-anchor="middle">agenix</text>
+<text x="1149" y="1453" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1453" font-size="13" fill="#c6ccd5">suricata.nix</text>
+<text x="1149" y="1475" font-size="9" fill="#8e96a6" opacity="0.9">●</text><text x="1163" y="1475" font-size="13" fill="#c6ccd5">yubikey.nix</text>
 <circle cx="750" cy="476" r="3.5" fill="#ff2a22" opacity="0.85"/>
 <circle cx="750" cy="524" r="3.5" fill="#ff2a22" opacity="0.85"/>
 <circle cx="750" cy="578" r="3.5" fill="#ff2a22" opacity="0.85"/>
@@ -371,12 +370,12 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <rect x="429" y="2172" rx="3" width="17" height="17" fill="#a9b4c9"/>
 <text x="455" y="2185" font-size="15" fill="#e8ecf1">nix-shop</text>
 <rect x="659" y="2172" rx="3" width="17" height="17" fill="#ff6b5c"/>
-<text x="685" y="2185" font-size="15" fill="#e8ecf1">preservation</text>
+<text x="685" y="2185" font-size="15" fill="#e8ecf1">noctalia</text>
 <rect x="889" y="2172" rx="3" width="17" height="17" fill="#7b8494"/>
-<text x="915" y="2185" font-size="15" fill="#e8ecf1">tack</text>
+<text x="915" y="2185" font-size="15" fill="#e8ecf1">preservation</text>
 <rect x="1119" y="2172" rx="3" width="17" height="17" fill="#ff2a22"/>
-<text x="1145" y="2185" font-size="15" fill="#e8ecf1">umbriel</text>
+<text x="1145" y="2185" font-size="15" fill="#e8ecf1">tack</text>
 <rect x="199" y="2206" rx="3" width="17" height="17" fill="#e5424d"/>
-<text x="225" y="2219" font-size="15" fill="#e8ecf1">noctalia</text>
-<text x="750" y="2263" font-size="13" fill="#aeb3bd" opacity="0.7" text-anchor="middle">80 files  ·  11 tack pins</text>
+<text x="225" y="2219" font-size="15" fill="#e8ecf1">umbriel</text>
+<text x="750" y="2263" font-size="13" fill="#aeb3bd" opacity="0.7" text-anchor="middle">79 files  ·  11 tack pins</text>
 </svg>

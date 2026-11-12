@@ -60,7 +60,7 @@ jj-push                           # fetch + push + fetch
 
 ## Nushell Wrappers
 
-| Def         | What it does                                                            |
+| Command     | What it does                                                            |
 | ----------- | ----------------------------------------------------------------------- |
 | `jj-fetch`  | `jj git fetch --all-remotes`                                            |
 | `jj-push`   | push to every remote the repo has, then verify all of them are in sync  |

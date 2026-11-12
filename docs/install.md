@@ -102,7 +102,7 @@ nixos-install --root /mnt \
 
 Before the datasets are created, the installer offers to restore `/persist` from a `zfs send` stream instead of creating it empty.
 
-`/persist` holds the SSH host key at `/persist/etc/ssh/ssh_host_ed25519_key`, and that key is the agenix identity. Restore it and the machine's existing secrets keep decrypting. Create it empty and the machine generates a new host key, and every secret has to be re-encrypted before it works again, see [Secrets](./secrets.md).
+`/persist` holds the host's age key at `/persist/etc/age/host.key`, and that key is the agenix identity. Restore it and the machine's existing secrets keep decrypting. Create it empty and there is no key at all: nothing generates one, so the machine boots without its secrets until you make one with `age-keygen -pq`, add it as a recipient and rekey, see [Secrets](./secrets.md#adding-a-machine).
 
 ```bash
 # on the old machine, or from a backup
@@ -116,12 +116,13 @@ Then answer yes and give the full path when the installer asks.
 **Set up the YubiKey**, if you have one. The module is always loaded; without one, rename `modules/system-level/security/yubikey.nix` to `_yubikey.nix` and rebuild.
 
 ```bash
-# persist this directory BEFORE creating the key file -- /home is on a tmpfs root.
-# add ~/.config/Yubico to the preservation user directories first.
+# ~/.config/Yubico is already persisted by yubikey.nix
 mkdir -p ~/.config/Yubico
 pamu2fcfg > ~/.config/Yubico/u2f_keys
+# a second key goes on the same line, so append only its registration part
+pamu2fcfg -n >> ~/.config/Yubico/u2f_keys
 
-sudo echo "YubiKey working"   # should require a touch
+sudo echo "YubiKey working"   # should ask for the key's PIN, then a touch
 ```
 
 **Check it came up:** the desktop loads, the network works, `systemctl --user status pipewire`, the YubiKey requires a touch if enabled, and `systemctl --failed` is empty.

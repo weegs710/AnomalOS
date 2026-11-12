@@ -64,7 +64,7 @@ nh os test -- --show-trace    # verbose; nrt does not pass arguments through
 ```bash
 journalctl --user -t umbriel -b
 echo $XDG_SESSION_TYPE     # should be "wayland"
-umbriel validate           # check the config file
+umbriel config validate    # check the config file
 ```
 
 **noctalia is missing:**

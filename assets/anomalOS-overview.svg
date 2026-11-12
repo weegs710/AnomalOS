@@ -86,13 +86,13 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="90" y="567" font-size="12" fill="#aeb3bd">System</text>
 <text x="220" y="567" font-size="12" fill="#e8ecf1">230</text>
 <text x="90" y="587" font-size="12" fill="#aeb3bd">User</text>
-<text x="220" y="587" font-size="12" fill="#e8ecf1">125</text>
+<text x="220" y="587" font-size="12" fill="#e8ecf1">127</text>
 <text x="90" y="607" font-size="12" fill="#aeb3bd">Total declared</text>
-<text x="220" y="607" font-size="12" fill="#e8ecf1">355</text>
+<text x="220" y="607" font-size="12" fill="#e8ecf1">357</text>
 <text x="90" y="627" font-size="12" fill="#aeb3bd">Closure paths</text>
-<text x="220" y="627" font-size="12" fill="#e8ecf1">3548</text>
+<text x="220" y="627" font-size="12" fill="#e8ecf1">3260</text>
 <text x="90" y="647" font-size="12" fill="#aeb3bd">Closure size</text>
-<text x="220" y="647" font-size="12" fill="#e8ecf1">34.1G</text>
+<text x="220" y="647" font-size="12" fill="#e8ecf1">33.2G</text>
 <rect x="430" y="510" rx="12" width="340" height="240" fill="#160b0d" stroke="#7a1f26" stroke-width="1"/>
 <rect x="438" y="524" rx="2" width="4" height="212" fill="#c6ccd5"/>
 <text x="448" y="538" font-size="13" fill="#c6ccd5" font-weight="700" letter-spacing="1">WEEGSWARE</text>
