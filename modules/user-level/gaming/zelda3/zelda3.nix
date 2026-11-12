@@ -8,12 +8,15 @@ let
 
   dataDir = ".local/share/zelda3";
 
-  src = pkgs.fetchFromGitHub {
-    owner = "snesrev";
-    repo = "zelda3";
-    rev = "v0.3";
-    hash = "sha256-jKCLZ8lqvkN6OmYTZtjxXgbeUUnzOtYaeWmc4rCwwF0=";
+  sources = import ../../../../_sources/generated.nix {
+    inherit (pkgs)
+      fetchgit
+      fetchurl
+      fetchFromGitHub
+      dockerTools
+      ;
   };
+  inherit (sources.zelda3) src;
 
   glslShadersSrc = pkgs.fetchFromGitHub {
     owner = "libretro";
@@ -36,7 +39,7 @@ let
 
   zelda3 = pkgs.stdenv.mkDerivation {
     pname = "zelda3";
-    version = "0.3";
+    version = pkgs.lib.removePrefix "v" sources.zelda3.version;
     inherit src;
     buildInputs = [ pkgs.SDL2 ];
     # v0.3 predates C23; gnu17 keeps empty-paren protos as unspecified-args (gcc14 defaults to gnu23 where () means (void)), and -Wno-error disarms the Makefile's -Werror

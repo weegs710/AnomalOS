@@ -8,20 +8,25 @@ let
 
   shipHome = ".local/share/2ship2harkinian";
 
-  zip = pkgs.fetchurl {
-    name = "2Ship-Battler-Bravo-Linux.zip";
-    url = "https://github.com/HarbourMasters/2ship2harkinian/releases/download/5.0.1/2Ship-Battler-Bravo-Linux.zip";
-    hash = "sha256-bN1P4G8/mwlemchv73C5JlzJIftvqnuh4Y6U6Q7Qs0U=";
+  sources = import ../../../../_sources/generated.nix {
+    inherit (pkgs)
+      fetchgit
+      fetchurl
+      fetchFromGitHub
+      dockerTools
+      ;
   };
+  # nvfetcher's version is "<tag>/<asset>", see nvfetcher.toml
+  version = builtins.head (pkgs.lib.splitString "/" sources."2s2h".version);
 
   # the linux release is a zip'd appimage, but wrapType2 wants the bare appimage file
-  appimage = pkgs.runCommand "2ship-5.0.1.appimage" { nativeBuildInputs = [ pkgs.unzip ]; } ''
-    unzip -p ${zip} 2ship.appimage > $out
+  appimage = pkgs.runCommand "2ship-${version}.appimage" { nativeBuildInputs = [ pkgs.unzip ]; } ''
+    unzip -p ${sources."2s2h".src} 2ship.appimage > $out
   '';
 
   fhs = pkgs.appimageTools.wrapType2 {
     pname = "2ship-fhs";
-    version = "5.0.1";
+    inherit version;
     src = appimage;
   };
 

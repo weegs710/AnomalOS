@@ -64,14 +64,17 @@ let
     ];
   };
 
+  sources = import ../../../../_sources/generated.nix {
+    inherit (pkgs)
+      fetchgit
+      fetchurl
+      fetchFromGitHub
+      dockerTools
+      ;
+  };
+
   esde = pkgs.appimageTools.wrapType2 {
-    pname = "es-de";
-    version = "3.5.0";
-    src = pkgs.fetchurl {
-      name = "ES-DE_x64.AppImage";
-      url = "https://gitlab.com/es-de/emulationstation-de/-/package_files/357718352/download";
-      sha256 = "1x9h6qycz0y7wh97q7vryffvcxhwi7x8dyfkbdvqaprq2ad9khmb";
-    };
+    inherit (sources.es-de) pname version src;
     # nixpkgs dropped libgpg-error from the appimage defaults (3b5bba1a98) and AppRun links it
     extraPkgs = p: [ p.libgpg-error ];
   };

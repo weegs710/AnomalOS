@@ -1,4 +1,19 @@
 {
+    "2s2h": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "2s2h",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-bN1P4G8/mwlemchv73C5JlzJIftvqnuh4Y6U6Q7Qs0U=",
+            "type": "url",
+            "url": "https://github.com/2ship2harkinian/2ship2harkinian/releases/download/5.0.1/2Ship-Battler-Bravo-Linux.zip"
+        },
+        "version": "5.0.1/2Ship-Battler-Bravo-Linux.zip"
+    },
     "d2launcher": {
         "cargoLock": null,
         "date": null,
@@ -19,6 +34,36 @@
             "type": "github"
         },
         "version": "4.1.3"
+    },
+    "dino-recomp": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "dino-recomp",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-s50Iz4lietgXKUXx7Y1jjZ33JPoqtcuHzQ5s2OTLodk=",
+            "type": "url",
+            "url": "https://github.com/DinosaurPlanetRecomp/dino-recomp/releases/download/v0.3.0/DinosaurPlanetRecompiled-v0.3.0-Linux-x64.AppImage"
+        },
+        "version": "v0.3.0"
+    },
+    "es-de": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "es-de",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": "ES-DE_x64.AppImage",
+            "sha256": "sha256-q8KZmhI4X4V3W9P5hvqJHHa2nfN5H3wS5MeDzzw2MPU=",
+            "type": "url",
+            "url": "https://packages.es-de.org/release/3.5.0/ES-DE_x64.AppImage"
+        },
+        "version": "3.5.0"
     },
     "evelens": {
         "cargoLock": null,
@@ -64,5 +109,26 @@
             "url": "https://github.com/clarkarch/tfm-tui/releases/download/v1.0.0/tfm-x86_64-linux.gz"
         },
         "version": "v1.0.0"
+    },
+    "zelda3": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "zelda3",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "snesrev",
+            "repo": "zelda3",
+            "rev": "v0.3",
+            "sha256": "sha256-jKCLZ8lqvkN6OmYTZtjxXgbeUUnzOtYaeWmc4rCwwF0=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.3"
     }
 }

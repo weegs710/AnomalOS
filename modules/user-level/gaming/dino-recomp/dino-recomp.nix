@@ -6,14 +6,19 @@
 let
   username = config.mySystem.user.name;
 
+  sources = import ../../../../_sources/generated.nix {
+    inherit (pkgs)
+      fetchgit
+      fetchurl
+      fetchFromGitHub
+      dockerTools
+      ;
+  };
+
   fhs = pkgs.appimageTools.wrapType2 {
     pname = "dino-recomp-fhs";
-    version = "0.3.0";
-    src = pkgs.fetchurl {
-      name = "DinosaurPlanetRecompiled-v0.3.0-Linux-x64.AppImage";
-      url = "https://github.com/DinosaurPlanetRecomp/dino-recomp/releases/download/v0.3.0/DinosaurPlanetRecompiled-v0.3.0-Linux-x64.AppImage";
-      hash = "sha256-s50Iz4lietgXKUXx7Y1jjZ33JPoqtcuHzQ5s2OTLodk=";
-    };
+    version = pkgs.lib.removePrefix "v" sources.dino-recomp.version;
+    inherit (sources.dino-recomp) src;
     # RT64 is a vulkan renderer and the appimage bundles no loader, so it needs one from the host FHS
     extraPkgs = pkgs: [ pkgs.vulkan-loader ];
   };

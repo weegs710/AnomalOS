@@ -14,3 +14,22 @@ fetch.url = "https://github.com/aliacollins/EveLens/releases/download/$ver/EveLe
 [tfm]
 src.github_tag = "clarkarch/tfm-tui"
 fetch.url = "https://github.com/clarkarch/tfm-tui/releases/download/$ver/tfm-x86_64-linux.gz"
+
+# ES-DE's own update feed; its gitlab download links carry a file id, not the version
+[es-de]
+src.cmd = "curl -sSf https://gitlab.com/es-de/emulationstation-de/-/raw/master/latest_release.json | jq -r .stable.version"
+fetch.url = "https://packages.es-de.org/release/$ver/ES-DE_x64.AppImage"
+url.name = "ES-DE_x64.AppImage"
+
+[dino-recomp]
+src.github = "DinosaurPlanetRecomp/dino-recomp"
+fetch.url = "https://github.com/DinosaurPlanetRecomp/dino-recomp/releases/download/$ver/DinosaurPlanetRecompiled-$ver-Linux-x64.AppImage"
+
+[zelda3]
+src.github_tag = "snesrev/zelda3"
+fetch.github = "snesrev/zelda3"
+
+# each release renames its zip after a codename, so the version carries the tag and the asset name
+[2s2h]
+src.cmd = "curl -sSf https://api.github.com/repos/2ship2harkinian/2ship2harkinian/releases/latest | jq -r '.tag_name + \"/\" + (.assets[] | select(.name | endswith(\"-Linux.zip\")) | .name)'"
+fetch.url = "https://github.com/2ship2harkinian/2ship2harkinian/releases/download/$ver"

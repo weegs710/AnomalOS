@@ -6,6 +6,14 @@
   dockerTools,
 }:
 {
+  "2s2h" = {
+    pname = "2s2h";
+    version = "5.0.1/2Ship-Battler-Bravo-Linux.zip";
+    src = fetchurl {
+      url = "https://github.com/2ship2harkinian/2ship2harkinian/releases/download/5.0.1/2Ship-Battler-Bravo-Linux.zip";
+      sha256 = "sha256-bN1P4G8/mwlemchv73C5JlzJIftvqnuh4Y6U6Q7Qs0U=";
+    };
+  };
   d2launcher = {
     pname = "d2launcher";
     version = "4.1.3";
@@ -15,6 +23,23 @@
       rev = "4.1.3";
       fetchSubmodules = false;
       sha256 = "sha256-yK3ZYqeadh8AZ7q3TENdecAicGkBhSjZKlGUsBmzoMo=";
+    };
+  };
+  dino-recomp = {
+    pname = "dino-recomp";
+    version = "v0.3.0";
+    src = fetchurl {
+      url = "https://github.com/DinosaurPlanetRecomp/dino-recomp/releases/download/v0.3.0/DinosaurPlanetRecompiled-v0.3.0-Linux-x64.AppImage";
+      sha256 = "sha256-s50Iz4lietgXKUXx7Y1jjZ33JPoqtcuHzQ5s2OTLodk=";
+    };
+  };
+  es-de = {
+    pname = "es-de";
+    version = "3.5.0";
+    src = fetchurl {
+      url = "https://packages.es-de.org/release/3.5.0/ES-DE_x64.AppImage";
+      name = "ES-DE_x64.AppImage";
+      sha256 = "sha256-q8KZmhI4X4V3W9P5hvqJHHa2nfN5H3wS5MeDzzw2MPU=";
     };
   };
   evelens = {
@@ -39,6 +64,17 @@
     src = fetchurl {
       url = "https://github.com/clarkarch/tfm-tui/releases/download/v1.0.0/tfm-x86_64-linux.gz";
       sha256 = "sha256-1iAdltdj8WvlZ/Vqsiwd1SMUKzW3p85PH/0sXrifMmw=";
+    };
+  };
+  zelda3 = {
+    pname = "zelda3";
+    version = "v0.3";
+    src = fetchFromGitHub {
+      owner = "snesrev";
+      repo = "zelda3";
+      rev = "v0.3";
+      fetchSubmodules = false;
+      sha256 = "sha256-jKCLZ8lqvkN6OmYTZtjxXgbeUUnzOtYaeWmc4rCwwF0=";
     };
   };
 }
