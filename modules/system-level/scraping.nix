@@ -379,6 +379,30 @@ let
         $result
     }
 
+    def finish-cover [album_dir: string, log_file: string]: nothing -> nothing {
+        # yt-dlp skips --convert-thumbnails for playlist thumbnails and names them by URL, so a PNG can arrive as cover.jpg
+        let src = (ls $album_dir | where ($it.name | path parse | get stem) == "cover" | get name | get -o 0)
+        if $src == null { return }
+        let cover = [$album_dir, "cover.jpg"] | path join
+        let tmp = [$album_dir, "cover.tmp.jpg"] | path join
+        let r = (^${pkgs.ffmpeg}/bin/ffmpeg -hide_banner -loglevel error -f image2pipe -i $src -frames:v 1 -q:v 2 -y $tmp | complete)
+        if $r.exit_code != 0 {
+            rm --force $tmp
+            $"COVER CONVERT FAILED ($src): ($r.stderr)" | write-log $log_file
+            return
+        }
+        if $src != $cover { rm --force $src }
+        mv --force $tmp $cover
+        ls $album_dir | where name ends-with ".mp3" | get name | each {|track|
+            let out = $"($track).cover.mp3"
+            let e = (^${pkgs.ffmpeg}/bin/ffmpeg -hide_banner -loglevel error -i $track -i $cover -map 0:a -map 1:v -c copy -map_metadata 0 -id3v2_version 3 -metadata:s:v "comment=Cover (front)" -disposition:v attached_pic -y $out | complete)
+            if $e.exit_code == 0 { mv --force $out $track } else {
+                rm --force $out
+                $"EMBED FAILED ($track): ($e.stderr)" | write-log $log_file
+            }
+        } | ignore
+    }
+
     def download-album [url: string, metadata: record, music_dir: string, verbose: bool, log_file: string]: nothing -> nothing {
         let album_dir = [$music_dir, $metadata.artist_folder, $metadata.album] | path join
 
@@ -432,7 +456,9 @@ let
         }
 
         # -o is parsed as [TYPES:]TEMPLATE anchored at the start, so the type prefix must lead or the whole path falls through to the default template
-        ^yt-dlp --skip-download --write-thumbnail --convert-thumbnails jpg --no-warnings --playlist-items 1 --js-runtimes node:${pkgs.nodejs}/bin/node --remote-components ejs:github -o $"thumbnail:($album_dir)/cover" $url | ignore
+        # the playlist thumbnail is the square album art; a track's is a pillarboxed 16:9 frame, and an unset pl_thumbnail lands in the cwd
+        ^yt-dlp --skip-download --flat-playlist --write-thumbnail --no-warnings --js-runtimes node:${pkgs.nodejs}/bin/node --remote-components ejs:github -o $"pl_thumbnail:($album_dir)/cover" $url | ignore
+        finish-cover $album_dir $log_file
 
         print $"\n  (ansi green)Success!(ansi reset)"
         print $"  Album saved to: ($album_dir)"
