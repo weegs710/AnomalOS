@@ -169,7 +169,7 @@ follows_mouse = true
 "Mod+G" = "window-toggle-floating"
 "Mod+O" = "window-consume-or-expel-right"
 "Mod+Backslash" = "window-toggle-pinned"
-"Mod+Space" = "spawn kitty --title=tfm tfm"
+"Mod+Space" = "spawn nordend"
 
 "Mod+1" = "workspace-switch 1"
 "Mod+2" = "workspace-switch 2"
@@ -293,14 +293,23 @@ default_pinned = true
 focus_on_activate = true
 
 [[window_rule]]
-match.title = "^termfilechooser$"
+match.app_id = "^nordend$"
 default_floating = true
 default_floating_size_px = { width = 1600, height = 900 }
 default_position = { x = 531, y = 262, anchor = "top_left" }
 
+[[window_rule]]
+match.app_id = "^nordend-unlock$"
+default_floating = true
+default_floating_size_px = { width = 900, height = 320 }
+default_position = { x = 830, y = 560, anchor = "top_left" }
+default_focused = true
+default_pinned = true
+focus_on_activate = true
+
 # Placement keys off the menu's --title flags, since umbriel has no exec-time rule for a spawned process.
 [[window_rule]]
-match.title = "^(tfm|tremc)$"
+match.title = "^tremc$"
 default_floating = true
 default_floating_size_px = { width = 1600, height = 900 }
 default_position = { x = 531, y = 262, anchor = "top_left" }

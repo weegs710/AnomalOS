@@ -1,8 +1,8 @@
 [Added Associations]
 
 [Default Applications]
-inode/directory=tfm.desktop
-inode/mount-point=tfm.desktop
+inode/directory=nordend.desktop
+inode/mount-point=nordend.desktop
 application/pdf=org.pwmt.zathura-pdf-mupdf.desktop
 application/vnd.apple.mpegurl=rmpc-open.desktop
 application/x-7z-compressed=org.gnome.FileRoller.desktop

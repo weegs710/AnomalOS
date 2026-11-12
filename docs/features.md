@@ -39,7 +39,7 @@ The scratchpad holds things you summon and dismiss: `Super+grave` toggles it, `S
 | `Super+MouseWheel`                 | cycle workspaces                                                       |
 | `Super+grave`                      | toggle the scratchpad                                                  |
 | `Super+Shift+grave`                | add window to the scratchpad, or pull it back out                      |
-| `Super+Space`                      | tfm, floating                                                          |
+| `Super+Space`                      | nordend, floating                                                      |
 | `Super+Escape`                     | close window                                                           |
 | `Super+F`                          | fullscreen                                                             |
 | `Super+G`                          | toggle floating                                                        |

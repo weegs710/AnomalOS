@@ -29,7 +29,7 @@ let
   gajimCmd = "/etc/profiles/per-user/${username}/bin/gajim";
   btopCmd = "kitty --title=btop btop";
   rmpcCmd = "kitty --title=rmpc rmpc";
-  fileManagerCmd = "kitty --title=tfm tfm";
+  fileManagerCmd = "nordend";
   tremcCmd = "kitty --title=tremc tremc";
   # Not packaged yet, so this runs the build in the working tree inside the shell that gives it wayland.
   peepersCmd = "nix-shell $HOME/claude-projects/peepers/shell.nix --run $HOME/.cache/cargo-target/peepers/release/peepers";
@@ -164,7 +164,7 @@ let
         ])
         (sub "t" "tools" [
           (run "b" "btop" btopCmd)
-          (run "f" "tfm" fileManagerCmd)
+          (run "f" "nordend" fileManagerCmd)
           (run "m" "peepers" peepersCmd)
           (run "p" "gparted" "gparted")
           (run "t" "protontricks" "protontricks --no-term --gui")

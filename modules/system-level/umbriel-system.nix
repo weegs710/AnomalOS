@@ -32,21 +32,12 @@
         enable = true;
         # OpenURI only honours a default for web schemes and inode/directory, so routing xdg-open through it shows an app chooser for every other type regardless of mimeapps
         xdgOpenUsePortal = false;
-        extraPortals = [
-          pkgs.xdg-desktop-portal-gtk
-          pkgs.xdg-desktop-portal-termfilechooser
-        ];
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
         # Section key is the runtime XDG_CURRENT_DESKTOP, which the compositor setenvs lowercase.
-        config.umbriel = {
-          default = [
-            "umbriel"
-            "gtk"
-          ];
-          "org.freedesktop.impl.portal.FileChooser" = [
-            "termfilechooser"
-            "gtk"
-          ];
-        };
+        config.umbriel.default = [
+          "umbriel"
+          "gtk"
+        ];
       };
 
       services = {

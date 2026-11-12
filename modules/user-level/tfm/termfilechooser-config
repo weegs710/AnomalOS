@@ -1,5 +1,0 @@
-[filechooser]
-cmd=@WRAPPER@
-default_dir=$HOME
-create_help_file=0
-save_mode=last

@@ -8,6 +8,7 @@
     "nix-shop": "git+https://codeberg.org/weegs710/nix-shop",
     "nixpkgs": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst",
     "noctalia": "github:noctalia-dev/noctalia/0a0d63805eb6e17e699de391171618a5d696726d",
+    "nordend": "github:barrulus/bordend-fm",
     "preservation": "github:nix-community/preservation",
     "tack": "github:manic-systems/tack",
     "umbriel": "github:noctalia-dev/umbriel"
@@ -90,6 +91,14 @@
     "rev": "0a0d63805eb6e17e699de391171618a5d696726d",
     "narHash": "sha256-n/joTTVKRUS8lMZ5bU7eBSRZg5aJjR5jKrNlJGy4saU=",
     "lastModified": 1794251266
+  },
+  "nordend": {
+    "type": "github",
+    "owner": "barrulus",
+    "repo": "bordend-fm",
+    "rev": "f9f1315c7172fd325b651414bd133733088186f7",
+    "narHash": "sha256-zYK7GrKmIRsniII2gFfRALeAwqcVQ/rPxYrv0ktLlCo=",
+    "lastModified": 1794524648
   },
   "preservation": {
     "type": "github",

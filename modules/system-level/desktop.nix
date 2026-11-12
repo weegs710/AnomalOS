@@ -136,6 +136,11 @@ only.gate { tags = [ "desktop" ]; }
       spaceMonoLigatures
     ];
 
+  fonts.fontconfig.defaultFonts = {
+    sansSerif = [ "SpaceGrotesk Nerd Font Propo" ];
+    monospace = [ "SpaceMono Nerd Font Mono" ];
+  };
+
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
     ".config/tutanota-desktop"
     ".config/qView"

@@ -239,7 +239,8 @@ Adding a tag is one line in `assemble.nix`.
 | `system-level/media-server/`                            | `server`              | subtree, `only.imports` |
 | `user-level/desktop/`, every module in it               | `desktop`             | `only.gate`             |
 | `user-level/helium.nix`, `zennotes.nix`, `services.nix` | `desktop`             | `only.gate`             |
-| `user-level/comms/`, `tfm/`, `peepers/`                 | `desktop`             | `only.gate`             |
+| `user-level/comms/`, `peepers/`                         | `desktop`             | `only.gate`             |
+| `user-level/nordend/nordend.nix`                        | `desktop`             | header                  |
 | `user-level/music/` mpd, rmpc and mpv                   | `desktop`             | `only.gate`             |
 | `user-level/servers.nix`, `thunk.nix`, `writing-tools/` | `dev`                 | `only.gate`             |
 | `user-level/gaming/`                                    | `gaming`              | subtree, `only.imports` |
@@ -273,7 +274,7 @@ The only other `mySystem` trees are `mySystem.k8sLab` in `modules/system-level/k
 
 ## weegsware
 
-`weegsware/` holds my wrapped packages: helium, nushell, steam, tfm and thunk. `assemble.nix` builds them, threads them into the config as the `weegsware` module argument (built on the host's own `pkgs`, so weegsware and the system share one nixpkgs instance), and exposes them as `packages.x86_64-linux.<name>`.
+`weegsware/` holds my wrapped packages: helium, nushell, steam and thunk. `assemble.nix` builds them, threads them into the config as the `weegsware` module argument (built on the host's own `pkgs`, so weegsware and the system share one nixpkgs instance), and exposes them as `packages.x86_64-linux.<name>`.
 
 That second half is the point -- they aren't trapped in my system config. Anyone can add this repo as a flake input and `nix run` my version of a package, and `.override` re-tunes them from outside without editing the file.
 
