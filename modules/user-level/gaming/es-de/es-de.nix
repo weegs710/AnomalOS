@@ -66,12 +66,14 @@ let
 
   esde = pkgs.appimageTools.wrapType2 {
     pname = "es-de";
-    version = "3.4.1";
+    version = "3.5.0";
     src = pkgs.fetchurl {
       name = "ES-DE_x64.AppImage";
-      url = "https://gitlab.com/es-de/emulationstation-de/-/package_files/288156961/download";
-      sha256 = "109mfa3aag6x4gf08326cbgs09dl403ygvaqm8yicmcdfd6s8q9w";
+      url = "https://gitlab.com/es-de/emulationstation-de/-/package_files/357718352/download";
+      sha256 = "1x9h6qycz0y7wh97q7vryffvcxhwi7x8dyfkbdvqaprq2ad9khmb";
     };
+    # nixpkgs dropped libgpg-error from the appimage defaults (3b5bba1a98) and AppRun links it
+    extraPkgs = p: [ p.libgpg-error ];
   };
 
   # flat display makes crt-geom's default barrel curvature read as distortion, not CRT
