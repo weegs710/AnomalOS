@@ -50,4 +50,4 @@ url = "cb:wvhulle/bootvine"
 tag = "v{version}"
 
 [inputs.rummage]
-url = "gh:barrulus/bordend-fm"
+url = "gh:barrulus/rummage"

@@ -9,7 +9,7 @@
     "nixpkgs": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst",
     "noctalia": "github:noctalia-dev/noctalia/0a0d63805eb6e17e699de391171618a5d696726d",
     "preservation": "github:nix-community/preservation",
-    "rummage": "github:barrulus/bordend-fm",
+    "rummage": "github:barrulus/rummage",
     "tack": "github:manic-systems/tack",
     "umbriel": "github:noctalia-dev/umbriel"
   },
@@ -103,10 +103,10 @@
   "rummage": {
     "type": "github",
     "owner": "barrulus",
-    "repo": "bordend-fm",
-    "rev": "f75be7aa964d93c43edbeb7e0371f0bc7a1842c8",
-    "narHash": "sha256-Y+DLjM2Q8q1JEkCCC1vtY6O7k1CJWRQGfvjAz1P/tuI=",
-    "lastModified": 1794588860
+    "repo": "rummage",
+    "rev": "658a2c53bb6f876dc3d0bc72320c59afe3993268",
+    "narHash": "sha256-+aMA7oZ/rRJjWfIH5/GvOh/ZlOdcCguYvK0pC66+UyA=",
+    "lastModified": 1794609489
   },
   "tack": {
     "type": "github",
