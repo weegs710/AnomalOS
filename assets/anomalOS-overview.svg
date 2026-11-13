@@ -11,7 +11,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="50" y="90" font-size="42" fill="#e8ecf1" font-weight="700">anomalOS</text>
 <rect x="290" y="70" rx="6" width="72" height="22" fill="#ff2a22" opacity="0.15" stroke="#ff2a22" stroke-width="0.5"/>
 <text x="326" y="85" font-size="10" fill="#ff2a22" font-weight="600" text-anchor="middle">OVERVIEW</text>
-<text x="50" y="120" font-size="15" fill="#aeb3bd">NixOS 26.11 (Zokor)  ·  Linux 7.3.3</text>
+<text x="50" y="120" font-size="15" fill="#aeb3bd">NixOS 26.11 (Zokor)  ·  Linux 7.3.4</text>
 <rect x="70" y="185" rx="8" width="196" height="62" fill="#160b0d" stroke="#7a1f26" stroke-width="1"/>
 <rect x="78" y="193" rx="2" width="4" height="46" fill="#ff2a22"/>
 <text x="86" y="203" font-size="10" fill="#aeb3bd" font-weight="600" letter-spacing="1">WM</text>
@@ -86,13 +86,13 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <text x="90" y="567" font-size="12" fill="#aeb3bd">System</text>
 <text x="220" y="567" font-size="12" fill="#e8ecf1">231</text>
 <text x="90" y="587" font-size="12" fill="#aeb3bd">User</text>
-<text x="220" y="587" font-size="12" fill="#e8ecf1">126</text>
+<text x="220" y="587" font-size="12" fill="#e8ecf1">127</text>
 <text x="90" y="607" font-size="12" fill="#aeb3bd">Total declared</text>
-<text x="220" y="607" font-size="12" fill="#e8ecf1">357</text>
+<text x="220" y="607" font-size="12" fill="#e8ecf1">358</text>
 <text x="90" y="627" font-size="12" fill="#aeb3bd">Closure paths</text>
-<text x="220" y="627" font-size="12" fill="#e8ecf1">3260</text>
+<text x="220" y="627" font-size="12" fill="#e8ecf1">3250</text>
 <text x="90" y="647" font-size="12" fill="#aeb3bd">Closure size</text>
-<text x="220" y="647" font-size="12" fill="#e8ecf1">33.2G</text>
+<text x="220" y="647" font-size="12" fill="#e8ecf1">33.1G</text>
 <rect x="430" y="510" rx="12" width="340" height="240" fill="#160b0d" stroke="#7a1f26" stroke-width="1"/>
 <rect x="438" y="524" rx="2" width="4" height="212" fill="#c6ccd5"/>
 <text x="448" y="538" font-size="13" fill="#c6ccd5" font-weight="700" letter-spacing="1">WEEGSWARE</text>

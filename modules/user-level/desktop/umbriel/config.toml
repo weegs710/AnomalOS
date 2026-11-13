@@ -87,10 +87,12 @@ dim = 0.01
 # Naming any scratchpad removes the implicit "default", so the old one is declared as "main".
 [[scratchpad]]
 name = "main"
+hide_when_empty = true
 
 [[scratchpad]]
 name = "quake"
 spawn_when_empty = "kitty --class=quake --title=quake"
+hide_when_empty = true
 
 [appearance]
 prefer_no_csd = true
@@ -157,7 +159,7 @@ size = 32
 hardware_cursor = true
 
 [input.focus]
-follows_mouse = true
+follows_mouse = "sloppy"
 
 [keybinds]
 # Direct terminal and launcher so the session is never dependent on wlr-which-key coming up.
@@ -169,7 +171,7 @@ follows_mouse = true
 "Mod+G" = "window-toggle-floating"
 "Mod+O" = "window-consume-or-expel-right"
 "Mod+Backslash" = "window-toggle-pinned"
-"Mod+Space" = "spawn nordend"
+"Mod+Space" = "spawn rummage"
 
 "Mod+1" = "workspace-switch 1"
 "Mod+2" = "workspace-switch 2"
@@ -293,19 +295,10 @@ default_pinned = true
 focus_on_activate = true
 
 [[window_rule]]
-match.app_id = "^nordend$"
+match.app_id = "^rummage$"
 default_floating = true
 default_floating_size_px = { width = 1600, height = 900 }
 default_position = { x = 531, y = 262, anchor = "top_left" }
-
-[[window_rule]]
-match.app_id = "^nordend-unlock$"
-default_floating = true
-default_floating_size_px = { width = 900, height = 320 }
-default_position = { x = 830, y = 560, anchor = "top_left" }
-default_focused = true
-default_pinned = true
-focus_on_activate = true
 
 # Placement keys off the menu's --title flags, since umbriel has no exec-time rule for a spawned process.
 [[window_rule]]

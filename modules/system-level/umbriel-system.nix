@@ -17,14 +17,12 @@
       programs.umbriel.enable = true;
       # dpms-reconnect-hold: the HKC drops HDMI hotplug detect ~11s into dpms-off, and the rebuilt output would otherwise power straight back on.
       # scratchpad-open-fade: a window mapping into a scratchpad had its show fade overwritten by windows_in's duration.
-      # scratchpad-empty-hide: closing a pad's last window left it visible, so the next toggle hid it instead of spawning.
       programs.umbriel.package =
         inputs.umbriel.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs
           (old: {
             patches = (old.patches or [ ]) ++ [
               ./umbriel-dpms-reconnect-hold-patch
               ./umbriel-scratchpad-open-fade-patch
-              ./umbriel-scratchpad-empty-hide-patch
             ];
           });
 

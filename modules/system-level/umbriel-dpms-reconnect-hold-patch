@@ -121,18 +121,17 @@ index a110292..f2ea52b 100644
      updateSceneSdrWhite();
      if (desktopEnabled()) {
 diff --git a/src/server/server.h b/src/server/server.h
-index 9bec47b..4d456e2 100644
 --- a/src/server/server.h
 +++ b/src/server/server.h
-@@ -9,6 +9,7 @@
- #include "input/modifier_tap.h"
+@@ -10,6 +10,7 @@
  #include "input/shortcuts_inhibit.h"
  #include "input/surface_layouts.h"
+ #include "output/connector_hdr_state.h"
 +#include "output/dpms_hold.h"
  #include "output/enable_overrides.h"
  #include "scene/border_rect.h"
  #include "scene/effect_registry.h"
-@@ -677,6 +678,7 @@ namespace umbriel {
+@@ -687,6 +688,7 @@
      bool applyOutputManagerConfig(wlr_output_configuration_v1* config, bool testOnly);
      bool commitOutputEnabled(Output& target, bool enabled);
      bool initialOutputEnabled(const Output& output);
@@ -140,14 +139,14 @@ index 9bec47b..4d456e2 100644
      void rememberOutputEnableOverride(const Output& output, bool enabled);
      void restoreDisplacedViews();
      void refreshDisplacedWorkspace(Workspace& workspace);
-@@ -966,6 +968,7 @@ namespace umbriel {
+@@ -1054,6 +1056,7 @@
      // different identified monitors. An output-policy config reload clears
      // them.
      OutputEnableOverrides m_outputEnableOverrides;
 +    OutputDpmsHold m_outputDpmsHold;
+     ConnectorHdrState m_connectorHdrState;
      Dirty m_dirty = Dirty::None;
      ViewRegistry m_registry;
-     FocusManager m_focus{*this};
 diff --git a/src/server/server_events.cpp b/src/server/server_events.cpp
 index dbfbf79..f4c87cb 100644
 --- a/src/server/server_events.cpp

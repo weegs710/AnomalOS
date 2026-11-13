@@ -49,5 +49,5 @@ submodules = true
 url = "cb:wvhulle/bootvine"
 tag = "v{version}"
 
-[inputs.nordend]
+[inputs.rummage]
 url = "gh:barrulus/bordend-fm"

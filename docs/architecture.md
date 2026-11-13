@@ -240,7 +240,7 @@ Adding a tag is one line in `assemble.nix`.
 | `user-level/desktop/`, every module in it               | `desktop`             | `only.gate`             |
 | `user-level/helium.nix`, `zennotes.nix`, `services.nix` | `desktop`             | `only.gate`             |
 | `user-level/comms/`, `peepers/`                         | `desktop`             | `only.gate`             |
-| `user-level/nordend/nordend.nix`                        | `desktop`             | header                  |
+| `user-level/rummage/rummage.nix`                        | `desktop`             | header                  |
 | `user-level/music/` mpd, rmpc and mpv                   | `desktop`             | `only.gate`             |
 | `user-level/servers.nix`, `thunk.nix`, `writing-tools/` | `dev`                 | `only.gate`             |
 | `user-level/gaming/`                                    | `gaming`              | subtree, `only.imports` |
