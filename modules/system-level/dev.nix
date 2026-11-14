@@ -5,15 +5,17 @@
   ...
 }:
 let
-  ns = pkgs.writeShellApplication {
-    name = "ns";
-    runtimeInputs = with pkgs; [
-      fzf
-      nix-search-tv
-    ];
-    checkPhase = "";
-    text = builtins.readFile "${pkgs.nix-search-tv.src}/nixpkgs.sh";
-  };
+  # installed at build time: an eval-time readFile of the src is an IFD, and evaltime (no substituters) cannot fetch it after a bump
+  ns = pkgs.runCommand "ns" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
+    install -Dm755 ${pkgs.nix-search-tv.src}/nixpkgs.sh $out/bin/ns
+    patchShebangs $out/bin/ns
+    wrapProgram $out/bin/ns --prefix PATH : ${
+      pkgs.lib.makeBinPath [
+        pkgs.fzf
+        pkgs.nix-search-tv
+      ]
+    }
+  '';
   dprintConfig = pkgs.writeText "dprint.json" (
     builtins.toJSON {
       "markdown" = { };

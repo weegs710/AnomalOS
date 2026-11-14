@@ -1,5 +1,7 @@
 { pkgs, inputs, ... }:
 {
+  # nixpkgs ships its own services.bootvine at 0.1.3; the pin is 0.1.4 and declares the same options
+  disabledModules = [ "services/system/bootvine.nix" ];
   imports = [ inputs.bootvine.nixosModules.default ];
 
   # boot and shutdown show pending units and failures with their journal tail instead of scrolling lines
