@@ -4,7 +4,7 @@
   ...
 }:
 let
-  logo = ../../assets/nunny-triglavian.webp;
+  logo = ../../assets/weegs710.webp;
   configFile = pkgs.writeText "fastfetch-config.jsonc" ''
         {
       "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
