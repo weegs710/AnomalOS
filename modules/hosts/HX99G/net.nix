@@ -1,5 +1,18 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
+  # wifi alongside ethernet gives a second default route that breaks tailscale; it is switched on by hand when wanted
+  systemd.services.wifi-default-off = {
+    description = "Turn wifi off at boot";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "NetworkManager.service" ];
+    after = [ "NetworkManager.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.networkmanager}/bin/nmcli radio wifi off";
+    };
+  };
+
   # DHCP handed out a new address after every link flap, orphaning sessions bound to the old one
   networking.networkmanager.ensureProfiles.profiles.enp5s0-static = {
     connection = {

@@ -158,10 +158,10 @@ transition_on_startup = false
     recursive = true
 
     [wallpaper.default]
-    path = "/home/weegs/.local/share/wallpapers/weegs710.webp"
+    path = "/home/weegs/.local/share/wallpapers/weegs710-logo-1440p.webp"
 
     [wallpaper.last]
-    path = "/home/weegs/.local/share/wallpapers/weegs710.webp"
+    path = "/home/weegs/.local/share/wallpapers/weegs710-logo-1440p.webp"
 
     [[wallpaper.favorite]]
     path = "/home/weegs/.local/share/wallpapers/eve/The uni blob.webp"
