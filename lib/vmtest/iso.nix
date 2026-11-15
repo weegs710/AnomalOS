@@ -5,7 +5,7 @@ let
     modules = [
       "${np}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
       (
-        { pkgs, lib, config, ... }:
+        { lib, config, ... }:
         {
           boot.initrd.availableKernelModules = [
             "9p"
@@ -14,10 +14,6 @@ let
           boot.kernelModules = [
             "9p"
             "9pnet_virtio"
-          ];
-          environment.systemPackages = with pkgs; [
-            jq
-            git
           ];
           nix.settings.experimental-features = [
             "nix-command"

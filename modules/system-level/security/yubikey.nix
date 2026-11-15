@@ -6,7 +6,6 @@
 {
   security.pam.u2f = {
     enable = true;
-    control = "sufficient";
     settings = {
       cue = true;
     };
@@ -30,10 +29,7 @@
     pcscd.enable = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    yubikey-manager
-    pam_u2f
-  ];
+  users.users.${config.mySystem.user.name}.packages = [ pkgs.yubikey-manager ];
 
   preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [
     ".config/Yubico"

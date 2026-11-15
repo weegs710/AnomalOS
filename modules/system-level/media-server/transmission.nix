@@ -22,7 +22,6 @@ in
     enable = true;
     package = pkgs.transmission_4;
     group = "media";
-    openRPCPort = false;
     openPeerPorts = true;
     settings = {
       download-dir = "/mnt/media/torrents";

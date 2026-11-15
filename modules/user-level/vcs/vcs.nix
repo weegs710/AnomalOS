@@ -9,7 +9,6 @@ in
 {
   config = {
     users.users.${username}.packages = [
-      pkgs.git
       pkgs.jujutsu
     ];
 

@@ -448,7 +448,13 @@
           ]
         ) cfg.nodes;
 
-        environment.systemPackages = with pkgs; [
+        environment.systemPackages = [
+          labDown
+          labReset
+          labUp
+        ];
+
+        users.users.${config.mySystem.user.name}.packages = with pkgs; [
           cloud-utils
           cri-tools
           etcd
@@ -457,11 +463,7 @@
           kubectx
           kubernetes-helm
           kustomize
-          labDown
-          labReset
-          labUp
           stern
-          virt-viewer
           yq-go
         ];
       };

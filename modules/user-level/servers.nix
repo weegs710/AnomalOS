@@ -18,7 +18,6 @@ only.gate { tags = [ "dev" ]; } {
       wantedBy = [ "default.target" ];
 
       serviceConfig = {
-        Type = "simple";
         ExecStart = "${pkgs.miniserve}/bin/miniserve -i 127.0.0.1 --port 1111 --index index.html /home/${username}/repo/private/weegs.dev";
         Restart = "on-failure";
         RestartSec = 5;

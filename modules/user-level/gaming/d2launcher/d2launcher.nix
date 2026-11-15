@@ -63,15 +63,6 @@ let
   zenity = pkgs.zenity;
 
   runtimeDeps = [
-    pkgs.bash
-    pkgs.coreutils
-    pkgs.gnutar
-    pkgs.gnused
-    pkgs.gawk
-    pkgs.gnugrep
-    pkgs.findutils
-    pkgs.procps
-    pkgs.curl
     pkgs.unzip
     pkgs.zip
     pkgs.jq

@@ -19,7 +19,6 @@ only.gate
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-      wireplumber.enable = true;
 
       extraConfig.pipewire."91-audiophile" = {
         "context.properties" = {
@@ -51,7 +50,6 @@ only.gate
     users.users.${config.mySystem.user.name}.packages = with pkgs; [
       pamixer
       pavucontrol
-      wireplumber
     ];
 
     preservation.preserveAt."/persist".users.${config.mySystem.user.name}.directories = [

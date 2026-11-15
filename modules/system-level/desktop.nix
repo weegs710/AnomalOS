@@ -83,8 +83,6 @@ only.gate { tags = [ "desktop" ]; }
     cachix
     tutanota-desktop
     zathura
-    dbus
-    dbus-broker
     file-roller
     gpartedWithTools
     gpartedSafe
@@ -106,7 +104,6 @@ only.gate { tags = [ "desktop" ]; }
     unzipNLS
     xdg-dbus-proxy
     gimpWithPlugins
-    gpu-screen-recorder
     ffmpeg
     inkscape
   ];

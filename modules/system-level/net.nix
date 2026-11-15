@@ -13,11 +13,8 @@
     nftables.enable = true;
 
     firewall = {
-      enable = true;
       allowPing = false;
       trustedInterfaces = [ "tailscale0" ];
-      allowedTCPPorts = [ ];
-      allowedUDPPorts = [ ];
     };
   };
 

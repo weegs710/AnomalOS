@@ -5,10 +5,6 @@
 }:
 {
   config = {
-    security = {
-      polkit.enable = true;
-    };
-
     services = {
       # silently drops any dbus package not also present in system.path
       dbus.packages = lib.mkForce [
@@ -60,7 +56,6 @@
             "hmac-sha2-256-etm@openssh.com"
           ];
         };
-        openFirewall = true;
       };
     };
 

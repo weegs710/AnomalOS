@@ -28,21 +28,16 @@ in
   services.radarr = {
     enable = true;
     group = "media";
-    openFirewall = false;
     environmentFiles = [ config.age.secrets.radarr-env.path ];
   };
 
   services.sonarr = {
     enable = true;
     group = "media";
-    openFirewall = false;
     environmentFiles = [ config.age.secrets.sonarr-env.path ];
   };
 
-  services.prowlarr = {
-    enable = true;
-    openFirewall = false;
-  };
+  services.prowlarr.enable = true;
 
   # DynamicUser conflicts with preservation bind-mounts -- chowns fail on already-mounted dirs
   users.users.prowlarr = {
@@ -64,7 +59,6 @@ in
   services.bazarr = {
     enable = true;
     group = "media";
-    openFirewall = false;
   };
   users.users.bazarr.uid = 999;
 

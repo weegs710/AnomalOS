@@ -9,12 +9,7 @@ let
   ns = pkgs.runCommand "ns" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
     install -Dm755 ${pkgs.nix-search-tv.src}/nixpkgs.sh $out/bin/ns
     patchShebangs $out/bin/ns
-    wrapProgram $out/bin/ns --prefix PATH : ${
-      pkgs.lib.makeBinPath [
-        pkgs.fzf
-        pkgs.nix-search-tv
-      ]
-    }
+    wrapProgram $out/bin/ns --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.nix-search-tv ]}
   '';
   dprintConfig = pkgs.writeText "dprint.json" (
     builtins.toJSON {
@@ -64,16 +59,13 @@ only.gate { tags = [ "dev" ]; }
 {
   programs = {
     tmux.enable = true;
-    nix-index.enable = true;
     wireshark = {
       enable = true;
       package = pkgs.wireshark;
     };
-    git.enable = true;
     direnv = {
       enable = true;
       silent = true;
-      nix-direnv.enable = true;
       direnvrcExtra = ''
         warn_timeout=0
         hide_env_diff=true
@@ -99,10 +91,6 @@ only.gate { tags = [ "dev" ]; }
     typescript
     claude-code
     claudeLauncher
-  ];
-
-  environment.systemPackages = with pkgs; [
-    jujutsu
     ns
   ];
 

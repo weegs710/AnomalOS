@@ -636,9 +636,7 @@ let
   '';
 in
 only.gate { tags = [ "desktop" ]; } {
-  environment.systemPackages = with pkgs; [
-    yt-dlp
-  ];
+  users.users.${config.mySystem.user.name}.packages = [ pkgs.yt-dlp ];
 
   environment.shellAliases = {
     yoink = "nu ~/.config/yoink/yoink.nu";

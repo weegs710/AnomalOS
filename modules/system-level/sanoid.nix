@@ -2,7 +2,6 @@
 {
   services.sanoid = {
     enable = true;
-    interval = "hourly";
 
     # Desktop persist dataset -- active user data, half-day of hourlies is enough to roll back an oopsie
     templates.desktop = {

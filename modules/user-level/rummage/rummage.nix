@@ -19,10 +19,7 @@
         enable = true;
         # the default package has no PDFium helper, so PDFs only show an icon
         package = inputs.rummage.packages.${pkgs.stdenv.hostPlatform.system}.rummage-with-pdf;
-        filePicker = {
-          enable = true;
-          desktops = [ "umbriel" ];
-        };
+        filePicker.enable = true;
       };
 
       # rummage finds extractors on PATH; plain _7zz lacks the rar codec, and file-roller refuses encrypted 7z and rar

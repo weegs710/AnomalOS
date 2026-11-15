@@ -46,7 +46,6 @@ only.gate { tags = [ "desktop" ]; } {
       path = [ pkgs.xdg-utils ];
 
       serviceConfig = {
-        Type = "simple";
         ExecStart = "${pkgs.udiskie}/bin/udiskie --tray";
         Restart = "on-failure";
       };

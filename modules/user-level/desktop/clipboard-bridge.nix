@@ -31,7 +31,6 @@ only.gate { tags = [ "desktop" ]; } {
     };
 
     serviceConfig = {
-      Type = "simple";
       ExecStart = bridge;
       Restart = "always";
       RestartSec = 2;

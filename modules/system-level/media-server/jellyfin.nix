@@ -43,7 +43,6 @@ in
     enable = true;
     package = pkgs.jellyfin.override { jellyfin-ffmpeg = jellyfinFfmpeg; };
     group = "media";
-    openFirewall = false;
     # keep cache inside the persisted data dir -- /var/cache is on 256MB tmpfs
     cacheDir = "/var/lib/jellyfin/cache";
   };

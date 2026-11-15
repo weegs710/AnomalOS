@@ -46,8 +46,6 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  programs.nix-index-database.comma.enable = false;
-
   programs.tack = {
     enable = true;
     # nixpkgs pins the v1.0.1 tag, which predates --exclude; the flake pin carries it
@@ -55,9 +53,9 @@
     nixConfTokens = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    curl
-    git
+  environment.systemPackages = [ pkgs.git ];
+
+  users.users.${config.mySystem.user.name}.packages = with pkgs; [
     nh
     wget
   ];
