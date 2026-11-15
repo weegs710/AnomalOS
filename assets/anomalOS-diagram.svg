@@ -100,7 +100,7 @@ text { font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, mo
 <circle cx="292" cy="423" r="5" fill="#ff2a22" opacity="0.25"/>
 <circle cx="292" cy="423" r="3" fill="#ff2a22"/>
 <text x="306" y="427" font-size="13" fill="#e8ecf1" font-weight="700">rummage</text>
-<text x="306" y="445" font-size="9" fill="#aeb3bd" opacity="0.85">barrulus/bordend-fm</text>
+<text x="306" y="445" font-size="9" fill="#aeb3bd" opacity="0.85">barrulus/rummage</text>
 <rect x="521" y="411" rx="5" width="39" height="15" fill="#7a1f26" opacity="0.22"/>
 <text x="541" y="421" font-size="8" fill="#c6ccd5" font-weight="600" text-anchor="middle">follows</text>
 <rect x="600" y="402" rx="9" width="300" height="56" fill="#160b0d" stroke="#7a1f26" stroke-width="1.5"/>
