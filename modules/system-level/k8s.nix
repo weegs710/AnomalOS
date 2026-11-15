@@ -235,12 +235,6 @@
 
       labUp = pkgs.writeShellApplication {
         name = "k8s-lab-up";
-        runtimeInputs = [
-          pkgs.libvirt
-          pkgs.qemu_kvm
-          pkgs.curl
-          pkgs.coreutils
-        ];
         text = ''
           base=${cfg.stateDir}/${cfg.baseImageName}
           mkdir -p ${cfg.stateDir}
@@ -270,7 +264,6 @@
 
       labDown = pkgs.writeShellApplication {
         name = "k8s-lab-down";
-        runtimeInputs = [ pkgs.libvirt ];
         text = ''
           ${lib.concatStringsSep "\n" (
             lib.mapAttrsToList (name: _: ''
@@ -284,7 +277,6 @@
 
       labReset = pkgs.writeShellApplication {
         name = "k8s-lab-reset";
-        runtimeInputs = [ pkgs.coreutils ];
         text = ''
           ${lib.concatStringsSep "\n" (
             lib.mapAttrsToList (name: _: ''rm -f "${cfg.stateDir}/${name}.qcow2"'') cfg.nodes

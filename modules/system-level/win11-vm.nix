@@ -78,10 +78,6 @@
 
       vmUp = pkgs.writeShellApplication {
         name = "win11-vm-up";
-        runtimeInputs = [
-          pkgs.libvirt
-          pkgs.qemu_kvm
-        ];
         text = ''
           [ -f ${diskPath} ] || qemu-img create -f qcow2 ${diskPath} ${toString cfg.diskGiB}G
           virsh --connect qemu:///system define ${domainXml}
@@ -91,7 +87,6 @@
 
       vmDown = pkgs.writeShellApplication {
         name = "win11-vm-down";
-        runtimeInputs = [ pkgs.libvirt ];
         text = ''
           virsh --connect qemu:///system destroy ${cfg.name} 2>/dev/null || true
           virsh --connect qemu:///system undefine ${cfg.name} --keep-nvram --keep-tpm
@@ -101,10 +96,6 @@
 
       vmReset = pkgs.writeShellApplication {
         name = "win11-vm-reset";
-        runtimeInputs = [
-          pkgs.libvirt
-          pkgs.coreutils
-        ];
         text = ''
           if [ "$(virsh --connect qemu:///system domstate ${cfg.name} 2>/dev/null || true)" = "running" ]; then
             echo "${cfg.name} is running; stop it first" >&2
