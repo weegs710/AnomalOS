@@ -1,0 +1,5 @@
+# the inside of the singularity disc, drawn by singularity-ring as its overlay, never selected on its own
+[effects.preset.singularity-inner]
+kind = "window"
+shader = "shader.glsl"
+palette = true
