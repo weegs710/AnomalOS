@@ -1,6 +1,8 @@
 // The inside of the singularity disc from Replay_2026-11-16_03-51-40, drawn over the window's edge as the border's overlay: the clip's rim gradient and its boiling plasma, hue from the scheme.
-// Logical px per clip px for the inside, set apart from the border's so the band stays clear of the window's content.
-const float K_SCALE = 0.45;
+// Logical px per clip px for the inside: a thin band that hugs the border and stays clear of the window's content.
+const float K_SCALE = 0.12;
+// Logical px per clip px along the edge: the plasma keeps the pattern size it had before the band was thinned.
+const float TH_SCALE = 0.45;
 // The corner radius the border cuts the client with (appearance.corner_radius).
 const float CORNER = 6.0;
 const float CORNER_REF = 3.0;
@@ -41,6 +43,26 @@ const float DET = 1.7;
 // Extra fast grain right at the limb, where the clip flickers hardest frame to frame.
 const float LIMB_DET = 2.0;
 const float SPEED = 1.0;
+
+// A feed that is connected but silent counts as no feed, the same gate the border uses.
+const float SILENCE_LOW = 0.02;
+const float SILENCE_HIGH = 0.10;
+
+float audio_level() {
+    float sum = 0.0;
+    for (int i = 0; i < 8; i++) {
+        sum += umbriel_audio_spectrum((float(i) + 0.5) / 8.0);
+    }
+    return sum * 0.125;
+}
+
+float audio_live() {
+    return umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, audio_level());
+}
+
+float au_band(float pos) {
+    return audio_live() * umbriel_audio_spectrum(pos);
+}
 
 float se_hash3(vec3 p) {
     return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
@@ -291,19 +313,28 @@ vec4 window(vec2 uv) {
     vec2 q = min(p, size - p);
     // A smooth minimum of the two edge distances, so the band bends round a corner instead of creasing along the diagonal.
     float din = max(-SOFT * log(exp(-q.x / SOFT) + exp(-q.y / SOFT)), 0.0);
-    float r = -din / K_SCALE;
-    if (r < -DEPTH || din < 0.0) return src;
-    float t = umbriel_time * SPEED;
-    // The two nearest edges each carry their own run of plasma; they are blended across the corner diagonal so it has no seam.
     vec4 ed = vec4(p.y, size.x - p.x, size.y - p.y, p.x);
     float e1 = 0.0; float m1 = ed.x;
     if (ed.y < m1) { e1 = 1.0; m1 = ed.y; }
     if (ed.z < m1) { e1 = 2.0; m1 = ed.z; }
     if (ed.w < m1) { e1 = 3.0; m1 = ed.w; }
+    float t = umbriel_time * SPEED;
+    // The same spectrum layout as the border: bass at the start of the outline, rising to the middle and mirrored back.
+    float perim = 2.0 * (size.x + size.y) - 8.0 * CORNER + 4.0 * QUARTER * (CORNER + CORNER_REF);
+    float au = audio_live();
+    float bl = au_band(0.85 * (1.0 - abs(2.0 * clamp(se_outline_edge(e1, p, size) / perim, 0.0, 1.0) - 1.0)));
+    float lvl = au * audio_level();
+    float bass = au_band(0.08);
+    // The band reaches deeper with the spectrum under it and bass, and brightens with loudness, like the corona outside.
+    float lift = 1.0 + au * (0.3 + 0.9 * bl + 0.6 * bass);
+    float flare = mix(1.0, 0.9 + 0.5 * lvl, au);
+    float r = -din / K_SCALE / lift;
+    if (r < -DEPTH || din < 0.0) return src;
+    // The two nearest edges each carry their own run of plasma; they are blended across the corner diagonal so it has no seam.
     float e2 = mod(e1 + 1.0, 4.0); float m2 = e2 < 0.5 ? ed.x : (e2 < 1.5 ? ed.y : (e2 < 2.5 ? ed.z : ed.w));
     float e3 = mod(e1 + 3.0, 4.0); float m3 = e3 < 0.5 ? ed.x : (e3 < 1.5 ? ed.y : (e3 < 2.5 ? ed.z : ed.w));
     if (m3 < m2) { e2 = e3; m2 = m3; }
-    float k1 = 1.0 / (SAMPLE * K_SCALE);
+    float k1 = 1.0 / (SAMPLE * TH_SCALE);
     float pl1 = se_plasma(se_outline_edge(e1, p, size) * k1, r, t);
     float pl2 = se_plasma(se_outline_edge(e2, p, size) * k1, r, t);
     float pl = mix(pl2, pl1, 0.5 + 0.5 * smoothstep(0.0, BLEND, m2 - m1));
@@ -314,6 +345,6 @@ vec4 window(vec2 uv) {
     float a = smoothstep(-DEPTH, -DEPTH + FADE, r);
     // Whiteness climbs toward the plateau's as it nears the limb, meeting the border's ramp halfway.
     float wl = mix(se_inner_w(r), LIMB_W, smoothstep(-LIMB_SOFT, 0.0, r));
-    vec3 c = se_colour(v, wl, se_base()) * a;
+    vec3 c = min(se_colour(v, wl, se_base()) * flare, vec3(1.0)) * a;
     return vec4(min(src.rgb + c, vec3(1.0)), src.a);
 }

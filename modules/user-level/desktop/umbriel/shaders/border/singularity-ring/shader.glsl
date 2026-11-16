@@ -16,6 +16,12 @@ const float SPR_R0 = 45.0;
 const float SPR_R1 = 75.0;
 // The glow band against the window is narrowed to this share of the clip's, the plumes keep their own length.
 const float BAND_THIN = 0.42;
+// How far off the shared 2 s clock each slot may start, as a share of the loop.
+const float JITTER = 0.35;
+// The calm-to-hot swing along the outline, its length in logical px and how fast it drifts.
+const float DRIFT = 0.35;
+const float DRIFT_LEN = 260.0;
+const float DRIFT_RATE = 0.06;
 // Clip px over which the limb ramps from the disc's red rim into the cream plateau, so its inner edge is not a hard line.
 const float LIMB_SOFT = 6.0;
 // The colour the inner overlay arrives at on the client edge, so the two meet without a seam (clip value at r = -2, whiteness at r = 0).
@@ -48,6 +54,14 @@ float au_band(float pos) {
 
 float se_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+// Smooth value noise along one axis, 0 to 1.
+float se_vn(float x, float seed) {
+    float i = floor(x);
+    float f = fract(x);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(se_hash(vec2(i, seed)), se_hash(vec2(i + 1.0, seed)), f);
 }
 
 float se_softplus(float x) {
@@ -1755,11 +1769,19 @@ vec4 border(vec2 uv) {
     float rs = r / (1.0 + au * 0.6 * bass);
     float heat = se_static_heat(rs / BAND_THIN);
     heat += se_band_prof(r / BAND_THIN) * se_band_wave(t);
+    // Each slot along the outline plays its own pick of the four quadrants, mirrored or not, a little off the shared clock, so the edge does not read as a repeating tile.
     float spr = 0.0;
     for (int j = -1; j <= 1; j++) {
         float fj = float(j);
-        spr += se_quadrant(mod(qi + fj, 4.0), x - fj * TILE_N, r, t, lift);
+        float slot = mod(qi + fj, nq);
+        float q = floor(4.0 * se_hash(vec2(slot, 1.3)));
+        float xl = x - fj * TILE_N;
+        xl = se_hash(vec2(slot, 2.9)) < 0.5 ? xl : TILE_N - xl;
+        float toff = JITTER * LOOP * se_hash(vec2(slot, 4.7));
+        spr += se_quadrant(q, xl, r, t + toff, lift);
     }
+    // A slow swell along the outline, so some stretches run calmer and some hotter.
+    spr *= mix(1.0 - DRIFT, 1.0 + 0.5 * DRIFT, se_vn(s / DRIFT_LEN + t * DRIFT_RATE, 7.0));
     // A few fitted sprites are the clip's soft background haze with no top; they end where the clip's corona ends instead of at REACH.
     spr *= 1.0 - smoothstep(SPR_R0, SPR_R1, r / lift);
     heat += spr * mix(1.0, 1.0 + 0.6 * bl, au);
