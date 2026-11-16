@@ -3,17 +3,17 @@
 const float K_SCALE = 0.12;
 // Logical px per clip px along the edge: the plasma keeps the pattern size it had before the band was thinned.
 const float TH_SCALE = 0.45;
-// The corner radius the border cuts the client with (appearance.corner_radius).
-const float CORNER = 6.0;
 const float CORNER_REF = 3.0;
 const float QUARTER = 1.5708;
 // Logical px over which the two edges' plasma is blended across a corner diagonal.
 const float BLEND = 40.0;
-// Logical px of rounding in the band's depth at a corner: the client's own corner radius, so the band follows the window's corner.
-const float SOFT = CORNER;
 // Clip px over which the rim's whiteness climbs to the limb's (0.278 at r = 0 in the clip).
 const float LIMB_SOFT = 6.0;
 const float LIMB_W = 0.278;
+// The corner match shared with the border shader.
+const float CORNER_DIM = 0.81;
+const float CORNER_R0 = 3.0;
+const float CORNER_R1 = 8.0;
 // Clip px of ring per theta sample.
 const float SAMPLE = 0.86488;
 // Clip px in from the limb where the plasma has faded into the flat core.
@@ -109,20 +109,20 @@ float se_plasma(float th, float r, float t) {
     return (wall - WALL_MEAN) * WALL + (haze - 0.5) * HAZE + (det - 0.5) * DET * (1.0 + LIMB_DET * smoothstep(-10.0, 0.0, r));
 }
 
-// The position along the client outline for a point inside the window, measured off one edge (0 top, 1 right, 2 bottom, 3 left), the same parametrisation the border uses.
+// The position along the client outline for a point inside the window, measured off one edge (0 top, 1 right, 2 bottom, 3 left), the same parametrisation and radii the border uses.
 float se_outline_edge(float e, vec2 p, vec2 size) {
-    float r = CORNER;
-    float ra = r + CORNER_REF;
-    float o1 = size.x - 2.0 * r;
-    float o2 = o1 + QUARTER * ra;
-    float o3 = o2 + size.y - 2.0 * r;
-    float o4 = o3 + QUARTER * ra;
-    float o5 = o4 + size.x - 2.0 * r;
-    float o6 = o5 + QUARTER * ra;
-    if (e < 0.5) return p.x - r;
-    if (e < 1.5) return o2 + p.y - r;
-    if (e < 2.5) return o4 + size.x - r - p.x;
-    return o6 + size.y - r - p.y;
+    vec4 r = umbriel_corner_radius;
+    vec4 ra = r + vec4(CORNER_REF);
+    float o1 = size.x - r.x - r.y;
+    float o2 = o1 + QUARTER * ra.y;
+    float o3 = o2 + size.y - r.y - r.z;
+    float o4 = o3 + QUARTER * ra.z;
+    float o5 = o4 + size.x - r.z - r.w;
+    float o6 = o5 + QUARTER * ra.w;
+    if (e < 0.5) return p.x - r.x;
+    if (e < 1.5) return o2 + p.y - r.y;
+    if (e < 2.5) return o4 + size.x - r.z - p.x;
+    return o6 + size.y - r.w - p.y;
 }
 
 // The disc's brightness by clip px in from the limb.
@@ -310,9 +310,14 @@ vec4 window(vec2 uv) {
     vec4 src = umbriel_sample(uv);
     vec2 size = umbriel_size;
     vec2 p = uv * size;
+    // Depth in from the window's rounded edge, where every contour is the outline pulled inward with the window's own corner radius, so corners stay round instead of creasing.
+    vec2 pc = p - 0.5 * size;
+    vec4 cr = umbriel_corner_radius;
+    float rc = pc.y < 0.0 ? (pc.x < 0.0 ? cr.x : cr.y) : (pc.x < 0.0 ? cr.w : cr.z);
     vec2 q = min(p, size - p);
-    // A smooth minimum of the two edge distances, so the band bends round a corner instead of creasing along the diagonal.
-    float din = max(-SOFT * log(exp(-q.x / SOFT) + exp(-q.y / SOFT)), 0.0);
+    float dq = q.x - q.y;
+    float din = abs(dq) < rc ? 0.5 * (q.x + q.y + sqrt(2.0 * rc * rc - dq * dq)) - rc : min(q.x, q.y);
+    if (din < 0.0) return src;
     vec4 ed = vec4(p.y, size.x - p.x, size.y - p.y, p.x);
     float e1 = 0.0; float m1 = ed.x;
     if (ed.y < m1) { e1 = 1.0; m1 = ed.y; }
@@ -320,7 +325,7 @@ vec4 window(vec2 uv) {
     if (ed.w < m1) { e1 = 3.0; m1 = ed.w; }
     float t = umbriel_time * SPEED;
     // The same spectrum layout as the border: bass at the start of the outline, rising to the middle and mirrored back.
-    float perim = 2.0 * (size.x + size.y) - 8.0 * CORNER + 4.0 * QUARTER * (CORNER + CORNER_REF);
+    float perim = 2.0 * (size.x + size.y) - 2.0 * (cr.x + cr.y + cr.z + cr.w) + QUARTER * (cr.x + cr.y + cr.z + cr.w + 4.0 * CORNER_REF);
     float au = audio_live();
     float bl = au_band(0.85 * (1.0 - abs(2.0 * clamp(se_outline_edge(e1, p, size) / perim, 0.0, 1.0) - 1.0)));
     float lvl = au * audio_level();
@@ -346,5 +351,9 @@ vec4 window(vec2 uv) {
     // Whiteness climbs toward the plateau's as it nears the limb, meeting the border's ramp halfway.
     float wl = mix(se_inner_w(r), LIMB_W, smoothstep(-LIMB_SOFT, 0.0, r));
     vec3 c = min(se_colour(v, wl, se_base()) * flare, vec3(1.0)) * a;
+    // The same corner match as the border: whole pixels round the corner come down to what the antialiased ones can show.
+    vec2 qe = abs(pc) - 0.5 * size + vec2(rc);
+    float edge = length(max(qe, 0.0)) + min(max(qe.x, qe.y), 0.0) - rc;
+    c *= abs(edge) < 0.45 ? 1.0 : mix(CORNER_DIM, 1.0, smoothstep(CORNER_R0, CORNER_R1, length(q)));
     return vec4(min(src.rgb + c, vec3(1.0)), src.a);
 }

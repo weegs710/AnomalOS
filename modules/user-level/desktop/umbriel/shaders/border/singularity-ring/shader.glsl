@@ -16,6 +16,10 @@ const float SPR_R0 = 45.0;
 const float SPR_R1 = 75.0;
 // The glow band against the window is narrowed to this share of the clip's, the plumes keep their own length.
 const float BAND_THIN = 0.42;
+// The share of a colour the client's antialiased corner pixels show (207 of 255 measured with both effects white), and the px round the corner that are dimmed to match.
+const float CORNER_DIM = 0.81;
+const float CORNER_R0 = 3.0;
+const float CORNER_R1 = 8.0;
 // How far off the shared 2 s clock each slot may start, as a share of the loop.
 const float JITTER = 0.35;
 // The calm-to-hot swing along the outline, its length in logical px and how fast it drifts.
@@ -1763,7 +1767,8 @@ vec4 border(vec2 uv) {
     float ql = o.y / nq;
     float qi = floor(s / ql);
     float x = (s / ql - qi) * TILE_N;
-    if (r < 0.0) return vec4(0.0);
+    // The hole is cut with antialiasing at the rounded corners, so the limb colour carries a pixel inside the edge for the partly cut pixels.
+    r = max(r, 0.0);
 
     float lift = 1.0 + au * (0.3 + 0.9 * bl);
     float rs = r / (1.0 + au * 0.6 * bass);
@@ -1788,6 +1793,9 @@ vec4 border(vec2 uv) {
     heat = clamp(heat, 0.0, 215.0);
     vec3 c = se_colour(se_heat_v(heat), se_heat_w(heat), base);
     c = mix(se_colour(RIM_V, RIM_W, base), c, smoothstep(0.0, LIMB_SOFT, r));
+    // The client's antialiased corner pixels can only show CORNER_DIM of any colour, so the whole pixels round them come down to match.
+    vec2 cv = vec2(coords.x < 0.5 * size.x ? coords.x : size.x - coords.x, coords.y < 0.5 * size.y ? coords.y : size.y - coords.y);
+    c *= abs(d) < 0.45 ? 1.0 : mix(CORNER_DIM, 1.0, smoothstep(CORNER_R0, CORNER_R1, length(cv)));
     c = min(c * flare, vec3(1.0)) * smoothstep(REACH, REACH - FADE, d);
     float a = max(c.r, max(c.g, c.b));
     return vec4(c, a);
