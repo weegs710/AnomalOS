@@ -27,11 +27,15 @@ url = "gh:feel-co/hjem"
 [inputs.nix-index-database]
 url = "gh:nix-community/nix-index-database"
 
+# cache.manic.systems only holds builds against tack's own nixpkgs lock.
 [inputs.tack]
 url = "gh:manic-systems/tack"
+exclude_follow = ["nixpkgs"]
 
+# The cachix branch only advances once CI has pushed it to noctalia.cachix.org, built against noctalia's own nixpkgs lock.
 [inputs.noctalia]
-url = "gh:noctalia-dev/noctalia/0a0d63805eb6e17e699de391171618a5d696726d"
+url = "gh:noctalia-dev/noctalia/cachix"
+exclude_follow = ["nixpkgs"]
 
 [inputs.dusklight]
 url = "gh:TwilitRealm/dusklight/v1.4.1"
@@ -41,9 +45,11 @@ submodules = true
 url = "cb:weegs710/nix-shop"
 
 # The github tarball fetcher cannot carry subprojects/scenefx, and package.nix throws without it.
+# The cachix branch only advances once CI has pushed it to umbriel.cachix.org, built against umbriel's own nixpkgs lock.
 [inputs.umbriel]
-url = "gh:noctalia-dev/umbriel"
+url = "gh:noctalia-dev/umbriel/cachix"
 submodules = true
+exclude_follow = ["nixpkgs"]
 
 [inputs.bootvine]
 url = "cb:wvhulle/bootvine"

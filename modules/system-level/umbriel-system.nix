@@ -24,6 +24,11 @@
             ];
           });
 
+      nix.settings = {
+        substituters = [ "https://umbriel.cachix.org" ];
+        trusted-public-keys = [ "umbriel.cachix.org-1:JfNq/2yg2S6D6z4Z2dVSZrZlDPQTKtexB6GAVLD98nw=" ];
+      };
+
       xdg.portal = {
         # OpenURI only honours a default for web schemes and inode/directory, so routing xdg-open through it shows an app chooser for every other type regardless of mimeapps
         xdgOpenUsePortal = false;

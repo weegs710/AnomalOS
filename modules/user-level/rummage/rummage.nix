@@ -17,9 +17,11 @@
 
       programs.rummage = {
         enable = true;
-        # the default package has no PDFium helper, so PDFs only show an icon
-        package = inputs.rummage.packages.${pkgs.stdenv.hostPlatform.system}.rummage-with-pdf;
         filePicker.enable = true;
+        preview = {
+          thumbnails = true;
+          pdf = true;
+        };
       };
 
       nix.settings = {

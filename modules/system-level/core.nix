@@ -18,9 +18,11 @@
 
       substituters = [
         "https://anomalos.cachix.org"
+        "https://cache.manic.systems"
       ];
       trusted-public-keys = [
         "anomalos.cachix.org-1:Rw01Lh1cj/LULRaPi6S145g1qrRzMr0hxvMTvQE0+Ms="
+        "cache.manic.systems-1:s6OZanN8Us8vRi0jVivP3qlMn0cYHBjBALKrNe5nH8s="
       ];
 
       min-free = 5368709120; # 5GB (bytes) -- trigger GC before builds fail

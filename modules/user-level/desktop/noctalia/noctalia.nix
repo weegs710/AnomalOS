@@ -25,9 +25,13 @@ let
   ];
   hex = lib.removePrefix "#";
 in
-only.gate { tags = [ "desktop" ]; }
-{
+only.gate { tags = [ "desktop" ]; } {
   hjem.extraModules = [ inputs.noctalia.hjemModules.default ];
+
+  nix.settings = {
+    substituters = [ "https://noctalia.cachix.org" ];
+    trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
+  };
 
   # the VT background is slot 0, so it takes kitty's background (pure black under pure_black_dark) to match the terminal
   console.colors = [
@@ -70,14 +74,20 @@ only.gate { tags = [ "desktop" ]; }
     );
 
     # user templates load from any *.toml here, same as hooks; the hook needs the script's store path
-    xdg.config.files."noctalia/zed-icons.toml".text = lib.replaceStrings [ "@ZED_ICONS@" ] [
-      "${zedIcons}/bin/zed-icons"
-    ] (builtins.readFile ./zed-icons.toml);
-    xdg.config.files."noctalia/templates/zed-icon-colors.json".source = ./templates/zed-icon-colors.json;
+    xdg.config.files."noctalia/zed-icons.toml".text =
+      lib.replaceStrings
+        [ "@ZED_ICONS@" ]
+        [
+          "${zedIcons}/bin/zed-icons"
+        ]
+        (builtins.readFile ./zed-icons.toml);
+    xdg.config.files."noctalia/templates/zed-icon-colors.json".source =
+      ./templates/zed-icon-colors.json;
     xdg.config.files."noctalia/claude-code.toml".source = ./claude-code.toml;
     xdg.config.files."noctalia/templates/claude-code.json".source = ./templates/claude-code.json;
     xdg.config.files."noctalia/discord.toml".source = ./discord.toml;
-    xdg.config.files."noctalia/templates/discord-material.css".source = ./templates/discord-material.css;
+    xdg.config.files."noctalia/templates/discord-material.css".source =
+      ./templates/discord-material.css;
 
     # qt6ct ships no config; without an icon theme Qt resolves named icons to the missing-icon checker
     xdg.config.files."qt6ct/qt6ct.conf".source = ./qt6ct.conf;
@@ -87,7 +97,8 @@ only.gate { tags = [ "desktop" ]; }
     xdg.config.files."noctalia/palettes/Great-Below.json".source = ./palettes/Great-Below.json;
     xdg.config.files."noctalia/palettes/Cold-Wind.json".source = ./palettes/Cold-Wind.json;
     xdg.config.files."noctalia/palettes/Cymagentan.json".source = ./palettes/Cymagentan.json;
-    xdg.config.files."noctalia/palettes/alliance-tournament-xxi-48-vib.json".source = ./palettes/alliance-tournament-xxi-48-vib.json;
+    xdg.config.files."noctalia/palettes/alliance-tournament-xxi-48-vib.json".source =
+      ./palettes/alliance-tournament-xxi-48-vib.json;
     xdg.config.files."noctalia/palettes/Triglavian.json".source = ./palettes/Triglavian.json;
   };
 }
