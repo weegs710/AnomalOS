@@ -49,5 +49,7 @@ submodules = true
 url = "cb:wvhulle/bootvine"
 tag = "v{version}"
 
+# rummage-fm.cachix.org only holds builds against rummage's own nixpkgs lock.
 [inputs.rummage]
 url = "gh:barrulus/rummage"
+exclude_follow = ["nixpkgs"]

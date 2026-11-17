@@ -22,6 +22,11 @@
         filePicker.enable = true;
       };
 
+      nix.settings = {
+        substituters = [ "https://rummage-fm.cachix.org" ];
+        trusted-public-keys = [ "rummage-fm.cachix.org-1:fhPhaCttVfPBS/i//+Z+6Ch0xdxj9g94eZdQ5m6mlwA=" ];
+      };
+
       # rummage finds extractors on PATH; plain _7zz lacks the rar codec, and file-roller refuses encrypted 7z and rar
       users.users.${username}.packages = [ pkgs._7zz-rar ];
 
