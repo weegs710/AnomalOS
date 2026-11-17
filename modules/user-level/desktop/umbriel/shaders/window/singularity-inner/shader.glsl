@@ -47,6 +47,10 @@ const float SPEED = 1.0;
 // A feed that is connected but silent counts as no feed, the same gate the border uses.
 const float SILENCE_LOW = 0.02;
 const float SILENCE_HIGH = 0.10;
+// The same hit the cursor surges on: loudness or the lowest bass, whichever is stronger, from where it starts to where it is full, and how much further the band reaches on a full hit (the cursor's 9 to 15 px swell).
+const float HIT0 = 0.05;
+const float HIT1 = 0.5;
+const float SURGE = 0.67;
 
 float audio_level() {
     float sum = 0.0;
@@ -62,6 +66,11 @@ float audio_live() {
 
 float au_band(float pos) {
     return audio_live() * umbriel_audio_spectrum(pos);
+}
+
+// How hard the audio is hitting, 0 to 1, the cursor's swell signal.
+float audio_hit() {
+    return smoothstep(HIT0, HIT1, audio_live() * max(audio_level(), umbriel_audio_spectrum(0.05)));
 }
 
 float se_hash3(vec3 p) {
@@ -324,14 +333,13 @@ vec4 window(vec2 uv) {
     if (ed.z < m1) { e1 = 2.0; m1 = ed.z; }
     if (ed.w < m1) { e1 = 3.0; m1 = ed.w; }
     float t = umbriel_time * SPEED;
-    // The same spectrum layout as the border: bass at the start of the outline, rising to the middle and mirrored back.
-    float perim = 2.0 * (size.x + size.y) - 2.0 * (cr.x + cr.y + cr.z + cr.w) + QUARTER * (cr.x + cr.y + cr.z + cr.w + 4.0 * CORNER_REF);
+    // The same spectrum layout as the border and cursor: bass along the top, treble along the bottom.
     float au = audio_live();
-    float bl = au_band(0.85 * (1.0 - abs(2.0 * clamp(se_outline_edge(e1, p, size) / perim, 0.0, 1.0) - 1.0)));
+    float bl = au_band(0.85 * clamp(p.y / max(size.y, 1.0), 0.0, 1.0));
     float lvl = au * audio_level();
     float bass = au_band(0.08);
     // The band reaches deeper with the spectrum under it and bass, and brightens with loudness, like the corona outside.
-    float lift = 1.0 + au * (0.3 + 0.9 * bl + 0.6 * bass);
+    float lift = 1.0 + au * (0.3 + 0.9 * bl + 0.6 * bass) + SURGE * audio_hit();
     float flare = mix(1.0, 0.9 + 0.5 * lvl, au);
     float r = -din / K_SCALE / lift;
     if (r < -DEPTH || din < 0.0) return src;

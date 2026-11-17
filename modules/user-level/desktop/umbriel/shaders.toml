@@ -6,6 +6,7 @@ files = [
   "shaders/border/kzzzt-ring/effect.toml",
   "shaders/border/singularity-ring/effect.toml",
   "shaders/window/singularity-inner/effect.toml",
+  "shaders/cursor/singularity-cursor/effect.toml",
   "shaders/animation/kzzzt-open/effect.toml",
   "shaders/animation/kzzzt-close/effect.toml",
   "shaders/animation/slide-down/effect.toml",
@@ -14,7 +15,8 @@ files = [
 [effects]
 # no default window effect: the ring is paired with the kzzzt open and close animations only
 border = "singularity-ring"
+cursor = "singularity-cursor"
 # otherwise screencopy clients are handed a second frame rendered without the effects
 in_capture = true
-# unset follows the output refresh, so the animated ring and its light redrew at 144Hz forever; 36 divides 144
-max_fps = 36
+# the cursor effect redraws only at this cap while the hardware cursor moves at the output's 144Hz, so a lower cap left it stepping behind fast moves
+max_fps = 144

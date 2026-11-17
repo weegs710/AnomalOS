@@ -1,0 +1,7 @@
+# the singularity ring in miniature round the pointer, drawn as light over what is under it
+[effects.preset.singularity-cursor]
+kind = "cursor"
+shader = "shader.glsl"
+palette = true
+# covers the farthest ember: full ring radius 15 + a full-hit launch (24 x 1.6 x 2 px/s for 1.2 s) + the wind's pull (110 x 1.6 px/s^2 over 1.2 s), plus its size
+radius = 260

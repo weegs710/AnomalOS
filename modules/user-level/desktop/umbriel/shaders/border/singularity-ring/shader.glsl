@@ -36,6 +36,10 @@ const float RIM_W = 0.278;
 // A feed that is connected but silent counts as no feed, so the effect is the bare clip replay.
 const float SILENCE_LOW = 0.02;
 const float SILENCE_HIGH = 0.10;
+// The same hit the cursor surges on: loudness or the lowest bass, whichever is stronger, from where it starts to where it is full, and how much further the band reaches on a full hit (the cursor's 9 to 15 px swell).
+const float HIT0 = 0.05;
+const float HIT1 = 0.5;
+const float SURGE = 0.67;
 // Slows or speeds the whole replay together.
 const float SPEED = 1.0;
 // Extra radius used to space the corona round a corner, so it fans out instead of bunching.
@@ -56,6 +60,11 @@ float audio_live() {
 
 float au_band(float pos) {
     return audio_live() * umbriel_audio_spectrum(pos);
+}
+
+// How hard the audio is hitting, 0 to 1, the cursor's swell signal.
+float audio_hit() {
+    return smoothstep(HIT0, HIT1, audio_live() * max(audio_level(), umbriel_audio_spectrum(0.05)));
 }
 
 float se_hash(vec2 p) {
@@ -1758,7 +1767,8 @@ vec4 border(vec2 uv) {
     vec3 base = se_base();
 
     float au = audio_live();
-    float bl = au_band(0.85 * (1.0 - abs(2.0 * clamp(s / max(o.y, 1.0), 0.0, 1.0) - 1.0)));
+    // The spectrum runs from bass along the top to treble along the bottom, the cursor's layout.
+    float bl = au_band(0.85 * clamp(coords.y / max(size.y, 1.0), 0.0, 1.0));
     float lvl = au * audio_level();
     float bass = au_band(0.08);
     float flare = mix(1.0, 0.9 + 0.5 * lvl, au);
@@ -1772,7 +1782,7 @@ vec4 border(vec2 uv) {
     // The hole is cut with antialiasing at the rounded corners, so the limb colour carries a pixel inside the edge for the partly cut pixels.
     r = max(r, 0.0);
 
-    float lift = 1.0 + au * (0.3 + 0.9 * bl);
+    float lift = 1.0 + au * (0.3 + 0.9 * bl) + SURGE * audio_hit();
     float rs = r / (1.0 + au * 0.6 * bass);
     float heat = se_static_heat(rs / BAND_THIN);
     heat += se_band_prof(r / BAND_THIN) * se_band_wave(t);
