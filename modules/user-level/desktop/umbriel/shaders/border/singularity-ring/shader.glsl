@@ -8,14 +8,16 @@ const float SAMPLE = 0.86488;
 const float TILE_N = 256.0;
 const float LOOP = 2.0;
 const float BAND_LOOP = 6.0;
-// REACH must stay under border width + padding; the clip's tallest plume lands at about 30, and the last FADE px taper it so nothing is cut flat.
-const float REACH = 44.0;
+// REACH must stay under border width + padding; the tallest plume lands at about 15, and the last FADE px taper it so nothing is cut flat.
+const float REACH = 24.0;
 const float FADE = 12.0;
 // Clip px where the corona's sprites fade out: the clip's corona is gone past about +64.
 const float SPR_R0 = 45.0;
 const float SPR_R1 = 75.0;
-// The glow band against the window is narrowed to this share of the clip's, the plumes keep their own length.
-const float BAND_THIN = 0.42;
+// The glow band against the window is narrowed to this share of the clip's.
+const float BAND_THIN = 0.30;
+// The plumes' length as a share of their clip length, pulled in toward the border; along-edge size unchanged.
+const float OUT_THIN = 0.5;
 // The share of a colour the client's antialiased corner pixels show (207 of 255 measured with both effects white), and the px round the corner that are dimmed to match.
 const float CORNER_DIM = 0.81;
 const float CORNER_R0 = 3.0;
@@ -1783,12 +1785,12 @@ vec4 border(vec2 uv) {
         float xl = x - fj * TILE_N;
         xl = se_hash(vec2(slot, 2.9)) < 0.5 ? xl : TILE_N - xl;
         float toff = JITTER * LOOP * se_hash(vec2(slot, 4.7));
-        spr += se_quadrant(q, xl, r, t + toff, lift);
+        spr += se_quadrant(q, xl, r / OUT_THIN, t + toff, lift);
     }
     // A slow swell along the outline, so some stretches run calmer and some hotter.
     spr *= mix(1.0 - DRIFT, 1.0 + 0.5 * DRIFT, se_vn(s / DRIFT_LEN + t * DRIFT_RATE, 7.0));
     // A few fitted sprites are the clip's soft background haze with no top; they end where the clip's corona ends instead of at REACH.
-    spr *= 1.0 - smoothstep(SPR_R0, SPR_R1, r / lift);
+    spr *= 1.0 - smoothstep(SPR_R0, SPR_R1, r / OUT_THIN / lift);
     heat += spr * mix(1.0, 1.0 + 0.6 * bl, au);
     heat = clamp(heat, 0.0, 215.0);
     vec3 c = se_colour(se_heat_v(heat), se_heat_w(heat), base);
