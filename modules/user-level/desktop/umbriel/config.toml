@@ -243,7 +243,7 @@ follows_mouse = "sloppy"
 # A rule rather than [colors.border], which noctalia regenerates on every wallpaper change; the scratchpad keeps its own colour.
 [[window_rule]]
 match.is_scratchpad = false
-border_color_unfocused = "#00000000"
+border_color_unfocused = "#34070aFF"
 
 # The window shader runs on the focused window only, same as the border ring.
 [[window_rule]]
@@ -329,8 +329,15 @@ match.title = "^btop$"
 default_floating = true
 
 [[window_rule]]
+match.app_id = "^kitty$"
 match.title = "^kitty$"
 default_workspace = 2
+
+# terminals rummage opens carry their own app-id so they pop up where rummage is
+[[window_rule]]
+match.app_id = "^rummage-term$"
+default_floating = true
+default_floating_size_px = { width = 1200, height = 675 }
 
 [[window_rule]]
 match.title = "^rmpc$"

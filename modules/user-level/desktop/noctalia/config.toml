@@ -256,10 +256,6 @@ wallpaper_scheme = "vibrant"
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/discord-material.css"
         output_path = "$XDG_CONFIG_HOME/vesktop/themes/noctalia-material.theme.css"
 
-        [theme.templates.user.rummage]
-        input_path = "/nix/store/wnj9yh8b1jrshb0xpd6j61y5da9q348n-rummage-0.5.1/share/rummage/noctalia/rummage"
-        output_path = "~/.config/rummage/colors.toml"
-
         [theme.templates.user.zed_icons]
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/zed-icon-colors.json"
         output_path = "$XDG_STATE_HOME/noctalia/zed-icon-colors.json"
