@@ -89,6 +89,8 @@ const float RING_R0 = 9.0;
 // Once the pointer stops, seconds before it is flung back out, and the gap between path samples in s that still counts as one move.
 const float DRIFT_DELAY = 0.2;
 const float RUN_GAP = 0.12;
+// Px a run must carry the pointer from where it began before it counts as a move: out of the orbit's circle, so anything inside it leaves the orbit alone.
+const float MOVE_PX = ORBIT_R;
 // The plunge once the pointer moves, integrated by the bake: the pull is raised this many times over the orbit's, and dynamical friction on its whole velocity bleeds off the orbital motion so it lands on the pointer instead of orbiting it.
 const float TUG_PULL = 300.0;
 const float TUG_DRAG = 46.0;
@@ -2041,9 +2043,10 @@ float se_burst_gate(float drive, float h) {
     return smoothstep(thr, thr + HIT_SOFT, drive);
 }
 
-// Seconds since the pointer last moved, since the current move began, and the share of the orbit and angle lead it had when that move began; set once per pixel in cursor().
+// Seconds since the last real move ended, since it began, since the real move before it ended, and the share of the orbit and angle lead it had when it began; set once per pixel in cursor().
 float g_still;
 float g_run;
+float g_prev;
 float g_m0;
 float g_lag0;
 
@@ -2127,7 +2130,7 @@ vec2 se_tug(float s) {
 
 // How far out on the orbit the singularity was `ago` seconds back and at what angle: plunging in while moving, flung out at rest.
 vec2 se_orbit(float ago) {
-    vec2 f = se_drift(g_still - ago);
+    vec2 f = se_drift((ago < g_run ? g_still : g_prev) - ago);
     vec2 tg = ago < g_run ? se_tug(g_run - ago) : vec2(0.0);
     vec2 st = tg.x > f.x ? tg : f;
     return vec2(st.x, TAU * (umbriel_time - ago) / ORBIT_PERIOD + st.y);
@@ -2145,13 +2148,12 @@ vec2 se_off(float ago) {
     return ORBIT_R * o.x * vec2(cos(o.y), sin(o.y));
 }
 
-// The ring's embers. At rest each lane may fire one at a random moment of its cycle off the ring where it sits; one fired before the pointer last moved is dropped, so nothing rides along with the cursor.
+// The ring's embers. At rest each lane may fire one at a random moment of its cycle off the ring where it sits; one fired before the last real move is dropped, so nothing rides along with the cursor.
 // Burst lanes do the same on short cycles but only show with the audio, flung harder; while moving, each retained path sample is a fixed spot the ring passed through and fires there, plus burst tries with the audio, each finishing its life in place.
 float se_smoulder(vec2 here, float t, float gain, float push, float drive, float rr) {
     float acc = 0.0;
     vec2 now = umbriel_pointer * umbriel_size;
-    float still = 1.0e6;
-    if (umbriel_pointer_count > 0) still = umbriel_pointer_path[umbriel_pointer_count - 1].z;
+    float still = g_still;
     float kb = push * (1.0 + HIT_KICK * drive);
     if (length(here - now) < EMBER_REACH + ORBIT_MAX) {
         for (int i = 0; i < 96; i++) {
@@ -2230,27 +2232,30 @@ vec4 cursor(vec2 uv) {
     float lvl0 = audio_live() * audio_level();
     // A hit is loudness or bass, whichever is stronger.
     float drive = audio_live() * max(audio_level(), umbriel_audio_spectrum(0.05));
-    // The current move is the newest run of path samples with no gap past RUN_GAP; the stillness before it says how far out on the orbit the fall began.
+    // A run is path samples with no gap past RUN_GAP, and it becomes a move once it is MOVE_PX from where it began; the stillness since the real move before says how far out on the orbit the fall began.
     g_still = 1.0e6;
     g_run = 1.0e6;
-    float gap = 1.0e6;
-    if (umbriel_pointer_count > 0) {
-        g_still = umbriel_pointer_path[umbriel_pointer_count - 1].z;
-        g_run = g_still;
-        bool inrun = true;
-        for (int k = 62; k >= 0; k--) {
-            if (inrun && k < umbriel_pointer_count - 1) {
-                float a = umbriel_pointer_path[k].z;
-                if (a - g_run < RUN_GAP) {
-                    g_run = a;
-                } else {
-                    gap = a - g_run;
-                    inrun = false;
-                }
+    g_prev = 1.0e6;
+    vec2 st = vec2(0.0);
+    float pa = 0.0;
+    bool moved = false;
+    for (int k = 0; k < 64; k++) {
+        if (k < umbriel_pointer_count) {
+            vec4 s = umbriel_pointer_path[k];
+            if (k == 0 || pa - s.z > RUN_GAP) {
+                st = s.xy;
+                moved = false;
             }
+            if (!moved && length((s.xy - st) * umbriel_size) >= MOVE_PX) {
+                moved = true;
+                g_prev = g_still;
+                g_run = s.z;
+            }
+            if (moved) g_still = s.z;
+            pa = s.z;
         }
     }
-    vec2 at0 = se_drift(gap);
+    vec2 at0 = se_drift(g_prev - g_run);
     g_m0 = at0.x;
     g_lag0 = at0.y;
     vec2 p = (uv - umbriel_pointer) * umbriel_size - se_off(0.0);
