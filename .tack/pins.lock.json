@@ -88,9 +88,9 @@
     "type": "github",
     "owner": "noctalia-dev",
     "repo": "noctalia",
-    "rev": "b2a278271b2bbd4267ce4d16f3c38cc09a81029e",
-    "narHash": "sha256-YsqUBxNZlZfwRtOBYZHqRFgdp9dkXOTTUNRKa6WQc2M=",
-    "lastModified": 1794878897
+    "rev": "2feffcaf0b6842d014045ce641c89e64b4be08a8",
+    "narHash": "sha256-aXabt/+bzPpm9JQh/00ZagJNuZ8n03l3QdJ3qHf6tws=",
+    "lastModified": 1794968131
   },
   "preservation": {
     "type": "github",
@@ -104,25 +104,25 @@
     "type": "github",
     "owner": "barrulus",
     "repo": "rummage",
-    "rev": "52a263eaa027a279555c0d1868bddb819ac3efdd",
-    "narHash": "sha256-KPTadMrGZtOeVUKJ8xoxhVH0IWIL+J2KWIZBuSTgDAY=",
-    "lastModified": 1794862294
+    "rev": "7001c8fd0183c0bad212a41f050f4a44e807d4c0",
+    "narHash": "sha256-k1+RieyhdtarBXEF0s3Yh6sDRqcrTPP0yJPyLM7HMRY=",
+    "lastModified": 1794956670
   },
   "tack": {
     "type": "github",
     "owner": "manic-systems",
     "repo": "tack",
-    "rev": "00f9b58a9ed0d87a9fba57a0850f634dc5b3ff68",
-    "narHash": "sha256-MdbpfjqHenkpPdUTvMqa+ORFr2azLbBDC7Ldkr8x0A0=",
-    "lastModified": 1794885381
+    "rev": "bad78453288bfb5d890af856fa2429979e2b944c",
+    "narHash": "sha256-Jn+PT5iYnKcttgR5Rc6oWLNxhFGzyBY3/P3sgvqcQDU=",
+    "lastModified": 1794909624
   },
   "umbriel": {
     "type": "git",
     "url": "https://github.com/noctalia-dev/umbriel.git",
     "ref": "refs/heads/cachix",
-    "rev": "4e2b6e590a7a22eef432c371920622b060199e0b",
-    "narHash": "sha256-Z7DSNAH78vVHS4Qqlx05aYzB4CoPT+miVlox11qdIJk=",
-    "lastModified": 1794878862,
+    "rev": "e59dbe333b6e91a650161e7d7586f291b38dbfb7",
+    "narHash": "sha256-dwexOHtuqLWpWFJCCjFrIgdb1mx+0I1TFgiq8HN+ZSw=",
+    "lastModified": 1794963082,
     "submodules": true
   }
 }
