@@ -11,43 +11,6 @@ const float BAND_LOOP = 6.0;
 // Logical px past the full-size ring where everything has faded to nothing, scaled with the ring; the preset's radius must cover RING_R + REACH.
 const float REACH = 11.0;
 const float FADE = 4.0;
-// Ember width range in px and stretch along travel, and the corona heat they leave at and cool to.
-const float EMBER_SZ0 = 0.6;
-const float EMBER_SZ1 = 1.2;
-const float EMBER_STRETCH = 1.6;
-const float EMBER_HOT = 170.0;
-const float EMBER_COOL = 40.0;
-// Embers the ring kicks off its limb: emitter lanes, their cycle range in seconds, the share of cycles that fire, each ember's life range in seconds, kick speed range in px/s, how hard drag spends the kick, and how much it swells.
-const float LANES = 96.0;
-const float LANE_P0 = 1.8;
-const float LANE_P1 = 3.6;
-const float LANE_FIRE = 0.6;
-const float BURST_LIFE0 = 0.6;
-const float BURST_LIFE1 = 1.2;
-const float BURST_V0 = 8.0;
-const float BURST_V1 = 24.0;
-// The wind's pull in px/s^2: embers leave the limb slowly and are accelerated away up the wind.
-const float WIND_ACC0 = 50.0;
-const float WIND_ACC1 = 110.0;
-const float SWELL = 0.2;
-// The solar wind: the arc of limb embers leave from, centred on the top, in radians (the top and sides, not the bottom); how far the outward direction leans the upward fling; and its random sideways scatter.
-const float WIND_ARC = 3.94;
-const float WIND_LEAN = 0.0;
-const float WIND_JITTER = 0.0;
-// The share of retained path samples that fire an ember while moving (about 31 a second, so it matches the rest rate), and how far an ember can get from where it left: ring radius, the kick at full audio push, the rise over the longest life, sway and size.
-const float SHED = 0.675;
-// While moving, px of travel per trail try, and the most tries one path segment gets.
-const float TRAIL_PX = 5.0;
-const float TRAIL_MAX = 12.0;
-// Audio bursts: hit strength where the first and last burst ember shows and how softly each fades in, the burst lanes' cycle range in seconds, their life as a share of a rest ember's, and the extra kick a full hit gives.
-const float HIT_LO = 0.08;
-const float HIT_HI = 0.6;
-const float HIT_SOFT = 0.08;
-const float HIT_P0 = 0.9;
-const float HIT_P1 = 1.6;
-const float HIT_LIFE = 0.5;
-const float HIT_KICK = 1.0;
-const float EMBER_REACH = RING_R + 1.0 + BURST_V1 * 1.6 * (1.0 + HIT_KICK) * BURST_LIFE1 + 0.5 * WIND_ACC1 * 1.6 * BURST_LIFE1 * BURST_LIFE1 + 8.0;
 // Clip px where the corona's sprites fade out: the clip's corona is gone past about +64.
 const float SPR_R0 = 45.0;
 const float SPR_R1 = 75.0;
@@ -2007,42 +1970,6 @@ vec3 se_colour(float v, float w, vec3 base) {
     return v * mix(hue, vec3(1.0), wo);
 }
 
-// One blob of ejected plasma at `at` as heat, the ring's own units: a dense core that is hottest in the middle, a little drawn out along its travel, holding its heat most of its life and cooling at the end.
-float se_wisp(vec2 here, vec2 at, vec2 dir, float sz, float age) {
-    vec2 dv = here - at;
-    float w = sz * (1.0 + SWELL * age);
-    float sp = length(dir);
-    dir /= max(sp, 0.001);
-    float along = dot(dv, dir) / (w * EMBER_STRETCH);
-    float across = dot(dv, vec2(-dir.y, dir.x)) / w;
-    float q = along * along + across * across;
-    if (q > 9.0) return 0.0;
-    // A flattened top so the core reads as solid plasma rather than a soft puff.
-    float g = exp(-0.5 * q * q);
-    return g * smoothstep(0.0, 0.06, age) * mix(EMBER_HOT, EMBER_COOL, age * age);
-}
-
-// An ember s seconds after it leaves `o`: launched slowly along dir0 and accelerated away along it by the wind. xy is where it is, zw its velocity.
-vec4 se_ember_at(vec2 o, vec2 dir0, float v0, float acc, float s) {
-    float v = v0 + acc * s;
-    return vec4(o + dir0 * (v0 * s + 0.5 * acc * s * s), dir0 * v);
-}
-
-// One ember fired `since` seconds ago off a seeded point on the limb of the ring centred at `o`, flung up as if caught in a solar wind, leaning the way it left; kick and rise scaled by kp and rp.
-float se_ember(vec2 here, vec2 o, float rr, float since, float life, float h1, float h2, float h3, float kp, float rp) {
-    float ang = -0.5 * TAU * 0.5 + (h1 - 0.5) * WIND_ARC;
-    vec2 out0 = vec2(cos(ang), sin(ang));
-    vec2 dir0 = normalize(vec2(WIND_LEAN * out0.x + WIND_JITTER * (2.0 * h2 - 1.0), -1.0));
-    vec4 e = se_ember_at(o + out0 * (rr + 1.0), dir0, mix(BURST_V0, BURST_V1, h3) * kp, mix(WIND_ACC0, WIND_ACC1, h2) * rp, since);
-    return se_wisp(here, e.xy, e.zw, mix(EMBER_SZ0, EMBER_SZ1, h3), since / life);
-}
-
-// How much of a burst ember shows at this hit strength: each has its own threshold, so the harder the hit the more of them are thrown, and they fade as the hit decays rather than popping.
-float se_burst_gate(float drive, float h) {
-    float thr = mix(HIT_LO, HIT_HI, h);
-    return smoothstep(thr, thr + HIT_SOFT, drive);
-}
-
 // Seconds since the last real move ended, since it began, since the real move before it ended, and the share of the orbit and angle lead it had when it began; set once per pixel in cursor().
 float g_still;
 float g_run;
@@ -2082,7 +2009,6 @@ vec2 se_fling(float s) {
     if (s < 1.55) return mix(vec2(0.99743, -0.34069), vec2(1.0, -0.33981), (s - 1.3764) / 0.1736);
     return vec2(1.0, FLING_LAG);
 }
-const float ORBIT_MAX = ORBIT_R * FLING_PEAK;
 
 // The plunge from TUG_* integrated by the bake: s seconds after the pointer starts moving, the share of the orbit it is still out at and the angle in rad it has swung through.
 const float TUG_END = 0.309;
@@ -2148,90 +2074,9 @@ vec2 se_off(float ago) {
     return ORBIT_R * o.x * vec2(cos(o.y), sin(o.y));
 }
 
-// The ring's embers. At rest each lane may fire one at a random moment of its cycle off the ring where it sits; one fired before the last real move is dropped, so nothing rides along with the cursor.
-// Burst lanes do the same on short cycles but only show with the audio, flung harder; while moving, each retained path sample is a fixed spot the ring passed through and fires there, plus burst tries with the audio, each finishing its life in place.
-float se_smoulder(vec2 here, float t, float gain, float push, float drive, float rr) {
-    float acc = 0.0;
-    vec2 now = umbriel_pointer * umbriel_size;
-    float still = g_still;
-    float kb = push * (1.0 + HIT_KICK * drive);
-    if (length(here - now) < EMBER_REACH + ORBIT_MAX) {
-        for (int i = 0; i < 96; i++) {
-            float fi = float(i);
-            if (fi < LANES) {
-                float per = mix(LANE_P0, LANE_P1, se_hash3(vec3(fi, 0.0, 2.1)));
-                float tt = t + per * se_hash3(vec3(fi, 0.0, 6.7));
-                float cyc = floor(tt / per);
-                float h0 = se_hash3(vec3(fi, cyc, 3.3));
-                float h4 = se_hash3(vec3(fi, cyc, 7.9));
-                float h2 = se_hash3(vec3(fi, cyc, 5.3));
-                float life = mix(BURST_LIFE0, BURST_LIFE1, h2);
-                float since = (fract(tt / per) - h4 * (1.0 - life / per)) * per;
-                if (h0 < LANE_FIRE && since > 0.0 && since < life && since < still) {
-                    acc += se_ember(here, now + se_off(since), rr, since, life, se_hash3(vec3(fi, cyc, 1.7)), h2, se_hash3(vec3(fi, cyc, 9.1)), push, push);
-                }
-            }
-        }
-        if (drive > HIT_LO) {
-            for (int i = 0; i < 48; i++) {
-                float fi = float(i) + 500.0;
-                float per = mix(HIT_P0, HIT_P1, se_hash3(vec3(fi, 0.0, 2.1)));
-                float tt = t + per * se_hash3(vec3(fi, 0.0, 6.7));
-                float cyc = floor(tt / per);
-                float h2 = se_hash3(vec3(fi, cyc, 5.3));
-                float life = mix(BURST_LIFE0, BURST_LIFE1, h2) * HIT_LIFE;
-                float since = (fract(tt / per) - se_hash3(vec3(fi, cyc, 7.9)) * (1.0 - life / per)) * per;
-                float gate = se_burst_gate(drive, se_hash3(vec3(fi, cyc, 3.3)));
-                if (gate > 0.0 && since > 0.0 && since < life && since < still) {
-                    acc += gate * se_ember(here, now + se_off(since), rr, since, life, se_hash3(vec3(fi, cyc, 1.7)), h2, se_hash3(vec3(fi, cyc, 9.1)), kb, push);
-                }
-            }
-        }
-    }
-    vec4 prev = vec4(0.0);
-    for (int k = 0; k < 64; k++) {
-        if (k < umbriel_pointer_count) {
-            vec4 s = umbriel_pointer_path[k];
-            vec2 o = s.xy * umbriel_size;
-            vec2 po = k > 0 ? prev.xy * umbriel_size : o;
-            float pz = k > 0 ? prev.z : s.z;
-            prev = s;
-            // Only the current move can still be falling in, so only its samples need the orbit's margin.
-            if (length(here - o) < EMBER_REACH + length(o - po) + (pz < g_run ? ORBIT_MAX : 0.0)) {
-                // The steady trail fires by distance as well as time: one try per TRAIL_PX of the segment back to the previous sample, spread evenly along it, so a fast move is as dense as a slow one.
-                float n = clamp(floor(length(o - po) / TRAIL_PX), 1.0, TRAIL_MAX);
-                for (int j = 0; j < 12; j++) {
-                    float fj = float(j);
-                    if (fj < n && se_hash3(vec3(s.w, fj, 3.3)) < SHED) {
-                        float f = (fj + 0.5) / n;
-                        float age = mix(pz, s.z, f);
-                        float h2 = se_hash3(vec3(s.w, fj, 5.3));
-                        float life = mix(BURST_LIFE0, BURST_LIFE1, h2);
-                        if (age < life) acc += se_ember(here, mix(po, o, f) + se_off(age), rr, age, life, se_hash3(vec3(s.w, fj, 1.7)), h2, se_hash3(vec3(s.w, fj, 9.1)), push, push);
-                    }
-                }
-                // Burst tries with the audio: one, and half the time a second, at the sample itself.
-                for (int j = 12; j < 14; j++) {
-                    float fj = float(j);
-                    float w = se_burst_gate(drive, se_hash3(vec3(s.w, fj, 3.3))) * (j == 13 && se_hash3(vec3(s.w, fj, 4.4)) > 0.5 ? 0.0 : 1.0);
-                    float h2 = se_hash3(vec3(s.w, fj, 5.3));
-                    float life = mix(BURST_LIFE0, BURST_LIFE1, h2) * HIT_LIFE;
-                    if (w > 0.0 && s.z < life) {
-                        acc += w * se_ember(here, o + se_off(s.z), rr, s.z, life, se_hash3(vec3(s.w, fj, 1.7)), h2, se_hash3(vec3(s.w, fj, 9.1)), kb, push);
-                    }
-                }
-            }
-        }
-    }
-    return acc * gain;
-}
-
 vec4 cursor(vec2 uv) {
     vec4 src = umbriel_sample(uv);
     vec3 base = se_base();
-    float lvl0 = audio_live() * audio_level();
-    // A hit is loudness or bass, whichever is stronger.
-    float drive = audio_live() * max(audio_level(), umbriel_audio_spectrum(0.05));
     // A run is path samples with no gap past RUN_GAP, and it becomes a move once it is MOVE_PX from where it began; the stillness since the real move before says how far out on the orbit the fall began.
     g_still = 1.0e6;
     g_run = 1.0e6;
@@ -2265,11 +2110,7 @@ vec4 cursor(vec2 uv) {
     float fade = FADE * rr / RING_R;
     // A see-through black disc under the plasma: on a bright background the added light would clip to white, so the disc takes some light away first and the interior keeps its detail.
     src.rgb *= 1.0 - DISC_DARK * (1.0 - smoothstep(rr - DISC_FEATHER, rr, rho));
-    // Ember heat, summed so touching blobs merge, then coloured once like the ring; louder audio ejects harder and hotter.
-    float eh = se_smoulder(uv * umbriel_size, umbriel_time * SPEED, 1.0 + 0.5 * lvl0, 1.0 + 0.6 * lvl0, drive, rr);
-    eh = clamp(eh, 0.0, 215.0);
-    vec3 em = eh > 0.5 ? se_colour(se_heat_v(eh), se_heat_w(eh), base) : vec3(0.0);
-    if (rho > rr + reach) return vec4(min(src.rgb + em, vec3(1.0)), src.a);
+    if (rho > rr + reach) return vec4(min(src.rgb, vec3(1.0)), src.a);
     float k = rr / CLIP_R;
     float r = (rho - rr) / k;
     // Theta samples clockwise from pointing right, the clip's own unwrap.
@@ -2300,7 +2141,7 @@ vec4 cursor(vec2 uv) {
     } else {
         // The disc reaches deeper with the spectrum under it and bass, like the window overlay.
         float ri = r / (1.0 + au * (0.3 + 0.9 * bl + 0.6 * bass));
-        if (ri < -DEPTH) return vec4(min(src.rgb + em, vec3(1.0)), src.a);
+        if (ri < -DEPTH) return vec4(min(src.rgb, vec3(1.0)), src.a);
         float pl = se_plasma_turn(x, ri, t);
         float v = se_inner_v(ri) + se_inner_sd(ri) * pl * mix(1.0, DEEP, smoothstep(-35.0, -65.0, ri));
         float wl = mix(se_inner_w(ri), LIMB_W, smoothstep(-LIMB_SOFT, 0.0, ri));
@@ -2308,5 +2149,5 @@ vec4 cursor(vec2 uv) {
     }
     // Light is added over what is under the pointer, so nothing it covers is hidden.
     c = min(c * flare, vec3(1.0)) * smoothstep(rr + reach, rr + reach - fade, rho);
-    return vec4(min(src.rgb + c + em, vec3(1.0)), src.a);
+    return vec4(min(src.rgb + c, vec3(1.0)), src.a);
 }
