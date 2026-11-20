@@ -47,23 +47,18 @@ const float DISC_FEATHER = 2.0;
 // At rest the singularity orbits off the click point so it never sits on it: px from the click point to its centre, and seconds per turn.
 const float ORBIT_R = 38.0;
 const float ORBIT_PERIOD = 6.0;
-// Ring radius at the bottom of the cursor's gravity well; it is squeezed from RING_R towards this by how deep in the well it sits.
-const float RING_R0 = 9.0;
-// Once the pointer stops, seconds before it is flung back out, and the gap between path samples in s that still counts as one move.
-const float DRIFT_DELAY = 0.2;
-const float RUN_GAP = 0.12;
-// Px a run must carry the pointer from where it began before it counts as a move: out of the orbit's circle, so anything inside it leaves the orbit alone.
-const float MOVE_PX = ORBIT_R;
-// The plunge once the pointer moves, integrated by the bake: the pull is raised this many times over the orbit's, and dynamical friction on its whole velocity bleeds off the orbital motion so it lands on the pointer instead of orbiting it.
-const float TUG_PULL = 300.0;
-const float TUG_DRAG = 46.0;
-// The fling's physics, in orbit radii and seconds, integrated by the bake: the cursor's pull is inverse-square softened over a core this wide so it can leave the pointer, launched at this speed while it is spun up to orbital angular momentum over this many seconds; drag on its radial motion alone is what lets it settle onto the orbit, which a pure Kepler orbit never would.
-const float FLING_CORE = 1.0;
-const float FLING_KICK = 4.0;
-const float FLING_SPIN = 0.3;
-const float FLING_DRAG = 2.5;
-// Seconds the whole fling is played back over: umbriel forgets pointer samples 2 s after they are made, so DRIFT_DELAY + FLING_TIME must land inside that or the orbit snaps once the memory runs out.
-const float FLING_TIME = 1.55;
+// Off its place on the orbit it is pulled back like a drone chasing a target, the pull's natural rate in 1/s, with drag on its motion apart from the orbit's own just strong enough that it eases into its place without ringing past it; the drag is also what leaves it trailing the pointer.
+const float CHASE_W = 7.75;
+// Seconds the chase reacts late: it chases the pointer as it was this long ago.
+const float CHASE_DELAY = 0.1;
+// umbriel spaces path samples about 32 ms apart, so a longer gap is a rest: the pointer sat still and only moved in the last RAMP seconds of it.
+const float RAMP = 0.12;
+// Less its orbit, where it sits is a positive-weighted average of where the pointer was, so it stays inside the box round the pointer's last NEAR_AGE seconds; older positions carry under 0.4% of the weight, which NEAR_PX covers along with the orbit and the ring.
+const float NEAR_AGE = 1.1;
+const float NEAR_PX = 20.0;
+// Every this many samples for the cheap pass that finds which pixels are near enough to need the full one, and how far the two can disagree in px.
+const float COARSE = 2.0;
+const float COARSE_PX = 30.0;
 // De-tiling the corona: how far off the shared 2 s clock each quarter may start (share of the loop), seconds per turn of the corona, and the swell round the ring (depth, cell count, drift rate).
 const float JITTER = 1.0;
 const float ROT_PERIOD = 60.0;
@@ -1970,142 +1965,113 @@ vec3 se_colour(float v, float w, vec3 base) {
     return v * mix(hue, vec3(1.0), wo);
 }
 
-// Seconds since the last real move ended, since it began, since the real move before it ended, and the share of the orbit and angle lead it had when it began; set once per pixel in cursor().
-float g_still;
-float g_run;
-float g_prev;
-float g_m0;
-float g_lag0;
-
-// The fling from FLING_* integrated by the bake: s seconds after launch, the share of the orbit it is out at and its angle in rad ahead of the steady orbit.
-const float FLING_PEAK = 1.5362;
-const float FLING_END = 1.55;
-const float FLING_LAG = -0.33981;
-vec2 se_fling(float s) {
-    if (s <= 0.0) return vec2(0.0);
-    if (s < 0.0010333) return mix(vec2(0.0, 0.0), vec2(0.029872, -0.00058218), (s - 0.0) / 0.0010333);
-    if (s < 0.011367) return mix(vec2(0.029872, -0.00058218), vec2(0.21552, 0.0067289), (s - 0.0010333) / 0.010333);
-    if (s < 0.022733) return mix(vec2(0.21552, 0.0067289), vec2(0.39532, 0.01789), (s - 0.011367) / 0.011367);
-    if (s < 0.035133) return mix(vec2(0.39532, 0.01789), vec2(0.56738, 0.029745), (s - 0.022733) / 0.0124);
-    if (s < 0.048567) return mix(vec2(0.56738, 0.029745), vec2(0.7305, 0.040491), (s - 0.035133) / 0.013433);
-    if (s < 0.063033) return mix(vec2(0.7305, 0.040491), vec2(0.88295, 0.047709), (s - 0.048567) / 0.014467);
-    if (s < 0.0775) return mix(vec2(0.88295, 0.047709), vec2(1.0129, 0.049429), (s - 0.063033) / 0.014467);
-    if (s < 0.093) return mix(vec2(1.0129, 0.049429), vec2(1.129, 0.047339), (s - 0.0775) / 0.0155);
-    if (s < 0.10953) return mix(vec2(1.129, 0.047339), vec2(1.2296, 0.042458), (s - 0.093) / 0.016533);
-    if (s < 0.12813) return mix(vec2(1.2296, 0.042458), vec2(1.3186, 0.034956), (s - 0.10953) / 0.0186);
-    if (s < 0.1488) return mix(vec2(1.3186, 0.034956), vec2(1.393, 0.025062), (s - 0.12813) / 0.020667);
-    if (s < 0.17257) return mix(vec2(1.393, 0.025062), vec2(1.4536, 0.012431), (s - 0.1488) / 0.023767);
-    if (s < 0.20047) return mix(vec2(1.4536, 0.012431), vec2(1.4991, -0.0034148), (s - 0.17257) / 0.0279);
-    if (s < 0.23353) return mix(vec2(1.4991, -0.0034148), vec2(1.5272, -0.022955), (s - 0.20047) / 0.033067);
-    if (s < 0.27487) return mix(vec2(1.5272, -0.022955), vec2(1.5361, -0.047834), (s - 0.23353) / 0.041333);
-    if (s < 0.33067) return mix(vec2(1.5361, -0.047834), vec2(1.5204, -0.081312), (s - 0.27487) / 0.0558);
-    if (s < 0.41643) return mix(vec2(1.5204, -0.081312), vec2(1.466, -0.13094), (s - 0.33067) / 0.085767);
-    if (s < 0.63343) return mix(vec2(1.466, -0.13094), vec2(1.2862, -0.23785), (s - 0.41643) / 0.217);
-    if (s < 0.7967) return mix(vec2(1.2862, -0.23785), vec2(1.161, -0.29395), (s - 0.63343) / 0.16327);
-    if (s < 0.9238) return mix(vec2(1.161, -0.29395), vec2(1.0853, -0.32105), (s - 0.7967) / 0.1271);
-    if (s < 1.0447) return mix(vec2(1.0853, -0.32105), vec2(1.0368, -0.33472), (s - 0.9238) / 0.1209);
-    if (s < 1.179) return mix(vec2(1.0368, -0.33472), vec2(1.0084, -0.34031), (s - 1.0447) / 0.13433);
-    if (s < 1.3764) return mix(vec2(1.0084, -0.34031), vec2(0.99743, -0.34069), (s - 1.179) / 0.19737);
-    if (s < 1.55) return mix(vec2(0.99743, -0.34069), vec2(1.0, -0.33981), (s - 1.3764) / 0.1736);
-    return vec2(1.0, FLING_LAG);
+// The miss from its place on the orbit, xy, and its rate, zw, after h seconds of the pointer moving at v: e'' + 2w e' + w^2 e = -2w v, critically damped, solved exactly.
+vec4 se_coast(vec4 s, vec2 v, float h) {
+    vec2 ep = -2.0 * v / CHASE_W;
+    vec2 y = s.xy - ep;
+    vec2 b = s.zw + CHASE_W * y;
+    float ex = exp(-CHASE_W * h);
+    return vec4(ep + ex * (y + b * h), ex * (b - CHASE_W * (y + b * h)));
 }
 
-// The plunge from TUG_* integrated by the bake: s seconds after the pointer starts moving, the share of the orbit it is still out at and the angle in rad it has swung through.
-const float TUG_END = 0.309;
-vec2 se_plunge(float s) {
-    if (s <= 0.0) return vec2(1.0, 0.0);
-    if (s < 0.0095) return mix(vec2(1.0, 0.0), vec2(0.98709, 0.0081201), (s - 0.0) / 0.0095);
-    if (s < 0.0215) return mix(vec2(0.98709, 0.0081201), vec2(0.9436, 0.014757), (s - 0.0095) / 0.012);
-    if (s < 0.037) return mix(vec2(0.9436, 0.014757), vec2(0.86045, 0.019989), (s - 0.0215) / 0.0155);
-    if (s < 0.059) return mix(vec2(0.86045, 0.019989), vec2(0.71422, 0.02413), (s - 0.037) / 0.022);
-    if (s < 0.1105) return mix(vec2(0.71422, 0.02413), vec2(0.33839, 0.028413), (s - 0.059) / 0.0515);
-    if (s < 0.13) return mix(vec2(0.33839, 0.028413), vec2(0.21601, 0.029495), (s - 0.1105) / 0.0195);
-    if (s < 0.1475) return mix(vec2(0.21601, 0.029495), vec2(0.12886, 0.030584), (s - 0.13) / 0.0175);
-    if (s < 0.165) return mix(vec2(0.12886, 0.030584), vec2(0.065928, 0.032176), (s - 0.1475) / 0.0175);
-    if (s < 0.184) return mix(vec2(0.065928, 0.032176), vec2(0.022709, 0.036395), (s - 0.165) / 0.019);
-    if (s < 0.196) return mix(vec2(0.022709, 0.036395), vec2(0.0062884, 0.050282), (s - 0.184) / 0.012);
-    if (s < 0.199) return mix(vec2(0.0062884, 0.050282), vec2(0.0032406, 0.067666), (s - 0.196) / 0.003);
-    if (s < 0.2005) return mix(vec2(0.0032406, 0.067666), vec2(0.0018573, 0.094216), (s - 0.199) / 0.0015);
-    if (s < 0.201) return mix(vec2(0.0018573, 0.094216), vec2(0.0014167, 0.11355), (s - 0.2005) / 0.0005);
-    if (s < 0.2015) return mix(vec2(0.0014167, 0.11355), vec2(0.00098668, 0.14912), (s - 0.201) / 0.0005);
-    if (s < 0.202) return mix(vec2(0.00098668, 0.14912), vec2(0.00056927, 0.23572), (s - 0.2015) / 0.0005);
-    if (s < 0.2025) return mix(vec2(0.00056927, 0.23572), vec2(0.00018473, 0.70412), (s - 0.202) / 0.0005);
-    if (s < 0.203) return mix(vec2(0.00018473, 0.70412), vec2(0.00028335, 2.7563), (s - 0.2025) / 0.0005);
-    if (s < 0.2035) return mix(vec2(0.00028335, 2.7563), vec2(0.00066335, 2.9999), (s - 0.203) / 0.0005);
-    if (s < 0.204) return mix(vec2(0.00066335, 2.9999), vec2(0.0010449, 3.0639), (s - 0.2035) / 0.0005);
-    if (s < 0.2045) return mix(vec2(0.0010449, 3.0639), vec2(0.0014194, 3.0931), (s - 0.204) / 0.0005);
-    if (s < 0.2055) return mix(vec2(0.0014194, 3.0931), vec2(0.0021437, 3.1205), (s - 0.2045) / 0.001);
-    if (s < 0.208) return mix(vec2(0.0021437, 3.1205), vec2(0.0038078, 3.1442), (s - 0.2055) / 0.0025);
-    if (s < 0.2165) return mix(vec2(0.0038078, 3.1442), vec2(0.0080412, 3.1607), (s - 0.208) / 0.0085);
-    if (s < 0.263) return mix(vec2(0.0080412, 3.1607), vec2(0.0094337, 3.1697), (s - 0.2165) / 0.0465);
-    if (s < 0.309) return mix(vec2(0.0094337, 3.1697), vec2(0.0, 3.1725), (s - 0.263) / 0.046);
-    return vec2(0.0, 3.1725);
+// Carries the miss and pointer velocity from the pointer at lc, la seconds ago, towards qc, qa seconds ago, stopping CHASE_DELAY seconds ago; across a rest it sat still until the last RAMP seconds. Returns where the pointer was at the stop.
+vec4 g_s;
+vec2 g_v;
+vec2 se_seg(vec2 lc, float la, vec2 qc, float qa, bool rest) {
+    float dur = la - qa;
+    float hold = rest ? max(dur - RAMP, 0.0) : 0.0;
+    float rd = dur - hold;
+    float span = la - max(qa, CHASE_DELAY);
+    if (span <= 0.0) return lc;
+    float h1 = min(hold, span);
+    if (h1 > 0.0) {
+        g_s.zw += g_v;
+        g_v = vec2(0.0);
+        g_s = se_coast(g_s, g_v, h1);
+    }
+    float h2 = span - h1;
+    if (rd > 1.0e-4) {
+        if (h2 <= 0.0) return lc;
+        vec2 vn = (qc - lc) / rd;
+        g_s.zw -= vn - g_v;
+        g_v = vn;
+        g_s = se_coast(g_s, g_v, h2);
+        return lc + vn * h2;
+    }
+    if (qa < CHASE_DELAY) return lc;
+    g_s.xy -= qc - lc;
+    return qc;
 }
 
-// Share of the orbit and angle lead `still` seconds after the pointer stopped: on the pointer, then the fling, then the steady orbit.
-vec2 se_drift(float still) {
-    float s = still - DRIFT_DELAY;
-    return s < FLING_END ? se_fling(s) : vec2(1.0, FLING_LAG);
+// Whether `here` is inside the box round the pointer's positions over the last NEAR_AGE seconds, grown by the orbit, the ring and NEAR_PX.
+bool se_near(vec2 here) {
+    vec2 lo = umbriel_pointer * umbriel_size;
+    vec2 hi = lo;
+    for (int k = 63; k >= 0; k--) {
+        if (k < umbriel_pointer_count) {
+            vec4 q = umbriel_pointer_path[k];
+            vec2 a = q.xy * umbriel_size;
+            lo = min(lo, a);
+            hi = max(hi, a);
+            if (q.z > NEAR_AGE) break;
+        }
+    }
+    vec2 m = vec2(ORBIT_R + RING_R + REACH + NEAR_PX);
+    return all(greaterThan(here, lo - m)) && all(lessThan(here, hi + m));
 }
 
-// The plunge `s` seconds into the move, scaled to how far out it was when the move began: share of the orbit, and angle lead over the steady orbit.
-vec2 se_tug(float s) {
-    vec2 p = s < TUG_END ? se_plunge(s) : vec2(0.0);
-    return vec2(g_m0 * p.x, g_lag0 + p.y - TAU * s / ORBIT_PERIOD);
-}
-
-// How far out on the orbit the singularity was `ago` seconds back and at what angle: plunging in while moving, flung out at rest.
-vec2 se_orbit(float ago) {
-    vec2 f = se_drift((ago < g_run ? g_still : g_prev) - ago);
-    vec2 tg = ago < g_run ? se_tug(g_run - ago) : vec2(0.0);
-    vec2 st = tg.x > f.x ? tg : f;
-    return vec2(st.x, TAU * (umbriel_time - ago) / ORBIT_PERIOD + st.y);
-}
-
-// How deep in the cursor's softened well a body this far out sits, 0 on the orbit to 1 at the bottom: the depth that squeezes the ring.
-float se_depth(float m) {
-    float rim = inversesqrt(1.0 + FLING_CORE * FLING_CORE);
-    return clamp((inversesqrt(m * m + FLING_CORE * FLING_CORE) - rim) / (1.0 / FLING_CORE - rim), 0.0, 1.0);
-}
-
-// Where its centre sat `ago` seconds back, from the pointer as it was then; the shape moves whole, never stretched.
-vec2 se_off(float ago) {
-    vec2 o = se_orbit(ago);
-    return ORBIT_R * o.x * vec2(cos(o.y), sin(o.y));
+// Where the singularity's centre is in px: its place on the orbit round the pointer as the chase sees it plus the miss, replayed over the path from rest on the orbit round the oldest sample, every stride-th sample and both ends of every rest.
+vec2 se_body(float stride) {
+    float th = TAU * umbriel_time / ORBIT_PERIOD;
+    vec2 orb = ORBIT_R * vec2(cos(th), sin(th));
+    if (umbriel_pointer_count < 1) return umbriel_pointer * umbriel_size + orb;
+    vec2 lc = umbriel_pointer_path[0].xy * umbriel_size;
+    float la = umbriel_pointer_path[0].z;
+    vec2 pc = lc;
+    float pa = la;
+    vec2 ce = lc;
+    bool done = la <= CHASE_DELAY;
+    g_s = vec4(0.0);
+    g_v = vec2(0.0);
+    for (int k = 1; k < 64; k++) {
+        if (k < umbriel_pointer_count && !done) {
+            vec4 q = umbriel_pointer_path[k];
+            vec2 qc = q.xy * umbriel_size;
+            if (pa - q.z > RAMP) {
+                if (pa < la) {
+                    ce = se_seg(lc, la, pc, pa, false);
+                    lc = pc;
+                    la = pa;
+                    done = pa <= CHASE_DELAY;
+                }
+                if (!done) {
+                    ce = se_seg(lc, la, qc, q.z, true);
+                    lc = qc;
+                    la = q.z;
+                    done = q.z <= CHASE_DELAY;
+                }
+            } else if (mod(float(k), stride) < 0.5 || k == umbriel_pointer_count - 1 || q.z <= CHASE_DELAY) {
+                ce = se_seg(lc, la, qc, q.z, false);
+                lc = qc;
+                la = q.z;
+                done = q.z <= CHASE_DELAY;
+            }
+            pc = qc;
+            pa = q.z;
+        }
+    }
+    if (!done) ce = se_seg(lc, la, lc, 0.0, true);
+    return ce + orb + g_s.xy;
 }
 
 vec4 cursor(vec2 uv) {
     vec4 src = umbriel_sample(uv);
     vec3 base = se_base();
-    // A run is path samples with no gap past RUN_GAP, and it becomes a move once it is MOVE_PX from where it began; the stillness since the real move before says how far out on the orbit the fall began.
-    g_still = 1.0e6;
-    g_run = 1.0e6;
-    g_prev = 1.0e6;
-    vec2 st = vec2(0.0);
-    float pa = 0.0;
-    bool moved = false;
-    for (int k = 0; k < 64; k++) {
-        if (k < umbriel_pointer_count) {
-            vec4 s = umbriel_pointer_path[k];
-            if (k == 0 || pa - s.z > RUN_GAP) {
-                st = s.xy;
-                moved = false;
-            }
-            if (!moved && length((s.xy - st) * umbriel_size) >= MOVE_PX) {
-                moved = true;
-                g_prev = g_still;
-                g_run = s.z;
-            }
-            if (moved) g_still = s.z;
-            pa = s.z;
-        }
-    }
-    vec2 at0 = se_drift(g_prev - g_run);
-    g_m0 = at0.x;
-    g_lag0 = at0.y;
-    vec2 p = (uv - umbriel_pointer) * umbriel_size - se_off(0.0);
+    vec2 here = uv * umbriel_size;
+    float rr = RING_R;
+    if (!se_near(here) || length(here - se_body(COARSE)) > rr + REACH + COARSE_PX) return src;
+    vec2 p = here - se_body(1.0);
     float rho = length(p);
-    float rr = mix(RING_R, RING_R0, se_depth(se_orbit(0.0).x));
     float reach = REACH * rr / RING_R;
     float fade = FADE * rr / RING_R;
     // A see-through black disc under the plasma: on a bright background the added light would clip to white, so the disc takes some light away first and the interior keeps its detail.

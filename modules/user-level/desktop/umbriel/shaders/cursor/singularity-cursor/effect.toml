@@ -3,5 +3,5 @@
 kind = "cursor"
 shader = "shader.glsl"
 palette = true
-# covers the ring at its farthest: the 38 px orbit flung out to 1.54x + ring radius 15 + the 11 px its glow reaches past it
-radius = 86
+# umbriel draws this far round the pointer and every path sample; covers the chase trailing the pointer on a hard flick
+radius = 240
