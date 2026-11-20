@@ -2,13 +2,12 @@
 // Ring radius in logical px; the ring is the clip scaled uniformly to it.
 const float RING_R = 15.0;
 const float CLIP_R = 140.95;
-// Clip px of ring per theta sample, samples per quadrant and per turn.
-const float SAMPLE = 0.86488;
+// Theta samples per quadrant and per turn.
 const float TILE_N = 256.0;
 const float TURN_N = 1024.0;
 const float LOOP = 2.0;
 const float BAND_LOOP = 6.0;
-// Logical px past the full-size ring where everything has faded to nothing, scaled with the ring; the preset's radius must cover RING_R + REACH.
+// Logical px past the ring where everything has faded to nothing.
 const float REACH = 11.0;
 const float FADE = 4.0;
 // Clip px where the corona's sprites fade out: the clip's corona is gone past about +64.
@@ -40,7 +39,6 @@ const float LIMB_DET = 2.0;
 // A feed that is connected but silent counts as no feed, the same gate the border uses.
 const float SILENCE_LOW = 0.02;
 const float SILENCE_HIGH = 0.10;
-const float SPEED = 1.0;
 // The black disc under the plasma: how much of the background it takes away (0 none, 1 solid #000000), and the px over which it feathers out into the limb.
 const float DISC_DARK = 0.85;
 const float DISC_FEATHER = 2.0;
@@ -53,12 +51,10 @@ const float CHASE_W = 7.75;
 const float CHASE_DELAY = 0.1;
 // umbriel spaces path samples about 32 ms apart, so a longer gap is a rest: the pointer sat still and only moved in the last RAMP seconds of it.
 const float RAMP = 0.12;
-// Less its orbit, where it sits is a positive-weighted average of where the pointer was, so it stays inside the box round the pointer's last NEAR_AGE seconds; older positions carry under 0.4% of the weight, which NEAR_PX covers along with the orbit and the ring.
-const float NEAR_AGE = 1.1;
-const float NEAR_PX = 20.0;
-// Every this many samples for the cheap pass that finds which pixels are near enough to need the full one, and how far the two can disagree in px.
-const float COARSE = 2.0;
-const float COARSE_PX = 30.0;
+// The cheap pass that finds which pixels are near enough to need the full one: every this many samples, over only the newest COARSE_N, which span at least the last second since umbriel keeps them 32 ms apart and older ones carry under 1% of the weight, and how far it can land from the full pass in px.
+const float COARSE = 4.0;
+const int COARSE_N = 36;
+const float COARSE_PX = 40.0;
 // De-tiling the corona: how far off the shared 2 s clock each quarter may start (share of the loop), seconds per turn of the corona, and the swell round the ring (depth, cell count, drift rate).
 const float JITTER = 1.0;
 const float ROT_PERIOD = 60.0;
@@ -73,14 +69,6 @@ float audio_level() {
         sum += umbriel_audio_spectrum((float(i) + 0.5) / 8.0);
     }
     return sum * 0.125;
-}
-
-float audio_live() {
-    return umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, audio_level());
-}
-
-float au_band(float pos) {
-    return audio_live() * umbriel_audio_spectrum(pos);
 }
 
 float se_softplus(float x) {
@@ -436,14 +424,25 @@ float se_inner_w(float x) {
     return 0.27851;
 }
 
+// Complex multiply: the harmonic one up from h, given the first harmonic h1.
+vec2 se_turn(vec2 h, vec2 h1) {
+    return vec2(h.x * h1.x - h.y * h1.y, h.x * h1.y + h.y * h1.x);
+}
+
 float se_band_wave(float t) {
     float p = 6.2831853 * fract(t / BAND_LOOP);
-    return -1.3549 * cos(1.0 * p) + 0.011043 * sin(1.0 * p)
-        + -0.10348 * cos(2.0 * p) - 0.093654 * sin(2.0 * p)
-        + -0.24424 * cos(3.0 * p) + 0.16751 * sin(3.0 * p)
-        + -0.12137 * cos(4.0 * p) + 0.0010163 * sin(4.0 * p)
-        + -0.031854 * cos(5.0 * p) + 0.043846 * sin(5.0 * p)
-        + -0.046051 * cos(6.0 * p) + 0.05916 * sin(6.0 * p);
+    vec2 h1 = vec2(cos(p), sin(p));
+    vec2 h2 = se_turn(h1, h1);
+    vec2 h3 = se_turn(h2, h1);
+    vec2 h4 = se_turn(h3, h1);
+    vec2 h5 = se_turn(h4, h1);
+    vec2 h6 = se_turn(h5, h1);
+    return -1.3549 * h1.x + 0.011043 * h1.y
+        + -0.10348 * h2.x - 0.093654 * h2.y
+        + -0.24424 * h3.x + 0.16751 * h3.y
+        + -0.12137 * h4.x + 0.0010163 * h4.y
+        + -0.031854 * h5.x + 0.043846 * h5.y
+        + -0.046051 * h6.x + 0.05916 * h6.y;
 }
 
 float se_q0(float x, float r, vec4 c1, vec4 c2, vec4 s1, vec4 s2, float lift) {
@@ -1913,10 +1912,19 @@ float se_q3(float x, float r, vec4 c1, vec4 c2, vec4 s1, vec4 s2, float lift) {
 // One quadrant of the clip's corona at loop time t; x in clip theta samples from the quadrant start, r in clip px from the limb.
 float se_quadrant(float q, float x, float r, float t, float lift) {
     float p = 6.2831853 * fract(t / LOOP);
-    vec4 c1 = vec4(cos(p), cos(2.0 * p), cos(3.0 * p), cos(4.0 * p));
-    vec4 c2 = vec4(cos(5.0 * p), cos(6.0 * p), cos(7.0 * p), cos(8.0 * p));
-    vec4 s1 = vec4(sin(p), sin(2.0 * p), sin(3.0 * p), sin(4.0 * p));
-    vec4 s2 = vec4(sin(5.0 * p), sin(6.0 * p), sin(7.0 * p), sin(8.0 * p));
+    // Harmonics 2-8 by turning the first round itself, one cos and sin instead of sixteen.
+    vec2 h1 = vec2(cos(p), sin(p));
+    vec2 h2 = se_turn(h1, h1);
+    vec2 h3 = se_turn(h2, h1);
+    vec2 h4 = se_turn(h3, h1);
+    vec2 h5 = se_turn(h4, h1);
+    vec2 h6 = se_turn(h5, h1);
+    vec2 h7 = se_turn(h6, h1);
+    vec2 h8 = se_turn(h7, h1);
+    vec4 c1 = vec4(h1.x, h2.x, h3.x, h4.x);
+    vec4 c2 = vec4(h5.x, h6.x, h7.x, h8.x);
+    vec4 s1 = vec4(h1.y, h2.y, h3.y, h4.y);
+    vec4 s2 = vec4(h5.y, h6.y, h7.y, h8.y);
     if (q < 0.5) return se_q0(x, r, c1, c2, s1, s2, lift);
     if (q < 1.5) return se_q1(x, r, c1, c2, s1, s2, lift);
     if (q < 2.5) return se_q2(x, r, c1, c2, s1, s2, lift);
@@ -2003,62 +2011,45 @@ vec2 se_seg(vec2 lc, float la, vec2 qc, float qa, bool rest) {
     return qc;
 }
 
-// Whether `here` is inside the box round the pointer's positions over the last NEAR_AGE seconds, grown by the orbit, the ring and NEAR_PX.
-bool se_near(vec2 here) {
-    vec2 lo = umbriel_pointer * umbriel_size;
-    vec2 hi = lo;
-    for (int k = 63; k >= 0; k--) {
-        if (k < umbriel_pointer_count) {
-            vec4 q = umbriel_pointer_path[k];
-            vec2 a = q.xy * umbriel_size;
-            lo = min(lo, a);
-            hi = max(hi, a);
-            if (q.z > NEAR_AGE) break;
-        }
-    }
-    vec2 m = vec2(ORBIT_R + RING_R + REACH + NEAR_PX);
-    return all(greaterThan(here, lo - m)) && all(lessThan(here, hi + m));
-}
-
-// Where the singularity's centre is in px: its place on the orbit round the pointer as the chase sees it plus the miss, replayed over the path from rest on the orbit round the oldest sample, every stride-th sample and both ends of every rest.
-vec2 se_body(float stride) {
+// Where the singularity's centre is in px: its place on the orbit round the pointer as the chase sees it plus the miss, replayed from rest on the orbit round sample k0, every stride-th sample and both ends of every rest.
+vec2 se_body(float stride, int k0) {
     float th = TAU * umbriel_time / ORBIT_PERIOD;
     vec2 orb = ORBIT_R * vec2(cos(th), sin(th));
     if (umbriel_pointer_count < 1) return umbriel_pointer * umbriel_size + orb;
-    vec2 lc = umbriel_pointer_path[0].xy * umbriel_size;
-    float la = umbriel_pointer_path[0].z;
+    vec2 lc = umbriel_pointer_path[k0].xy * umbriel_size;
+    float la = umbriel_pointer_path[k0].z;
     vec2 pc = lc;
     float pa = la;
     vec2 ce = lc;
     bool done = la <= CHASE_DELAY;
     g_s = vec4(0.0);
     g_v = vec2(0.0);
-    for (int k = 1; k < 64; k++) {
-        if (k < umbriel_pointer_count && !done) {
-            vec4 q = umbriel_pointer_path[k];
-            vec2 qc = q.xy * umbriel_size;
-            if (pa - q.z > RAMP) {
-                if (pa < la) {
-                    ce = se_seg(lc, la, pc, pa, false);
-                    lc = pc;
-                    la = pa;
-                    done = pa <= CHASE_DELAY;
-                }
-                if (!done) {
-                    ce = se_seg(lc, la, qc, q.z, true);
-                    lc = qc;
-                    la = q.z;
-                    done = q.z <= CHASE_DELAY;
-                }
-            } else if (mod(float(k), stride) < 0.5 || k == umbriel_pointer_count - 1 || q.z <= CHASE_DELAY) {
-                ce = se_seg(lc, la, qc, q.z, false);
+    for (int j = 1; j < 64; j++) {
+        int k = k0 + j;
+        if (done || k >= umbriel_pointer_count) break;
+        vec4 q = umbriel_pointer_path[k];
+        vec2 qc = q.xy * umbriel_size;
+        if (pa - q.z > RAMP) {
+            if (pa < la) {
+                ce = se_seg(lc, la, pc, pa, false);
+                lc = pc;
+                la = pa;
+                done = pa <= CHASE_DELAY;
+            }
+            if (!done) {
+                ce = se_seg(lc, la, qc, q.z, true);
                 lc = qc;
                 la = q.z;
                 done = q.z <= CHASE_DELAY;
             }
-            pc = qc;
-            pa = q.z;
+        } else if (mod(float(j), stride) < 0.5 || k == umbriel_pointer_count - 1 || q.z <= CHASE_DELAY) {
+            ce = se_seg(lc, la, qc, q.z, false);
+            lc = qc;
+            la = q.z;
+            done = q.z <= CHASE_DELAY;
         }
+        pc = qc;
+        pa = q.z;
     }
     if (!done) ce = se_seg(lc, la, lc, 0.0, true);
     return ce + orb + g_s.xy;
@@ -2066,31 +2057,29 @@ vec2 se_body(float stride) {
 
 vec4 cursor(vec2 uv) {
     vec4 src = umbriel_sample(uv);
-    vec3 base = se_base();
     vec2 here = uv * umbriel_size;
-    float rr = RING_R;
-    if (!se_near(here) || length(here - se_body(COARSE)) > rr + REACH + COARSE_PX) return src;
-    vec2 p = here - se_body(1.0);
+    if (length(here - se_body(COARSE, umbriel_pointer_count > COARSE_N ? umbriel_pointer_count - COARSE_N : 0)) > RING_R + REACH + COARSE_PX) return src;
+    vec2 p = here - se_body(1.0, 0);
     float rho = length(p);
-    float reach = REACH * rr / RING_R;
-    float fade = FADE * rr / RING_R;
     // A see-through black disc under the plasma: on a bright background the added light would clip to white, so the disc takes some light away first and the interior keeps its detail.
-    src.rgb *= 1.0 - DISC_DARK * (1.0 - smoothstep(rr - DISC_FEATHER, rr, rho));
-    if (rho > rr + reach) return vec4(min(src.rgb, vec3(1.0)), src.a);
-    float k = rr / CLIP_R;
-    float r = (rho - rr) / k;
+    src.rgb *= 1.0 - DISC_DARK * (1.0 - smoothstep(RING_R - DISC_FEATHER, RING_R, rho));
+    if (rho > RING_R + REACH) return src;
+    float r = (rho - RING_R) * CLIP_R / RING_R;
+    vec3 base = se_base();
     // Theta samples clockwise from pointing right, the clip's own unwrap.
     float ang = atan(p.y, p.x);
     ang = ang < 0.0 ? ang + TAU : ang;
     float x = ang / TAU * TURN_N;
-    float t = umbriel_time * SPEED;
+    float t = umbriel_time;
 
-    // The spectrum runs from bass at the top of the ring to treble at the bottom, mirrored left and right.
-    float au = audio_live();
-    float up = abs(atan(p.x, -p.y)) / 3.1415927;
-    float bl = au_band(0.85 * up);
-    float lvl = au * audio_level();
-    float bass = au_band(0.08);
+    // The spectrum runs from bass at the top of the ring to treble at the bottom, mirrored left and right: up is the angle from straight up as a share of a half turn.
+    float lvl0 = audio_level();
+    float au = umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, lvl0);
+    float d = ang - 0.75 * TAU;
+    float up = abs(d < -0.5 * TAU ? d + TAU : d) / (0.5 * TAU);
+    float bl = au * umbriel_audio_spectrum(0.85 * up);
+    float lvl = au * lvl0;
+    float bass = au * umbriel_audio_spectrum(0.08);
     float flare = mix(1.0, 0.9 + 0.5 * lvl, au);
 
     vec3 c;
@@ -2107,13 +2096,13 @@ vec4 cursor(vec2 uv) {
     } else {
         // The disc reaches deeper with the spectrum under it and bass, like the window overlay.
         float ri = r / (1.0 + au * (0.3 + 0.9 * bl + 0.6 * bass));
-        if (ri < -DEPTH) return vec4(min(src.rgb, vec3(1.0)), src.a);
+        if (ri < -DEPTH) return src;
         float pl = se_plasma_turn(x, ri, t);
         float v = se_inner_v(ri) + se_inner_sd(ri) * pl * mix(1.0, DEEP, smoothstep(-35.0, -65.0, ri));
         float wl = mix(se_inner_w(ri), LIMB_W, smoothstep(-LIMB_SOFT, 0.0, ri));
         c = se_colour(clamp(v, 0.0, 1.0), wl, base) * smoothstep(-DEPTH, -DEPTH + DEPTH_FADE, ri);
     }
     // Light is added over what is under the pointer, so nothing it covers is hidden.
-    c = min(c * flare, vec3(1.0)) * smoothstep(rr + reach, rr + reach - fade, rho);
+    c = min(c * flare, vec3(1.0)) * smoothstep(RING_R + REACH, RING_R + REACH - FADE, rho);
     return vec4(min(src.rgb + c, vec3(1.0)), src.a);
 }
