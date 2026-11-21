@@ -157,8 +157,6 @@ scroll_wheel_step = 60
 theme = "phinger-cursors-dark"
 size = 32
 hardware_cursor = true
-# the cursor effect hides with the pointer, so the singularity is not left beside the text caret while typing
-hide_when_typing = true
 
 [input.focus]
 follows_mouse = "sloppy"
