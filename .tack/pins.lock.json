@@ -116,9 +116,9 @@
     "type": "github",
     "owner": "barrulus",
     "repo": "rummage",
-    "rev": "69226add8dea7a3f52cc8a69ee615f8e85b54426",
-    "narHash": "sha256-GmB2yt84BU5HDdzxfkPCBJH3o5rb/hx028fcnrpzrZw=",
-    "lastModified": 1795217730,
+    "rev": "1b4a091f982f80354225f172df59d1bc04d371ee",
+    "narHash": "sha256-3MJ0pvNv1bvqzHEJAibHX3LlJnNa1Epm0jvuZ5lM0u4=",
+    "lastModified": 1795264973,
     "public": true
   },
   "tack": {

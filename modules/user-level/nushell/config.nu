@@ -91,16 +91,16 @@ def jj-pull [] {
 
 # one remote per forge: a single remote with N pushurls silently skips drifted forges
 def jj-push [] {
-    let remotes = (jj git remote list | lines | each { split row " " | first })
+    let remotes = jj git remote list | lines | each { split row " " | first }
     if ($remotes | is-empty) {
-        error make { msg: "jj-push: this repo has no git remotes" }
+        error make {msg: "jj-push: this repo has no git remotes"}
     }
 
     mut failed = []
     for r in $remotes {
         print $"(ansi cyan_bold)-> ($r)(ansi reset)"
         # do -i zeroes LAST_EXIT_CODE
-        let res = (jj git push --remote $r | complete)
+        let res = jj git push --remote $r | complete
         print ($res.stderr | str trim --right)
         if $res.exit_code != 0 {
             $failed = ($failed | append $r)
@@ -114,22 +114,28 @@ def jj-push [] {
         jj bookmark list --all-remotes -T $"self.name\(\) ++ '|' ++ self.remote\(\) ++ '|' ++ if\(self.conflict\(\), 'CONFLICT', self.normal_target\(\).commit_id\(\).short\(12\)\) ++ \"\\n\""
         | lines
         | where ($it | str contains "|")
-        | each { |l| let p = ($l | split row "|"); {name: $p.0, remote: $p.1, target: $p.2} }
+        | each {|l| let p = ($l | split row "|"); {name: $p.0, remote: $p.1, target: $p.2} }
         | where remote != "git"
     )
 
     mut drift = []
     for b in ($state | where remote == "") {
         if $b.target == "CONFLICT" {
-            $drift = ($drift | append $"($b.name): conflicted locally -- a remote moved under you")
+            $drift = (
+                $drift
+                | append $"($b.name): conflicted locally -- a remote moved under you"
+            )
             continue
         }
         for r in $remotes {
-            let hit = ($state | where name == $b.name and remote == $r)
+            let hit = $state | where name == $b.name and remote == $r
             if ($hit | is-empty) {
                 $drift = ($drift | append $"($b.name): not on ($r)")
             } else if ($hit | first | get target) != $b.target {
-                $drift = ($drift | append $"($b.name): ($r) at ($hit | first | get target), local at ($b.target)")
+                $drift = (
+                    $drift
+                    | append $"($b.name): ($r) at ($hit | first | get target), local at ($b.target)"
+                )
             }
         }
     }
@@ -139,7 +145,7 @@ def jj-push [] {
             print $"(ansi red_bold)push FAILED on: ($failed | str join ', ')(ansi reset)"
         }
         for d in $drift { print $"(ansi red_bold)OUT OF SYNC -- ($d)(ansi reset)" }
-        error make { msg: "jj-push: remotes are not in sync" }
+        error make {msg: "jj-push: remotes are not in sync"}
     }
 
     print $"(ansi green_bold)jj-push: in sync on ($remotes | length) remotes -- ($remotes | str join ', ')(ansi reset)"
@@ -189,6 +195,11 @@ def block-s [] {
     | get filters
     | select id name url enabled
     | save --force ~/repo/public/anomalos/modules/system-level/security/adguard/filters.json
+}
+
+# pull edited rummage config back into the repo (reverse of the copy-type rebuild)
+def rum-s [] {
+    open --raw ~/.config/rummage/config.toml | save --force ~/repo/public/anomalos/modules/user-level/rummage/config.toml
 }
 
 def space [] {
