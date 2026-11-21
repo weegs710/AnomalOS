@@ -6,14 +6,11 @@
 }:
 let
   gpartedWithTools = pkgs.gparted.override { withAllTools = true; };
-  # IFF (libiff, unmaintained) and FITS (cfitsio) loaders carry unfixed CVEs and go unused here
+  # the FITS (cfitsio) loader carries unfixed CVEs and goes unused here
   gimpWithPlugins = pkgs.gimp-with-plugins.override {
     gimpPlugins = pkgs.gimpPlugins.override {
       gimp = pkgs.gimp.overrideAttrs (old: {
-        mesonFlags = old.mesonFlags ++ [
-          "-Dilbm=disabled"
-          "-Dfits=disabled"
-        ];
+        mesonFlags = old.mesonFlags ++ [ "-Dfits=disabled" ];
       });
     };
   };
@@ -75,8 +72,7 @@ let
       '';
 in
 # gated so a headless host skips the whole desktop bundle rather than pulling GUI packages it never starts
-only.gate { tags = [ "desktop" ]; }
-{
+only.gate { tags = [ "desktop" ]; } {
   users.users.${config.mySystem.user.name}.packages = with pkgs; [
     adwaita-icon-theme
     bluetui
