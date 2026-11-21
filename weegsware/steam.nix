@@ -1,13 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 let
-  millennium = pkgs.callPackage ./_millennium.nix {
-    millennium-src = pkgs.fetchFromGitHub {
-      owner = "Shochraos";
-      repo = "Millennium";
-      rev = "d4cd249aad050e2f68dfb4525ebf7b7544df7c68";
-      hash = "sha256-2LrpdsL2nmsDVOkg34n4A6OqjpTdCOyhLc3yoHjII4o=";
-    };
-  };
+  millennium = inputs.millennium.packages.${pkgs.stdenv.hostPlatform.system}.millennium;
 in
 {
   steam = pkgs.steam.override {

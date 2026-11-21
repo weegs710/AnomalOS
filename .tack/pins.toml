@@ -59,3 +59,7 @@ tag = "v{version}"
 [inputs.rummage]
 url = "gh:barrulus/rummage"
 exclude_follow = ["nixpkgs"]
+
+[inputs.millennium]
+url = "gh:SteamClientHomebrew/Millennium"
+dir = "packages/nix"

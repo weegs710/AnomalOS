@@ -4,6 +4,7 @@
     "bootvine": "git+https://codeberg.org/wvhulle/bootvine",
     "dusklight": "github:TwilitRealm/dusklight/v1.4.1",
     "hjem": "github:feel-co/hjem",
+    "millennium": "github:SteamClientHomebrew/Millennium",
     "nix-index-database": "github:nix-community/nix-index-database",
     "nix-shop": "git+https://codeberg.org/weegs710/nix-shop",
     "nixpkgs": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst",
@@ -47,6 +48,15 @@
     "rev": "2a28f37d253ea3866f85eabe482c68a84fc32ed5",
     "narHash": "sha256-IjFbnKzAkaG+tiZxwpP5CfTYVNxKKYSMioLynWAaGd0=",
     "lastModified": 1795054265,
+    "public": true
+  },
+  "millennium": {
+    "type": "github",
+    "owner": "SteamClientHomebrew",
+    "repo": "Millennium",
+    "rev": "ca8976dcd2822d9e4363b38bf5038bd5b1687260",
+    "narHash": "sha256-WZVbAUAyHuzop86IGGfcsqctVtjHLPhBnDAPt/+BfEM=",
+    "lastModified": 1794710897,
     "public": true
   },
   "nix-index-database": {

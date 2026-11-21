@@ -105,7 +105,7 @@ Boot is `systemd-boot`, keeping 10 generations.
 
 - steam, the `weegsware` wrapped build, with Proton, gamescope, controller support and 32-bit compat.
 - heroic for Epic/GOG, globally wired through gamescope at the host's `mySystem.display` size and refresh rate (2560x1440 @ 144 on HX99G), wayland backend. Its install and prefix paths come from `mySystem.paths.games`.
-- Millennium, the Steam skin framework, with the Material-Theme skin recolored by noctalia's `steam` template. It is built from an open upstream PR that adds 64-bit client support, vendored in `weegsware/_millennium.nix`. Steam always starts in desktop mode (`-nobigpicture`).
+- Millennium, the Steam skin framework, with the Material-Theme skin recolored by noctalia's `steam` template. It is built from upstream's own nix flake, pinned with tack. Steam always starts in desktop mode (`-nobigpicture`).
 - MangoHud, with five presets in `presets.conf` from off to a full GPU/CPU/VRAM/frametime readout.
 - gamemode, nix-ld, ntsync, protontricks, ProtonUp-Qt, OpenRA.
 - ES-DE with RetroArch carrying 31 libretro cores, plus MAME with a flattened `crt-geom` shader chain. Per-core `.opt` files are declarative, in `modules/user-level/gaming/es-de/opts/`.
