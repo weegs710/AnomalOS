@@ -1,26 +1,26 @@
-// The inside of the singularity disc from Replay_2026-11-16_03-51-40, drawn over the window's edge as the border's overlay: the clip's rim gradient and its boiling plasma, hue from the scheme.
-// Logical px per clip px for the inside: a thin band that hugs the border and stays clear of the window's content.
+// The inside of the singularity disc, drawn over the window's edge as the border's overlay: the rim gradient and its boiling plasma, hue from the scheme.
+// Logical px per ring px for the inside: a thin band that hugs the border and stays clear of the window's content.
 const float K_SCALE = 0.12;
-// Logical px per clip px along the edge: the plasma keeps the pattern size it had before the band was thinned.
+// Logical px per ring px along the edge: the plasma keeps the pattern size it had before the band was thinned.
 const float TH_SCALE = 0.45;
 const float CORNER_REF = 3.0;
 const float QUARTER = 1.5708;
 // Logical px over which the two edges' plasma is blended across a corner diagonal.
 const float BLEND = 40.0;
-// Clip px over which the rim's whiteness climbs to the limb's (0.278 at r = 0 in the clip).
+// Ring px over which the rim's whiteness climbs to the limb's (0.278 at r = 0).
 const float LIMB_SOFT = 6.0;
 const float LIMB_W = 0.278;
 // The corner match shared with the border shader.
 const float CORNER_DIM = 0.81;
 const float CORNER_R0 = 3.0;
 const float CORNER_R1 = 8.0;
-// Clip px of ring per theta sample.
+// Ring px per theta sample.
 const float SAMPLE = 0.86488;
-// Clip px in from the limb where the plasma has faded into the flat core.
+// Ring px in from the limb where the plasma has faded into the flat core.
 const float DEPTH = 100.0;
-// Clip px over which the plasma fades out at the inner end of the band.
+// Ring px over which the plasma fades out at the inner end of the band.
 const float FADE = 30.0;
-// Cell size in theta samples and clip px, read off the clip's inner strip, and seconds per unit of boil.
+// Cell size in theta samples and ring px, and seconds per unit of boil.
 const float CELL_TH = 150.0;
 const float CELL_R = 35.0;
 const float BOIL = 0.65;
@@ -35,12 +35,12 @@ const float WALL_MEAN = 0.74;
 const float HAZE_SCALE = 0.5;
 // How much of the plasma swing survives in the deep core.
 const float DEEP = 0.3;
-// The fine grain that changes frame to frame in the clip: size in theta samples and clip px, seconds per unit, weight.
+// The fine grain that changes frame to frame: size in theta samples and ring px, seconds per unit, weight.
 const float DET_TH = 18.0;
 const float DET_R = 7.0;
 const float DET_T = 0.12;
 const float DET = 1.7;
-// Extra fast grain right at the limb, where the clip flickers hardest frame to frame.
+// Extra fast grain right at the limb, where it flickers hardest frame to frame.
 const float LIMB_DET = 2.0;
 const float SPEED = 1.0;
 
@@ -58,19 +58,6 @@ float audio_level() {
         sum += umbriel_audio_spectrum((float(i) + 0.5) / 8.0);
     }
     return sum * 0.125;
-}
-
-float audio_live() {
-    return umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, audio_level());
-}
-
-float au_band(float pos) {
-    return audio_live() * umbriel_audio_spectrum(pos);
-}
-
-// How hard the audio is hitting, 0 to 1, the cursor's swell signal.
-float audio_hit() {
-    return smoothstep(HIT0, HIT1, audio_live() * max(audio_level(), umbriel_audio_spectrum(0.05)));
 }
 
 float se_hash3(vec3 p) {
@@ -107,7 +94,7 @@ float se_worley(vec3 p) {
     return sqrt(d);
 }
 
-// Dark round voids with soft bright walls between them, the clip's granulation, zero mean and about unit spread.
+// Dark round voids with soft bright walls between them, zero mean and about unit spread.
 float se_plasma(float th, float r, float t) {
     vec3 p = vec3(th / CELL_TH, r / CELL_R, t / BOIL);
     vec3 w = vec3(se_noise3(p * 0.9 + 3.1), se_noise3(p * 0.9 + 7.7), 0.0) - 0.5;
@@ -134,7 +121,7 @@ float se_outline_edge(float e, vec2 p, vec2 size) {
     return o6 + size.y - r.w - p.y;
 }
 
-// The disc's brightness by clip px in from the limb.
+// The disc's brightness by ring px in from the limb.
 float se_inner_v(float x) {
     if (x <= -100.0) return 0.10732;
     if (x < -98.0) return mix(0.10732, 0.10767, (x - -100.0) / 2.0);
@@ -334,12 +321,13 @@ vec4 window(vec2 uv) {
     if (ed.w < m1) { e1 = 3.0; m1 = ed.w; }
     float t = umbriel_time * SPEED;
     // The same spectrum layout as the border and cursor: bass along the top, treble along the bottom.
-    float au = audio_live();
-    float bl = au_band(0.85 * clamp(p.y / max(size.y, 1.0), 0.0, 1.0));
-    float lvl = au * audio_level();
-    float bass = au_band(0.08);
+    float lvl0 = audio_level();
+    float au = umbriel_audio_available() * smoothstep(SILENCE_LOW, SILENCE_HIGH, lvl0);
+    float bl = au * umbriel_audio_spectrum(0.85 * clamp(p.y / max(size.y, 1.0), 0.0, 1.0));
+    float lvl = au * lvl0;
+    float bass = au * umbriel_audio_spectrum(0.08);
     // The band reaches deeper with the spectrum under it and bass, and brightens with loudness, like the corona outside.
-    float lift = 1.0 + au * (0.3 + 0.9 * bl + 0.6 * bass) + SURGE * audio_hit();
+    float lift = 1.0 + au * (0.3 + 0.9 * bl + 0.6 * bass) + SURGE * smoothstep(HIT0, HIT1, au * max(lvl0, umbriel_audio_spectrum(0.05)));
     float flare = mix(1.0, 0.9 + 0.5 * lvl, au);
     float r = -din / K_SCALE / lift;
     if (r < -DEPTH || din < 0.0) return src;
@@ -348,11 +336,12 @@ vec4 window(vec2 uv) {
     float e3 = mod(e1 + 3.0, 4.0); float m3 = e3 < 0.5 ? ed.x : (e3 < 1.5 ? ed.y : (e3 < 2.5 ? ed.z : ed.w));
     if (m3 < m2) { e2 = e3; m2 = m3; }
     float k1 = 1.0 / (SAMPLE * TH_SCALE);
-    float pl1 = se_plasma(se_outline_edge(e1, p, size) * k1, r, t);
-    float pl2 = se_plasma(se_outline_edge(e2, p, size) * k1, r, t);
-    float pl = mix(pl2, pl1, 0.5 + 0.5 * smoothstep(0.0, BLEND, m2 - m1));
-    // The unit-spread plasma overshoots the clip's swing in the deep core, so it is eased off there.
-    float v = se_inner_v(r) + se_inner_sd(r) * pl * mix(1.0, DEEP, smoothstep(-35.0, -65.0, r));
+    float bw = smoothstep(0.0, BLEND, m2 - m1);
+    float pl = se_plasma(se_outline_edge(e1, p, size) * k1, r, t);
+    // Past BLEND from the diagonal the second edge carries no weight, so its plasma is only run near a corner.
+    if (bw < 1.0) pl = mix(se_plasma(se_outline_edge(e2, p, size) * k1, r, t), pl, 0.5 + 0.5 * bw);
+    // The unit-spread plasma overshoots the fitted swing in the deep core, so it is eased off there.
+    float v = se_inner_v(r) + se_inner_sd(r) * pl * mix(1.0, DEEP, 1.0 - smoothstep(-65.0, -35.0, r));
     v = clamp(v, 0.0, 1.0);
     // The plasma is added as light over the window rather than painted over it, so the window stays readable through it.
     float a = smoothstep(-DEPTH, -DEPTH + FADE, r);

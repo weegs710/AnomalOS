@@ -1,11 +1,14 @@
+[include]
+files = ["../../window/singularity-inner/effect.toml"]
+
+# the shader's REACH (24 logical px from the client edge) has to fit inside border width + padding, so this covers the default 2 px border
 [effects.preset.singularity-ring]
 kind = "border"
 shader = "shader.glsl"
 palette = true
 animated = true
 speed = 1.0
-# the shader's REACH (24) is the tallest plume plus its fade, measured from the client edge, so it has to fit in the 6px border plus this
-padding = 18
+padding = 22
 overlay = "singularity-inner"
 
 [effects.preset.singularity-ring.light]

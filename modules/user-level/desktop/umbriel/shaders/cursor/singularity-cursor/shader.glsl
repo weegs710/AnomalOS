@@ -1,7 +1,7 @@
-// The singularity ring from Replay_2026-11-16_03-51-40 in miniature round the pointer: the clip's four corona quadrants in their own places on the 2 s loop, the 6 s glow breath and the disc's boiling rim, hue from the scheme.
-// Ring radius in logical px; the ring is the clip scaled uniformly to it.
+// The singularity ring in miniature beside the pointer: four fitted corona quadrants in their own places on the 2 s loop, the 6 s glow breath and the disc's boiling rim, hue from the scheme.
+// Ring radius in logical px, and the radius the corona was fitted at in ring px; the corona is scaled uniformly between them.
 const float RING_R = 15.0;
-const float CLIP_R = 140.95;
+const float FIT_R = 140.95;
 // Theta samples per quadrant and per turn.
 const float TILE_N = 256.0;
 const float TURN_N = 1024.0;
@@ -10,16 +10,16 @@ const float BAND_LOOP = 6.0;
 // Logical px past the ring where everything has faded to nothing.
 const float REACH = 11.0;
 const float FADE = 4.0;
-// Clip px where the corona's sprites fade out: the clip's corona is gone past about +64.
+// Ring px where the corona's sprites fade out; the corona is gone past about +64.
 const float SPR_R0 = 45.0;
 const float SPR_R1 = 75.0;
-// Clip px over which the limb ramps from the disc's red rim into the cream plateau.
+// Ring px over which the limb ramps from the disc's red rim into the cream plateau.
 const float LIMB_SOFT = 6.0;
 const float LIMB_W = 0.278;
-// The disc: clip px in from the limb where the plasma has faded out, and the length of that fade.
+// The disc: ring px in from the limb where the plasma has faded out, and the length of that fade.
 const float DEPTH = 100.0;
 const float DEPTH_FADE = 30.0;
-// Plasma cells in theta samples and clip px, seconds per unit of boil, and the theta samples over which the turn's seam is crossfaded.
+// Plasma cells in theta samples and ring px, seconds per unit of boil, and the theta samples over which the turn's seam is crossfaded.
 const float CELL_TH = 150.0;
 const float CELL_R = 35.0;
 const float BOIL = 0.65;
@@ -51,9 +51,9 @@ const float CHASE_W = 7.75;
 const float CHASE_DELAY = 0.1;
 // umbriel spaces path samples about 32 ms apart, so a longer gap is a rest: the pointer sat still and only moved in the last RAMP seconds of it.
 const float RAMP = 0.12;
-// The cheap pass that finds which pixels are near enough to need the full one: every this many samples, over only the newest COARSE_N, which span at least the last second since umbriel keeps them 32 ms apart and older ones carry under 1% of the weight, and how far it can land from the full pass in px.
+// The cheap pass that finds which pixels are near enough to need the full one: every this many samples, over only the last COARSE_AGE seconds since older ones carry under 1% of the weight, and how far it can land from the full pass in px.
 const float COARSE = 4.0;
-const int COARSE_N = 36;
+const float COARSE_AGE = 1.0;
 const float COARSE_PX = 40.0;
 // De-tiling the corona: how far off the shared 2 s clock each quarter may start (share of the loop), seconds per turn of the corona, and the swell round the ring (depth, cell count, drift rate).
 const float JITTER = 1.0;
@@ -108,7 +108,7 @@ float se_worley(vec3 p) {
     return sqrt(d);
 }
 
-// Dark round voids with soft bright walls between them, the clip's granulation, zero mean and about unit spread.
+// Dark round voids with soft bright walls between them, zero mean and about unit spread.
 float se_plasma(float th, float r, float t) {
     vec3 p = vec3(th / CELL_TH, r / CELL_R, t / BOIL);
     vec3 w = vec3(se_noise3(p * 0.9 + 3.1), se_noise3(p * 0.9 + 7.7), 0.0) - 0.5;
@@ -128,7 +128,7 @@ float se_plasma_turn(float th, float r, float t) {
     return mix(a, b, w) / sqrt(w * w + (1.0 - w) * (1.0 - w));
 }
 
-// Glow heat outside the limb by clip px, read back through the heat table from the clip with its background taken out.
+// Glow heat outside the limb by ring px, with the background taken out.
 float se_static_heat(float x) {
     if (x <= 0.0) return 90.434;
     if (x < 1.0) return mix(90.434, 105.05, (x - 0.0) / 1.0);
@@ -184,7 +184,7 @@ float se_static_heat(float x) {
     return 0.0;
 }
 
-// Heat to brightness, read off the clip; its red channel clips at about 110.
+// Heat to brightness; red saturates at about 110.
 float se_heat_v(float x) {
     if (x <= 0.0) return 0.0;
     if (x < 10.0) return mix(0.0, 0.12966, (x - 0.0) / 10.0);
@@ -256,7 +256,7 @@ float se_band_prof(float x) {
     return 0.011182;
 }
 
-// The disc's brightness by clip px in from the limb.
+// The disc's brightness by ring px in from the limb.
 float se_inner_v(float x) {
     if (x <= -100.0) return 0.10732;
     if (x < -98.0) return mix(0.10732, 0.10767, (x - -100.0) / 2.0);
@@ -1909,7 +1909,7 @@ float se_q3(float x, float r, vec4 c1, vec4 c2, vec4 s1, vec4 s2, float lift) {
     return acc;
 }
 
-// One quadrant of the clip's corona at loop time t; x in clip theta samples from the quadrant start, r in clip px from the limb.
+// One corona quadrant at loop time t; x in theta samples from the quadrant start, r in ring px from the limb.
 float se_quadrant(float q, float x, float r, float t, float lift) {
     float p = 6.2831853 * fract(t / LOOP);
     // Harmonics 2-8 by turning the first round itself, one cos and sin instead of sixteen.
@@ -1939,7 +1939,7 @@ float se_vn_loop(float x, float n, float seed) {
     return mix(se_hash3(vec3(mod(i, n), seed, 0.0)), se_hash3(vec3(mod(i + 1.0, n), seed, 0.0)), f);
 }
 
-// The clip's corona at theta sample x of the turn. The clip is one 90 degree tile four times over in sync, which reads as tiled on a ring this small, so each quarter plays its own pick of the four fitted quadrants, mirrored or not, off the shared clock, and the whole corona turns slowly so the quarters do not sit on the cardinals.
+// The corona at theta sample x of the turn. Four copies of one tile in sync read as tiled on a ring this small, so each quarter plays its own pick of the four fitted quadrants, mirrored or not, off the shared clock, and the whole corona turns slowly so the quarters do not sit on the cardinals.
 float se_corona(float x, float r, float t, float lift) {
     x = mod(x + TURN_N * t / ROT_PERIOD, TURN_N);
     float qi = floor(x / TILE_N);
@@ -1963,7 +1963,7 @@ vec3 se_base() {
     return umbriel_palette_count > 0 ? umbriel_palette_at(0.0).rgb : vec3(1.0, 0.165, 0.133);
 }
 
-// The clip's value and whiteness on the scheme's hue: whiteness only lifts the min channel, so the clip's orange drift is dropped.
+// Value and whiteness on the scheme's hue: whiteness only lifts the min channel, so the fitted orange drift is dropped.
 vec3 se_colour(float v, float w, vec3 base) {
     float hi = max(base.r, max(base.g, base.b));
     float lo = min(base.r, min(base.g, base.b));
@@ -2011,24 +2011,32 @@ vec2 se_seg(vec2 lc, float la, vec2 qc, float qa, bool rest) {
     return qc;
 }
 
-// Where the singularity's centre is in px: its place on the orbit round the pointer as the chase sees it plus the miss, replayed from rest on the orbit round sample k0, every stride-th sample and both ends of every rest.
-vec2 se_body(float stride, int k0) {
+// Where the singularity's centre is in px: its place on the orbit round the pointer as the chase sees it plus the miss, replayed from rest on the orbit round the newest sample older than `from` seconds, every stride-th sample and both ends of every rest.
+vec2 se_body(float stride, float from) {
     float th = TAU * umbriel_time / ORBIT_PERIOD;
     vec2 orb = ORBIT_R * vec2(cos(th), sin(th));
     if (umbriel_pointer_count < 1) return umbriel_pointer * umbriel_size + orb;
-    vec2 lc = umbriel_pointer_path[k0].xy * umbriel_size;
-    float la = umbriel_pointer_path[k0].z;
+    vec2 lc = umbriel_pointer_path[0].xy * umbriel_size;
+    float la = umbriel_pointer_path[0].z;
     vec2 pc = lc;
     float pa = la;
     vec2 ce = lc;
     bool done = la <= CHASE_DELAY;
     g_s = vec4(0.0);
     g_v = vec2(0.0);
-    for (int j = 1; j < 64; j++) {
-        int k = k0 + j;
+    for (int k = 1; k < 64; k++) {
         if (done || k >= umbriel_pointer_count) break;
         vec4 q = umbriel_pointer_path[k];
         vec2 qc = q.xy * umbriel_size;
+        if (q.z > from) {
+            lc = qc;
+            la = q.z;
+            pc = qc;
+            pa = q.z;
+            ce = qc;
+            done = la <= CHASE_DELAY;
+            continue;
+        }
         if (pa - q.z > RAMP) {
             if (pa < la) {
                 ce = se_seg(lc, la, pc, pa, false);
@@ -2042,7 +2050,7 @@ vec2 se_body(float stride, int k0) {
                 la = q.z;
                 done = q.z <= CHASE_DELAY;
             }
-        } else if (mod(float(j), stride) < 0.5 || k == umbriel_pointer_count - 1 || q.z <= CHASE_DELAY) {
+        } else if (mod(float(k), stride) < 0.5 || k == umbriel_pointer_count - 1 || q.z <= CHASE_DELAY) {
             ce = se_seg(lc, la, qc, q.z, false);
             lc = qc;
             la = q.z;
@@ -2058,15 +2066,15 @@ vec2 se_body(float stride, int k0) {
 vec4 cursor(vec2 uv) {
     vec4 src = umbriel_sample(uv);
     vec2 here = uv * umbriel_size;
-    if (length(here - se_body(COARSE, umbriel_pointer_count > COARSE_N ? umbriel_pointer_count - COARSE_N : 0)) > RING_R + REACH + COARSE_PX) return src;
-    vec2 p = here - se_body(1.0, 0);
+    if (length(here - se_body(COARSE, COARSE_AGE)) > RING_R + REACH + COARSE_PX) return src;
+    vec2 p = here - se_body(1.0, 1.0e6);
     float rho = length(p);
     // A see-through black disc under the plasma: on a bright background the added light would clip to white, so the disc takes some light away first and the interior keeps its detail.
     src.rgb *= 1.0 - DISC_DARK * (1.0 - smoothstep(RING_R - DISC_FEATHER, RING_R, rho));
     if (rho > RING_R + REACH) return src;
-    float r = (rho - RING_R) * CLIP_R / RING_R;
+    float r = (rho - RING_R) * FIT_R / RING_R;
     vec3 base = se_base();
-    // Theta samples clockwise from pointing right, the clip's own unwrap.
+    // Theta samples clockwise from pointing right, the fitted corona's own unwrap.
     float ang = atan(p.y, p.x);
     ang = ang < 0.0 ? ang + TAU : ang;
     float x = ang / TAU * TURN_N;
@@ -2098,11 +2106,11 @@ vec4 cursor(vec2 uv) {
         float ri = r / (1.0 + au * (0.3 + 0.9 * bl + 0.6 * bass));
         if (ri < -DEPTH) return src;
         float pl = se_plasma_turn(x, ri, t);
-        float v = se_inner_v(ri) + se_inner_sd(ri) * pl * mix(1.0, DEEP, smoothstep(-35.0, -65.0, ri));
+        float v = se_inner_v(ri) + se_inner_sd(ri) * pl * mix(1.0, DEEP, 1.0 - smoothstep(-65.0, -35.0, ri));
         float wl = mix(se_inner_w(ri), LIMB_W, smoothstep(-LIMB_SOFT, 0.0, ri));
         c = se_colour(clamp(v, 0.0, 1.0), wl, base) * smoothstep(-DEPTH, -DEPTH + DEPTH_FADE, ri);
     }
     // Light is added over what is under the pointer, so nothing it covers is hidden.
-    c = min(c * flare, vec3(1.0)) * smoothstep(RING_R + REACH, RING_R + REACH - FADE, rho);
+    c = min(c * flare, vec3(1.0)) * (1.0 - smoothstep(RING_R + REACH - FADE, RING_R + REACH, rho));
     return vec4(min(src.rgb + c, vec3(1.0)), src.a);
 }

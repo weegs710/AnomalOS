@@ -1,4 +1,4 @@
-# the singularity ring in miniature round the pointer, drawn as light over what is under it
+# the singularity ring in miniature beside the pointer, drawn as light over what is under it
 [effects.preset.singularity-cursor]
 kind = "cursor"
 shader = "shader.glsl"
