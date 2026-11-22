@@ -1,8 +1,8 @@
 
-# thunk -- local image generation (Z-Image Turbo on the AMD GPU)
+# thunk -- local image generation (Z-Image Turbo through stable-diffusion.cpp)
 #
-# gen drives stable-diffusion.cpp, ui serves a refinement web page from its server binary on 127.0.0.1
-# and, when the rewriter models are fetched, a CPU-only llama.cpp server one port up that writes the next prompt.
+# gen drives stable-diffusion.cpp, or the running workbench's queue when `thunk ui` is up.
+# ui starts the workbench service: one GPU queue, projects in ~/Pictures/thunk, edit tools, a local rewriter.
 # Data lives in ~/.local/share/thunk. Run `thunk models fetch` once, and `thunk models fetch rewriter` for the rewriter.
 
 # a fixed-output fetch: nix checks the hash, and the out-link is a gc root outside the system closure
@@ -48,16 +48,25 @@ def need-models [] {
 
 # gfx1032 has no kernels of its own; 10.3.0 maps it onto gfx1030
 def gpu-env []: nothing -> record {
+    if ($env.THUNK_GPU? | default "rocm") != "rocm" { return {} }
     {
         HSA_OVERRIDE_GFX_VERSION: ($env.HSA_OVERRIDE_GFX_VERSION? | default "10.3.0")
         HIP_VISIBLE_DEVICES: ($env.HIP_VISIBLE_DEVICES? | default "0")
     }
 }
 
+def service-url [port: int]: nothing -> string {
+    $"http://127.0.0.1:($port)"
+}
+
+def service-up [port: int]: nothing -> bool {
+    try { (http get --max-time 2sec $"(service-url $port)/api/state").ready } catch { false }
+}
+
 # usage
 def main [] {
     print "thunk -- local image generation\n"
-    print "  thunk gen \"<prompt>\" [-s SEED] [-W 768] [-H 768] [--steps 8] [-b N] [-i INIT.png --strength 0.75] [-o out.png]"
+    print "  thunk gen \"<prompt>\" [-s SEED] [-W 768] [-H 768] [--steps 8] [-b N] [-i INIT.png --strength 0.75] [-o out.png] [--port 8188]"
     print "  thunk up <in.png> [-o out.png] [-s 4] [-n realesrgan-x4plus]"
     print "  thunk trace <in.png> [-o out.svg] [--mono]"
     print "  thunk ui [--port 8188] [--no-rewriter]"
@@ -105,6 +114,45 @@ def "main models" [action: string = "status", group: string = "image"] {
     }
 }
 
+# hand the job to the running workbench, so only one sd process ever touches the GPU
+def gen-queued [port: int, prompt: string, seed: int, width: int, height: int, steps: int, batch: int, out: string, init, strength: float] {
+    let url = (service-url $port)
+    http post --allow-errors --content-type application/json $"($url)/api/projects" { name: "cli" } | ignore
+    let starts = if $init == null { [] } else {
+        let ref = (http post --content-type application/json $"($url)/api/p/cli/ref" {
+            name: ($init | path basename)
+            data: (open --raw $init | encode base64)
+        })
+        [$"ref:($ref.ref)"]
+    }
+    let job = (http post --content-type application/json $"($url)/api/p/cli/round" {
+        prompt: $prompt, seed: $seed, width: $width, height: $height, steps: $steps, count: $batch
+        starts: $starts, strengths: [$strength]
+    })
+    print -e $"thunk: queued on the workbench as cli round ($job.round)"
+    loop {
+        let st = (http get $"($url)/api/state")
+        let mine = ($st.queue | where project == "cli" and round == $job.round)
+        let live = ($mine | where status in ["queued" "running"])
+        if ($live | is-empty) {
+            let bad = ($mine | where status in ["failed" "cancelled"])
+            if not ($bad | is-empty) { die $"($bad | first | get status): ($bad | first | get error)" }
+            break
+        }
+        sleep 1sec
+    }
+    let st = (http get $"($url)/api/state")
+    let prints = (http get $"($url)/api/p/cli").prints | where round == $job.round and kind == "gen" | sort-by index
+    let parsed = ($out | path parse)
+    for p in ($prints | enumerate) {
+        let dest = if ($prints | length) == 1 { $out } else {
+            $parsed | update stem $"($parsed.stem)_($p.index + 1)" | path join
+        }
+        cp ([$st.root "cli" $p.item.file] | path join) $dest
+        print -e $"thunk: seed ($p.item.seed) -> ($dest)"
+    }
+}
+
 # generate an image with stable-diffusion.cpp
 def "main gen" [
     prompt: string
@@ -116,10 +164,16 @@ def "main gen" [
     --out (-o): string
     --init (-i): string
     --strength: float = 0.75
+    --port: int = 8188
 ] {
-    need-models
     let seed = ($seed | default (random int 0..2147483647))
     let out = ($out | default $"thunk-($seed).png")
+    if $init != null and not ($init | path exists) { die $"no such init image: ($init)" }
+    if (service-up $port) {
+        gen-queued $port $prompt $seed $width $height $steps $batch $out $init $strength
+        return
+    }
+    need-models
     mut args = [
         "--diffusion-model" (model-path diffusion)
         "--vae" (model-path vae)
@@ -130,7 +184,6 @@ def "main gen" [
         "-p" $prompt "-o" $out
     ]
     if $init != null {
-        if not ($init | path exists) { die $"no such init image: ($init)" }
         $args = ($args | append ["-i" $init "--strength" $strength])
     }
     print -e $"thunk: seed ($seed) -> ($out)"
@@ -166,36 +219,20 @@ def "main trace" [
     print -e $"thunk: wrote ($out)"
 }
 
-# serve the web page on localhost, backed by the same model files, with the CPU rewriter one port up
+# the workbench on localhost: the image model, the rewriter (cpu) and the page, Ctrl+C stops all three
 def "main ui" [--port: int = 8188, --no-rewriter] {
     need-models
+    if (service-up $port) { die $"a workbench is already running on (service-url $port)" }
     let have = (roles rewriter | all {|r| (model-path $r | path exists) })
     if (not $no_rewriter) and (not $have) {
-        print -e "thunk: rewriter models are not fetched, the page runs without it -- run: thunk models fetch rewriter"
+        print -e "thunk: the vision rewriter is not fetched, the page writes prompts without seeing prints -- run: thunk models fetch rewriter"
     }
-    if (not $no_rewriter) and $have {
-        let rport = $port + 1
-        let threads = ([4 ((sys cpu | length) // 2)] | math max)
-        let log = (data-dir | path join "rewriter.log")
-        # exactly one origin: given a list, the server sends the whole list as Access-Control-Allow-Origin and browsers refuse it
-        let largs = [
-            "-m" (model-path rewriter) "--mmproj" (model-path rewriter_vision)
-            "--host" "127.0.0.1" "--port" $rport
-            "--cors-origins" $"http://127.0.0.1:($port)"
-            "-t" $threads "-c" 8192 "-np" 1 "--no-warmup"
-        ]
-        print -e $"thunk: rewriter loading on http://127.0.0.1:($rport), cpu only, log in ($log)"
-        job spawn { ^$env.THUNK_LLAMA_SERVER ...$largs o+e> $log } | ignore
-    }
-    let args = [
-        "--listen-ip" "127.0.0.1" "--listen-port" $port
-        "--serve-html-path" $env.THUNK_UI
-        "--diffusion-model" (model-path diffusion)
-        "--vae" (model-path vae)
-        "--llm" (model-path llm)
-        "--offload-to-cpu" "--vae-tiling"
-    ]
-    print -e $"thunk: loading the model, then the page is at http://127.0.0.1:($port) -- Ctrl+C stops it"
     load-env (gpu-env)
-    ^$env.THUNK_SD_SERVER ...$args
+    load-env {
+        THUNK_PORT: ($port | into string)
+        THUNK_MODELS: (data-dir | path join "models")
+    }
+    if $no_rewriter { $env.THUNK_NO_REWRITER = "1" }
+    print -e $"thunk: loading the models, then the page is at (service-url $port)"
+    ^$env.THUNK_PYTHON $env.THUNK_SERVE
 }
