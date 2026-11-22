@@ -1,16 +1,29 @@
 [animations]
-duration_scale = 0.5
-quality = "high"
+
+
+
 
 [animations.events]
-directory_open = "ink_bleed"
-directory_back = "fade"
-view_change = "ripple"
-focus_change = "energy_trace"
-quick_look = "scale"
+'quick_look' = 'scan'
+
+
+
+
+
+
 
 [animations.durations]
-view_change = 180
+'quick_look' = 710
+'invalid_operation' = 1000
+'focus_change' = 500
+'selection_change' = 500
+
+
+
+
+
+
+
 
 [status_bar]
 text_size = 15.0
@@ -41,3 +54,9 @@ label = "Annotate in satty"
 argv = ["satty", "-f", "{file}"]
 mime = ["image/*"]
 placement = "menu"
+
+['animations'.'ambient']
+'intensity' = 0.35
+'speed' = 2
+'selection_glow' = true
+'background' = true
