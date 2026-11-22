@@ -68,6 +68,14 @@ only.gate { tags = [ "desktop" ]; } {
       clobber = false;
     };
 
+    # the umbriel-shaders plugin rewrites its selection, noct-s pulls it back
+    xdg.state.files."noctalia/plugins/data/barrulus/umbriel-shaders/selection.json" = {
+      source = ./umbriel-shaders-selection.json;
+      type = "copy";
+      clobber = false;
+      permissions = "0644";
+    };
+
     # hooks are read from any *.toml here, so they stay out of the config.toml noctalia writes back to
     xdg.config.files."noctalia/hooks.toml".text = lib.replaceStrings [ "@UMBRIEL@" ] [ umbrielBin ] (
       builtins.readFile ./hooks.toml

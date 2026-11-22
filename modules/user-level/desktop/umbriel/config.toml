@@ -1,7 +1,7 @@
 # Colors come from noctalia's umbriel template; keys set here would override the include and freeze the palette.
 [include.optional]
 # host.toml carries this machine's outputs and devices, deployed from its modules/hosts dir
-files = ["noctalia.toml", "host.toml"]
+files = ["noctalia.toml", "host.toml", "noctalia-shaders.toml"]
 
 [include]
 files = ["shaders.toml"]
@@ -32,22 +32,14 @@ overshot = [0.13, 0.99, 0.29, 1.5]
 # Tiled moves fold any overshoot into forward travel, which stalls mid-slide, so this curve must end at 1.0.
 snappy_flat = [0.05, 0.9, 0.1, 1.0]
 
-# The kzzzt-open shader paces its strike, catch and drain off its own DURATION, so the two must change together.
 [animation.windows_in]
 enabled = true
-duration_ms = 900
-curve = "linear"
 style = "popin"
 scale = 0.85
-effect = "kzzzt-open"
 
-# The kzzzt-close shader paces its surge and fuse cutout off its own DURATION, so the two must change together.
 [animation.windows_out]
 enabled = true
-duration_ms = 700
-curve = "linear"
 style = "fade"
-effect = "kzzzt-close"
 
 [animation.windows_move]
 enabled = true

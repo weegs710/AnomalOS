@@ -8,8 +8,7 @@ let
   username = config.mySystem.user.name;
   effects = "${config.programs.umbriel.package}/share/umbriel/effects";
 in
-only.gate { tags = [ "desktop" ]; }
-{
+only.gate { tags = [ "desktop" ]; } {
   hjem.users.${username} = {
     # Copied rather than symlinked because noctalia's umbriel template rewrites this file in place to add its [include].
     xdg.config.files."umbriel/config.toml" = {
@@ -24,27 +23,23 @@ only.gate { tags = [ "desktop" ]; }
       builtins.readFile ./shaders.toml
     );
 
+    # the umbriel-shaders plugin rewrites this, noct-s pulls it back
+    xdg.config.files."umbriel/noctalia-shaders.toml" = {
+      source = ./noctalia-shaders.toml;
+      type = "copy";
+      clobber = false;
+      permissions = "0644";
+    };
+
     # Not in the umbriel package, so shaders.toml reaches them relative to its own directory.
-    xdg.config.files."umbriel/shaders/window/kzzzt/effect.toml".source = ./shaders/window/kzzzt/effect.toml;
-    xdg.config.files."umbriel/shaders/window/kzzzt/shader.glsl".source = ./shaders/window/kzzzt/shader.glsl;
-    xdg.config.files."umbriel/shaders/border/kzzzt-ring/effect.toml".source = ./shaders/border/kzzzt-ring/effect.toml;
-    xdg.config.files."umbriel/shaders/border/kzzzt-ring/shader.glsl".source = ./shaders/border/kzzzt-ring/shader.glsl;
-    xdg.config.files."umbriel/shaders/border/singularity-ring/effect.toml".source = ./shaders/border/singularity-ring/effect.toml;
-    xdg.config.files."umbriel/shaders/border/singularity-ring/shader.glsl".source = ./shaders/border/singularity-ring/shader.glsl;
-    xdg.config.files."umbriel/shaders/window/singularity-inner/effect.toml".source = ./shaders/window/singularity-inner/effect.toml;
-    xdg.config.files."umbriel/shaders/window/singularity-inner/shader.glsl".source = ./shaders/window/singularity-inner/shader.glsl;
-    xdg.config.files."umbriel/shaders/cursor/singularity-cursor/effect.toml".source = ./shaders/cursor/singularity-cursor/effect.toml;
-    xdg.config.files."umbriel/shaders/cursor/singularity-cursor/shader.glsl".source = ./shaders/cursor/singularity-cursor/shader.glsl;
-    xdg.config.files."umbriel/shaders/animation/kzzzt-open/effect.toml".source = ./shaders/animation/kzzzt-open/effect.toml;
-    xdg.config.files."umbriel/shaders/animation/kzzzt-open/shader.glsl".source = ./shaders/animation/kzzzt-open/shader.glsl;
-    xdg.config.files."umbriel/shaders/animation/kzzzt-close/effect.toml".source = ./shaders/animation/kzzzt-close/effect.toml;
-    xdg.config.files."umbriel/shaders/animation/kzzzt-close/shader.glsl".source = ./shaders/animation/kzzzt-close/shader.glsl;
-    xdg.config.files."umbriel/shaders/animation/slide-down/effect.toml".source = ./shaders/animation/slide-down/effect.toml;
-    xdg.config.files."umbriel/shaders/animation/slide-down/shader.glsl".source = ./shaders/animation/slide-down/shader.glsl;
+    xdg.config.files."umbriel/shaders/animation/slide-down/effect.toml".source =
+      ./shaders/animation/slide-down/effect.toml;
+    xdg.config.files."umbriel/shaders/animation/slide-down/shader.glsl".source =
+      ./shaders/animation/slide-down/shader.glsl;
   };
 
-  # umbriel resolves its [include] at startup, before noctalia can regenerate the palette on a wiped root
-  preservation.preserveAt."/persist".users.${username}.files = [
-    ".config/umbriel/noctalia.toml"
+  # umbriel resolves its includes at startup, and the umbriel-shaders plugin replaces its file by rename, which a file bind refuses
+  preservation.preserveAt."/persist".users.${username}.directories = [
+    ".config/umbriel"
   ];
 }

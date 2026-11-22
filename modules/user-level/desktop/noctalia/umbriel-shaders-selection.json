@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "slots": {
+    "effects.border": {
+      "id": "border/singularity-ring",
+      "name": "Singularity Ring",
+      "preset": "singularity-ring",
+      "revision": "8244fa66d82b96a4c9268d3f22081e9ea7a5f5e9",
+      "files": [
+        "LICENSES/weegs710-MIT.txt",
+        "border/singularity-ring/README.md",
+        "border/singularity-ring/effect.toml",
+        "border/singularity-ring/shader.glsl",
+        "window/singularity-inner/README.md",
+        "window/singularity-inner/effect.toml",
+        "window/singularity-inner/shader.glsl"
+      ],
+      "include": [
+        "/home/weegs/.config/umbriel/noctalia-shaders/8244fa66d82b96a4c9268d3f22081e9ea7a5f5e9/border/singularity-ring/effect.toml"
+      ],
+      "deps": [
+        "window/singularity-inner"
+      ],
+      "settings": {
+        "effects.border": "singularity-ring"
+      }
+    },
+    "effects.cursor": {
+      "id": "cursor/singularity-cursor",
+      "name": "Singularity Cursor",
+      "preset": "singularity-cursor",
+      "revision": "8244fa66d82b96a4c9268d3f22081e9ea7a5f5e9",
+      "files": [
+        "LICENSES/weegs710-MIT.txt",
+        "cursor/singularity-cursor/README.md",
+        "cursor/singularity-cursor/effect.toml",
+        "cursor/singularity-cursor/shader.glsl"
+      ],
+      "include": [
+        "/home/weegs/.config/umbriel/noctalia-shaders/8244fa66d82b96a4c9268d3f22081e9ea7a5f5e9/cursor/singularity-cursor/effect.toml"
+      ],
+      "deps": [],
+      "settings": {
+        "effects.cursor": "singularity-cursor"
+      }
+    },
+    "animation.windows_in": {
+      "id": "animation/kzzzt-open",
+      "name": "kzzzt Open",
+      "preset": "kzzzt-open",
+      "revision": "8244fa66d82b96a4c9268d3f22081e9ea7a5f5e9",
+      "files": [
+        "LICENSES/Barrulus-MIT.txt",
+        "LICENSES/weegs710-MIT.txt",
+        "animation/kzzzt-open/README.md",
+        "animation/kzzzt-open/effect.toml",
+        "animation/kzzzt-open/shader.glsl"
+      ],
+      "include": [
+        "/home/weegs/.config/umbriel/noctalia-shaders/8244fa66d82b96a4c9268d3f22081e9ea7a5f5e9/animation/kzzzt-open/effect.toml"
+      ],
+      "deps": [],
+      "settings": {
+        "animation.enabled": true,
+        "animation.windows_in.curve": "linear",
+        "animation.windows_in.duration_ms": 900,
+        "animation.windows_in.effect": "kzzzt-open",
+        "animation.windows_in.enabled": true
+      }
+    },
+    "animation.windows_out": {
+      "id": "animation/kzzzt-close",
+      "name": "kzzzt Close",
+      "preset": "kzzzt-close",
+      "revision": "8244fa66d82b96a4c9268d3f22081e9ea7a5f5e9",
+      "files": [
+        "LICENSES/weegs710-MIT.txt",
+        "animation/kzzzt-close/README.md",
+        "animation/kzzzt-close/effect.toml",
+        "animation/kzzzt-close/shader.glsl"
+      ],
+      "include": [
+        "/home/weegs/.config/umbriel/noctalia-shaders/8244fa66d82b96a4c9268d3f22081e9ea7a5f5e9/animation/kzzzt-close/effect.toml"
+      ],
+      "deps": [],
+      "settings": {
+        "animation.enabled": true,
+        "animation.windows_out.curve": "linear",
+        "animation.windows_out.duration_ms": 700,
+        "animation.windows_out.effect": "kzzzt-close",
+        "animation.windows_out.enabled": true
+      }
+    }
+  },
+  "apps": [],
+  "timing": {},
+  "imports": []
+}

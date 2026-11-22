@@ -31,7 +31,7 @@ widget_spacing = 10
 enable_ddcutil = false
 
 [hooks]
-colors_changed = "/nix/store/flnnp20h221f3mdzi5a9y6kvfvc7093a-umbriel-0.1.0/bin/umbriel msg config-reload"
+colors_changed = "/nix/store/n0p43y3yx2x1kr2pzqffz72gh514i2gm-umbriel-0.1.0/bin/umbriel msg config-reload"
 
 [idle.behavior.lock]
 command = "noctalia:session lock"
@@ -234,8 +234,8 @@ umbriel_audio_provider_enabled = true
 enabled = true
 
 [theme]
-builtin = "Dracula"
-community_palette = "Oxocarbon"
+builtin = "Kanagawa"
+community_palette = "Alpenglow"
 custom_palette = "Triglavian"
 mode = "dark"
 pure_black_dark = true
@@ -257,13 +257,13 @@ wallpaper_scheme = "vibrant"
         output_path = "$XDG_CONFIG_HOME/vesktop/themes/noctalia-material.theme.css"
 
         [theme.templates.user.rummage]
-        input_path = "/nix/store/ihwclbhnapw8h4x8kav14madqvxkc0g8-rummage-0.6.0/share/rummage/noctalia/rummage"
+        input_path = "/nix/store/aq82z3dgr34lk9v7gj1lhd7igiksmhpi-rummage-0.6.1/share/rummage/noctalia/rummage"
         output_path = "~/.config/rummage/colors.toml"
 
         [theme.templates.user.zed_icons]
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/zed-icon-colors.json"
         output_path = "$XDG_STATE_HOME/noctalia/zed-icon-colors.json"
-        post_hook = "/nix/store/2vasp1qrdppn7fnmgazsyq13jknyfsk5-zed-icons/bin/zed-icons $HOME/.local/state/noctalia/zed-icon-colors.json"
+        post_hook = "/nix/store/aphk6n4f6xw543596xnm52mhs5l0yb2s-zed-icons/bin/zed-icons $HOME/.local/state/noctalia/zed-icon-colors.json"
 
 [wallpaper]
 directory = "~/.local/share/wallpapers"

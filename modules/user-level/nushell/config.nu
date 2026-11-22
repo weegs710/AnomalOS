@@ -167,9 +167,11 @@ def noct-r [] {
     systemctl --user restart noctalia
 }
 
-# promote noctalia gui changes (state overlay) into the declared repo config so they survive rebuilds + get vcs history
+# promote noctalia gui changes (state overlay, umbriel-shaders plugin) into the declared repo config so they survive rebuilds + get vcs history
 def noct-s [] {
     noctalia config export merged | complete | get stdout | save --force ~/repo/public/anomalos/modules/user-level/desktop/noctalia/config.toml
+    open --raw ~/.config/umbriel/noctalia-shaders.toml | save --force ~/repo/public/anomalos/modules/user-level/desktop/umbriel/noctalia-shaders.toml
+    open --raw ~/.local/state/noctalia/plugins/data/barrulus/umbriel-shaders/selection.json | save --force ~/repo/public/anomalos/modules/user-level/desktop/noctalia/umbriel-shaders-selection.json
 }
 
 # pull gui-edited zed settings back into the repo (reverse of the copy-type rebuild); --raw keeps jsonc comments verbatim

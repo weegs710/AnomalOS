@@ -1,7 +1,0 @@
-# the singularity ring in miniature beside the pointer, drawn as light over what is under it
-[effects.preset.singularity-cursor]
-kind = "cursor"
-shader = "shader.glsl"
-palette = true
-# umbriel draws the box round the pointer and every path sample grown by this; the chase stays inside the path's box, so it covers the 38 px orbit + ring radius 15 + the 11 px glow
-radius = 68
