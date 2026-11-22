@@ -1,5 +1,6 @@
 [appearance]
-theme = "Oxocarbon"
+theme = "Plasm"
+text_size = 14
 
 [startup]
 page = "performance"
