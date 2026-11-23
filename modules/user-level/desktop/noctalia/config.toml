@@ -31,7 +31,7 @@ widget_spacing = 10
 enable_ddcutil = false
 
 [hooks]
-colors_changed = "/nix/store/n0p43y3yx2x1kr2pzqffz72gh514i2gm-umbriel-0.1.0/bin/umbriel msg config-reload"
+colors_changed = "/nix/store/6pajvz0dfbrsaadd2vf8wmr21bi1jjb4-umbriel-0.1.0/bin/umbriel msg config-reload"
 
 [idle.behavior.lock]
 command = "noctalia:session lock"
@@ -175,7 +175,7 @@ scale = 1.0
     wifi = true
 
 [plugins]
-enabled = [ "barrulus/umbriel-shaders", "weegs710/nixos-updates-tack", "noctalia/screen_recorder" ]
+enabled = [ "barrulus/umbriel-shaders", "noctalia/screen_recorder" ]
 
     [[plugins.source]]
     kind = "git"
@@ -256,8 +256,12 @@ wallpaper_scheme = "vibrant"
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/discord-material.css"
         output_path = "$XDG_CONFIG_HOME/vesktop/themes/noctalia-material.theme.css"
 
+        [theme.templates.user.peepers]
+        input_path = "/nix/store/52rvwq85g5a0ynnby16b6kambid4xxb8-source/packaging/noctalia/colors.toml"
+        output_path = "$XDG_CONFIG_HOME/peepers/noctalia.toml"
+
         [theme.templates.user.rummage]
-        input_path = "/nix/store/aq82z3dgr34lk9v7gj1lhd7igiksmhpi-rummage-0.6.1/share/rummage/noctalia/rummage"
+        input_path = "/nix/store/g0r0swz8kwnihw28wyjzafakc1hh46jr-rummage-0.6.1/share/rummage/noctalia/rummage"
         output_path = "~/.config/rummage/colors.toml"
 
         [theme.templates.user.zed_icons]
