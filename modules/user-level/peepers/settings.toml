@@ -7,3 +7,6 @@ page = "performance"
 
 [units]
 temperature = "fahrenheit"
+
+[sampling]
+interval = "1s"
