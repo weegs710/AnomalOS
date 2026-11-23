@@ -7,13 +7,6 @@
 let
   gpartedWithTools = pkgs.gparted.override { withAllTools = true; };
   # the FITS (cfitsio) loader carries unfixed CVEs and goes unused here
-  gimpWithPlugins = pkgs.gimp-with-plugins.override {
-    gimpPlugins = pkgs.gimpPlugins.override {
-      gimp = pkgs.gimp.overrideAttrs (old: {
-        mesonFlags = old.mesonFlags ++ [ "-Dfits=disabled" ];
-      });
-    };
-  };
   ueberzugppNoFits = pkgs.ueberzugpp.override {
     vips = pkgs.vips.overrideAttrs (old: {
       mesonFlags = old.mesonFlags ++ [ "-Dcfitsio=disabled" ];
@@ -99,9 +92,7 @@ only.gate { tags = [ "desktop" ]; } {
     ueberzugppNoFits
     unzipNLS
     xdg-dbus-proxy
-    gimpWithPlugins
     ffmpeg
-    inkscape
   ];
 
   programs.appimage = {
