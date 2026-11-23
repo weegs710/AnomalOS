@@ -61,12 +61,12 @@ only.gate { tags = [ "desktop" ]; } {
       };
     };
 
-    # copy-type and writable: peepers saves its settings in place, which a read-only store link would refuse; gui edits get pulled back with `peep-s`
+    # copy-type and writable: peepers saves its settings in place, which a read-only store link would refuse; gui edits get pulled back with `peep-s` before a rebuild lays the repo copy down
     xdg.config.files = {
       "peepers/settings.toml" = {
         source = ./settings.toml;
         type = "copy";
-        clobber = false;
+        clobber = true;
         permissions = "0644";
       };
 
