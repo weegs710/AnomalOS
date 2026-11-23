@@ -63,3 +63,8 @@ exclude_follow = ["nixpkgs"]
 [inputs.millennium]
 url = "gh:SteamClientHomebrew/Millennium"
 dir = "packages/nix"
+
+# peepers.cachix.org only holds builds against peepers' own nixpkgs lock.
+[inputs.peepers]
+url = "gh:weegs710/peepers/cachix"
+exclude_follow = ["nixpkgs"]

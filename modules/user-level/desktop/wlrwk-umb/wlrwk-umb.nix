@@ -31,8 +31,7 @@ let
   rmpcCmd = "kitty --title=rmpc rmpc";
   fileManagerCmd = "rummage";
   tremcCmd = "kitty --title=tremc tremc";
-  # Not packaged yet, so this runs the build in the working tree inside the shell that gives it wayland.
-  peepersCmd = "nix-shell $HOME/claude-projects/peepers/shell.nix --run $HOME/.cache/cargo-target/peepers/release/peepers";
+  peepersCmd = "peepers";
 
   journalCmd = "kitty --title=journal journalctl -f";
   zpoolCmd = "kitty --title=zpool nu ${runPause} zpool status";

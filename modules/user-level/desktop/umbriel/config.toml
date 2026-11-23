@@ -186,8 +186,7 @@ follows_mouse = "sloppy"
 # One chord both ways: adds the focused window, or pulls it back out when it is the scratchpad's focused entry.
 "Mod+Shift+Grave" = "window-toggle-scratchpad main"
 
-# peepers is not packaged yet, so this runs the build in the working tree.
-"Mod+P" = { action = 'spawn $HOME/.cache/cargo-target/peepers/release/peepers --toggle-pop', repeat = false }
+"Mod+P" = { action = 'spawn peepers --toggle-pop', repeat = false }
 
 "Mod+Left" = "window-focus-left"
 "Mod+Right" = "window-focus-right"
@@ -260,6 +259,7 @@ default_floating = true
 [[window_rule]]
 match.app_id = "^peepers$"
 default_scratchpad = "main"
+default_floating_size_px = { width = 1400, height = 875 }
 default_focused = false
 focus_on_activate = false
 

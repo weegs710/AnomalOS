@@ -9,6 +9,7 @@
     "nix-shop": "git+https://codeberg.org/weegs710/nix-shop",
     "nixpkgs": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst",
     "noctalia": "github:noctalia-dev/noctalia/cachix",
+    "peepers": "github:weegs710/peepers/cachix",
     "preservation": "github:nix-community/preservation",
     "rummage": "github:barrulus/rummage",
     "tack": "github:manic-systems/tack",
@@ -102,6 +103,15 @@
     "rev": "a5444b9a2c2bc7c1aed5c59298a268e45de14055",
     "narHash": "sha256-3Bt4df3TM7shQGxQbSDBjYk74oemNvRl4KT3DmLZGF4=",
     "lastModified": 1795184512,
+    "public": true
+  },
+  "peepers": {
+    "type": "github",
+    "owner": "weegs710",
+    "repo": "peepers",
+    "rev": "9eb7d2bc6d4aafa941b72a83246c7e0a5f74603c",
+    "narHash": "sha256-aUkzgdsimUisJnfEPpkSBEePAi37bIzyWazd9mp+nFw=",
+    "lastModified": 1795403433,
     "public": true
   },
   "preservation": {
