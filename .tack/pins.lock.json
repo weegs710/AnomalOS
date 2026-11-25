@@ -110,9 +110,9 @@
     "type": "github",
     "owner": "weegs710",
     "repo": "peepers",
-    "rev": "cae24d9d24a0881c5e6bfdcf97cf2b756379d876",
-    "narHash": "sha256-1up69AV3E4wnZJ5RNfuQP4I4n40jZW7acOpNALaayGc=",
-    "lastModified": 1795420526,
+    "rev": "b5c6cb8e8d497a49eff9473ebe1d38f986ac75e4",
+    "narHash": "sha256-pJaHl3cHfHmWALaQHS0rkk2s58BEj2uKPDGMiiRKxEI=",
+    "lastModified": 1795590210,
     "public": true
   },
   "preservation": {
@@ -127,9 +127,9 @@
     "type": "github",
     "owner": "barrulus",
     "repo": "rummage",
-    "rev": "222e3305b029086df92f95e8a2902bc67a52e59b",
-    "narHash": "sha256-ll2Jr7LCWPZ0ZrkrvwX5YU3UEkwGqUaIjoOhEzrieKQ=",
-    "lastModified": 1795463853,
+    "rev": "22b1067c16ae4c0438b3498adbce3661f5c5ff1c",
+    "narHash": "sha256-tHojA74LBOse9yB62pl2eJE65ZZm6DDxxXb3l2meiCA=",
+    "lastModified": 1795566007,
     "public": true
   },
   "tack": {
